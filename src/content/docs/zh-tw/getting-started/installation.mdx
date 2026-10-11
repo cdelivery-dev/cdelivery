@@ -1,0 +1,53 @@
+---
+title: 安裝與初始設定
+description: 安裝 CDelivery、開啟控制台並建立首位管理員帳戶。
+sidebar:
+  order: 2
+---
+
+安裝 CDelivery，為部署第一個應用程式做好準備。
+
+也可以將 [AI 安裝指南（英文）](/install.md) 傳給 AI 工具，讓它協助安裝與設定。
+
+## 安裝
+
+在伺服器終端執行官網提供的安裝指令：
+
+```sh
+curl -fsSL https://cdelivery.dev/install.sh | sh
+```
+
+在支援的 Linux 發行版上，安裝程式會視需要安裝 Docker 和所需工具。其他 Linux 發行版需要事先備妥可用的 Docker 和 `jq`。已有的 Docker 安裝會直接沿用。
+
+在 macOS 上，請先啟動 OrbStack 或 Docker Desktop。如果使用 Homebrew，可以透過以下指令準備 OrbStack：
+
+```sh
+brew install --cask orbstack
+orb start
+```
+
+安裝程式會在需要時提示這些步驟，不會自動安裝或啟動桌面應用程式。
+
+## 選擇伺服器通訊位址
+
+在 Linux 和 macOS 上首次安裝時，安裝程式一律要求依編號選擇 IPv4 位址，即使只有一個合適的位址。私有位址排在前面，清單一律包含僅適用於單伺服器安裝的 `127.0.0.1`。
+
+請選擇其他伺服器能夠存取的穩定位址。需要略過選單、直接指定位址，或沒有互動終端時，使用：
+
+```sh
+curl -fsSL https://cdelivery.dev/install.sh | sh -s -- --advertise-addr 192.168.1.10
+```
+
+將範例位址替換為所需的 IPv4 位址，不接受網路介面名稱。伺服器通訊位址可以與控制台存取位址不同。既有安裝保留目前的通訊位址。
+
+## 開啟控制台
+
+1. 安裝完成後，在瀏覽器開啟 `http://伺服器IP:9000`，將「伺服器IP」替換為實際位址。macOS 使用 `http://localhost:9000`。終端也會輸出控制台位址。
+2. 填寫姓名、電子郵件與密碼，建立首位管理員帳戶。
+3. 等待初始化完成，使用剛建立的帳戶登入。
+
+請在伺服器防火牆或安全群組中允許存取 `9000` 連接埠。
+
+## 繼續閱讀
+
+[部署第一個應用程式](/docs/zh-tw/getting-started/first-app/)

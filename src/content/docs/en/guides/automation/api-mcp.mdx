@@ -1,0 +1,15 @@
+---
+title: API and MCP access
+description: API keys, REST requests, MCP connections, and access permissions.
+sidebar:
+  order: 11
+---
+
+Connect external tools to CDelivery through the REST API or MCP.
+
+1. Open **Account → MCP / API keys** and create a key with a name, role, and optional expiration date.
+2. Copy the key, which is shown only once. Send it as `Authorization: Bearer YOUR_API_KEY`.
+3. For REST, try `GET /api/me` and open `/scalar` in your browser for the API documentation.
+4. For MCP, use your instance's `/mcp` address and the same Bearer authentication.
+
+All paths refer to your CDelivery instance. A key cannot grant more access than its owner's current role.

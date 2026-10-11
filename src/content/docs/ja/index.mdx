@@ -1,0 +1,69 @@
+---
+title: ドキュメント
+description: CDelivery の利用を始め、アプリケーションの使い方、プラットフォーム管理を確認できます。
+sidebar:
+  label: 概要
+  order: 1
+---
+
+import { Card, CardGrid, Steps } from '@prosefly/astro-components';
+
+CDelivery のインストール、最初のアプリケーションのデプロイ、そして用途の広がりに合わせた管理方法を学びます。
+
+:::note[内容を順次追加しています]
+詳しい手順と例は順次追加します。
+:::
+
+## はじめに
+
+<Steps>
+
+1. [CDelivery](/docs/ja/getting-started/introduction/) と主な概念を知る。
+2. [インストールと初期設定](/docs/ja/getting-started/installation/)を行う。
+3. [最初のアプリケーションをデプロイする](/docs/ja/getting-started/first-app/)。
+
+</Steps>
+
+## 使い方ガイド
+
+<CardGrid>
+  <Card title="アプリケーションのデプロイと実行" href="/docs/ja/guides/apps/">
+    イメージ、実行設定、リソース、スケーリング、更新、ロールバック。
+  </Card>
+  <Card title="設定ファイル" href="/docs/ja/guides/apps/xconfig/">
+    ファイルのアップロード、コンテナ内パス、既存のファイル、設定の更新。
+  </Card>
+  <Card title="データの永続化" href="/docs/ja/guides/apps/persistence/">
+    ボリューム、マウント、サーバーの選択、データのライフサイクル。
+  </Card>
+  <Card title="ドメインと HTTPS" href="/docs/ja/guides/networking/">
+    DNS、ルーティング、Pingress、証明書。
+  </Card>
+  <Card title="ヘルスチェック" href="/docs/ja/guides/release-safety/xhealth/">
+    チェックの定義、スケジュール、結果。
+  </Card>
+  <Card title="安全なリリース" href="/docs/ja/guides/release-safety/">
+    リリース検証、結果、失敗時の対応。
+  </Card>
+  <Card title="ログとメトリクス" href="/docs/ja/guides/observability/">
+    アプリケーションログ、アクセス記録、イベント、メトリクス。
+  </Card>
+  <Card title="定期タスク" href="/docs/ja/guides/automation/xjob/">
+    コマンドの定期実行、手動実行、実行結果。
+  </Card>
+  <Card title="AI 運用アシスタント" href="/docs/ja/guides/automation/">
+    アシスタントの設定、会話、権限、当番チェック。
+  </Card>
+  <Card title="メッセージング連携と通知" href="/docs/ja/guides/automation/im/">
+    メッセージングチャネル、アカウントの紐付け、当番通知。
+  </Card>
+  <Card title="API と MCP の接続" href="/docs/ja/guides/automation/api-mcp/">
+    API キー、REST リクエスト、MCP クライアント、アクセス権限。
+  </Card>
+</CardGrid>
+
+<CardGrid>
+  <Card title="プラットフォーム管理" href="/docs/ja/administration/">
+    プラットフォームを管理する：サーバー、アカウント、権限、設定、CDelivery 自体の保守。
+  </Card>
+</CardGrid>

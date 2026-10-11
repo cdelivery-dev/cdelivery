@@ -1,0 +1,15 @@
+---
+title: API 与 MCP 接入
+description: API 密钥、REST 请求、MCP 连接与访问权限。
+sidebar:
+  order: 11
+---
+
+通过 REST API 或 MCP 将外部工具接入 CDelivery。
+
+1. 打开**账户 → MCP / API 密钥**，填写名称、选择角色，按需设置有效期并创建。
+2. 复制仅展示一次的密钥，请求时使用 `Authorization: Bearer YOUR_API_KEY`。
+3. REST 可从 `GET /api/me` 开始；在浏览器打开 `/scalar` 查看 API 文档。
+4. MCP 使用当前实例的 `/mcp` 地址，并配置相同的 Bearer 认证。
+
+以上路径均位于你部署的 CDelivery 地址下；密钥权限不会超过所属用户的当前角色。

@@ -1,0 +1,51 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { defaultLocale } from '../config';
+import { translate } from '../i18n';
+import type { Menu } from '../navigation';
+import Icon from './Icon.astro';
+
+interface Props {
+  menu: Menu;
+}
+
+const { menu } = Astro.props;
+const locale = Astro.currentLocale ?? defaultLocale;
+const t = translate(locale);
+---
+<div class="mega-content">
+  <ul>
+    {menu.items.map((item) => (
+      <li>
+        <a class="menu-entry" href={getRelativeLocaleUrl(locale, item.path)}>
+          <span class="item-icon"><Icon name={item.icon} size={22} /></span>
+          <div class="item-copy">
+            <span class="item-title">{t(item.key)}</span>
+            <p>{t(`${item.key}.description`)}</p>
+          </div>
+        </a>
+      </li>
+    ))}
+  </ul>
+  <a class="menu-overview" href={getRelativeLocaleUrl(locale, menu.path)} aria-label={t(`${menu.key}.overview`)}>{t('site.nav.more')}<Icon name="arrow" size={20} /></a>
+</div>
+<style>
+  .mega-content { max-width: 100%; padding: 28px 28px 12px; }
+  ul { display: grid; grid-template-columns: repeat(2, minmax(0, max-content)); grid-template-rows: repeat(3, auto); grid-auto-flow: column; gap: 24px 32px; margin: 0; padding: 0; list-style: none; }
+  .menu-entry { display: grid; grid-template-columns: 22px minmax(0, 1fr); align-items: start; gap: 12px; margin: -8px; padding: 8px; border-radius: 6px; transition: background-color 150ms ease-out, color 150ms ease-out; }
+  .menu-entry:is(:hover, :focus-visible) { color: var(--color-accent); background: var(--color-surface); }
+  .item-icon { padding-top: 2px; color: var(--color-muted); }
+  .item-copy { max-width: 280px; }
+  .item-title { display: block; font-size: .875rem; font-weight: var(--weight-heading); line-height: 1.5; }
+  .item-copy p { margin-top: 4px; color: var(--color-muted); font-size: .875rem; line-height: 1.5; }
+  .menu-overview { display: flex; align-items: center; width: fit-content; gap: 12px; min-width: 44px; min-height: 44px; margin-top: 8px; color: var(--color-accent); font-size: .875rem; font-weight: var(--weight-control); }
+  .menu-overview:hover { text-decoration: underline; text-underline-offset: 4px; }
+  @media (width < 800px) {
+    .mega-content { padding: 18px 0 12px; }
+    ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .item-copy { max-width: none; }
+  }
+  @media (width < 600px) {
+    ul { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; grid-auto-flow: row; }
+  }
+</style>

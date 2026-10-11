@@ -1,0 +1,22 @@
+---
+title: Implante sua primeira aplicação
+description: Crie uma aplicação a partir de uma imagem de contêiner, publique uma porta e confira seu estado.
+sidebar:
+  order: 3
+---
+
+Implante uma aplicação a partir de uma imagem de contêiner no seu próprio servidor.
+
+## Implantação
+
+1. Crie ou abra um grupo no painel e escolha criar uma aplicação.
+2. Informe um nome e a imagem de uma aplicação HTTP. Comece com uma réplica.
+3. Em portas e domínios, adicione um mapeamento TCP com a porta da aplicação dentro do contêiner e uma porta pública livre.
+4. Crie a aplicação e confira o estado do contêiner na página de visão geral.
+5. Abra `http://SERVER_IP:PUBLIC_PORT` no navegador, usando o IP do servidor e a porta pública escolhida.
+
+A porta do contêiner deve corresponder à porta em que a aplicação escuta. Permita o acesso à porta pública no firewall ou grupo de segurança.
+
+## Continue explorando
+
+[Explore o gerenciamento de aplicações](/docs/pt-br/guides/apps/)

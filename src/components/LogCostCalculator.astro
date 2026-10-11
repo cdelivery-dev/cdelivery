@@ -1,0 +1,252 @@
+---
+import { defaultLocale } from '../config';
+import { translate } from '../i18n';
+import Icon from './Icon.astro';
+import { calculate, defaults, formatMoney, formatPercent, pricing } from './log-cost';
+
+const locale = Astro.currentLocale ?? defaultLocale;
+const t = translate(locale);
+const cost = calculate(defaults);
+const comparisonTemplate = t('site.observability.comparison', { value: '__value__' });
+const [comparisonStart, comparisonEnd] = comparisonTemplate.split('__value__');
+const periodTemplate = t('site.observability.periodTotal', { months: '__months__' });
+const periodTemplateOne = t('site.observability.periodTotalOne', { months: '__months__' });
+const retentionTemplate = t('site.observability.retentionValue', { value: '__value__' });
+const retentionTemplateOne = t('site.observability.retentionValueOne', { value: '__value__' });
+const dailyTemplate = t('site.observability.dailyVolume', { value: '__value__' });
+const monthlyTemplate = t('site.observability.monthlyVolume', { value: '__value__' });
+const numbers = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 });
+const fields = [
+  { name: 'volume', id: 'log-volume', label: t('site.observability.volume'), min: -1, max: 3, step: 'any', value: Math.log10(defaults.dailyBytes / 1e9), template: '__value__ GB' },
+  { name: 'retention', id: 'log-retention', label: t('site.observability.retention'), min: 1, max: 60, step: '1', value: defaults.retentionMonths, template: retentionTemplate, templateOne: retentionTemplateOne },
+  { name: 'ratio', id: 'log-ratio', label: t('site.observability.ratio'), min: 3, max: 15, step: '0.1', value: defaults.ratio, template: '__value__×' },
+  { name: 'logSize', id: 'log-size', label: t('site.observability.logSize'), min: 0.1, max: 3, step: '0.1', value: defaults.logBytes / 1000, template: '__value__ KB' },
+];
+const plans = {
+  standard: t('site.observability.standardPlan'),
+  flex: t('site.observability.flexPlan'),
+  extrapolated: t('site.observability.extrapolatedPlan'),
+};
+const results = [
+  { key: 'cdelivery', name: 'CDelivery', basis: t('site.observability.cdeliveryBasis') },
+  { key: 'datadog', name: 'Datadog', basis: plans[cost.plan] },
+] as const;
+---
+<div
+  class="log-calculator"
+  data-log-calculator
+  data-period-template={periodTemplate}
+  data-period-template-one={periodTemplateOne}
+  data-daily-template={dailyTemplate}
+  data-monthly-template={monthlyTemplate}
+  data-standard-plan={plans.standard}
+  data-flex-plan={plans.flex}
+  data-extrapolated-plan={plans.extrapolated}
+>
+  <form>
+    <fieldset disabled>
+      <legend class="visually-hidden">{t('site.observability.calculatorLabel')}</legend>
+      <div class="inputs">
+        {fields.map(({ name, id, label, min, max, step, value, template, templateOne }) => {
+          const quantity = numbers.format(name === 'volume' ? 10 ** value : value);
+          const displayed = (value === 1 && templateOne ? templateOne : template).replace('__value__', quantity);
+          const progress = (value - min) / (max - min);
+          return <div class="field">
+            <div class="field-heading">
+              <label id={`${id}-label`} for={id}>{label}</label>
+              {name === 'volume' && <fieldset class="period-options">
+                <legend class="visually-hidden">{t('site.observability.period')}</legend>
+                <label><input class="visually-hidden" type="radio" name="period" value="daily" checked /><span>{t('site.observability.daily')}</span></label>
+                <label><input class="visually-hidden" type="radio" name="period" value="monthly" /><span>{t('site.observability.monthly')}</span></label>
+              </fieldset>}
+            </div>
+            <div class="slider" data-value-template={template} data-value-template-one={templateOne} style={`--progress:${progress}`}>
+              <output for={id} aria-hidden="true">{displayed}</output>
+              <input
+                id={id}
+                name={`${name}Range`}
+                type="range"
+                min={min}
+                max={max}
+                step={step}
+                value={value}
+                aria-labelledby={`${id}-label`}
+                aria-valuetext={name === 'volume' ? dailyTemplate.replace('__value__', quantity) : displayed}
+                aria-valuemin={name === 'volume' ? 0.1 : undefined}
+                aria-valuemax={name === 'volume' ? 1000 : undefined}
+                aria-valuenow={name === 'volume' ? 10 ** value : undefined}
+              />
+            </div>
+          </div>;
+        })}
+      </div>
+    </fieldset>
+  </form>
+  <noscript><p class="field-note">{t('site.observability.noScript')}</p></noscript>
+  <section class="results-section" aria-labelledby="log-results-title">
+    <div class="results-heading">
+      <h4 id="log-results-title" data-period-total>{(defaults.retentionMonths === 1 ? periodTemplateOne : periodTemplate).replace('__months__', numbers.format(defaults.retentionMonths))}</h4>
+      <button class="calculation-notes" id="log-calculation-basis" type="button" popovertarget="log-calculation-notes">
+        <Icon name="info" size={14} />
+        <span class="visually-hidden">{t('site.observability.pricingTitle')}</span>
+      </button>
+      <div class="notes-panel" id="log-calculation-notes" popover="auto" role="region" aria-labelledby="log-calculation-basis" tabindex="0">
+        <p>{t('site.observability.assumptions')}</p>
+        <p>{t('site.observability.storageFees')}</p>
+        <p>{t('site.observability.datadogFees')}</p>
+        <p>{t('site.observability.flexLimits')}</p>
+        <p class="pricing-sources">
+          <span>{t('site.observability.checked', { date: pricing.checked })}</span>
+          <a href="https://aws.amazon.com/s3/pricing/">AWS S3</a>
+          <a href="https://www.datadoghq.com/pricing/?product=log-management">Datadog</a>
+        </p>
+      </div>
+    </div>
+    <div aria-live="polite" aria-atomic="true">
+      <div class="results">
+        {results.map(({ key, name, basis }) => <div class="result">
+          <h5>{name}</h5>
+          <p class="amount" data-cost={key}>{formatMoney(cost[key], locale)}</p>
+          <p class="result-basis" data-plan={key === 'datadog' ? '' : undefined}>{basis}</p>
+        </div>)}
+      </div>
+      <p class="comparison" data-comparison>{comparisonStart}<strong>{formatPercent(cost.relative, locale)}</strong>{comparisonEnd}</p>
+    </div>
+  </section>
+</div>
+<script>
+  import { calculate, defaults, formatMoney, formatPercent, pricing } from './log-cost';
+
+  for (const calculator of document.querySelectorAll<HTMLElement>('[data-log-calculator]')) {
+    const form = calculator.querySelector('form');
+    const fieldset = calculator.querySelector('fieldset');
+    if (!form || !fieldset) continue;
+    const locale = document.documentElement.lang;
+    const numbers = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 });
+    const control = (name: string) => form.elements.namedItem(name) as HTMLInputElement;
+    const volumeRange = control('volumeRange');
+    const period = form.elements.namedItem('period') as RadioNodeList;
+    const ranges = form.querySelectorAll<HTMLInputElement>('input[type="range"]');
+    const volumes = { daily: defaults.dailyBytes / 1e9, monthly: 1 };
+    const periodName = () => period.value === 'monthly' ? 'monthly' : 'daily';
+    const text = (selector: string, value: string) => calculator.querySelectorAll<HTMLElement>(selector).forEach(element => { element.textContent = value; });
+    const template = (name: string, marker: string, value: string) => calculator.dataset[name]?.replace(marker, value) ?? value;
+
+    function setVolume(value: number) {
+      const rounded = value < 10 ? Math.round(value * 10) / 10 : Math.round(value);
+      volumes[periodName()] = Math.min(1000, Math.max(0.1, rounded));
+    }
+
+    function render() {
+      const volume = volumes[periodName()];
+      const input = {
+        dailyBytes: volume * 1e9 / (periodName() === 'monthly' ? pricing.daysPerMonth : 1),
+        logBytes: control('logSizeRange').valueAsNumber * 1000,
+        ratio: control('ratioRange').valueAsNumber,
+        retentionMonths: control('retentionRange').valueAsNumber,
+      };
+      const cost = calculate(input);
+      for (const key of ['cdelivery', 'datadog'] as const) {
+        text(`[data-cost="${key}"]`, formatMoney(cost[key], locale));
+      }
+      text('[data-comparison] strong', formatPercent(cost.relative, locale));
+      text('[data-period-total]', template(input.retentionMonths === 1 ? 'periodTemplateOne' : 'periodTemplate', '__months__', numbers.format(input.retentionMonths)));
+      text('[data-plan]', calculator.dataset[`${cost.plan}Plan`] ?? '');
+      volumeRange.value = String(Math.log10(volume));
+      volumeRange.setAttribute('aria-valuenow', String(volume));
+      for (const range of ranges) {
+        const slider = range.parentElement;
+        const output = slider?.querySelector('output');
+        if (!slider || !output) continue;
+        const progress = (range.valueAsNumber - Number(range.min)) / (Number(range.max) - Number(range.min));
+        const quantity = numbers.format(range === volumeRange ? volume : range.valueAsNumber);
+        const valueTemplate = range.valueAsNumber === 1 ? slider.dataset.valueTemplateOne : undefined;
+        const displayed = (valueTemplate ?? slider.dataset.valueTemplate)?.replace('__value__', quantity) ?? quantity;
+        output.value = displayed;
+        slider.style.setProperty('--progress', String(progress));
+        range.setAttribute('aria-valuetext', range === volumeRange ? template(`${periodName()}Template`, '__value__', quantity) : displayed);
+      }
+    }
+
+    form.addEventListener('input', event => {
+      if (event.target === volumeRange) setVolume(10 ** volumeRange.valueAsNumber);
+      render();
+    });
+    volumeRange.addEventListener('keydown', event => {
+      if (event.altKey || event.ctrlKey || event.metaKey) return;
+      let value = volumes[periodName()];
+      switch (event.key) {
+        case 'ArrowLeft': case 'ArrowDown': value -= value > 10 ? 1 : 0.1; break;
+        case 'ArrowRight': case 'ArrowUp': value += value >= 10 ? 1 : 0.1; break;
+        case 'PageDown': value = value > 10 ? Math.max(10, value - 10) : value - 1; break;
+        case 'PageUp': value = value < 10 ? Math.min(10, value + 1) : value + 10; break;
+        case 'Home': value = 0.1; break;
+        case 'End': value = 1000; break;
+        default: return;
+      }
+      event.preventDefault();
+      setVolume(value);
+      render();
+    });
+    fieldset.disabled = false;
+    render();
+  }
+</script>
+<style>
+  .log-calculator { min-width: 0; container-type: inline-size; font-size: .9375rem; font-weight: var(--weight-body); }
+  form, fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
+  .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .inputs { display: grid; gap: 20px 24px; }
+  .field { display: flex; flex-direction: column; justify-content: space-between; min-width: 0; }
+  .field-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 8px; min-height: 28px; }
+  label { font: inherit; }
+  .period-options { display: flex; flex: none; gap: 4px; }
+  .period-options label { position: relative; cursor: pointer; }
+  .period-options span { display: block; align-content: center; min-height: calc(1lh + 6px); padding: 3px 6px; border-radius: 4px; color: var(--color-muted); font-size: .875rem; line-height: 1.5; text-box: trim-both cap alphabetic; }
+  .period-options input:checked + span { color: var(--color-text); background: var(--color-surface); font-weight: var(--weight-control); }
+  .period-options input:focus + span { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+  .slider { --thumb-size: 14px; --fill: calc(var(--progress) * 100%); --thumb-center: calc((100% - var(--thumb-size)) * var(--progress) + var(--thumb-size) / 2); position: relative; margin-top: 8px; padding-top: 32px; }
+  .slider::before { content: ''; position: absolute; top: 26px; left: var(--thumb-center); width: 8px; height: 5px; background: var(--color-accent); clip-path: polygon(0 0, 100% 0, 50% 100%); transform: translateX(-50%); pointer-events: none; }
+  output { position: absolute; top: 0; left: 0; width: max-content; max-width: 100%; font: inherit; line-height: 1.5; font-variant-numeric: tabular-nums; white-space: nowrap; pointer-events: none; }
+  input[type="range"] { display: block; width: 100%; height: 28px; margin: 0; padding: 0; background: transparent; appearance: none; cursor: pointer; }
+  input[type="range"]:focus-visible { outline-offset: 2px; }
+  input[type="range"]::-webkit-slider-runnable-track { height: 3px; border-radius: 2px; background: linear-gradient(to right, var(--color-accent) var(--fill), var(--color-border) var(--fill)); }
+  input[type="range"]::-moz-range-track { height: 3px; border-radius: 2px; background: linear-gradient(to right, var(--color-accent) var(--fill), var(--color-border) var(--fill)); }
+  input[type="range"]::-webkit-slider-thumb { width: var(--thumb-size); height: var(--thumb-size); box-sizing: border-box; margin-top: -5.5px; border: 2px solid var(--color-accent); border-radius: 50%; background: #fff; appearance: none; }
+  input[type="range"]::-moz-range-thumb { width: var(--thumb-size); height: var(--thumb-size); box-sizing: border-box; border: 2px solid var(--color-accent); border-radius: 50%; background: #fff; }
+  form > fieldset:disabled { opacity: .6; }
+  .field-note { margin-top: 4px; color: var(--color-muted); font-size: .875rem; line-height: 1.5; }
+  .results-section { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--color-border); }
+  .results-heading { display: flex; flex-wrap: wrap; align-items: center; gap: 0 4px; }
+  .results { display: grid; gap: 20px 24px; margin-top: 16px; }
+  .result { min-width: 0; }
+  h4 { max-width: calc(100% - 36px); margin: 0; color: var(--color-muted); font-size: .875rem; font-weight: var(--weight-body); }
+  h5 { margin: 0 0 6px; font: inherit; }
+  .amount { font-size: 1.625rem; line-height: 1.2; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .amount[data-cost="cdelivery"] { color: var(--color-accent); }
+  .result-basis { margin-top: 6px; color: var(--color-muted); font-size: .875rem; }
+  .comparison { margin: 20px 0 0; line-height: 1.5; }
+  .comparison strong { color: var(--color-accent); font-size: 1.375rem; font-weight: var(--weight-body); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .calculation-notes { display: none; flex: none; align-items: center; justify-content: center; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 50%; background: transparent; color: var(--color-muted); }
+  .calculation-notes:hover, .calculation-notes:has(+ .notes-panel:popover-open) { color: var(--color-text); }
+  .notes-panel { display: grid; flex-basis: 100%; gap: 6px; width: min(480px, 100%); max-height: 420px; overflow-y: auto; overscroll-behavior: contain; margin-top: 8px; padding: 16px; border: 1px solid var(--color-border); border-radius: 8px; background: #fff; color: var(--color-muted); font-size: .75rem; line-height: 1.6; box-shadow: var(--shadow-panel); }
+  .notes-panel:focus-visible { outline-offset: 2px; }
+  .pricing-sources { display: flex; flex-wrap: wrap; gap: 4px 12px; }
+  .pricing-sources a { text-decoration: underline; text-underline-offset: 2px; }
+  @supports (anchor-scope: --log-thumb) and (justify-self: anchor-center) {
+    .slider { anchor-scope: --log-thumb; }
+    .slider::before { anchor-name: --log-thumb; }
+    output { position-anchor: --log-thumb; right: 0; justify-self: anchor-center; }
+  }
+  @supports selector(:popover-open) {
+    .calculation-notes { display: flex; }
+    .notes-panel { position: fixed; inset: calc(var(--header-offset) + 12px) 12px 12px; margin: auto; max-width: calc(100vw - 24px); max-height: min(420px, calc(100dvh - var(--header-offset) - 24px)); }
+    .notes-panel:not(:popover-open) { display: none; }
+  }
+  @supports selector(:popover-open) and (position-area: top span-all) and (position-try-order: most-height) and (position-visibility: anchors-visible no-overflow) and (justify-self: anchor-center) {
+    .notes-panel { position-area: top span-all; position-try-fallbacks: --log-notes-below; position-try-order: most-height; justify-self: anchor-center; inset: calc(var(--header-offset) + 12px) 12px 8px; margin: 0; max-width: calc(100% - 24px); max-height: min(420px, calc(100% - var(--header-offset) - 20px)); position-visibility: anchors-visible no-overflow; }
+    @position-try --log-notes-below { position-area: bottom span-all; inset: max(8px, calc(anchor(--site-header bottom) - anchor(bottom) + 12px)) 12px 12px; max-height: min(420px, calc(100% - 20px), calc(100dvh - var(--header-offset) - 24px)); }
+  }
+  @container (min-width: 400px) { .results { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @container (min-width: 560px) { .inputs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+</style>

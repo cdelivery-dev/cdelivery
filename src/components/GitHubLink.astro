@@ -1,0 +1,19 @@
+---
+import { defaultLocale, site } from '../config';
+import { translate } from '../i18n';
+import Icon from './Icon.astro';
+const locale = Astro.currentLocale ?? defaultLocale;
+const t = translate(locale);
+---
+<a class="github-link" href={site.github} aria-label={t('site.github.repository')}>
+  <span class="github-icon"><Icon name="github" size={16.4} /></span>
+</a>
+<style>
+  .github-link { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; color: var(--color-text); text-decoration: none; }
+  .github-icon { display: flex; align-items: center; justify-content: center; flex: 0 0 15px; width: 15px; height: 18px; }
+  .github-icon :global(svg) { flex: none; }
+  .github-link:hover { color: var(--color-accent); }
+  @media (width >= 800px) {
+    .github-link { min-width: 0; }
+  }
+</style>

@@ -1,0 +1,23 @@
+---
+title: 安全發布
+description: Guardian 發布驗證、結果、失敗處理與應用程式相容性。
+sidebar:
+  order: 6
+---
+
+Guardian 在隔離環境中使用 XHealth 驗證候選版本，通過後才發布。
+
+## 啟用發布驗證
+
+1. 為應用程式設定 [XHealth](/docs/zh-tw/guides/release-safety/xhealth/)，確認檢查能夠通過。
+2. 在應用程式的 **XHealth** 頁面勾選「啟用更新保護」並儲存。
+3. 更新映像檔、啟動設定或 XConfig 檔案，在應用程式概覽中檢視部署、驗證與發布進度。
+4. 驗證失敗時，檢視日誌與檢查設定，再重試或取消更新。
+
+使用本機資料卷的應用程式無法啟用 Guardian。
+
+## 繼續閱讀
+
+- [健康檢查](/docs/zh-tw/guides/release-safety/xhealth/)
+- [資料持久化](/docs/zh-tw/guides/apps/persistence/)
+- [日誌與指標](/docs/zh-tw/guides/observability/)

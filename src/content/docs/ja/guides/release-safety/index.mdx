@@ -1,0 +1,23 @@
+---
+title: 安全なリリース
+description: Guardian のリリース検証、結果、失敗時の対応、アプリケーションとの互換性を扱います。
+sidebar:
+  order: 6
+---
+
+Guardian は隔離環境で XHealth を使って候補バージョンを検証し、合格後にリリースします。
+
+## リリース検証を有効にする
+
+1. アプリケーションに [XHealth](/docs/ja/guides/release-safety/xhealth/) を設定し、チェックが合格することを確認します。
+2. アプリケーションの **XHealth** タブで「更新保護を有効にする」を選択して保存します。
+3. イメージ、起動設定、または XConfig ファイルを更新し、アプリケーションの概要でデプロイ、検証、リリースの進行状況を確認します。
+4. 検証に失敗した場合は、ログとチェック設定を確認し、更新を再試行するかキャンセルします。
+
+ローカルデータボリュームを使うアプリケーションでは Guardian を有効にできません。
+
+## 次に読む
+
+- [ヘルスチェック](/docs/ja/guides/release-safety/xhealth/)
+- [データの永続化](/docs/ja/guides/apps/persistence/)
+- [ログとメトリクス](/docs/ja/guides/observability/)

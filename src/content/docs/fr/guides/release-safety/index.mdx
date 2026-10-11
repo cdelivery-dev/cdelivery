@@ -1,0 +1,23 @@
+---
+title: Mises en production sûres
+description: Validation des mises en production avec Guardian, résultats, gestion des échecs et compatibilité des applications.
+sidebar:
+  order: 6
+---
+
+Guardian utilise XHealth pour valider une version candidate dans un environnement isolé avant sa mise en production.
+
+## Activer la validation
+
+1. Configurez [XHealth](/docs/fr/guides/release-safety/xhealth/) pour l’application et vérifiez que les contrôles réussissent.
+2. Dans l’onglet **XHealth** de l’application, sélectionnez **Protéger les mises à jour** et enregistrez.
+3. Modifiez l’image, les paramètres de démarrage ou les fichiers XConfig. Suivez le déploiement, la validation et la mise en production dans la vue d’ensemble de l’application.
+4. Si la validation échoue, examinez les journaux et la configuration du contrôle, puis relancez ou annulez la mise à jour.
+
+Les applications utilisant des volumes de données locaux ne peuvent pas activer Guardian.
+
+## Pour aller plus loin
+
+- [Contrôles de santé](/docs/fr/guides/release-safety/xhealth/)
+- [Persistance des données](/docs/fr/guides/apps/persistence/)
+- [Journaux et métriques](/docs/fr/guides/observability/)

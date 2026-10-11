@@ -1,0 +1,20 @@
+---
+title: Datenpersistenz
+description: Anwendungsdaten in lokalen Volumes auf dem ausgewählten Server speichern.
+sidebar:
+  order: 3
+---
+
+Speichere Anwendungsdaten in einem lokalen Volume auf dem Server.
+
+1. Öffne die Volume-Seite des gewünschten Servers und erstelle ein Volume.
+2. Erstelle eine Anwendung, wähle im Bereich für Dateien und Speicher die Option für Daten und diesen Server aus.
+3. Füge das Volume hinzu und gib den Pfad an, unter dem die Anwendung ihre Daten im Container speichert, zum Beispiel `/data`.
+4. Erstelle die Anwendung und prüfe, ob sie das eingebundene Verzeichnis verwendet.
+
+Die Anwendung läuft mit einem Replikat auf dem ausgewählten Server und kann weder XConfig noch Guardian verwenden. Beim Löschen der Anwendung bleiben die Volume-Daten erhalten.
+
+## Weiterführende Informationen
+
+- [Konfigurationsdateien](/docs/de/guides/apps/xconfig/)
+- [Sichere Veröffentlichungen](/docs/de/guides/release-safety/)

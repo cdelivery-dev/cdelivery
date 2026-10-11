@@ -1,0 +1,36 @@
+---
+import { translate } from '../i18n';
+const t = translate(Astro.currentLocale);
+const metrics = [
+  { name: 'CDelivery', purpose: t('site.footprint.platformRole'), memory: 30 },
+  { name: 'Pingress', purpose: t('site.footprint.gatewayRole'), memory: 30 },
+  { name: t('site.footprint.observabilityName'), purpose: t('site.footprint.observabilityRole'), memory: 150 },
+] as const;
+const maxMemory = Math.max(...metrics.map(({ memory }) => memory));
+---
+<section class="home-columns home-section container" aria-labelledby="footprint-title">
+  <header>
+    <h2 class="section-title" id="footprint-title">{t('site.footprint.title')}</h2>
+    <p>{t('site.footprint.description')}</p>
+  </header>
+  <figure>
+    <dl class="footprint-metrics">
+      {metrics.map(({ name, purpose, memory }) => <div style={`--bar-width:${memory / maxMemory * 100}%`}>
+        <dt>{name}<span class="footprint-purpose">{purpose}</span></dt>
+        <dd>{memory}<span class="footprint-unit"> MiB</span></dd>
+      </div>)}
+    </dl>
+    <figcaption>{t('site.footprint.note')}</figcaption>
+  </figure>
+</section>
+<style>
+  header p { margin-top: 16px; color: var(--color-muted); font-size: .9375rem; }
+  .footprint-purpose, .footprint-unit { color: var(--color-muted); font-size: .875rem; }
+  .footprint-metrics { display: grid; gap: 24px; margin: 0; }
+  .footprint-metrics > div { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px 24px; min-width: 0; }
+  .footprint-metrics > div::after { content: ''; grid-column: 1 / -1; width: var(--bar-width); height: 8px; border-radius: 0 3px 3px 0; background: var(--color-accent); }
+  dt { min-width: 0; line-height: 1.35; }
+  .footprint-purpose { display: block; margin-top: 4px; }
+  dd { margin: 0; font-size: 1.5rem; line-height: 1.1; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  figcaption { margin-top: 20px; color: var(--color-muted); font-size: .75rem; }
+</style>

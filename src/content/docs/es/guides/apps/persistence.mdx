@@ -1,0 +1,20 @@
+---
+title: Persistencia de datos
+description: Guarda los datos de la aplicación en volúmenes locales del servidor seleccionado.
+sidebar:
+  order: 3
+---
+
+Guarda los datos de la aplicación en un volumen local del servidor.
+
+1. Abre la página de volúmenes del servidor deseado y crea un volumen.
+2. Crea una aplicación, elige datos en la sección de archivos y almacenamiento y selecciona ese servidor.
+3. Añade el volumen e indica la ruta dentro del contenedor donde la aplicación guarda sus datos, como `/data`.
+4. Crea la aplicación y confirma que utiliza el directorio montado.
+
+La aplicación ejecuta una sola réplica en el servidor seleccionado y no puede usar XConfig ni Guardian. Eliminar la aplicación conserva los datos de los volúmenes.
+
+## Sigue explorando
+
+- [Archivos de configuración](/docs/es/guides/apps/xconfig/)
+- [Despliegues seguros](/docs/es/guides/release-safety/)

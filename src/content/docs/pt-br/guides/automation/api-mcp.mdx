@@ -1,0 +1,15 @@
+---
+title: Acesso por API e MCP
+description: Chaves de API, requisições REST, conexões MCP e permissões de acesso.
+sidebar:
+  order: 11
+---
+
+Conecte ferramentas externas ao CDelivery pela API REST ou pelo MCP.
+
+1. Abra **Conta → Chaves de API / MCP** e crie uma chave com nome, perfil e data de expiração opcional.
+2. Copie a chave, exibida uma única vez, e envie-a como `Authorization: Bearer YOUR_API_KEY`.
+3. Para REST, experimente `GET /api/me` e abra `/scalar` no navegador para consultar a documentação da API.
+4. Para MCP, use o endereço `/mcp` da sua instância e a mesma autenticação Bearer.
+
+Todos os caminhos são relativos à sua instância do CDelivery. A chave não pode conceder mais acesso que o perfil atual de seu titular.

@@ -1,0 +1,10 @@
+---
+import Brand from '../Brand.astro';
+import '../../styles/docs.css';
+
+interface Props { class?: string }
+const locale = Astro.locals.t.locale().lang;
+---
+<span class={Astro.props.class} style="--color-text: var(--lotus-text-strong); --weight-heading: 600">
+  <Brand wordmark locale={locale} />
+</span>

@@ -1,0 +1,69 @@
+---
+title: Documentation
+description: Faites vos premiers pas avec CDelivery, découvrez les guides d’utilisation et consultez les sujets d’administration.
+sidebar:
+  label: Présentation
+  order: 1
+---
+
+import { Card, CardGrid, Steps } from '@prosefly/astro-components';
+
+Apprenez à installer CDelivery, à déployer votre première application et à la gérer au fil de l’évolution de vos besoins.
+
+:::note[Contenu en cours de rédaction]
+Des instructions détaillées et des exemples seront ajoutés.
+:::
+
+## Premiers pas
+
+<Steps>
+
+1. [Découvrez CDelivery](/docs/fr/getting-started/introduction/) et ses principaux concepts.
+2. Suivez [l’installation et la configuration initiale](/docs/fr/getting-started/installation/).
+3. [Déployez votre première application](/docs/fr/getting-started/first-app/).
+
+</Steps>
+
+## Guides d’utilisation
+
+<CardGrid>
+  <Card title="Déployer et exploiter des applications" href="/docs/fr/guides/apps/">
+    images, paramètres d’exécution, ressources, mise à l’échelle, mises à jour et retour à une version précédente.
+  </Card>
+  <Card title="Fichiers de configuration" href="/docs/fr/guides/apps/xconfig/">
+    importation de fichiers, chemins dans le conteneur, fichiers existants et mises à jour de la configuration.
+  </Card>
+  <Card title="Persistance des données" href="/docs/fr/guides/apps/persistence/">
+    volumes, montages, choix du serveur et cycle de vie des données.
+  </Card>
+  <Card title="Domaines et HTTPS" href="/docs/fr/guides/networking/">
+    DNS, routage, Pingress et certificats.
+  </Card>
+  <Card title="Contrôles de santé" href="/docs/fr/guides/release-safety/xhealth/">
+    définition des contrôles, planification et résultats.
+  </Card>
+  <Card title="Mises en production sûres" href="/docs/fr/guides/release-safety/">
+    validation des mises en production, résultats et gestion des échecs.
+  </Card>
+  <Card title="Journaux et métriques" href="/docs/fr/guides/observability/">
+    journaux d’application, journaux d’accès, événements et métriques.
+  </Card>
+  <Card title="Tâches planifiées" href="/docs/fr/guides/automation/xjob/">
+    commandes planifiées, lancements manuels et résultats d’exécution.
+  </Card>
+  <Card title="Assistant d’exploitation IA" href="/docs/fr/guides/automation/">
+    paramètres de l’assistant, conversations, permissions et contrôles de permanence.
+  </Card>
+  <Card title="Intégrations de messagerie et notifications" href="/docs/fr/guides/automation/im/">
+    canaux de messagerie, liaisons de comptes et notifications de permanence.
+  </Card>
+  <Card title="Accès API et MCP" href="/docs/fr/guides/automation/api-mcp/">
+    clés API, requêtes REST, clients MCP et permissions d’accès.
+  </Card>
+</CardGrid>
+
+<CardGrid>
+  <Card title="Administration de la plateforme" href="/docs/fr/administration/">
+    Administrez la plateforme : serveurs, comptes, permissions, paramètres et maintenance de CDelivery.
+  </Card>
+</CardGrid>

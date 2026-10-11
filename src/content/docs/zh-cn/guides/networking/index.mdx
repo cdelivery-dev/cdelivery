@@ -1,0 +1,16 @@
+---
+title: 域名与 HTTPS
+description: 应用域名、路由、Pingress 与 TLS 证书。
+sidebar:
+  order: 4
+---
+
+Pingress 将用户请求路由到应用，并管理 HTTPS 证书。
+
+1. 启用 Pingress，选择运行它的服务器。
+2. 将域名的 DNS 记录指向可访问 Pingress 的地址。
+3. 在应用的「端口与域名」中添加域名，填写应用实际监听的容器内端口，按需勾选「启用 HTTPS」，然后保存应用设置。
+4. 使用 HTTPS 时，在 Pingress 的「证书」页启用自动证书或上传证书。
+5. 访问域名，确认应用可用。
+
+请确保域名解析正确，HTTP/HTTPS 端口可达。自动证书会在后台签发和续期。

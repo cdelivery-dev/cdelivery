@@ -1,0 +1,69 @@
+---
+title: Documentation
+description: Start with CDelivery, explore application guides, and find platform management topics.
+sidebar:
+  label: Overview
+  order: 1
+---
+
+import { Card, CardGrid, Steps } from '@prosefly/astro-components';
+
+Learn how to install CDelivery, deploy your first application, and manage it as your needs grow.
+
+:::note[Content in progress]
+Detailed instructions and examples are being added.
+:::
+
+## Getting started
+
+<Steps>
+
+1. [Meet CDelivery](/docs/getting-started/introduction/) and its main concepts.
+2. Follow [installation and initial setup](/docs/getting-started/installation/).
+3. [Deploy your first application](/docs/getting-started/first-app/).
+
+</Steps>
+
+## Guides
+
+<CardGrid>
+  <Card title="Deploying and running applications" href="/docs/guides/apps/">
+    images, runtime settings, resources, scaling, updates, and rollback.
+  </Card>
+  <Card title="Configuration files" href="/docs/guides/apps/xconfig/">
+    file uploads, container paths, existing files, and configuration updates.
+  </Card>
+  <Card title="Data persistence" href="/docs/guides/apps/persistence/">
+    volumes, mounts, node selection, and data lifecycle.
+  </Card>
+  <Card title="Domains and HTTPS" href="/docs/guides/networking/">
+    DNS, routing, Pingress, and certificates.
+  </Card>
+  <Card title="Health checks" href="/docs/guides/release-safety/xhealth/">
+    check definitions, schedules, and results.
+  </Card>
+  <Card title="Safe releases" href="/docs/guides/release-safety/">
+    release validation, outcomes, and failure handling.
+  </Card>
+  <Card title="Logs and metrics" href="/docs/guides/observability/">
+    application logs, access records, events, and metrics.
+  </Card>
+  <Card title="Scheduled tasks" href="/docs/guides/automation/xjob/">
+    scheduled commands, manual runs, and execution results.
+  </Card>
+  <Card title="AI operations assistant" href="/docs/guides/automation/">
+    assistant settings, conversations, permissions, and duty checks.
+  </Card>
+  <Card title="Messaging integrations and notifications" href="/docs/guides/automation/im/">
+    messaging channels, account bindings, and duty notifications.
+  </Card>
+  <Card title="API and MCP access" href="/docs/guides/automation/api-mcp/">
+    API keys, REST requests, MCP clients, and access permissions.
+  </Card>
+</CardGrid>
+
+<CardGrid>
+  <Card title="Platform management" href="/docs/administration/">
+    Manage the platform: nodes, accounts, permissions, settings, and maintenance of CDelivery itself.
+  </Card>
+</CardGrid>

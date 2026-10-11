@@ -1,0 +1,61 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { defaultLocale, locales } from '../config';
+import { translate } from '../i18n';
+import { navigation } from '../navigation';
+import { docsPath, unlocalizedPath } from '../routes';
+import Icon from './Icon.astro';
+import MegaMenuContent from './MegaMenuContent.astro';
+const locale = locales.find((value) => value === Astro.currentLocale) ?? defaultLocale;
+const t = translate(locale);
+const path = unlocalizedPath(Astro.url.pathname);
+---
+{navigation.filter((item) => !('hidden' in item && item.hidden)).map((item) => {
+  const menu = 'items' in item ? item : undefined;
+  const id = menu?.path.slice(1, -1);
+  const label = t('site.nav.toggleMenu', { menu: t(item.key) });
+  return (
+    <div class="nav-item">
+      <a class="nav-link" href={item.path === '/docs/' ? docsPath(locale) : getRelativeLocaleUrl(locale, item.path)} aria-current={path.startsWith(item.path) ? 'page' : undefined}><span>{t(item.key)}</span></a>
+      {menu && (
+        <details class="nav-dropdown" name="site-menu" data-menu>
+          <summary aria-label={label} aria-controls={`panel-${id}`}>
+            <span class="dropdown-arrow"><Icon name="chevron" size={14} /></span>
+          </summary>
+          <div class="nav-panel" id={`panel-${id}`}>
+            <div class="menu-surface"><MegaMenuContent menu={menu} /></div>
+          </div>
+        </details>
+      )}
+    </div>
+  );
+})}
+<style>
+  .nav-item { display: flex; align-items: center; gap: 6px; }
+  .nav-link { display: inline-flex; align-items: center; min-width: 44px; min-height: 44px; color: var(--color-text); font-size: .875rem; font-weight: var(--weight-nav); white-space: nowrap; line-height: 1.5; transition: color 150ms ease-out; }
+  .nav-link:hover, .nav-link[aria-current], .nav-item:has(.nav-dropdown[open]) > .nav-link { color: var(--color-accent); }
+  summary { display: flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 0; border: 0; background: transparent; list-style: none; }
+  summary::-webkit-details-marker { display: none; }
+  summary:hover, details[open] > summary { color: var(--color-accent); }
+  @media (width >= 800px) {
+    .nav-item { gap: 8px; min-height: var(--header-height); }
+    .nav-link { min-width: 0; }
+    .nav-link > span { text-box: trim-both cap alphabetic; }
+    summary { position: relative; min-width: 0; }
+    summary::before { content: ''; position: absolute; inset: 0 -8px; }
+    .nav-panel { position: absolute; top: 100%; left: 0; z-index: 1; width: min(720px, 100%); padding-top: 8px; }
+    .menu-surface { max-height: calc(100dvh - var(--header-offset) - 8px - max(16px, env(safe-area-inset-bottom, 0px))); overflow-y: auto; border: 1px solid var(--color-border); border-radius: 8px; background: #fff; box-shadow: var(--shadow-panel); }
+    @media (prefers-reduced-motion: no-preference) {
+      @supports selector(details::details-content) and (transition-behavior: allow-discrete) {
+        :global(.site-header[data-menu-ready]) .nav-dropdown::details-content { transition: content-visibility 180ms allow-discrete; }
+        :global(.site-header[data-menu-ready]) .nav-panel { opacity: 0; pointer-events: none; transform: translateY(6px); transition: opacity 180ms var(--menu-easing), transform 180ms var(--menu-easing); }
+        :global(.site-header[data-menu-ready]) .nav-dropdown[open] .nav-panel { opacity: 1; pointer-events: auto; transform: translateY(0); }
+      }
+    }
+  }
+  @media (width < 800px) {
+    .nav-item { position: relative; display: block; }
+    .nav-link { min-height: 52px; font-size: 1rem; }
+    summary { position: absolute; right: 0; top: 0; width: 44px; height: 52px; }
+  }
+</style>

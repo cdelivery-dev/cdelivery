@@ -1,0 +1,22 @@
+---
+title: Deine erste Anwendung bereitstellen
+description: Eine Anwendung aus einem Container-Image erstellen, einen Port freigeben und den Betriebszustand prüfen.
+sidebar:
+  order: 3
+---
+
+Stelle eine Anwendung aus einem Container-Image auf deinem eigenen Server bereit.
+
+## Bereitstellung
+
+1. Erstelle oder öffne eine Gruppe im Dashboard und wähle die Erstellung einer Anwendung.
+2. Gib einen Namen und das Image einer HTTP-Anwendung ein. Beginne mit einer Replik.
+3. Füge unter Ports und Domains eine TCP-Portzuordnung hinzu. Trage den Container-Port der Anwendung und einen freien öffentlichen Port ein.
+4. Erstelle die Anwendung und prüfe den Containerstatus auf der Übersichtsseite.
+5. Öffne `http://SERVER_IP:PUBLIC_PORT` im Browser. Verwende die IP-Adresse deines Servers und den gewählten öffentlichen Port.
+
+Der Container-Port muss dem Port entsprechen, auf dem die Anwendung lauscht. Erlaube den Zugriff auf den öffentlichen Port in der Firewall oder Sicherheitsgruppe.
+
+## Weiterführende Informationen
+
+[Mehr zur Anwendungsverwaltung](/docs/de/guides/apps/)

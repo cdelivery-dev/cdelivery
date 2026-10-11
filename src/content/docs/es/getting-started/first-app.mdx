@@ -1,0 +1,22 @@
+---
+title: Despliega tu primera aplicación
+description: Crea una aplicación desde una imagen de contenedor, publica un puerto y comprueba su estado.
+sidebar:
+  order: 3
+---
+
+Despliega una aplicación desde una imagen de contenedor en tu propio servidor.
+
+## Despliegue
+
+1. Crea o abre un grupo en el panel y elige crear una aplicación.
+2. Introduce un nombre y la imagen de una aplicación HTTP. Empieza con una réplica.
+3. En puertos y dominios, añade una asignación TCP con el puerto de la aplicación dentro del contenedor y un puerto público libre.
+4. Crea la aplicación y comprueba el estado del contenedor en la página de visión general.
+5. Abre `http://SERVER_IP:PUBLIC_PORT` en el navegador, usando la IP de tu servidor y el puerto público elegido.
+
+El puerto del contenedor debe coincidir con el puerto en el que escucha la aplicación. Permite el acceso al puerto público en el cortafuegos o grupo de seguridad.
+
+## Sigue explorando
+
+[Explora la gestión de aplicaciones](/docs/es/guides/apps/)

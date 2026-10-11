@@ -1,0 +1,53 @@
+---
+title: Instalação e configuração inicial
+description: Instale o CDelivery, abra o painel e crie sua primeira conta de administrador.
+sidebar:
+  order: 2
+---
+
+Instale o CDelivery e prepare a plataforma para sua primeira aplicação.
+
+Para obter ajuda com a instalação e a configuração, compartilhe o [guia de instalação para IA (em inglês)](/install.md) com sua ferramenta de IA.
+
+## Instalação
+
+Execute o comando do site do CDelivery no terminal do seu servidor:
+
+```sh
+curl -fsSL https://cdelivery.dev/install.sh | sh
+```
+
+Nas distribuições Linux compatíveis, o instalador prepara o Docker e as ferramentas necessárias quando estão ausentes. Em outras distribuições, o Docker e o `jq` já devem estar disponíveis. Instalações existentes do Docker são reutilizadas.
+
+No macOS, inicie o OrbStack ou o Docker Desktop antes de executar o comando. Se você usa Homebrew, pode preparar o OrbStack com:
+
+```sh
+brew install --cask orbstack
+orb start
+```
+
+O instalador mostra essas etapas quando necessário; ele não instala nem inicia aplicativos de desktop automaticamente.
+
+## Escolha o endereço de comunicação entre servidores
+
+Na primeira instalação no Linux ou no macOS, o instalador sempre pede que você escolha um endereço IPv4 pelo número, mesmo quando há apenas um endereço adequado. Os endereços privados aparecem primeiro, e `127.0.0.1` está sempre disponível para uma instalação com um único servidor.
+
+Use um endereço estável que os outros servidores consigam acessar. Para pular o menu e especificar o endereço diretamente, ou quando não houver um terminal interativo:
+
+```sh
+curl -fsSL https://cdelivery.dev/install.sh | sh -s -- --advertise-addr 192.168.1.10
+```
+
+Substitua o exemplo pelo endereço IPv4 desejado. Nomes de interfaces não são aceitos. O endereço de comunicação entre servidores pode ser diferente do endereço do painel. Instalações existentes mantêm o endereço de comunicação atual.
+
+## Abra o painel
+
+1. Após a instalação, abra `http://SERVER_IP:9000` no navegador e substitua `SERVER_IP` pelo IP do servidor. No macOS, use `http://localhost:9000`. O terminal também mostra o endereço do painel.
+2. Informe seu nome, e-mail e senha para criar a primeira conta de administrador.
+3. Aguarde a inicialização terminar e entre com essa conta.
+
+Permita o acesso à porta `9000` no firewall ou grupo de segurança do servidor.
+
+## Continue explorando
+
+[Implante sua primeira aplicação](/docs/pt-br/getting-started/first-app/)

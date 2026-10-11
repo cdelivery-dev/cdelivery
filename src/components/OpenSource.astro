@@ -1,0 +1,27 @@
+---
+import { site } from '../config';
+import { translate } from '../i18n';
+import Icon from './Icon.astro';
+
+const t = translate(Astro.currentLocale);
+---
+<section class="open-source container" aria-labelledby="open-source-title">
+  <h2 class="section-title" id="open-source-title">{t('site.openSource.title')}</h2>
+  <p>{t('site.openSource.description')}</p>
+  <div class="open-source-actions">
+    <a class="button button-primary" href="#install"><span>{t('site.openSource.install')}</span><Icon name="arrow" /></a>
+    <a class="button" href={site.github} target="_blank" rel="noopener noreferrer"><Icon name="star" /><span>{t('site.openSource.star')}</span></a>
+  </div>
+</section>
+<style>
+  .open-source { max-width: 640px; padding-block: 152px 96px; text-align: center; overflow-wrap: anywhere; }
+  p { margin-top: 16px; color: var(--color-muted); }
+  .open-source-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; margin-top: 28px; }
+  @media (width < 800px) {
+    .open-source { padding-block: 60px 64px; }
+  }
+  @media (width < 480px) {
+    .open-source-actions { flex-direction: column; }
+    .button { width: 100%; }
+  }
+</style>

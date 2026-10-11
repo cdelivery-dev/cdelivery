@@ -1,0 +1,62 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import FAQ from '../components/FAQ.astro';
+import Icon from '../components/Icon.astro';
+import { defaultLocale, locales, site } from '../config';
+import { translate } from '../i18n';
+import { docsPath } from '../routes';
+import '../styles/home.css';
+
+const locale = locales.find((value) => value === Astro.currentLocale) ?? defaultLocale;
+const t = translate(locale);
+const included = ['features', 'commercial', 'signup'] as const;
+const faq = ['commercial', 'future'] as const;
+const [supportStart, supportEnd] = t('site.pricing.faq.support.answer', { github: '__github__' }).split('__github__');
+---
+<SiteLayout title={t('site.nav.pricing')} description={t('site.pricing.description')}>
+  <section class="pricing-hero home-columns container" aria-labelledby="pricing-title">
+    <div>
+      <h1 class="pricing-heading" id="pricing-title">{t('site.pricing.title')}</h1>
+      <p class="pricing-intro">{t('site.pricing.intro')}</p>
+      <div class="pricing-actions">
+        <a class="button button-primary" href={docsPath(locale, 'getting-started/installation')}><span>{t('site.pricing.start')}</span><Icon name="arrow" /></a>
+        <a class="button" href={site.github} target="_blank" rel="noopener noreferrer"><Icon name="github" /><span>{t('site.openSource.star')}</span></a>
+      </div>
+    </div>
+    <div class="plan">
+      <p class="plan-label">{t('site.pricing.priceLabel')}</p>
+      <p class="plan-price">$0</p>
+      <ul>
+        {included.map((key) => <li><Icon name="check" size={18} /><span>{t(`site.pricing.included.${key}`)}</span></li>)}
+      </ul>
+    </div>
+  </section>
+  <div class="pricing-faq">
+    <FAQ>
+      {faq.map((key) => <>
+        <h3>{t(`site.pricing.faq.${key}.question`)}</h3>
+        <p>{t(`site.pricing.faq.${key}.answer`)}</p>
+      </>)}
+      <h3>{t('site.pricing.faq.support.question')}</h3>
+      <p>{supportStart}<a href={site.github} target="_blank" rel="noopener noreferrer">GitHub</a>{supportEnd}</p>
+    </FAQ>
+  </div>
+</SiteLayout>
+<style>
+  .pricing-hero { align-items: center; margin-block: clamp(64px, calc(16vw - 64px), 136px) 0; }
+  .pricing-heading { font-size: clamp(2.5rem, calc(1.5rem + 2vw), 3rem); line-height: 1.1; letter-spacing: -.035em; overflow-wrap: anywhere; }
+  .pricing-heading:lang(zh), .pricing-heading:lang(ja) { font-size: clamp(2rem, calc(1rem + 2vw), 2.5rem); line-height: 1.4; letter-spacing: 0; }
+  .pricing-intro { margin-top: 24px; color: var(--color-muted); }
+  .pricing-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+  .plan { padding: clamp(24px, 4vw, 40px); border: 1px solid var(--color-border); border-radius: 8px; background: #fff; box-shadow: var(--shadow-panel); }
+  .plan-label { margin-bottom: 12px; color: var(--color-muted); font-size: .9375rem; }
+  .plan-price { font-size: clamp(3.5rem, calc(2.5rem + 3vw), 4.5rem); font-weight: var(--weight-heading); line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+  .plan ul { display: grid; gap: 16px; margin: 28px 0 0; padding: 28px 0 0; border-top: 1px solid var(--color-border); list-style: none; }
+  .plan li { display: flex; gap: 12px; min-width: 0; font-size: .9375rem; line-height: 1.5; }
+  .plan li :global(svg) { flex: none; margin-top: .1em; color: var(--color-accent); }
+  .pricing-faq { padding-bottom: clamp(88px, calc(16vw - 32px), 152px); }
+  @media (width < 480px) {
+    .pricing-actions { flex-direction: column; }
+    .button { width: 100%; }
+  }
+</style>

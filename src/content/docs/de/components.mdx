@@ -1,0 +1,87 @@
+---
+title: Komponentenbeispiele
+description: Beispiele für Hinweise, Karten, Schritte, Tabs und Dateibäume in der CDelivery-Dokumentation.
+sidebar:
+  hidden: true
+  order: 2
+next: false
+draft: true
+---
+
+import { Callout, Card, CardGrid, FileTree, Steps, TabItem, Tabs } from '@prosefly/astro-components';
+
+Diese Beispiele zeigen, wie strukturierte Inhalte in der Dokumentation dargestellt werden. Der englische KI-Export enthält auch den Text innerhalb dieser Komponenten.
+
+## Hinweise und Warnungen
+
+<Callout type="note" title="Beispielhinweis">
+  Hinweise können Voraussetzungen enthalten, die zum Verständnis eines Beispiels notwendig sind.
+</Callout>
+
+<Callout type="tip" title="Beispieltipp">
+  Halte zusammengehörige Informationen beieinander, damit sie später leicht zu finden sind.
+</Callout>
+
+<Callout type="warning" title="Beispiel für einen Vorsichtshinweis">
+  Prüfe das Ziel und die Werte, bevor du einen Betriebsvorgang ausführst.
+</Callout>
+
+<Callout type="danger" title="Beispielwarnung">
+  Destruktive Vorgänge erfordern eine klare Erklärung ihrer Folgen.
+</Callout>
+
+## Linkkarten
+
+<CardGrid>
+  <Card title="Markdown-Beispiele" href="/docs/de/">
+    Überschriften, Listen, Tabellen und Codeblöcke.
+  </Card>
+  <Card title="KI-Dokumentation" href="/llms-full.txt">
+    Lade die englische Dokumentation als Markdown herunter.
+  </Card>
+</CardGrid>
+
+## Schritte
+
+<Steps>
+
+1. Lies das Beispiel und seine Voraussetzungen.
+2. Prüfe die Werte im Codeblock.
+3. Prüfe das erwartete Ergebnis, bevor du fortfährst.
+
+</Steps>
+
+## Tabs
+
+Beide Tabs beschreiben dieselben Beispielwerte. Der KI-Export erhält beide Formate und ihre Beschriftungen.
+
+<Tabs>
+  <TabItem label="JSON">
+
+```json
+{
+  "name": "sample-app",
+  "replicas": 2
+}
+```
+
+  </TabItem>
+  <TabItem label="YAML">
+
+```yaml
+name: sample-app
+replicas: 2
+```
+
+  </TabItem>
+</Tabs>
+
+## Dateibäume
+
+<FileTree>
+
+- sample/
+  - README.md
+  - settings.json
+
+</FileTree>

@@ -1,0 +1,73 @@
+---
+import { translate } from '../i18n';
+const t = translate(Astro.currentLocale);
+---
+<section class="release-safety home-section container" aria-labelledby="safety-title">
+  <div class="safety-copy">
+    <h2 class="section-title" id="safety-title">{t('site.safety.title')}</h2>
+    <div class="safety-description">
+      <p>{t('site.safety.operationsBody')}</p>
+      <p>{t('site.safety.releasesBody')}</p>
+    </div>
+  </div>
+  <figure class="release-flow" aria-labelledby="safety-title">
+    <div class="node" style="grid-area: developer">
+      {t('site.safety.developer')}
+      <span class="node-detail">{t('site.safety.release')}</span>
+    </div>
+    <div class="connection vertical" style="grid-area: release" aria-hidden="true"></div>
+    <div class="node" style="grid-area: candidate">
+      {t('site.safety.candidate')}
+      <span class="node-detail">{t('site.safety.noTraffic')}</span>
+    </div>
+    <div class="connection" style="grid-area: check" aria-hidden="true"></div>
+    <div class="node side" style="grid-area: health">
+      XHealth
+      <span class="node-detail failure">{t('site.safety.loginFailed')}</span>
+    </div>
+    <div class="connection vertical blocked failure" style="grid-area: blocked">
+      <span>{t('site.safety.blocked')}</span>
+    </div>
+    <div class="node" style="grid-area: live">
+      APP
+      <span class="node-detail">{t('site.safety.currentVersion')}</span>
+    </div>
+    <div class="connection" style="grid-area: traffic" aria-hidden="true"></div>
+    <div class="node side" style="grid-area: users">
+      {t('site.safety.users')}
+      <span class="node-detail success">{t('site.safety.loginSucceeded')}</span>
+    </div>
+  </figure>
+</section>
+<style>
+  .release-safety { display: grid; grid-template-columns: minmax(0, 1fr) max-content; gap: 32px 12px; }
+  h2 { width: fit-content; max-width: 100%; white-space: pre-line; }
+  h2:lang(en), h2:lang(es), h2:lang(fr), h2:lang(pt) { text-align: justify; text-align-last: justify; }
+  .safety-copy { display: flex; flex-direction: column; justify-content: space-between; gap: 24px; min-width: 0; }
+  .safety-description { color: var(--color-muted); font-size: .9375rem; }
+  .safety-description p + p { margin-top: 16px; }
+  .release-flow { --line: #c7cbd2; display: grid; grid-template-columns: max-content 80px max-content; grid-template-rows: auto 1fr auto 1fr auto; margin: 0; line-height: 1.35; overflow-wrap: anywhere; hyphens: auto; grid-template-areas:
+    "developer . ."
+    "release . ."
+    "candidate check health"
+    "blocked . ."
+    "live traffic users";
+  }
+  .node { display: grid; align-content: center; gap: 2px; min-width: 0; min-height: 48px; padding: 6px clamp(8px, 1.4vw, 20px); border: 1px solid #e3e6eb; border-radius: 8px; background: #fff; text-align: center; font-size: .875rem; }
+  .side { align-self: center; }
+  .node-detail { color: var(--color-muted); font-size: .75rem; }
+  .connection { position: relative; }
+  .connection::before { content: ''; position: absolute; top: 50%; right: 0; left: 0; border-top: 1px solid var(--line); }
+  .connection::after { content: ''; position: absolute; top: calc(50% - 3px); left: 1px; width: 6px; height: 6px; border-top: 1px solid var(--line); border-right: 1px solid var(--line); transform: rotate(-135deg); }
+  .vertical { min-height: 64px; }
+  .vertical span { position: absolute; top: 50%; left: calc(50% + 10px); width: max-content; font-size: .6875rem; transform: translateY(-50%); }
+  .vertical::before { top: 0; right: auto; bottom: 0; left: 50%; border-top: 0; border-left: 1px solid var(--line); }
+  .vertical::after { top: auto; bottom: 1px; left: calc(50% - 3px); transform: rotate(135deg); }
+  .blocked::before { border-left-style: dashed; }
+  .failure { color: #b24a52; }
+  .success { color: #46745b; }
+  @media (width < 800px) {
+    .release-safety { grid-template-columns: minmax(0, 1fr); }
+    .release-flow { grid-template-columns: minmax(0, max-content) minmax(32px, 1fr) max-content; }
+  }
+</style>

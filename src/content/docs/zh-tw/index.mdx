@@ -1,0 +1,69 @@
+---
+title: 文件
+description: 開始使用 CDelivery，了解應用程式管理，並查閱平台管理主題。
+sidebar:
+  label: 概覽
+  order: 1
+---
+
+import { Card, CardGrid, Steps } from '@prosefly/astro-components';
+
+了解如何安裝 CDelivery、部署第一個應用程式，並隨著需求成長管理應用程式。
+
+:::note[內容持續補充中]
+詳細說明與範例將逐步補充。
+:::
+
+## 快速入門
+
+<Steps>
+
+1. [認識 CDelivery](/docs/zh-tw/getting-started/introduction/) 及其主要概念。
+2. 完成[安裝與初始設定](/docs/zh-tw/getting-started/installation/)。
+3. [部署第一個應用程式](/docs/zh-tw/getting-started/first-app/)。
+
+</Steps>
+
+## 使用指南
+
+<CardGrid>
+  <Card title="應用程式部署與執行" href="/docs/zh-tw/guides/apps/">
+    映像檔、執行設定、資源、擴縮容、更新與回復。
+  </Card>
+  <Card title="設定檔" href="/docs/zh-tw/guides/apps/xconfig/">
+    檔案上傳、容器內路徑、既有檔案與設定更新。
+  </Card>
+  <Card title="資料持久化" href="/docs/zh-tw/guides/apps/persistence/">
+    磁碟區、掛載、伺服器選擇與資料生命週期。
+  </Card>
+  <Card title="網域與 HTTPS" href="/docs/zh-tw/guides/networking/">
+    DNS、路由、Pingress 與憑證。
+  </Card>
+  <Card title="健康檢查" href="/docs/zh-tw/guides/release-safety/xhealth/">
+    檢查定義、排程與結果。
+  </Card>
+  <Card title="安全發布" href="/docs/zh-tw/guides/release-safety/">
+    發布驗證、結果與失敗處理。
+  </Card>
+  <Card title="日誌與指標" href="/docs/zh-tw/guides/observability/">
+    應用程式日誌、存取記錄、事件與指標。
+  </Card>
+  <Card title="排程工作" href="/docs/zh-tw/guides/automation/xjob/">
+    定時指令、手動執行與執行結果。
+  </Card>
+  <Card title="AI 維運助手" href="/docs/zh-tw/guides/automation/">
+    助手設定、對話、權限與值班巡檢。
+  </Card>
+  <Card title="IM 整合與通知" href="/docs/zh-tw/guides/automation/im/">
+    訊息管道、帳戶綁定與值班通知。
+  </Card>
+  <Card title="API 與 MCP 存取" href="/docs/zh-tw/guides/automation/api-mcp/">
+    API 金鑰、REST 請求、MCP 用戶端與存取權限。
+  </Card>
+</CardGrid>
+
+<CardGrid>
+  <Card title="平台管理" href="/docs/zh-tw/administration/">
+    管理平台：伺服器、帳戶、權限、設定與 CDelivery 平台本身的維護。
+  </Card>
+</CardGrid>

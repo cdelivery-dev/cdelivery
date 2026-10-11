@@ -1,0 +1,16 @@
+---
+title: Dominios y HTTPS
+description: Dominios, enrutamiento, Pingress y certificados TLS para tus aplicaciones.
+sidebar:
+  order: 4
+---
+
+Pingress dirige las solicitudes a tu aplicación y gestiona los certificados HTTPS.
+
+1. Activa Pingress y elige los servidores donde se ejecutará.
+2. Apunta los registros DNS del dominio a las direcciones que permiten acceder a Pingress.
+3. En la configuración de puertos y dominios de la aplicación, añade el dominio y el puerto en el que escucha la aplicación dentro del contenedor. Activa HTTPS si lo necesitas y guarda la configuración de la aplicación.
+4. Si usas HTTPS, habilita los certificados automáticos o sube un certificado en la página de certificados de Pingress.
+5. Visita el dominio para comprobar el acceso.
+
+Asegúrate de que el DNS se resuelva correctamente y de que los puertos HTTP/HTTPS sean accesibles. Los certificados automáticos se emiten y renuevan en segundo plano.

@@ -1,0 +1,21 @@
+---
+title: 配置文件
+description: 通过 XConfig 上传与更新应用配置文件。
+sidebar:
+  order: 2
+---
+
+XConfig 将配置文件分发到多个服务实例，无需接入 SDK 或额外维护配置中心。
+
+1. 创建应用，或打开应用的「配置」。
+2. 在「文件与存储」中添加配置文件。
+3. 上传文件，填写容器内的绝对路径，例如 `/etc/app/config.conf`。
+4. 提交创建或更新，文件会在容器启动时挂载到指定路径。
+5. 后续修改时，上传替换文件并更新应用；也可以下载当前文件。
+
+XConfig 与本地数据卷不能在同一应用中同时使用。
+
+## 继续阅读
+
+- [数据持久化](/docs/zh-cn/guides/apps/persistence/)
+- [安全发布](/docs/zh-cn/guides/release-safety/)

@@ -1,0 +1,87 @@
+---
+title: コンポーネントの例
+description: CDelivery ドキュメントで使用する補足、カード、手順、タブ、ファイルツリーの例です。
+sidebar:
+  order: 2
+  hidden: true
+draft: true
+next: false
+---
+
+import { Callout, Card, CardGrid, FileTree, Steps, TabItem, Tabs } from '@prosefly/astro-components';
+
+これらの例では、構造化された内容がドキュメントにどう表示されるかを紹介します。AI 向け英語エクスポートにも、コンポーネント内のテキストが含まれます。
+
+## 補足と警告
+
+<Callout type="note" title="補足の例">
+  補足には、例を理解するために欠かせない前提条件が含まれることがあります。
+</Callout>
+
+<Callout type="tip" title="ヒントの例">
+  関連する情報をまとめておくと、後から見つけやすくなります。
+</Callout>
+
+<Callout type="warning" title="注意の例">
+  運用手順を実行する前に、対象と設定値を確認してください。
+</Callout>
+
+<Callout type="danger" title="警告の例">
+  破壊的な操作では、その結果を明確に説明する必要があります。
+</Callout>
+
+## リンクカード
+
+<CardGrid>
+  <Card title="Markdown の例" href="/docs/ja/">
+    見出し、リスト、表、コードブロック。
+  </Card>
+  <Card title="AI 向けドキュメント" href="/llms-full.txt">
+    英語ドキュメントを Markdown 形式でダウンロードできます。
+  </Card>
+</CardGrid>
+
+## 手順
+
+<Steps>
+
+1. 例とその前提条件を読みます。
+2. コードブロックに示された値を確認します。
+3. 期待される結果を確認してから先に進みます。
+
+</Steps>
+
+## タブ
+
+両方のタブに同じサンプル値を示しています。AI エクスポートには両方の形式とラベルが含まれます。
+
+<Tabs>
+  <TabItem label="JSON">
+
+```json
+{
+  "name": "sample-app",
+  "replicas": 2
+}
+```
+
+  </TabItem>
+  <TabItem label="YAML">
+
+```yaml
+name: sample-app
+replicas: 2
+```
+
+  </TabItem>
+</Tabs>
+
+## ファイルツリー
+
+<FileTree>
+
+- sample/
+  - README.md
+  - settings.json
+
+</FileTree>

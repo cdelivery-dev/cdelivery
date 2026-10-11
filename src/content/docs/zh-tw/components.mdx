@@ -1,0 +1,87 @@
+---
+title: 元件範例
+description: CDelivery 文件中的提示框、卡片、步驟、分頁與檔案樹範例。
+sidebar:
+  order: 2
+  hidden: true
+draft: true
+next: false
+---
+
+import { Callout, Card, CardGrid, FileTree, Steps, TabItem, Tabs } from '@prosefly/astro-components';
+
+這些範例展示結構化內容在文件中的呈現方式。英文 AI 匯出也會包含元件內的文字。
+
+## 提示與警告
+
+<Callout type="note" title="說明範例">
+  說明中可能包含理解範例所必需的先決條件。
+</Callout>
+
+<Callout type="tip" title="提示範例">
+  將相關資訊放在一起，方便再次查閱。
+</Callout>
+
+<Callout type="warning" title="注意範例">
+  執行維運步驟前，先檢查目標與參數值。
+</Callout>
+
+<Callout type="danger" title="警告範例">
+  對於破壞性操作，需要明確說明其後果。
+</Callout>
+
+## 連結卡片
+
+<CardGrid>
+  <Card title="Markdown 範例" href="/docs/zh-tw/">
+    標題、清單、表格與程式碼區塊。
+  </Card>
+  <Card title="AI 文件" href="/llms-full.txt">
+    下載 Markdown 格式的英文文件。
+  </Card>
+</CardGrid>
+
+## 步驟
+
+<Steps>
+
+1. 閱讀範例及其先決條件。
+2. 檢查程式碼區塊中展示的值。
+3. 確認預期結果後再繼續。
+
+</Steps>
+
+## 分頁
+
+兩個分頁展示相同的範例值。AI 匯出會保留兩種格式及其標籤。
+
+<Tabs>
+  <TabItem label="JSON">
+
+```json
+{
+  "name": "sample-app",
+  "replicas": 2
+}
+```
+
+  </TabItem>
+  <TabItem label="YAML">
+
+```yaml
+name: sample-app
+replicas: 2
+```
+
+  </TabItem>
+</Tabs>
+
+## 檔案樹
+
+<FileTree>
+
+- sample/
+  - README.md
+  - settings.json
+
+</FileTree>

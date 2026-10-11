@@ -1,0 +1,87 @@
+---
+title: Exemplos de componentes
+description: Exemplos de notas, cartões, etapas, abas e árvores de arquivos na documentação do CDelivery.
+sidebar:
+  order: 2
+  hidden: true
+draft: true
+next: false
+---
+
+import { Callout, Card, CardGrid, FileTree, Steps, TabItem, Tabs } from '@prosefly/astro-components';
+
+Estes exemplos mostram como o conteúdo estruturado aparece na documentação. A exportação em inglês para IA inclui o texto desses componentes.
+
+## Notas e avisos
+
+<Callout type="note" title="Exemplo de nota">
+  Notas podem conter pré-requisitos essenciais para entender um exemplo.
+</Callout>
+
+<Callout type="tip" title="Exemplo de dica">
+  Mantenha as informações relacionadas juntas para encontrá-las facilmente depois.
+</Callout>
+
+<Callout type="warning" title="Exemplo de atenção">
+  Confira o alvo e os valores antes de seguir um procedimento operacional.
+</Callout>
+
+<Callout type="danger" title="Exemplo de aviso">
+  Operações destrutivas precisam de uma explicação clara de suas consequências.
+</Callout>
+
+## Cartões de links
+
+<CardGrid>
+  <Card title="Exemplos de Markdown" href="/docs/pt-br/">
+    Títulos, listas, tabelas e blocos de código.
+  </Card>
+  <Card title="Documentação para IA" href="/llms-full.txt">
+    Baixe a documentação em inglês no formato Markdown.
+  </Card>
+</CardGrid>
+
+## Etapas
+
+<Steps>
+
+1. Leia o exemplo e seus pré-requisitos.
+2. Revise os valores apresentados no bloco de código.
+3. Confira o resultado esperado antes de continuar.
+
+</Steps>
+
+## Abas
+
+As duas abas descrevem os mesmos valores ilustrativos. A exportação para IA preserva os dois formatos e seus rótulos.
+
+<Tabs>
+  <TabItem label="JSON">
+
+```json
+{
+  "name": "sample-app",
+  "replicas": 2
+}
+```
+
+  </TabItem>
+  <TabItem label="YAML">
+
+```yaml
+name: sample-app
+replicas: 2
+```
+
+  </TabItem>
+</Tabs>
+
+## Árvores de arquivos
+
+<FileTree>
+
+- sample/
+  - README.md
+  - settings.json
+
+</FileTree>

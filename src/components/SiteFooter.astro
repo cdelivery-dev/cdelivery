@@ -1,0 +1,59 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { defaultLocale, locales, site } from '../config';
+import { translate } from '../i18n';
+import { docsPath } from '../routes';
+import { footerNavigation } from '../navigation';
+import Brand from './Brand.astro';
+import Icon from './Icon.astro';
+
+const locale = locales.find((value) => value === Astro.currentLocale) ?? defaultLocale;
+const t = translate(locale);
+const year = new Date().getUTCFullYear();
+---
+<footer class="site-footer">
+  <div class="footer-inner container">
+    <div class="footer-main">
+      <div class="footer-brand">
+        <Brand wordmark />
+        <p>{t('site.footer.tagline')}</p>
+      </div>
+      <nav class="footer-navigation" aria-label={t('site.footer.navigation')}>
+        {footerNavigation.map((group) => (
+          <div class="footer-group">
+            <h2>{t(group.key)}</h2>
+            <ul class="footer-links">
+              {group.items.map((item) => <li><a class="footer-link" href={item.path === '/docs/' ? docsPath(locale) : getRelativeLocaleUrl(locale, item.path)}>{t(item.key)}</a></li>)}
+            </ul>
+          </div>
+        ))}
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <a class="footer-social" href={site.github} target="_blank" rel="noopener noreferrer" aria-label={t('site.github.repository')}><Icon name="github" size={22} /></a>
+      <p>© {year} {site.name}</p>
+    </div>
+  </div>
+</footer>
+<style>
+  .site-footer { background: #fff; font-size: .875rem; font-weight: var(--weight-nav); line-height: 1.5; }
+  .footer-inner { padding-block: 48px max(24px, env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--color-border); }
+  .footer-main { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 40px; }
+  .footer-brand p { max-width: 280px; margin-top: 12px; color: var(--color-muted); font-size: .875rem; line-height: 1.7; }
+  .footer-navigation { display: grid; grid-template-columns: repeat(2, max-content); gap: 96px; }
+  .footer-group h2 { font-size: .875rem; font-weight: var(--weight-heading); line-height: 1.5; }
+  .footer-links { margin: 16px 0 0; padding: 0; list-style: none; }
+  .footer-link { display: inline-flex; align-items: center; min-width: 44px; max-width: 100%; min-height: 44px; padding-block: 8px; color: var(--color-muted); overflow-wrap: anywhere; hyphens: auto; }
+  .footer-bottom { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 32px; color: var(--color-muted); font-size: .75rem; }
+  .footer-social { display: inline-flex; align-items: center; min-width: 44px; min-height: 44px; color: var(--color-text); }
+  .footer-link, .footer-social { transition: color 150ms ease-out; }
+  .footer-link:hover, .footer-social:hover { color: var(--color-accent); }
+  @media (width < 800px) {
+    .footer-main { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+    .footer-navigation { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+  }
+  @media (width < 600px) {
+    .footer-navigation { gap: 32px 24px; }
+    .footer-bottom { flex-direction: column; align-items: flex-start; }
+  }
+</style>

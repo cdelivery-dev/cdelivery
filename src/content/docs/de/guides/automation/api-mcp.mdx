@@ -1,0 +1,15 @@
+---
+title: API- und MCP-Zugriff
+description: API-Schlüssel, REST-Anfragen, MCP-Verbindungen und Zugriffsberechtigungen.
+sidebar:
+  order: 11
+---
+
+Verbinde externe Werkzeuge über die REST API oder MCP mit CDelivery.
+
+1. Öffne **Konto → MCP / API-Schlüssel** und erstelle einen Schlüssel mit Namen, Rolle und optionalem Ablaufdatum.
+2. Kopiere den nur einmal angezeigten Schlüssel und sende ihn als `Authorization: Bearer YOUR_API_KEY`.
+3. Probiere für REST `GET /api/me` aus und öffne `/scalar` im Browser, um die API-Dokumentation zu lesen.
+4. Verwende für MCP die Adresse `/mcp` deiner Instanz mit derselben Bearer-Authentifizierung.
+
+Alle Pfade beziehen sich auf deine CDelivery-Instanz. Ein Schlüssel gewährt höchstens die Rechte der aktuellen Rolle seines Besitzers.

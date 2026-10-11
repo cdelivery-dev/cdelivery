@@ -1,0 +1,23 @@
+---
+title: Implantações seguras
+description: Validação de implantações com Guardian, resultados, tratamento de falhas e compatibilidade de aplicações.
+sidebar:
+  order: 6
+---
+
+O Guardian usa o XHealth para validar a versão candidata em um ambiente isolado antes da publicação.
+
+## Ativar a validação
+
+1. Configure o [XHealth](/docs/pt-br/guides/release-safety/xhealth/) para a aplicação e confirme que as verificações passam.
+2. Na aba **XHealth** da aplicação, selecione **Ativar proteção de atualização** e salve.
+3. Atualize a imagem, as configurações de inicialização ou os arquivos do XConfig. Acompanhe a implantação, a validação e a publicação na visão geral da aplicação.
+4. Se a validação falhar, examine os logs e a configuração da verificação. Depois, tente novamente ou cancele a atualização.
+
+Aplicações que usam volumes de dados locais não podem ativar o Guardian.
+
+## Continue explorando
+
+- [Verificações de saúde](/docs/pt-br/guides/release-safety/xhealth/)
+- [Persistência de dados](/docs/pt-br/guides/apps/persistence/)
+- [Logs e métricas](/docs/pt-br/guides/observability/)

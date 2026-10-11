@@ -1,0 +1,87 @@
+---
+title: Component examples
+description: Examples of notes, cards, steps, tabs, and file trees in the CDelivery documentation.
+sidebar:
+  order: 2
+  hidden: true
+draft: true
+next: false
+---
+
+import { Callout, Card, CardGrid, FileTree, Steps, TabItem, Tabs } from '@prosefly/astro-components';
+
+These examples show how structured content appears in the documentation. The English AI export includes the text inside these components.
+
+## Notes and warnings
+
+<Callout type="note" title="Example note">
+  Notes can contain prerequisites that are essential to understanding an example.
+</Callout>
+
+<Callout type="tip" title="Example tip">
+  Keep related information together so it is easy to find again.
+</Callout>
+
+<Callout type="warning" title="Example caution">
+  Check the target and the values before following an operational procedure.
+</Callout>
+
+<Callout type="danger" title="Example warning">
+  Destructive operations need a clear explanation of their consequences.
+</Callout>
+
+## Link cards
+
+<CardGrid>
+  <Card title="Markdown examples" href="/docs/">
+    Headings, lists, tables, and code blocks.
+  </Card>
+  <Card title="AI documentation" href="/llms-full.txt">
+    Download the English documentation as Markdown.
+  </Card>
+</CardGrid>
+
+## Steps
+
+<Steps>
+
+1. Read the example and its prerequisites.
+2. Review the values shown in the code block.
+3. Check the expected result before continuing.
+
+</Steps>
+
+## Tabs
+
+Both tabs describe the same illustrative values. The AI export preserves both formats and their labels.
+
+<Tabs>
+  <TabItem label="JSON">
+
+```json
+{
+  "name": "sample-app",
+  "replicas": 2
+}
+```
+
+  </TabItem>
+  <TabItem label="YAML">
+
+```yaml
+name: sample-app
+replicas: 2
+```
+
+  </TabItem>
+</Tabs>
+
+## File trees
+
+<FileTree>
+
+- sample/
+  - README.md
+  - settings.json
+
+</FileTree>

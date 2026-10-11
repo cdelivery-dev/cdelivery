@@ -1,0 +1,83 @@
+---
+import { defaultLocale } from '../config';
+import { translate } from '../i18n';
+import LogCostCalculator from './LogCostCalculator.astro';
+
+const locale = Astro.currentLocale ?? defaultLocale;
+const t = translate(locale);
+const throughput = 1305.96;
+const memory = new Intl.NumberFormat(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(5.96);
+const ticks = [0, 500, 1000, 1500];
+const number = new Intl.NumberFormat(locale, { maximumFractionDigits: 2 });
+---
+<section class="home-section container" aria-labelledby="observability-title">
+  <header class="section-heading">
+    <h2 class="section-title" id="observability-title">{t('site.observability.title')}</h2>
+    <p>{t('site.observability.intro')}</p>
+    <p>{t('site.observability.closing')}</p>
+  </header>
+  <div class="observability-row cost-row">
+    <div class="row-copy">
+      <h3>{t('site.observability.costTitle')}</h3>
+      <p>{t('site.observability.metricsCost')}<br />{t('site.observability.costBody')}</p>
+    </div>
+    <LogCostCalculator />
+  </div>
+  <div class="observability-row performance-row">
+    <div class="row-copy">
+      <h3>{t('site.observability.performanceTitle')}</h3>
+      <p>{t('site.observability.performanceBody', { throughput: number.format(throughput), memory })}</p>
+    </div>
+    <figure class="performance-chart" aria-label={t('site.observability.chartDescription', { value: number.format(throughput) })}>
+      <dl class="performance-metrics">
+        <div>
+          <dt>{t('site.observability.throughput')}</dt>
+          <dd class="metric-value throughput-value">{number.format(throughput)}<span class="metric-unit">MB/s</span></dd>
+        </div>
+        <div>
+          <dt>{t('site.observability.performanceMemory')}</dt>
+          <dd class="metric-value">{memory}<span class="metric-unit">GiB</span></dd>
+        </div>
+      </dl>
+      <div class="throughput-scale" aria-hidden="true">
+        {ticks.map(value => <div class="scale-tick" style={`left:${value / 1500 * 100}%`}><span>{number.format(value)}{value === 1500 && ' MB/s'}</span></div>)}
+        <div class="throughput-bar" style={`width:${throughput / 1500 * 100}%`}></div>
+      </div>
+      <figcaption>{t('site.observability.performanceEnvironment')}</figcaption>
+    </figure>
+  </div>
+</section>
+<style>
+  .section-heading { max-width: 780px; margin-bottom: 48px; }
+  .section-heading p { margin-top: 16px; color: var(--color-muted); font-size: .9375rem; }
+  .observability-row { display: grid; grid-template-columns: minmax(0, .35fr) minmax(0, .65fr); gap: clamp(32px, 5vw, 64px); }
+  .row-copy { min-width: 0; }
+  .row-copy h3 { margin-bottom: 20px; font-size: 1.25rem; line-height: 1.35; letter-spacing: -.015em; white-space: pre-line; }
+  .row-copy h3:lang(zh), .row-copy h3:lang(ja) { letter-spacing: 0; }
+  .row-copy p { color: var(--color-muted); font-size: .9375rem; }
+  .performance-row { margin-top: 72px; }
+  .performance-row .row-copy p { white-space: pre-line; }
+  .performance-chart { min-width: 0; margin: 0; container-type: inline-size; }
+  .performance-metrics { display: grid; gap: 20px 24px; margin: 0; }
+  .performance-metrics dt { color: var(--color-muted); font-size: .875rem; }
+  .metric-value { margin: 8px 0 0; font-size: 1.625rem; line-height: 1.2; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .throughput-value { color: var(--color-accent); }
+  .metric-unit { margin-left: 8px; color: var(--color-muted); font-size: .875rem; }
+  .throughput-scale { position: relative; height: 80px; margin: 24px 1px 0 0; }
+  .scale-tick { position: absolute; top: 0; height: 48px; border-left: 1px solid var(--color-border); }
+  .scale-tick span { position: absolute; top: 56px; color: var(--color-muted); font-size: .75rem; line-height: 1; white-space: nowrap; transform: translateX(-50%); }
+  .scale-tick:first-child span { transform: none; }
+  .scale-tick:nth-child(4) span { transform: translateX(-100%); }
+  .throughput-bar { position: absolute; top: 20px; height: 8px; border-radius: 0 3px 3px 0; background: var(--color-accent); }
+  figcaption { margin-top: 12px; font-size: .75rem; color: var(--color-muted); }
+  @media (width < 1000px) {
+    .cost-row { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  }
+  @media (width < 800px) {
+    .observability-row { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+    .section-heading { margin-bottom: 36px; }
+    .performance-row { margin-top: 56px; }
+    .row-copy h3 { margin-bottom: 12px; }
+  }
+  @container (min-width: 400px) { .performance-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+</style>

@@ -1,0 +1,99 @@
+---
+import { defaultLocale, site } from '../config';
+import { translate } from '../i18n';
+import Icon from './Icon.astro';
+
+const locale = Astro.currentLocale ?? defaultLocale;
+const t = translate(locale);
+---
+<section class="hero container" aria-labelledby="hero-title">
+  <div class="hero-copy">
+    <h1 class="hero-heading" id="hero-title"><span>{t('site.hero.line1')}</span>{locale.startsWith('zh') || locale === 'ja' ? '' : ' '}<span>{t('site.hero.line2')}</span></h1>
+    <p class="hero-description">{t('site.hero.description')}</p>
+    <fieldset class="install" id="install" tabindex="-1" data-install>
+      <legend class="visually-hidden">{t('site.hero.installMethod')}</legend>
+      <input class="visually-hidden" type="radio" name="install-method" id="install-manual" value="manual" checked />
+      <input class="visually-hidden" type="radio" name="install-method" id="install-ai" value="ai" />
+      <div class="install-methods">
+        <label for="install-manual">{t('site.hero.installManual')}</label>
+        <label for="install-ai">{t('site.hero.installAi')}</label>
+      </div>
+      <div class="install-panel manual-panel" data-copy-panel>
+        <div class="install-row">
+          <code class="install-command" data-copy-text tabindex="0" aria-label={t('site.hero.command')}>{site.installCommand}</code>
+          <button class="copy-button" data-copy data-success={t('site.hero.copied')} data-failure={t('site.hero.manual')} aria-label={t('site.hero.copy')} title={t('site.hero.copy')} type="button" hidden>
+            <span class="copy-icon"><Icon name="copy" size={18} /></span>
+            <span class="copied-icon"><Icon name="check" size={18} /></span>
+          </button>
+        </div>
+        <p class="install-note">{t('site.hero.installNote')}</p>
+        <p class="copy-status" data-copy-status role="status" aria-live="polite" aria-atomic="true"></p>
+      </div>
+      <div class="install-panel ai-panel" data-copy-panel>
+        <div class="install-row prompt-row">
+          <p class="install-prompt" data-copy-text tabindex="0" aria-label={t('site.hero.installAi')}>{t('site.hero.aiPrompt', { guide: site.installGuide })}</p>
+          <button class="copy-button" data-copy data-success={t('site.hero.copied')} data-failure={t('site.hero.promptManual')} aria-label={t('site.hero.copyPrompt')} title={t('site.hero.copyPrompt')} type="button" hidden>
+            <span class="copy-icon"><Icon name="copy" size={18} /></span>
+            <span class="copied-icon"><Icon name="check" size={18} /></span>
+          </button>
+        </div>
+        <p class="install-note">{t('site.hero.aiNote')}</p>
+        <p class="copy-status" data-copy-status role="status" aria-live="polite" aria-atomic="true"></p>
+      </div>
+    </fieldset>
+  </div>
+  <div class="hero-art">
+    <canvas data-animation="hero" aria-hidden="true"></canvas>
+  </div>
+</section>
+<script>
+  import './copy';
+</script>
+<style>
+  .hero { container-type: inline-size; display: grid; grid-template-columns: minmax(0, 28.5rem) minmax(0, 1fr); margin-block: clamp(80px, calc(20vw - 80px), 160px) clamp(96px, calc(21vw - 72px), 180px); }
+  .hero-copy { min-width: 0; }
+  .hero-heading { font-size: clamp(2.5rem, calc(1.5rem + 2vw), 3rem); line-height: 1.1; letter-spacing: -.035em; overflow-wrap: anywhere; }
+  .hero-heading > span { display: block; }
+  .hero-heading:lang(zh), .hero-heading:lang(ja) { font-size: clamp(2rem, calc(1rem + 2vw), 2.5rem); line-height: 1.4; letter-spacing: 0; }
+  .hero-description { margin-top: 24px; color: var(--color-muted); }
+  .install { min-width: 0; margin: 32px 0 0; padding: 0; border: 0; }
+  .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+  .install-methods { display: flex; width: fit-content; max-width: 100%; gap: 24px; margin-bottom: 12px; }
+  .install-methods label { display: flex; align-items: center; justify-content: center; min-width: 0; min-height: 40px; padding: 8px 0; border-bottom: 2px solid transparent; color: var(--color-muted); font-size: .875rem; font-weight: var(--weight-control); line-height: 1.4; text-align: center; cursor: pointer; transition: color 150ms ease-out, border-color 150ms ease-out; }
+  .install-methods label:hover { color: var(--color-text); }
+  #install-manual:checked ~ .install-methods label[for="install-manual"], #install-ai:checked ~ .install-methods label[for="install-ai"] { color: var(--color-text); border-bottom-color: currentColor; }
+  #install-manual:focus-visible ~ .install-methods label[for="install-manual"], #install-ai:focus-visible ~ .install-methods label[for="install-ai"] { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+  .install-panel { display: none; }
+  #install-manual:checked ~ .manual-panel, #install-ai:checked ~ .ai-panel { display: block; }
+  .install-row { position: relative; z-index: 1; display: flex; align-items: center; gap: 12px; width: max-content; max-width: 100cqi; min-width: 0; min-height: 56px; padding: 4px 8px 4px 16px; border: 1px solid var(--color-border); border-radius: 8px; background: var(--color-surface); }
+  .prompt-row { width: 100%; max-width: 100%; }
+  .install-command, .install-prompt { flex: 1; min-width: 0; overflow-x: auto; line-height: 1.6; white-space: pre; scrollbar-width: thin; }
+  .install-prompt { padding-block: 8px; font-size: .9375rem; }
+  .install-command { padding-block: 6px; font-family: var(--font-mono); font-size: .8125rem; }
+  @supports (animation-timeline: scroll()) {
+    .install-command, .install-prompt { mask-image: linear-gradient(to left, transparent, #000 var(--install-fade)); animation-name: install-fade; animation-timing-function: linear; animation-fill-mode: both; animation-timeline: scroll(self inline); }
+  }
+  @property --install-fade { syntax: '<length>'; inherits: false; initial-value: 0px; }
+  @keyframes install-fade { 0%, 90% { --install-fade: 32px; } 100% { --install-fade: 0px; } }
+  .copy-button { flex: none; width: 44px; height: 44px; align-items: center; justify-content: center; padding: 0; border: 0; border-radius: 5px; background: transparent; color: var(--color-muted); }
+  .copy-button:not([hidden]) { display: inline-flex; }
+  .copy-button:hover, .copy-button[data-copied] { color: var(--color-accent); }
+  .copy-button:disabled { cursor: wait; }
+  .copied-icon, .copy-button[data-copied] .copy-icon { display: none; }
+  .copy-button[data-copied] .copied-icon { display: block; }
+  .install-note, .copy-status { margin-top: 12px; color: var(--color-muted); font-size: .75rem; line-height: 1.5; }
+  .copy-status:not([data-failed]) { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+  .hero-art { position: relative; min-width: 0; overflow: hidden; pointer-events: none; }
+  .hero-art canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  @media (width >= 800px) {
+    .copy-button[hidden] { display: inline-flex; visibility: hidden; }
+  }
+  @media (width < 800px) {
+    .hero { grid-template-columns: minmax(0, 1fr); margin-block: 56px 100px; }
+    .hero-copy { width: 100%; max-width: 640px; justify-self: center; }
+    .hero-art { display: none; }
+  }
+  @media (width < 360px) {
+    .hero-heading:not(:lang(zh)):not(:lang(ja)) { font-size: 2.25rem; }
+  }
+</style>
