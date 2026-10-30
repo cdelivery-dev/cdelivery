@@ -1,0 +1,26 @@
+---
+title: "Anwendung löschen"
+description: "Operator oder Admin entfernt Anwendung samt zugehörigen Prüfungen, Aufgaben und Release-Validierung."
+sidebar:
+  order: 19
+---
+
+Operator oder Admin entfernt Anwendung samt zugehörigen Prüfungen, Aufgaben und Release-Validierung.
+
+## Vorgehen
+
+Image, Einstellungen und Speicher notieren, sofern Wiederaufnahme nötig sein könnte. Clients umleiten, XHealth/XJob/Guardian prüfen, Löschen bestätigen, Aufgabenende kontrollieren.
+
+Containerbereinigung ist asynchron; Netzwerkverweise können kurz bestehen bleiben.
+
+## Erhalten
+
+Geschäftsvolumes, Gruppen und externe DNS-Einträge bleiben. Datenbereinigung erfolgt getrennt über [Volumes](/docs/de/administration/nodes/volumes/) nach Prüfung von Referenzen und Sicherung.
+
+Fehlende Anwendung bedeutet kein leeres Volume.
+
+## Wiederaufnahme
+
+Gleicher Name erzeugt neue Identität, keine Wiederherstellung der Definition. Einstellungen rekonstruieren und Originalvolume vor zustandsbehaftetem Start prüfen.
+
+Bei belegter Gruppe auf Aufgabenende warten und Referenzen prüfen. Für fehlgeschlagene Releases zunächst [Rollback](/docs/de/guides/release-safety/rollback/) erwägen.

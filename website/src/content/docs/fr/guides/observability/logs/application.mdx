@@ -1,0 +1,26 @@
+---
+title: "Journaux d’application"
+description: "Sélectionnez le conteneur ayant produit la sortie, puis la période et la tâche."
+sidebar:
+  order: 32
+---
+
+Sélectionnez le conteneur ayant produit la sortie, puis la période et la tâche.
+
+## Sources
+
+App : processus métier. XHealth : contrôle. XJob et nom : tâche. GuardianApp : candidat. GuardianCheck : validation.
+
+Une erreur de contrôle peut ne pas apparaître dans App.
+
+## Pilotes
+
+FollowHost suit le serveur. JSON-file propose rotation : cinq fichiers de 10 MiB par défaut, 1–100 fichiers et jusqu’à 1 GiB chacun. Insight nécessite son composant.
+
+Changer de pilote affecte les nouvelles tâches sans migrer les anciens journaux. Ceux-ci dépendent de leur pilote et conservation d’origine.
+
+## Diagnostic
+
+Si vide, vérifiez source, période, durée de vie et stdout/stderr. Un fichier écrit dans le conteneur n’apparaît pas automatiquement. Si la requête échoue, contrôlez collecte et stockage.
+
+Le texte arbitraire peut contenir des secrets non masqués. Corrélez les [événements](/docs/fr/guides/observability/events/) et examinez la [conservation](/docs/fr/guides/observability/settings/).

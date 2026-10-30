@@ -1,0 +1,31 @@
+---
+title: "Dominio y acceso a la plataforma"
+description: "Admin puede configurar un dominio para la consola en Ajustes → CDelivery."
+sidebar:
+  order: 61
+---
+
+Admin puede configurar un dominio para la consola en Ajustes → CDelivery.
+
+## Configurar
+
+1. Habilita Pingress en servidores accesibles.
+2. Dirige A/AAAA a entradas válidas.
+3. Comprueba 80/443, cortafuegos y proxy.
+4. Introduce hostname sin protocolo, puerto ni ruta.
+5. Selecciona HTTPS si corresponde y guarda.
+6. Verifica acceso, login y API en otra pestaña.
+
+HTTPS necesita [certificado automático](/docs/es/guides/networking/automatic-certificates/) o [propio](/docs/es/guides/networking/custom-certificates/). La opción no prepara DNS por sí sola.
+
+## Cambiar
+
+Conserva la conexión anterior hasta verificar nueva entrada. Cookies dependen del host: puede requerirse nuevo login. Actualiza clientes MCP y scripts.
+
+Vaciar dominio elimina ruta, no DNS externo. Configurarlo no cierra puerto 9000; restríngelo en host o red si procede.
+
+## Diagnóstico
+
+Revisa DNS, nombre y cadena TLS, y servicio principal. Si 9000 sigue accesible, corrige desde ahí.
+
+Los dominios de negocio se gestionan en [rutas de aplicación](/docs/es/guides/networking/routing/); evita conflictos con el hostname administrativo.

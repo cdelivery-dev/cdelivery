@@ -1,0 +1,63 @@
+---
+title: "Perguntas frequentes sobre rede"
+description: "Investigue IPv6, endereços de clientes, DNS, rotas e certificados."
+sidebar:
+  order: 25
+---
+
+Estas verificações de IPv6 se aplicam a servidores Linux que executam o Pingress.
+
+## Por que o Pingress registra o endereço do gateway?
+
+Um `docker_gwbridge` apenas IPv4 pode traduzir conexões IPv6 e ocultar o endereço original do cliente, mesmo quando o host tem suporte a IPv6. Uma CDN ou outro proxy também muda quem se conecta diretamente: o Pingress registra o endereço desse equipamento e o usa em `X-Real-IP` e `X-Forwarded-For`.
+
+## O instalador ativa o IPv6 automaticamente?
+
+Em uma nova instalação ou ao adicionar um servidor, o script detecta o IPv6 do host e tenta preparar uma bridge de pilha dupla. Se ele perguntar como continuar, escolha **1** para prosseguir apenas com IPv4 ou **2** para sair e resolver o problema; sair é a opção padrão, inclusive quando não há um terminal.
+
+`--no-ipv6` pula a preparação da bridge. Ele não desativa o IPv6 em uma bridge de pilha dupla existente. No macOS, a rede é gerenciada pelo ambiente de execução do Docker.
+
+## Como verifico se está funcionando?
+
+No servidor que executa o Pingress:
+
+```sh
+ip -6 address show scope global
+ip -6 route show default
+docker network inspect docker_gwbridge --format '{{.EnableIPv6}}'
+```
+
+O último comando deve mostrar `true`; isso confirma a configuração, não a conectividade. Para acesso público, o registro AAAA do domínio deve apontar para um endereço que permita acessar o Pingress por IPv6.
+
+Em outra máquina com IPv6, substitua o domínio de exemplo e teste os dois protocolos:
+
+```sh
+curl -4 --noproxy '*' -I https://app.example.com
+curl -6 --noproxy '*' -I https://app.example.com
+```
+
+Compare o `client_ip` do Pingress, ou os cabeçalhos de encaminhamento recebidos pela aplicação, com o endereço do cliente que iniciou a conexão. A outra ponta da conexão da aplicação é o Pingress, não o cliente original.
+
+## Como ativo o IPv6 depois da instalação?
+
+Primeiro configure um IPv6 funcional no host. Se a bridge já mostrar `true`, verifique a conectividade e o DNS. Para um servidor que ainda não foi adicionado, execute o [comando de instalação](/docs/pt-br/getting-started/installation/) ou o comando para entrar disponível na lista de servidores, sem `--no-ipv6`.
+
+**Executar novamente o instalador em uma instalação existente não atualiza a bridge.** Um servidor ativo com uma bridge apenas IPv4 precisa de manutenção:
+
+1. Faça backup dos dados locais e registre o ID do nó, sua função, todos os seus rótulos, a configuração da bridge e as aplicações, o Pingress ou o Insight vinculados a esse nó.
+2. Pare ou mova suas cargas de trabalho. Antes da saída de um nó gerenciador, mantenha uma maioria de gerenciadores saudáveis e o painel do CDelivery funcionando em outro nó; depois, rebaixe o nó que passará pela manutenção. Nunca remova diretamente o único gerenciador: primeiro prepare uma transferência segura ou um plano de backup e recuperação. Siga as [instruções do Docker para manutenção de nós](https://docs.docker.com/engine/swarm/manage-nodes/).
+3. Após a saída do nó e quando nenhum contêiner fizer referência à bridge, obtenha no painel em funcionamento um **novo comando para entrar com a função original**. Execute-o sem `--no-ipv6`; o script prepara a bridge padrão antes de entrar. Se a bridge for personalizada, preserve sua sub-rede e suas opções ao [preparar uma substituta de pilha dupla](https://docs.docker.com/engine/swarm/networking/#customize-the-docker_gwbridge). Os convites expiram após 30 minutos e também deixam de ser válidos quando o CDelivery é reiniciado ou movido.
+4. Ao entrar novamente, o nó recebe um novo ID. Restaure todos os rótulos, incluindo as descrições dos volumes, e corrija os vínculos dos serviços com o ID antigo. Aplicações com volumes locais e o Insight com armazenamento local não podem simplesmente mudar de nó pela interface: um administrador precisa ajustar suas restrições de implantação. Os dados permanecem no host original.
+5. Restaure os serviços, atualize o DNS se necessário e repita as verificações de IPv4 e IPv6 acima.
+
+Outra opção é adicionar um novo servidor com IPv6, executar o Pingress nele e apontar o DNS para esse servidor.
+
+## O que fazer se as rotas IPv6 ou as regras de firewall falharem?
+
+Ativar o encaminhamento pode fazer uma interface com `accept_ra=1` deixar de aceitar anúncios de roteador (RA) e perder sua rota padrão. Configure a persistência de RA pelo gerenciador de rede da interface: o ifupdown usa `accept_ra 2`; o ifupdown-ng usa `ipv6-accept-ra 2`. Não sobrescreva indiscriminadamente `accept_ra=0` em interfaces cujo gerenciador processa RA por conta própria. Verifique as rotas novamente após reiniciar a interface ou o host.
+
+Mantenha ativado o gerenciamento de firewall IPv6 do Docker (`ip6tables` não pode ser `false`) e libere as portas HTTP/HTTPS do Pingress nos firewalls do host e da nuvem. A bridge mostrar `true` não comprova essas regras nem o acesso externo.
+
+## Outros problemas de acesso
+
+Para falhas de DNS ou roteamento, siga [Domínios e rotas](/docs/pt-br/guides/networking/routing/). Para certificados ausentes, expirados ou com falha de emissão, consulte [Certificados automáticos e renovação](/docs/pt-br/guides/networking/automatic-certificates/). Use os [logs de acesso](/docs/pt-br/guides/observability/logs/access/) para verificar se a requisição chegou à entrada, correspondeu a uma aplicação e recebeu uma resposta do serviço de destino.

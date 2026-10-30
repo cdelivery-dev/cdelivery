@@ -1,0 +1,47 @@
+---
+import { defaultLocale } from '../config';
+import { translate } from '../i18n';
+import BenchmarkEnvironment from './BenchmarkEnvironment.astro';
+
+const t = translate(Astro.currentLocale);
+const intro = t('site.gateway.intro', { pingora: '__pingora__' });
+const [introStart, introEnd] = intro.split('__pingora__');
+const number = new Intl.NumberFormat(Astro.currentLocale ?? defaultLocale, { maximumFractionDigits: 0 });
+const metrics = [
+  { label: t('site.gateway.requestsLabel'), value: 45_982, unit: 'RPS' },
+  { label: t('site.benchmark.memoryLabel'), value: 963, unit: 'MiB' },
+];
+---
+<section class="home-columns home-section container" aria-labelledby="gateway-title">
+  <header class="section-copy">
+    <h2 class="section-title" id="gateway-title">{t('site.gateway.title')}</h2>
+    <p>{introStart}<a href="https://github.com/cloudflare/pingora" target="_blank" rel="noopener noreferrer">Pingora</a>{introEnd}</p>
+    <p>{t('site.gateway.operations')}</p>
+  </header>
+  <figure aria-labelledby="gateway-metrics-title">
+    <p class="metric-label" id="gateway-metrics-title">{t('site.gateway.metricsTitle')}</p>
+    <dl class="gateway-metrics">
+      {metrics.map(({ label, value, unit }) => <div>
+        <dt class="metric-label">{label}</dt>
+        <dd>{number.format(value)}<span class="metric-unit">{unit}</span></dd>
+      </div>)}
+    </dl>
+    <figcaption>
+      <BenchmarkEnvironment instance="c8gn.large" cpu="Graviton4" cores={2} memoryGiB={4} />
+    </figcaption>
+  </figure>
+</section>
+<style>
+  section { grid-template-columns: minmax(0, 1fr) fit-content(400px); }
+  h2 { white-space: pre-line; }
+  header a { text-decoration: underline; text-underline-offset: 2px; }
+  header a:hover { text-decoration-color: var(--color-control-hover); }
+  .gateway-metrics { display: flex; flex-direction: column; gap: 24px; margin: 24px 0 0; }
+  .gateway-metrics > div { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  dt { order: 1; }
+  dd { margin: 0; color: var(--color-accent); font-size: 1.625rem; line-height: 1.2; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  figcaption { margin-top: 24px; border-top: 1px solid var(--color-border); padding-top: 16px; }
+  @media (width < 1000px) {
+    section { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  }
+</style>

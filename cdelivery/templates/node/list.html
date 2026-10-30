@@ -1,0 +1,121 @@
+{% extends "dashboard.html" %}
+
+{% import "node/status.html" as status %}
+
+{%- macro join_role() -%}
+<select class="text" x-model="role" aria-label='{{ tt!("ui.node.header.role") }}'>
+  <option value="Worker">{{ tt!("ui.node.role.worker") }}</option>
+  <option value="Manager">{{ tt!("ui.node.role.manager") }}</option>
+</select>
+{%- endmacro -%}
+
+{% block title %}{{ tt!("ui.node.title") }} | {{ super() }}{% endblock title %}
+
+{% block main %}
+<header>
+  <h1>{{ tt!("ui.node.title") }}</h1>
+</header>
+
+<div class="table-scroll">
+  <table class="nodes">
+    <thead>
+      <tr>
+        <th scope="col">{{ tt!("ui.node.header.name") }}</th>
+        <th scope="col">{{ tt!("ui.node.header.ip") }}</th>
+        <th scope="col">{{ tt!("ui.node.header.role") }}</th>
+        <th scope="col">{{ tt!("ui.node.header.status") }}</th>
+        <th scope="col">{{ tt!("ui.node.header.specs") }}</th>
+        <th scope="col">{{ tt!("ui.node.header.labels") }}</th>
+        <th scope="col" aria-label='{{ tt!("ui.common.actions") }}'></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for node in nodes %}
+      <tr>
+        <th scope="row">
+          <a translate="no" href="/nodes/{{ node.id }}">{{ node.hostname }}</a>
+        </th>
+        <td>{% if node.addr.is_empty() %}—{% else %}<a translate="no" href="/nodes/{{ node.id }}">{{ node.addr }}</a>{% endif %}</td>
+        <td>{% match node.role %}{% when operation::node::typ::NodeRole::Manager %}{{ tt!("ui.node.role.manager") }}{% when operation::node::typ::NodeRole::Worker %}{{ tt!("ui.node.role.worker") }}{% endmatch %}</td>
+        <td>
+          <span class="chips node-state">
+            {{ status::state(node) }}
+            {% if self.has_warning(node) %}<span class="node-warning" role="img" aria-label='{{ tt!("ui.node.detail.warning") }}' title='{{ tt!("ui.node.detail.warning") }}'>⚠</span>{% endif %}
+          </span>
+        </td>
+        <td><span translate="no">{{ node.cpus }}</span> {{ tt!("ui.metrics.unit.cores") }} / <span translate="no">{{ crate::ui::bytes_text(*node.memory_bytes) }}</span></td>
+        <td>
+          {% if node.labels.is_empty() %}<span class="muted">—</span>{% else %}<span class="chips cell-wrap node-labels">{% for label in node.labels %}<code translate="no">{{ label }}</code>{% endfor %}</span>{% endif %}
+        </td>
+        <td><a href="/nodes/{{ node.id }}" class="row-action">{% if can_relabel %}{{ tt!("ui.common.edit") }}{% else %}{{ tt!("ui.common.view") }}{% endif %}</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if let Some((worker, manager)) = join %}
+<details
+  class="mt-4"
+  x-data="nodeJoin"
+  data-worker-invitation="{{ worker.invitation }}"
+  data-worker-url="{{ worker.join_url }}"
+  data-manager-invitation="{{ manager.invitation }}"
+  data-manager-url="{{ manager.join_url }}"
+>
+  <summary>{{ tt!("ui.node.join.title") }}</summary>
+  <p>
+    {% match crate::locale::current() %}
+    {% when crate::locale::Locale::ZhCn %}
+    在新服务器上运行以下命令，以 {{ join_role() }} 加入。
+    {% when crate::locale::Locale::ZhTw %}
+    在新伺服器上執行以下指令，以 {{ join_role() }} 身分加入。
+    {% when crate::locale::Locale::En %}
+    Run the following command on the new server to join as a {{ join_role() }}.
+    {% when crate::locale::Locale::De %}
+    Den folgenden Befehl auf dem neuen Server ausführen, um als {{ join_role() }} beizutreten.
+    {% when crate::locale::Locale::Ja %}
+    新しいサーバーで以下のコマンドを実行し、{{ join_role() }}として参加してください。
+    {% when crate::locale::Locale::PtBr %}
+    Execute o comando abaixo no novo servidor para entrar como {{ join_role() }}.
+    {% when crate::locale::Locale::Es %}
+    Ejecuta el siguiente comando en el nuevo servidor para unirte como {{ join_role() }}.
+    {% when crate::locale::Locale::Fr %}
+    Exécuter la commande suivante sur le nouveau serveur pour l’ajouter en tant que {{ join_role() }}.
+    {% endmatch %}
+  </p>
+  <pre class="join-command" aria-label='{{ tt!("ui.node.join.command") }}' translate="no"><code x-ref="command" x-text="command"></code></pre>
+  <button class="button" type="button" @click="copy()" aria-live="polite"><span x-show="copied !== command">{{ tt!("ui.common.copy") }}</span><span x-show="copied === command" x-cloak>{{ tt!("ui.common.copied") }}</span></button>
+  <p class="muted">
+    {{ tt!("ui.node.join.expiresAt") }}: <relative-time datetime="{{ worker.expires_at }}">{{ worker.expires_at }}</relative-time><br />
+    {{ tt!("ui.node.join.retry") }}
+  </p>
+</details>
+<script>
+document.addEventListener("alpine:init", () => {
+  Alpine.data("nodeJoin", () => ({
+    role: "Worker",
+    copied: "",
+    async copy() {
+      const command = this.command;
+      this.copied = "";
+      try {
+        await navigator.clipboard.writeText(command);
+        this.copied = command;
+      } catch (_) {
+        window.getSelection()?.selectAllChildren(this.$refs.command);
+      }
+    },
+    quote(value) {
+      return "'" + value.replaceAll("'", "'\\''") + "'";
+    },
+    get command() {
+      const prefix = this.role === "Manager" ? "manager" : "worker";
+      const data = this.$root.dataset;
+      return `curl -fsSL https://cdelivery.dev/install.sh | sh -s -- --join ${this.quote(data[`${prefix}Url`])} --token ${this.quote(data[`${prefix}Invitation`])}`;
+    }
+  }));
+});
+</script>
+{% endif %}
+{% endblock main %}

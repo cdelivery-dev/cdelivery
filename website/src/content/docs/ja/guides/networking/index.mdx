@@ -1,0 +1,29 @@
+---
+title: "ドメインと HTTPS"
+description: "内部通信、公開ポート、Pingress の HTTP/HTTPS ルートを区別します。"
+sidebar:
+  order: 20
+---
+
+内部通信、公開ポート、Pingress の HTTP/HTTPS ルートを区別します。
+
+## 選択
+
+| 用途 | 設定 |
+| --- | --- |
+| グループ内通信 | アプリ名と内部ポート |
+| TCP/UDP の直接接続 | ポート公開 |
+| HTTP ドメイン | コンテナーポートへのルート |
+| HTTPS | ルートと有効な証明書 |
+
+ドメインルートのためにポートを直接公開する必要はありません。
+
+## 順序
+
+プロセス、待受、レプリカを確認します。Admin が Pingress を有効化し、DNS と 80/443 を設定してからルートと証明書を準備します。アプリのルートは Operator も管理できます。
+
+## 確認
+
+DNS、接続、TLS、アプリ応答を別々に検証します。証明書取得成功はバックエンド正常の証明ではありません。
+
+[通信](/docs/ja/guides/networking/connectivity/)、[ルート](/docs/ja/guides/networking/routing/)、[自動証明書](/docs/ja/guides/networking/automatic-certificates/)、[独自証明書](/docs/ja/guides/networking/custom-certificates/)、[FAQ](/docs/ja/guides/networking/faq/)を参照します。[管理画面のドメイン](/docs/ja/administration/platform/access/)は別設定です。

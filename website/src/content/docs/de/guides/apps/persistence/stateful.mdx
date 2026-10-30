@@ -1,0 +1,26 @@
+---
+title: "Zustandsbehaftete Anwendungen"
+description: "Lokale Daten bedeuten ein Replikat auf einem festen, bei Erstellung gewählten Server."
+sidebar:
+  order: 15
+---
+
+Lokale Daten bedeuten ein Replikat auf einem festen, bei Erstellung gewählten Server.
+
+## Erstellen
+
+Platz, Volume, Image/Vorlage, Umgebung und Zugangsdaten prüfen. Tatsächliches Datenverzeichnis mounten und Schreibtest durchführen.
+
+Keine dynamische Platzierung, automatische Skalierung, XConfig oder Guardian in diesem Modus. Die aktuelle PostgreSQL-Vorlage setzt `PGDATA=/var/lib/postgresql/data`; Image, Variable und Mount zusammen prüfen. Andere Images können abweichen.
+
+Generierte Passwörter sind Anwendungskonfiguration; nicht alle Umgebungswerte werden verborgen.
+
+## Aktualisieren
+
+Ein Replikat kann beim Wechsel ausfallen. [Strategie](/docs/de/guides/release-safety/update-strategy/) und Anbieterhinweise beachten. Keine inkompatiblen Datenbankversionen auf dieselben Dateien anwenden.
+
+Vor Formatänderung konsistent sichern. [Rollback](/docs/de/guides/release-safety/rollback/) stellt keine Daten zurück.
+
+## Ausfall
+
+Anderer Server mit gleichnamigem Volume ist kein Restore. Daten migrieren/wiederherstellen und prüfen. Löschen erhält das Volume; Server und Name vor Bereinigung notieren.

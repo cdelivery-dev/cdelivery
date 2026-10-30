@@ -1,0 +1,29 @@
+---
+title: "Criar e implantar"
+description: "Crie uma aplicação a partir de imagem ou modelo e confira sua primeira execução."
+sidebar:
+  order: 8
+---
+
+Crie uma aplicação a partir de imagem ou modelo e confira sua primeira execução.
+
+## Procedimento
+
+1. Como Operator/Admin, abra um grupo existente.
+2. Use nome único de 1–16 letras minúsculas, números ou hífens, sem hífen inicial/final ou nome reservado.
+3. Escolha imagem ou modelo de banco.
+4. Revise variáveis, portas e acesso.
+5. Defina persistência agora, se necessária.
+6. Confira recursos, réplicas, posicionamento e estratégia; salve.
+
+Descrição aceita 500 caracteres. Nomes são únicos na plataforma. O console não altera posteriormente nome ou grupo.
+
+## Modelos
+
+Modelos fornecem valores iniciais, não backup. Revise senha gerada, versão e diretório de dados. [Aplicações com estado](/docs/pt-br/guides/apps/persistence/stateful/) usam uma réplica e servidor fixo.
+
+## Verificação
+
+Espere a réplica, leia logs e teste o serviço. Falha de download pede revisão de referência, credenciais, rede e arquitetura. Tarefa pendente pode indicar falta de máquina elegível ou recursos. Processo encerrando exige revisar comando e configuração.
+
+Use o [exemplo Nginx](/docs/pt-br/getting-started/first-app/) e consulte [registros privados](/docs/pt-br/guides/apps/images/).

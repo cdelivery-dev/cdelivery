@@ -1,0 +1,30 @@
+---
+title: "Eliminar una aplicación"
+description: "Eliminar requiere Operator o Admin y afecta también a comprobaciones, tareas y validación asociadas."
+sidebar:
+  order: 19
+---
+
+Eliminar requiere Operator o Admin y afecta también a comprobaciones, tareas y validación asociadas.
+
+## Preparar y eliminar
+
+1. Registra imagen, ajustes y ubicación de datos si podrían necesitarse.
+2. Redirige clientes dependientes.
+3. Revisa XHealth, XJob y Guardian.
+4. Confirma la eliminación.
+5. Comprueba desaparición de la aplicación y salida de sus tareas.
+
+La limpieza de contenedores es asíncrona. Los recursos de red pueden seguir ocupados durante un tiempo.
+
+## Recursos conservados
+
+Se mantienen volúmenes de negocio, grupos y registros DNS externos. Eliminar datos exige revisar referencias y copias y usar [gestión de volúmenes](/docs/es/administration/nodes/volumes/).
+
+Que la aplicación no exista no significa que su volumen esté vacío.
+
+## Recuperación
+
+Crear de nuevo el mismo nombre genera otra identidad; no deshace la eliminación ni recupera la definición. Reconstruye ajustes y verifica el volumen original antes de iniciar un servicio con estado.
+
+Si un grupo sigue ocupado justo después, espera la salida de tareas y revisa referencias. Para un despliegue fallido, considera primero [revertir](/docs/es/guides/release-safety/rollback/).

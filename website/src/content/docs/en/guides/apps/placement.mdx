@@ -1,0 +1,32 @@
+---
+title: "Server selection and placement"
+description: "Select eligible servers and per-server replica limits while accounting for capacity and local data."
+sidebar:
+  order: 17
+---
+
+Placement determines where replicas may run. An ordinary application can use a scheduling label and a per-server replica cap. Stateful applications instead select a fixed server.
+
+## Configure
+
+1. Ask an Admin to add the intended [server label](/docs/administration/nodes/labels/).
+2. Select that label in application settings.
+3. Set a per-server replica cap if needed.
+4. Check reservations and desired replicas.
+5. Save and inspect the actual task distribution.
+
+The label is a membership condition, not a complex selector language. A machine must also be ready, schedulable, and able to satisfy resource requirements.
+
+For example, three replicas with a one-per-server cap need at least three eligible servers. Adding CPU and memory reservations can further reduce the usable set.
+
+## Change placement carefully
+
+Changing labels or constraints can replace or relocate tasks. A start-first update may require spare capacity beyond the steady-state replica count.
+
+Placement does not copy local files or volumes. Giving another server the same label or volume name does not make data available there. Use [stateful deployment](/docs/guides/apps/persistence/stateful/) for local-data workloads.
+
+## Diagnose pending tasks
+
+Check the selected label on the actual servers, their availability and runtime state, remaining capacity, reservations, and the per-server cap. Inspect task errors before repeatedly restarting.
+
+After a server is removed and rejoined, its ID can change. Recheck fixed-server selections and labels before expecting previous placement to resume. See [server management](/docs/administration/nodes/).

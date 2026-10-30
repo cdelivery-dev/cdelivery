@@ -1,0 +1,26 @@
+---
+title: "Retour arrière et échecs"
+description: "Rollback restaure une configuration précédente, pas les données ou la plateforme."
+sidebar:
+  order: 30
+---
+
+Rollback restaure une configuration précédente, pas les données ou la plateforme.
+
+## Décider
+
+Vérifiez que l’ancienne image accepte les données actuelles. Une migration peut nécessiter restauration métier avant de relancer l’ancienne version.
+
+Utilisez rollback lorsqu’une configuration antérieure existe, ou laissez la stratégie le déclencher. Il remplace en parallèle avec Continue pour ses propres échecs, en conservant les paramètres pertinents d’ordre, observation et proportion.
+
+## Contrôler
+
+Vérifiez configuration/image, réplicas, journaux, requête, données, XHealth et événements. Une demande terminée ne garantit pas récupération complète.
+
+Sans historique disponible, reconstruisez une configuration connue. Recréer un nom ne restaure pas l’ancienne identité.
+
+## Échec persistant
+
+Contrôlez capacité, registre, secrets, stockage et compatibilité. Répéter ne répare pas une dépendance inaccessible.
+
+Les actions [Guardian](/docs/fr/guides/release-safety/) concernent son candidat ; la [maintenance plateforme](/docs/fr/administration/platform/upgrades/) est distincte.

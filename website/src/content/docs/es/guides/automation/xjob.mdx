@@ -1,0 +1,27 @@
+---
+title: "Crear tareas XJob"
+description: "XJob ejecuta comandos programados en contenedores independientes con la imagen y entorno pertinentes de la aplicación."
+sidebar:
+  order: 38
+---
+
+XJob ejecuta comandos programados en contenedores independientes con la imagen y entorno pertinentes de la aplicación.
+
+## Crear
+
+1. Como Operator o Admin, abre XJob de la aplicación.
+2. Introduce nombre y comando disponible en la imagen.
+3. Define el intervalo de espera tras finalizar.
+4. Define tiempo máximo, guarda y verifica una ejecución.
+
+Cada aplicación admite 16 tareas; intervalo y timeout obligatorios, cada uno de 1 a 1440 minutos. Expansión y tuberías necesitan shell explícita.
+
+No es exec dentro del contenedor de negocio. No presupongas acceso a sus archivos temporales o datos escribibles; verifica configuración y servicios realmente accesibles.
+
+## Diseñar y comprobar
+
+Los comandos con efectos externos deben manejar ejecuciones repetidas. El planificador no convierte escrituras o llamadas externas en transacciones.
+
+Código cero debe representar éxito real del negocio. Lee los registros XJob del nombre correcto y verifica la operación realizada.
+
+Consulta [programación](/docs/es/guides/automation/xjob/schedule/) y [resultados](/docs/es/guides/automation/xjob/results/) para intervalos, errores y reintentos.

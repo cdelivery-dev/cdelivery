@@ -1,0 +1,26 @@
+---
+title: "Telegram-Anbindung"
+description: "Long Polling benötigt einen dedizierten Bot ohne konkurrierenden Empfänger."
+sidebar:
+  order: 47
+---
+
+Long Polling benötigt einen dedizierten Bot ohne konkurrierenden Empfänger.
+
+## Vorbereiten
+
+Bot mit BotFather erstellen. Vor CDelivery-Aktivierung Nachricht senden und in [getUpdates](https://core.telegram.org/bots/api#getupdates) eigene `message.from.id` ermitteln.
+
+Admin speichert Token; Nutzer trägt numerische ID ein, öffnet privaten Chat, drückt Start und abonniert. Nicht chat.id, Username oder Bot-ID verwenden.
+
+Aktivierung entfernt vorhandenen Webhook. Keinen anderen Poller laufen lassen. Siehe [Tutorial](https://core.telegram.org/bots/tutorial).
+
+## Gespräch
+
+Mit [Modell](/docs/de/guides/automation/models/) privat testen. In Gruppen mit Privacy Mode explizit `/cdelivery@BotUsername` oder passende Antwort verwenden. Topics werden nicht unterstützt.
+
+Privatnachrichten erfordern keine deaktivierte Privatsphäre; siehe [FAQ](https://core.telegram.org/bots/faq).
+
+## Fehler
+
+Token, Netzwerk, Webhook und andere Poller prüfen. Einzelner Nutzer: Start, ID, Abonnement. Token nicht teilen; fremde ID kann deine Rechte erhalten.

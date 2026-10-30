@@ -1,0 +1,26 @@
+---
+title: "Replikate und automatische Skalierung"
+description: "Replikate erhöhen Kapazität, replizieren aber keine lokalen Daten."
+sidebar:
+  order: 16
+---
+
+Replikate erhöhen Kapazität, replizieren aber keine lokalen Daten.
+
+## Fest
+
+Anzahl setzen, speichern, Soll/Ist vergleichen. Jede Aufgabe muss [Platzierung](/docs/de/guides/apps/placement/) und Ressourcen erfüllen. Zustandsbehaftete Anwendungen bleiben bei einem Replikat.
+
+## Automatisch
+
+Minimum/Maximum zwischen 1 und 65536. Auswertung ungefähr alle 30 Sekunden, Beobachtungsfenster mindestens 60 Sekunden, abhängig von Erfassung.
+
+Dauerhaft über 70% führt zur Erweiterung Richtung 60%. Reduzierung erfordert unter 50% für mindestens fünf Minuten. Einzelne Spitzen lösen nicht zwingend sofort etwas aus.
+
+Aktuelle Werte aller laufenden Replikate und Kapazität sind nötig. Fehlend bedeutet nicht ungenutzt. CPU-Limits verbessern die Einschätzung mehrerer Replikate pro Server; sonst wird konservativer entschieden.
+
+## Prüfen
+
+Last erzeugen, Metriken und Aufgaben beobachten. Bei Stillstand Bereich, Aktualität, Kapazität, Labels, Reservierungen und Serverlimits kontrollieren. Gewünschte Erweiterung kann trotzdem warten.
+
+Siehe [Metriken](/docs/de/guides/observability/metrics/application/) und [Ressourcen](/docs/de/guides/apps/resources/).

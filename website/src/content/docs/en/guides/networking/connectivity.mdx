@@ -1,0 +1,28 @@
+---
+title: "Application connectivity and published ports"
+description: "Connect applications by name and expose container ports without confusing internal and public addresses."
+sidebar:
+  order: 21
+---
+
+Applications in the same group can reach each other by application name and container port. For example, a web application can connect to `database:5432` if the database listens there.
+
+## Internal connections
+
+Use the destination application's name, not `localhost`: inside a container, loopback refers to that container. The destination process must listen on an interface reachable from other containers, commonly `0.0.0.0`.
+
+Groups provide separate communication networks, not account permission isolation. Do not assume applications in different groups can use same-group name resolution.
+
+## Publish a port
+
+Open application networking, choose TCP or UDP, and map a container port to an available public port. For Nginx, container port 80 can be published as TCP 8080.
+
+Save, confirm running replicas, and test `http://SERVER_IP:8080` for this HTTP example. Check cloud rules and host firewalls. An SSH tunnel must forward the application port separately from console port 9000.
+
+A port mapping does not make the process listen or convert a TCP application into HTTP. Avoid conflicting public ports and expose only what clients need.
+
+## Domains and diagnostics
+
+A [domain route](/docs/guides/networking/routing/) uses the application's container port, without requiring a direct public mapping.
+
+If a connection fails, check process logs, listening address, container port, group membership, task state, and server-to-server networking. For public access, additionally check the published protocol, public port, destination address, and firewall. See the [networking FAQ](/docs/guides/networking/faq/) for IPv6 and host networking issues.

@@ -1,0 +1,46 @@
+---
+title: "管理アクセスの復旧"
+description: "ホスト管理者が実行中の主コンテナー内でアカウントを救援できます。"
+sidebar:
+  order: 63
+---
+
+ホスト管理者が実行中の主コンテナー内でアカウントを救援できます。
+
+別 Admin が入れるなら[ユーザー管理](/docs/ja/administration/accounts/users/)を使います。CLI は既存データと主鍵が必要で、紛失鍵や業務ボリュームを復元しません。
+
+## 対象確認
+
+```sh
+docker ps --format '{{.ID}} {{.Names}} {{.Image}}'
+```
+
+CONTAINER_ID を主プログラムの ID に置き換えます。gateway や収集器を選びません。
+
+## 既存アカウント
+
+```sh
+docker exec -it CONTAINER_ID /entrypoint rescue admin@example.com
+```
+
+一時パスワードを表示し、二要素認証を解除します。役割を上げず、API キーも失効しません。ログイン後、パスワード変更、認証再登録、キー確認を行います。
+
+## 新しい Admin
+
+未登録メールの場合：
+
+```sh
+docker exec -it CONTAINER_ID /entrypoint add-admin admin@example.com Alex Chen
+```
+
+一時パスワードが出ます。既存メールなら競合するので rescue を使います。
+
+## API キー
+
+```sh
+docker exec -it CONTAINER_ID /entrypoint create-api-key admin@example.com recovery Reader
+```
+
+`--expires-at` に将来の RFC 3339 時刻を追加できます。Reader/Operator/Admin は本人役割を超えません。一度の出力を保存し、使用後失効します。
+
+未初期化や不在なら対象・メールを確認し、誤って再インストールしないでください。出力の秘密は公開しません。

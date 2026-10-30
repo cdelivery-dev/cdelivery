@@ -1,0 +1,37 @@
+---
+title: "Acceso mediante API y MCP"
+description: "REST y MCP comparten operaciones y autorización; las rutas pertenecen a tu instancia."
+sidebar:
+  order: 60
+---
+
+REST y MCP comparten operaciones y autorización; las rutas pertenecen a tu instancia.
+
+## Clave
+
+En Cuenta → MCP / API keys, crea nombre de 1–64 bytes UTF-8, techo de rol y vencimiento futuro opcional. Copia inmediatamente: se muestra una vez.
+
+Separa claves por herramienta. Su rol no supera el efectivo al crear y queda limitado por el rol actual del usuario. Cambiar contraseña no revoca; eliminar usuario invalida.
+
+## REST
+
+Define URL y clave en tu entorno:
+
+```sh
+curl --fail-with-body "$CDELIVERY_URL/api/me" \
+  -H "Authorization: Bearer $CDELIVERY_API_KEY"
+```
+
+Espera información de tu cuenta. `/scalar` documenta el schema de la versión instalada.
+
+Los cambios usan normalmente patch: omitir conserva, `null` limpia solo campos que lo permiten; patch vacío es válido. Los enums distinguen mayúsculas: Reader, Operator, Admin.
+
+## MCP
+
+Configura cliente HTTP remoto con `/mcp` y cabecera `Authorization: Bearer YOUR_API_KEY`. Lista herramientas y prueba lectura antes de escribir. La autorización del cliente no sustituye permisos de plataforma.
+
+## Errores
+
+401: credencial inválida, vencida, revocada o usuario no autenticable. 403: rol insuficiente. 422: campos o requisitos inválidos. Para conexión, revisa URL, TLS y proxy.
+
+Revoca y verifica rechazo de la clave antigua. Consulta [roles](/docs/es/administration/accounts/roles/).

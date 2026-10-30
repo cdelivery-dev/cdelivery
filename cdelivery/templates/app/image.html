@@ -1,0 +1,95 @@
+{%- macro image_input() -%}
+<input class="text" id="image" type="text" x-model="image" aria-label='{{ tt!("ui.app.image.reference.label") }}' placeholder='{{ tt!("ui.app.image.reference.placeholder") }}' minlength="1" pattern="^[^@]+$" spellcheck="false" required />
+{%- endmacro -%}
+
+{%- macro auth_action() -%}
+<button type="button" class="text-action" data-configured='{{ tt!("ui.app.image.auth.configured") }}' data-unconfigured='{{ tt!("ui.app.image.auth.unconfigured") }}' @click="openAuth()" x-text="image_auth ? $el.dataset.configured : $el.dataset.unconfigured"></button>
+{%- endmacro -%}
+
+{%- macro editable() -%}
+<div x-data="imageData">
+  {% match crate::locale::current() %}
+  {% when crate::locale::Locale::ZhCn %}
+  <p>使用镜像{{ image_input() }}，{{ auth_action() }}访问凭据。</p>
+  {% when crate::locale::Locale::ZhTw %}
+  <p>使用映像檔{{ image_input() }}，{{ auth_action() }}存取憑證。</p>
+  {% when crate::locale::Locale::Ja %}
+  <p>イメージ{{ image_input() }}を使用。認証情報は{{ auth_action() }}。</p>
+  {% when crate::locale::Locale::PtBr %}
+  <p>Usar a imagem {{ image_input() }} {{ auth_action() }} credenciais.</p>
+  {% when crate::locale::Locale::Es %}
+  <p>Usar la imagen {{ image_input() }} {{ auth_action() }} credenciales.</p>
+  {% when crate::locale::Locale::Fr %}
+  <p>Utiliser l’image {{ image_input() }} {{ auth_action() }}.</p>
+  {% when crate::locale::Locale::De %}
+  <p>Image {{ image_input() }} {{ auth_action() }} Zugangsdaten verwenden.</p>
+  {% when crate::locale::Locale::En %}
+  <p>Use image {{ image_input() }} {{ auth_action() }} credentials.</p>
+  {% endmatch %}
+  <dialog
+    x-ref="authModal"
+    aria-labelledby="image-auth-title"
+    @click.self="const rect = $el.getBoundingClientRect(); if ($event.clientX < rect.left || $event.clientX > rect.right || $event.clientY < rect.top || $event.clientY > rect.bottom) $el.close()"
+    @close="authOpen = false"
+    @keydown.enter="if ($event.target.matches('input[type=text], input[type=password], input[type=number]')) { $event.preventDefault(); saveAuth(); }"
+  >
+    <h2 id="image-auth-title">{{ tt!("ui.app.image.auth.modal.title") }}</h2>
+    <div class="field">
+      <label for="auth_username">{{ tt!("ui.app.image.auth.modal.username") }}:</label>
+      <input id="auth_username" class="text" type="text" maxlength="255" x-model="tempUsername" :disabled="!authOpen" :required="authOpen && tempToken !== ''" spellcheck="false" />
+    </div>
+    <div class="field">
+      <label for="auth_token">{{ tt!("ui.app.image.auth.modal.token") }}:</label>
+      <input id="auth_token" class="text" type="password" maxlength="4096" x-model="tempToken" :disabled="!authOpen" :required="authOpen && tempUsername !== ''" spellcheck="false" />
+    </div>
+    <div class="actions">
+      <input class="button secondary" type="button" value='{{ tt!("ui.common.cancel") }}' @click="$refs.authModal.close()" />
+      <input class="button" type="button" value='{{ tt!("ui.common.confirm") }}' @click="saveAuth()" />
+    </div>
+  </dialog>
+</div>
+<script>
+document.addEventListener("alpine:init", () => {
+  Alpine.data("imageData", () => ({
+    authOpen: false,
+    tempUsername: "",
+    tempToken: "",
+    openAuth() {
+      this.tempUsername = this.image_auth?.username ?? "";
+      this.tempToken = "";
+      this.authOpen = true;
+      this.$refs.authModal.showModal();
+    },
+    saveAuth() {
+      if (![...this.$refs.authModal.querySelectorAll("input:not([type='button']):not([type='submit']), select, textarea")].every(control => control.reportValidity())) return;
+      const username = this.tempUsername.trim();
+      const token = this.tempToken;
+      this.image_auth = username === "" && token === "" ? null : { username, token };
+      this.authDirty = true;
+      this.$refs.authModal.close();
+    },
+  }));
+});
+</script>
+{%- endmacro -%}
+
+{%- macro readonly(image, image_auth) -%}
+{% match crate::locale::current() %}
+{% when crate::locale::Locale::ZhCn %}
+<p>使用镜像<span translate="no">{{ image }}</span>，{% if image_auth.is_some() %}{{ tt!("ui.app.image.auth.configured") }}{% else %}{{ tt!("ui.app.image.auth.unconfigured") }}{% endif %}访问凭据。</p>
+{% when crate::locale::Locale::ZhTw %}
+<p>使用映像檔<span translate="no">{{ image }}</span>，{% if image_auth.is_some() %}{{ tt!("ui.app.image.auth.configured") }}{% else %}{{ tt!("ui.app.image.auth.unconfigured") }}{% endif %}存取憑證。</p>
+{% when crate::locale::Locale::Ja %}
+<p>イメージ<span translate="no">{{ image }}</span>を使用。認証情報は{% if image_auth.is_some() %}{{ tt!("ui.app.image.auth.configured") }}{% else %}{{ tt!("ui.app.image.auth.unconfigured") }}{% endif %}。</p>
+{% when crate::locale::Locale::PtBr %}
+<p>Usar a imagem <span translate="no">{{ image }}</span> {% if image_auth.is_some() %}{{ tt!("ui.app.image.auth.configured") }}{% else %}{{ tt!("ui.app.image.auth.unconfigured") }}{% endif %} credenciais.</p>
+{% when crate::locale::Locale::Es %}
+<p>Usar la imagen <span translate="no">{{ image }}</span> {% if image_auth.is_some() %}{{ tt!("ui.app.image.auth.configured") }}{% else %}{{ tt!("ui.app.image.auth.unconfigured") }}{% endif %} credenciales.</p>
+{% when crate::locale::Locale::Fr %}
+<p>Utiliser l’image <span translate="no">{{ image }}</span> {% if image_auth.is_some() %}{{ tt!("ui.app.image.auth.configured") }}{% else %}{{ tt!("ui.app.image.auth.unconfigured") }}{% endif %}.</p>
+{% when crate::locale::Locale::De %}
+<p>Image <span translate="no">{{ image }}</span> {% if image_auth.is_some() %}{{ tt!("ui.app.image.auth.configured") }}{% else %}{{ tt!("ui.app.image.auth.unconfigured") }}{% endif %} Zugangsdaten verwenden.</p>
+{% when crate::locale::Locale::En %}
+<p>Use image <span translate="no">{{ image }}</span> {% if image_auth.is_some() %}{{ tt!("ui.app.image.auth.configured") }}{% else %}{{ tt!("ui.app.image.auth.unconfigured") }}{% endif %} credentials.</p>
+{% endmatch %}
+{%- endmacro -%}

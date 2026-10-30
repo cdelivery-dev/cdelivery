@@ -1,0 +1,31 @@
+---
+title: "Présentation de CDelivery"
+description: "CDelivery déploie des images de conteneur et facilite l’exploitation sur un ou plusieurs serveurs."
+sidebar:
+  order: 2
+---
+
+CDelivery déploie des images de conteneur et facilite l’exploitation sur un ou plusieurs serveurs.
+
+## Objets
+
+| Objet | Rôle |
+| --- | --- |
+| Application | Image, commande, réseau, ressources, stockage |
+| Groupe | Organisation et réseau commun |
+| Serveur | Calcul et stockage local |
+| Compte | Autorisations Reader, Operator ou Admin |
+
+Les groupes ne séparent pas les droits des comptes. Les noms d’applications sont uniques dans la plateforme. Les volumes sont locaux ; réplicas et retours arrière ne remplacent pas les sauvegardes.
+
+## Fonctions
+
+Pingress gère domaines et HTTPS. XHealth exécute des contrôles ; Guardian valide un candidat avant promotion. Insight collecte journaux, métriques et événements. XJob lance des commandes dans des conteneurs distincts.
+
+L’IA utilise les outils selon les droits effectifs. Une conversation utilise le compte associé ; la surveillance automatique possède son propre rôle. Les canaux servent aux conversations et notifications.
+
+Chaque fonction nécessite une configuration : installer la console ne prépare pas automatiquement certificats, collecte et modèle.
+
+## Commencer
+
+Vérifiez les [prérequis](/docs/fr/getting-started/requirements/), [installez](/docs/fr/getting-started/installation/) puis déployez la [première application](/docs/fr/getting-started/first-app/). Operator exploite les applications ; Admin gère groupes, serveurs et paramètres.

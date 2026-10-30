@@ -1,0 +1,34 @@
+---
+title: "Platform management"
+description: "Manage servers, groups, accounts, permissions, and CDelivery maintenance."
+sidebar:
+  order: 52
+---
+
+Platform management covers the resources used by applications and the platform itself. Readers can inspect shared runtime information; changes to platform resources and settings generally require Admin access.
+
+## Find a task
+
+| Task | Guide |
+| --- | --- |
+| Join or remove machines | [Servers](/docs/administration/nodes/) |
+| Select scheduling pools | [Server labels](/docs/administration/nodes/labels/) |
+| Inspect and clean local storage | [Volumes](/docs/administration/nodes/volumes/) |
+| Organize applications | [Groups](/docs/administration/groups/) |
+| Assign access | [Roles](/docs/administration/accounts/roles/) and [users](/docs/administration/accounts/users/) |
+| Secure your login | [Personal account](/docs/administration/accounts/profile/) |
+| Connect external tools | [API and MCP](/docs/guides/automation/api-mcp/) |
+| Change the console address | [Platform access](/docs/administration/platform/access/) |
+| Maintain or remove the platform | [Upgrades](/docs/administration/platform/upgrades/), [recovery](/docs/administration/platform/recovery/), [uninstall](/docs/administration/platform/uninstall/) |
+
+## Initialization order
+
+After creating the first Admin, verify server addresses and state, then create groups and applications. Give team members separate accounts and suitable roles. Add domains, collection, message channels, and AI as needed.
+
+Groups do not isolate account permissions, and labels do not replicate data. Check application and component dependencies before changing placement or removing a resource.
+
+## Verify management changes
+
+A successful request can precede container replacement, server joining, or fresh collection. Inspect the resource list, runtime state, events, and actual access separately.
+
+For backup and recovery, verify business data rather than only checking that a container runs. The guides explain which resources remain after deletion so cleanup can be performed deliberately.

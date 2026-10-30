@@ -1,0 +1,40 @@
+---
+title: "Desplegar la primera aplicación"
+description: "Despliega Nginx mediante un puerto publicado y comprueba una respuesta HTTP real."
+sidebar:
+  order: 5
+---
+
+Despliega Nginx mediante un puerto publicado y comprueba una respuesta HTTP real.
+
+## Preparar
+
+Necesitas una instalación operativa, Admin para crear el grupo y Operator o Admin para la aplicación. Permite TCP 8080 o usa:
+
+```sh
+ssh -L 9000:127.0.0.1:9000 -L 8080:127.0.0.1:8080 your-user@server.example.com
+```
+
+## Desplegar
+
+1. Crea el grupo `demo`.
+2. Crea `hello-web` con imagen `nginx:stable-alpine`.
+3. Conserva el comando de la imagen y una réplica fija.
+4. Publica el puerto de contenedor **80** como **8080/TCP**.
+5. Guarda y espera a que la réplica se ejecute.
+
+No hacen falta dominio, volumen ni comando personalizado. La [imagen oficial](https://hub.docker.com/_/nginx) ya inicia Nginx en primer plano.
+
+## Verificar
+
+Abre `http://SERVER_IP:8080`, o localhost mediante el túnel:
+
+```sh
+curl -i http://localhost:8080
+```
+
+Espera HTTP 200 y la bienvenida de Nginx. Comprueba también réplicas y registros.
+
+Si falla la descarga, revisa registro y arquitectura. Si termina el contenedor, restaura el comando predeterminado y lee los registros. Si no conecta, revisa mapeo, IP y cortafuegos. Una ruta de dominio usaría el puerto interno 80.
+
+Para limpiar, elimina la aplicación, espera la salida de sus contenedores y elimina el grupo vacío. Continúa con la [consola](/docs/es/getting-started/console/).

@@ -1,0 +1,28 @@
+{% extends "settings.html" %}
+
+{% import "settings/nav.html" as nav %}
+{% import "settings/im_form.html" as credentials %}
+
+{% block title %}{{ self.title() }} - {{ tt!("ui.nav.settings") }} | {{ super() }}{% endblock title %}
+
+{% block settings_navigation %}
+{% let channel = self.slug() %}
+{{ nav::nav(channel) }}
+{% endblock settings_navigation %}
+
+{% block main %}
+{% let channel = self.slug() %}
+{% let title = self.title() %}
+<header>
+  <h1>{{ title }}</h1>
+</header>
+
+{% match settings %}
+{% when Some(current) %}
+  {% let app_id = current.app_id.as_str() %}
+  {% let secret_set = current.app_secret_set %}
+  {{ credentials::form(channel, title, app_id, secret_set, true) }}
+{% when None %}
+  {{ credentials::form(channel, title, "", false, false) }}
+{% endmatch %}
+{% endblock main %}

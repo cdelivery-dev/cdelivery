@@ -1,0 +1,30 @@
+---
+title: "User management"
+description: "Create accounts, change roles, reset login credentials, and understand account deletion."
+sidebar:
+  order: 58
+---
+
+Initialization creates the first Admin. An Admin creates subsequent users in settings; team members should use separate accounts.
+
+## Create and edit
+
+Enter the user's name, unique email, initial password, and [role](/docs/administration/accounts/roles/). Deliver the password appropriately, then ask the user to sign in, change it, and enable two-factor authentication.
+
+Administrators can edit names, email, and roles. Email is the login identifier and also affects email notifications and inbound email identity. Confirm the new address belongs to the intended person.
+
+Users manage their own message bindings and notification subscriptions. Creating an account does not complete those steps automatically.
+
+## Reset access
+
+A password reset invalidates all browser sessions for that user. API keys remain valid independently; a suspected compromised key requires separate revocation.
+
+Resetting two-factor authentication is a separate action. An ordinary password reset does not automatically remove it. Verify the user's identity before resetting a lost authenticator, then have them enroll again.
+
+## Delete and hand over
+
+Deleting a user prevents their sessions and API keys from authenticating. It does not delete shared applications, revoke third-party provider credentials, or recover exported data. Complete business handover first.
+
+Admins cannot delete or downgrade themselves. Another Admin must handle the transition. If no administrator can sign in, use [access recovery](/docs/administration/platform/recovery/).
+
+For creation errors, check duplicate email and field validation. For permission errors, check both the current account role and the API key ceiling.

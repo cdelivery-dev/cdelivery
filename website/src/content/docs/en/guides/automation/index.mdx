@@ -1,0 +1,31 @@
+---
+title: "AI operations overview"
+description: "Configure conversational operations and automated duty with explicit models, channels, and permissions."
+sidebar:
+  order: 41
+---
+
+AI can inspect platform information and invoke operations through the same authorization rules as the console and API. A model connection, a message channel, and automated duty are separate settings.
+
+## Choose a workflow
+
+| Workflow | Configuration |
+| --- | --- |
+| Ask questions through a message channel | Model, platform channel, personal identity binding |
+| Analyze events and patrol automatically | Model and automated duty |
+| Connect an external AI client | [MCP and an API key](/docs/guides/automation/api-mcp/) |
+| Receive ordinary operational notifications | Channel and personal subscription; no model required |
+
+An Admin manages model credentials and duty settings. A conversation uses the bound user's current role. Automated duty uses its own configured role, defaults to Reader, and has no user's personal account scope.
+
+## Set up and verify
+
+Start with [model configuration](/docs/guides/automation/models/). Connect a [message channel](/docs/guides/automation/im/), bind your own identity, and ask a read-only question. Confirm the answer refers to the intended deployment.
+
+Enable [automated duty](/docs/guides/automation/duty/) only with a role appropriate to unattended work. Writable roles permit changes within their permissions; notifications are not an approval gate for every action.
+
+## Data and failure handling
+
+Using an external model sends relevant conversation and operational context to that provider. Choose credentials and provider settings consistent with the data you allow it to process.
+
+If replies fail, inspect model connectivity and tool support separately from message delivery. A model appearing in discovery does not guarantee suitable tool-calling capability. Check operation results and actual platform state rather than relying only on a natural-language reply.

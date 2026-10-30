@@ -1,0 +1,31 @@
+---
+title: "Roles y permisos"
+description: "Reader, Operator y Admin conceden capacidades crecientes en toda la plataforma, no por grupo."
+sidebar:
+  order: 57
+---
+
+Reader, Operator y Admin conceden capacidades crecientes en toda la plataforma, no por grupo.
+
+## Matriz
+
+| Capacidad | Reader | Operator | Admin |
+| --- | --- | --- | --- |
+| Información compartida | Sí | Sí | Sí |
+| Cuenta, contraseña y claves propias | Sí | Sí | Sí |
+| Aplicaciones, XHealth, XJob, Guardian | No | Sí | Sí |
+| Servidores, grupos, volúmenes y ajustes | No | No | Sí |
+| Usuarios e incorporación de servidores | No | No | Sí |
+| Descubrimiento sensible de modelos | No | No | Sí |
+
+Solo se ocultan secretos reconocidos explícitamente. Registros, archivos y variables arbitrarios pueden ser visibles; Reader también debe ser una persona de confianza.
+
+## Permiso efectivo
+
+Sesión usa rol actual. API key usa el menor entre rol actual y techo de clave. Bajar rol limita claves existentes; subirlo no aumenta su techo.
+
+Consola, REST, MCP y herramientas IA comparten reglas. Mensajería usa usuario vinculado; guardia usa rol propio, Reader por defecto y sin ámbito personal.
+
+## Verificar
+
+Asigna Reader para observar, Operator para operación y Admin para gestión. Prueba con la cuenta real. Admin no puede eliminarse ni degradarse. Cambiar contraseña invalida sesiones, no claves; consulta [usuarios](/docs/es/administration/accounts/users/).

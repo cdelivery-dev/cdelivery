@@ -1,0 +1,46 @@
+{% extends "dashboard.html" %}
+
+{% block title %}{{ self.name }} - {{ tt!("ui.group.entity") }} | {{ super() }}{% endblock title %}
+
+{% block main %}
+<header>
+  <h1>{{ tt!("ui.group.editTitle", name = self.name) }}</h1>
+</header>
+<div x-data="{ submitting: false }">
+<form
+  id="edit_group_form"
+  autocomplete="off"
+  method="post" action="/groups/{{ name }}"
+  {% if can_write %}@submit="if (submitting) { $event.preventDefault(); return } $refs.payload.value = JSON.stringify({ description: $refs.description.value || null }); submitting = true"{% else %}@submit.prevent{% endif %}
+>
+  <input x-ref="payload" type="hidden" name="payload" />
+  {% if !fields.is_empty() %}<ul role="alert">{% for (path, message) in fields.iter() %}<li><code>{{ path }}</code> {{ message }}</li>{% endfor %}</ul>{% endif %}
+  <div class="fields">
+    <div class="field">
+      <label for="group-description">{{ tt!("ui.group.description.label") }}: </label>
+      <input class="text"
+        id="group-description"
+        type="text"
+        placeholder='{{ tt!("ui.group.description.placeholder") }}'
+        maxlength="256"
+        value="{{ description }}"
+        x-ref="description"
+        {% if !can_write %}readonly{% endif %}
+      />
+    </div>
+  </div>
+  {% if can_write %}<div class="actions">
+    <button type="submit" class="button danger" form="delete_group_form" :disabled="submitting">{{ tt!("ui.common.delete") }}</button>
+    <input class="button" type="submit" value='{{ tt!("ui.common.save") }}' :disabled="submitting" />
+  </div>{% endif %}
+</form>
+{% if can_write %}<form
+  id="delete_group_form"
+  method="post" action="/groups/{{ name }}/delete"
+  data-confirm='{{ tt!("ui.group.deleteConfirmation", name = self.name) }}'
+  @submit="if (submitting || !confirm($el.dataset.confirm)) { $event.preventDefault(); return } $refs.deletePayload.value = '{}'; submitting = true"
+>
+  <input x-ref="deletePayload" type="hidden" name="payload" />
+</form>{% endif %}
+</div>
+{% endblock main %}

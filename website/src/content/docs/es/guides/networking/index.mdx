@@ -1,0 +1,29 @@
+---
+title: "Dominios y HTTPS"
+description: "Distingue comunicación interna, puertos publicados y rutas HTTP/HTTPS mediante Pingress."
+sidebar:
+  order: 20
+---
+
+Distingue comunicación interna, puertos publicados y rutas HTTP/HTTPS mediante Pingress.
+
+## Elegir acceso
+
+| Necesidad | Configuración |
+| --- | --- |
+| Comunicación dentro del grupo | Nombre de aplicación y puerto interno |
+| Acceso TCP/UDP directo | Puerto publicado |
+| Aplicación HTTP con dominio | Ruta de Pingress al puerto interno |
+| HTTPS | Ruta y certificado válido |
+
+Una ruta de dominio no necesita publicar primero el puerto y no apunta al número de puerto público.
+
+## Orden de configuración
+
+Comprueba proceso, interfaz de escucha, puerto y réplicas. Para dominios, Admin habilita Pingress; configura DNS hacia sus entradas y abre 80/443. Después añade ruta y certificado. Operator puede gestionar rutas de aplicaciones.
+
+## Continuar
+
+Consulta [conectividad](/docs/es/guides/networking/connectivity/), [rutas](/docs/es/guides/networking/routing/), [certificados automáticos](/docs/es/guides/networking/automatic-certificates/), [certificados propios](/docs/es/guides/networking/custom-certificates/) y [preguntas frecuentes](/docs/es/guides/networking/faq/).
+
+Verifica DNS, conexión, TLS y respuesta por separado. Un certificado emitido no demuestra que el proceso responda correctamente. El [dominio de administración](/docs/es/administration/platform/access/) se configura aparte.

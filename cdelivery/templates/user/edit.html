@@ -1,0 +1,87 @@
+{% extends "settings.html" %}
+
+{% import "user/password.html" as password %}
+{% import "settings/nav.html" as nav %}
+{% import "user/role.html" as role %}
+
+{% block title %}{{ tt!("ui.user.edit.title") }} - {{ user.email }} | {{ super() }}{% endblock title %}
+
+{% block settings_navigation %}{{ nav::nav("users") }}{% endblock settings_navigation %}
+
+{% block main %}
+{% let own = user.id.as_str() == current_user_id.as_str() %}
+<header>
+  <h1>{{ tt!("ui.user.edit.title") }}{% if own %} <small>({{ tt!("ui.user.current") }})</small>{% endif %}</h1>
+</header>
+<noscript><p>{{ tt!("ui.javascript.required") }}</p></noscript>
+
+<div x-data='{ submitting: false, role: {{ user.role|json }}, initialRole: {{ user.role|json }}, resetTotp: false }'>
+  <form
+    method="post"
+    action="/settings/users/{{ user.id }}"
+    autocomplete="off"
+    @submit="if ($refs.password.value !== $refs.confirmPassword.value) { $refs.confirmPassword.setCustomValidity($refs.confirmPassword.dataset.mismatch); $refs.confirmPassword.reportValidity(); $event.preventDefault(); return } if (submitting) { $event.preventDefault(); return } const body = {}; if ($refs.firstName.value !== $refs.firstName.defaultValue) body.first_name = $refs.firstName.value; if ($refs.lastName.value !== $refs.lastName.defaultValue) body.last_name = $refs.lastName.value; if ($refs.email.value !== $refs.email.defaultValue) body.email = $refs.email.value; if (role !== initialRole) body.role = role; if (resetTotp) body.reset_totp = true; if ($refs.password.value) body.password_sha256 = sha256($refs.password.value); $refs.payload.value = JSON.stringify(body); submitting = true"
+  >
+    <input x-ref="payload" type="hidden" name="payload" />
+    <div class="stack section-stack">
+      <div class="fields">
+        <div class="field">
+          <label for="user-first-name">{{ tt!("ui.form.user.firstName.label") }}: </label>
+          <input x-ref="firstName" id="user-first-name" class="text" type="text" value="{{ user.first_name }}" minlength="1" maxlength="64" required />
+        </div>
+        <div class="field">
+          <label for="user-last-name">{{ tt!("ui.form.user.lastName.label") }}: </label>
+          <input x-ref="lastName" id="user-last-name" class="text" type="text" value="{{ user.last_name }}" minlength="1" maxlength="64" required />
+        </div>
+        <div class="field">
+          <label for="user-email">{{ tt!("ui.form.user.email.label") }}: </label>
+          <input x-ref="email" id="user-email" class="text" type="email" value="{{ user.email }}" maxlength="254" spellcheck="false" required />
+        </div>
+      </div>
+      {% if !own %}
+      {% let user_role = user.role %}
+      {{ role::radiogroup(user_role) }}
+      {% endif %}
+      <div>
+        <div class="fields">
+          {{ password::fields("user-password", "user-confirm-password", tt!("ui.user.edit.password"), false) }}
+        </div>
+        <small>{{ tt!("ui.user.edit.password.help") }}</small>
+        {% if !own %}
+        <small>{{ tt!("ui.user.delete.help") }}</small>
+        {% endif %}
+      </div>
+      <section>
+        <h2>{{ tt!("ui.account.twoFactor.title") }}</h2>
+        {% if user.totp_enabled %}
+        <label class="choice">
+          <input id="user-reset-totp" type="checkbox" x-model="resetTotp" aria-labelledby="user-reset-totp-label" aria-describedby="user-reset-totp-help" />
+          <b id="user-reset-totp-label">{{ tt!("ui.user.edit.totp.reset") }}</b>
+          <small id="user-reset-totp-help">{{ tt!("ui.user.edit.totp.reset.help") }}</small>
+        </label>
+        {% else %}
+        <p class="muted">{{ tt!("ui.user.totp.disabled") }}</p>
+        {% endif %}
+      </section>
+    </div>
+    <div class="actions">
+      {% if !own %}
+      <button type="submit" class="button danger" form="user-delete-form" :disabled="submitting">{{ tt!("ui.common.delete") }}</button>
+      {% endif %}
+      <input class="button" type="submit" value='{{ tt!("ui.common.save") }}' :disabled="submitting" />
+    </div>
+  </form>
+  {% if !own %}
+  <form
+    id="user-delete-form"
+    method="post"
+    action="/settings/users/{{ user.id }}/delete"
+    data-confirm='{{ tt!("ui.user.delete.confirm") }}'
+    @submit="if (submitting || !confirm($el.dataset.confirm)) { $event.preventDefault(); return } $refs.deletePayload.value = '{}'; submitting = true"
+  >
+    <input x-ref="deletePayload" type="hidden" name="payload" />
+  </form>
+  <form id="user-role-options"></form>
+  {% endif %}
+</div>
+{% endblock main %}

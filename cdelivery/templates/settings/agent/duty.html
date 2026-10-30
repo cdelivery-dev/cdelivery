@@ -1,0 +1,162 @@
+{% extends "settings.html" %}
+
+{% import "settings/nav.html" as nav %}
+{% import "user/role.html" as user_role %}
+
+{%- macro patrol_interval() -%}
+<span class="agent-duty-inline-control"><input
+  id="agent-duty-patrol-value"
+  class="text inline-number"
+  type="number"
+  step="1"
+  :min="patrolInterval.unit === 'Hours' ? 1 : 15"
+  :max="patrolInterval.unit === 'Hours' ? 24 : 1440"
+  x-model.number="patrolInterval.value"
+  aria-label='{{ tt!("ui.settings.agent.duty.patrol.interval") }}'
+  :disabled="submitting"
+  required
+/><select
+  id="agent-duty-patrol-unit"
+  class="text"
+  x-model="patrolInterval.unit"
+  aria-label='{{ tt!("ui.settings.agent.duty.patrol.unit") }}'
+  :disabled="submitting"
+  required
+>
+  <option value="Minutes">{{ tt!("ui.settings.agent.duty.patrol.minutes") }}</option>
+  <option value="Hours" data-one='{{ tt!("ui.settings.agent.duty.patrol.hoursOne") }}' data-other='{{ tt!("ui.settings.agent.duty.patrol.hours") }}' x-text="CDelivery.quantity(patrolInterval.value, $el.dataset)">{{ tt!("ui.settings.agent.duty.patrol.hours") }}</option>
+</select></span>
+{%- endmacro -%}
+
+{%- macro language_select() -%}
+<select id="agent-language" class="text" x-model="language" :disabled="submitting" required>
+  <option value="De">Deutsch</option>
+  <option value="En">English</option>
+  <option value="Es">Español</option>
+  <option value="Fr">Français</option>
+  <option value="Ja">日本語</option>
+  <option value="PtBr">Português (Brasil)</option>
+  <option value="ZhCn">简体中文</option>
+  <option value="ZhTw">繁體中文</option>
+</select>
+{%- endmacro -%}
+
+{% block title %}{{ tt!("ui.settings.agent.duty.title") }} - {{ tt!("ui.settings.agent.title") }} | {{ super() }}{% endblock title %}
+
+{% block settings_navigation %}{{ nav::nav("duty") }}{% endblock settings_navigation %}
+
+{% block main %}
+<header>
+  <h1>{{ tt!("ui.settings.agent.duty.title") }}</h1>
+</header>
+
+{% if let Some(agent) = agent %}
+<script id="settings-agent-duty-init" type="application/json">{{ agent|json|safe }}</script>
+<div class="mt-3" x-data="settingsAgentDuty">
+  <form id="settings-agent-duty-options"></form>
+  <form
+    method="post"
+    action="/settings/agent/duty"
+    @submit="prepare($event)"
+  >
+    <input x-ref="payload" type="hidden" name="payload" />
+    <div class="stack section-stack">
+      <label class="choice">
+        <input type="checkbox" x-model="dutyEnabled" aria-describedby="agent-duty-enabled-help" :disabled="submitting" />
+        <b id="agent-duty-enabled-label">{{ tt!("ui.settings.agent.duty.enabled") }}</b>
+        <small id="agent-duty-enabled-help">{{ tt!("ui.settings.agent.duty.enabled.help") }}</small>
+      </label>
+      <fieldset>
+        <legend id="agent-duty-patrol">{{ tt!("ui.settings.agent.duty.patrol") }}</legend>
+        <p>
+          {% match crate::locale::current() %}
+          {% when crate::locale::Locale::ZhCn %}
+          每{{ patrol_interval() }}检查健康、容量和趋势，范围 15 分钟至 24 小时。故障事件的 AI 分析不等待巡查。
+          {% when crate::locale::Locale::ZhTw %}
+          每{{ patrol_interval() }}檢查健康、容量和趨勢，間隔範圍 15 分鐘至 24 小時。故障事件的 AI 分析無須等待巡查。
+          {% when crate::locale::Locale::De %}
+          Zustand, Kapazität und Trends im Abstand von {{ patrol_interval() }} prüfen (15 Minuten bis 24 Stunden). Die KI-Analyse von Störungsereignissen wartet nicht auf die nächste Prüfung.
+          {% when crate::locale::Locale::En %}
+          Check health, capacity, and trends every {{ patrol_interval() }} (15 minutes–24 hours). AI analysis of failure events does not wait for patrols.
+          {% when crate::locale::Locale::Ja %}
+          {{ patrol_interval() }}ごとに稼働状況・容量・傾向を確認する（15分〜24時間）。障害イベントの AI 分析は巡回を待たずに行います。
+          {% when crate::locale::Locale::PtBr %}
+          Verificar o estado, a capacidade e as tendências a cada {{ patrol_interval() }} (de 15 minutos a 24 horas). A análise por IA dos eventos de falha não aguarda essa verificação.
+          {% when crate::locale::Locale::Es %}
+          Comprobar el estado, la capacidad y las tendencias cada {{ patrol_interval() }} (de 15 minutos a 24 horas). El análisis de IA de los eventos de fallo no espera a la siguiente comprobación.
+          {% when crate::locale::Locale::Fr %}
+          Vérifier l’état, la capacité et les tendances à intervalles de {{ patrol_interval() }} (de 15 minutes à 24 heures). L’analyse IA des événements de panne n’attend pas la prochaine vérification.
+          {% endmatch %}
+        </p>
+      </fieldset>
+      <div class="field">
+        <label for="agent-language">{{ tt!("ui.settings.agent.duty.language") }}</label>
+        {{ language_select() }}
+      </div>
+      <fieldset class="choice-group" role="radiogroup" aria-labelledby="agent-duty-policy" aria-describedby="agent-duty-policy-help">
+        <legend id="agent-duty-policy">{{ tt!("ui.settings.agent.duty.policy") }}</legend>
+        <small id="agent-duty-policy-help">{{ tt!("ui.settings.agent.duty.policy.help") }}</small>
+        <div class="choice-options">
+          <label class="choice choice-option">
+            <input type="radio" name="duty-policy" form="settings-agent-duty-options" value="EarlyRisk" x-model="dutyPolicy" aria-labelledby="duty-policy-early-risk-label" aria-describedby="duty-policy-early-risk-help" :disabled="submitting" />
+            <b id="duty-policy-early-risk-label">{{ tt!("ui.settings.agent.duty.policy.earlyRisk") }}</b>
+            <small id="duty-policy-early-risk-help">{{ tt!("ui.settings.agent.duty.policy.earlyRisk.help") }}</small>
+          </label>
+          <label class="choice choice-option">
+            <input type="radio" name="duty-policy" form="settings-agent-duty-options" value="NearCritical" x-model="dutyPolicy" aria-labelledby="duty-policy-near-critical-label" aria-describedby="duty-policy-near-critical-help" :disabled="submitting" />
+            <b id="duty-policy-near-critical-label">{{ tt!("ui.settings.agent.duty.policy.nearCritical") }}</b>
+            <small id="duty-policy-near-critical-help">{{ tt!("ui.settings.agent.duty.policy.nearCritical.help") }}</small>
+          </label>
+          <label class="choice choice-option">
+            <input type="radio" name="duty-policy" form="settings-agent-duty-options" value="LimitOrFailure" x-model="dutyPolicy" aria-labelledby="duty-policy-limit-or-failure-label" aria-describedby="duty-policy-limit-or-failure-help" :disabled="submitting" />
+            <b id="duty-policy-limit-or-failure-label">{{ tt!("ui.settings.agent.duty.policy.limitOrFailure") }}</b>
+            <small id="duty-policy-limit-or-failure-help">{{ tt!("ui.settings.agent.duty.policy.limitOrFailure.help") }}</small>
+          </label>
+        </div>
+      </fieldset>
+      <fieldset class="choice-group" role="radiogroup" aria-labelledby="agent-duty-role" aria-describedby="agent-duty-role-help">
+        <legend id="agent-duty-role">{{ tt!("ui.settings.agent.duty.role") }}</legend>
+        <small id="agent-duty-role-help">{{ tt!("ui.settings.agent.duty.role.help") }}</small>
+        <div class="choice-options">
+          {% let duty_role = agent.role %}
+          {{ user_role::options(duty_role, "duty-role", "settings-agent-duty-options") }}
+        </div>
+      </fieldset>
+    </div>
+    <div class="actions">
+      <input class="button" type="submit" value='{{ tt!("ui.common.save") }}' :disabled="submitting" />
+    </div>
+  </form>
+</div>
+
+<script>
+document.addEventListener("alpine:init", () => {
+  Alpine.data("settingsAgentDuty", () => {
+    const current = JSON.parse(document.getElementById("settings-agent-duty-init").textContent);
+    return {
+      dutyEnabled: current.duty_enabled,
+      dutyPolicy: current.duty_policy,
+      patrolInterval: current.patrol_interval,
+      language: current.language,
+      role: current.role,
+      submitting: false,
+      prepare(event) {
+        if (CDelivery.guard(this, event)) return;
+        this.$refs.payload.value = JSON.stringify({
+          duty_enabled: this.dutyEnabled,
+          duty_policy: this.dutyPolicy,
+          patrol_interval: this.patrolInterval,
+          language: this.language,
+          role: this.role,
+        });
+        this.submitting = true;
+      },
+    };
+  });
+});
+</script>
+{% else %}
+<p class="mt-3">{{ tt!("ui.settings.agent.duty.unavailable") }}</p>
+<p><a href="/settings/agent/model">{{ tt!("ui.settings.agent.duty.configureModel") }}</a></p>
+{% endif %}
+{% endblock main %}

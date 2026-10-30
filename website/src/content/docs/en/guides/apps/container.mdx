@@ -1,0 +1,32 @@
+---
+title: "Startup commands and environment variables"
+description: "Configure the container process and environment without confusing command parsing with shell execution."
+sidebar:
+  order: 10
+---
+
+Keep the image's default startup command unless its documentation requires an override. An override changes the container process; it is not a command run inside an already running application.
+
+## Commands
+
+The command is parsed into arguments with quoting support. Shell expansion, pipes, redirects, and `&&` require an explicitly invoked shell:
+
+```sh
+sh -c 'exec ./server --port "$PORT"'
+```
+
+The image must contain that shell and executable. Prefer a foreground process so that container state reflects the application. A command that exits successfully still ends the main process.
+
+## Environment
+
+Add each variable by name and value. Names contain 1–128 characters and cannot include `=`; values can contain up to 4096 characters. Use the names and formats expected by the image.
+
+For example, a program may read `PORT=8080`, but adding that variable does not automatically publish port 8080 or guarantee the program uses it. Configure [network access](/docs/guides/networking/connectivity/) separately.
+
+Arbitrary environment variables are shared configuration, not automatically redacted secret fields. Avoid treating them as private account storage.
+
+## Verify and troubleshoot
+
+Save the change, inspect replacement tasks, and read startup logs. An unchanged save does not restart tasks. Check spelling, quoting, executable paths, working directory assumptions, and whether required tools exist in the image.
+
+If a shell expression appears literally in arguments, explicitly invoke the shell. If the program binds only to loopback inside the container, other applications and the gateway cannot reach it. For larger configuration, use [XConfig](/docs/guides/apps/xconfig/) where supported instead of forcing file content into environment variables.

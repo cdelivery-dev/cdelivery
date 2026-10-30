@@ -1,0 +1,98 @@
+{% import "time_range.html" as time_range %}
+
+{%- macro panel(state, action, start, end, range, instance, instances, show_controls, component) -%}
+{% if show_controls %}
+<form
+  method="get"
+  action="{{ action }}"
+  class="row query-bar"
+  x-data='CDelivery.timeRange({{ start|json }}, {{ end|json }}, {{ range|json }})'
+>
+  {{ time_range::fields(range) }}
+  {% if !component.is_empty() %}
+  <span class="sep" aria-hidden="true">|</span>
+  <select class="text" name="component" @change="$root.elements.instance.value = ''; $root.requestSubmit()" aria-label='{{ tt!("ui.insight.metrics.component.label") }}'>
+    <option value="Server" translate="no"{% if component == "Server" %} selected{% endif %}>Server</option>
+    <option value="Agent" translate="no"{% if component == "Agent" %} selected{% endif %}>Agent</option>
+  </select>
+  {% endif %}
+  <span class="sep" aria-hidden="true">|</span>
+  <select class="text" name="instance" @change="$root.requestSubmit()" aria-label='{{ tt!("ui.metrics.instance.label") }}'>
+    <option value="">{{ tt!("ui.metrics.instance.all") }}</option>
+    {% for option in instances %}
+    <option value="{{ option.id }}"{% if option.id == instance %} selected{% endif %}>{{ option.label }}</option>
+    {% endfor %}
+  </select>
+</form>
+{% endif %}
+
+{{ content(state, start, end, "service", false) }}
+{%- endmacro -%}
+
+{%- macro content(state, start, end, scope, open_all) -%}
+{% match state %}
+{% when crate::ui::metrics::MetricsState::Disabled %}
+<p class="muted mt-4">{{ tt!("ui.insight.query.disabled") }} <a href="/insight">{{ tt!("ui.insight.query.open") }}</a></p>
+{% when crate::ui::metrics::MetricsState::Empty %}
+<p class="muted">{{ tt!("ui.metrics.empty") }}</p>
+{% when crate::ui::metrics::MetricsState::Charts(groups) %}
+{{ charts(groups, start, end, scope, open_all) }}
+{% endmatch %}
+{%- endmacro -%}
+
+{%- macro root(start, end, scope) -%}
+<div
+  id="metric-charts"
+  class="stack"
+  data-metric-scope="{{ scope }}"
+  data-start="{{ start }}"
+  data-end="{{ end }}"
+  data-min-label='{{ tt!("ui.metrics.series.min") }}'
+  data-avg-label='{{ tt!("ui.metrics.series.avg") }}'
+  data-max-label='{{ tt!("ui.metrics.series.max") }}'
+  data-replicas-label='{{ tt!("ui.metrics.chart.replicas") }}'
+  data-core-unit='{{ tt!("ui.metrics.unit.cores") }}'
+  data-total-label='{{ tt!("ui.overview.chart.total") }}'
+>
+  {{ caller() }}
+</div>
+{%- endmacro -%}
+
+{%- macro section(key, title, open) -%}
+<details data-metric-group="{{ key }}"{% if open %} open{% endif %}>
+  <summary>{{ title }}</summary>
+  <div class="stack mt-2">
+    {{ caller() }}
+  </div>
+</details>
+{%- endmacro -%}
+
+{%- macro stat(item) -%}
+<figure>
+  <figcaption>{{ item.title }}</figcaption>
+  <div
+    class="metric-chart"
+    role="img"
+    aria-label="{{ item.title }}"
+    data-unit="{{ item.unit }}"
+    {% if let Some(unit) = item.detail_unit %}data-detail-unit="{{ unit }}"{% endif %}
+    {% if let Some(label) = item.detail_label %}data-detail-label="{{ label }}"{% endif %}
+    {% if let Some(label) = item.total_label %}data-total-label="{{ label }}"{% endif %}
+    {% if let Some(labels) = item.stat_labels %}data-stat-labels="{{ labels }}"{% endif %}
+    data-metric="{{ item.data }}"
+  ></div>
+</figure>
+{%- endmacro -%}
+
+{%- macro charts(groups, start, end, scope, open_all) -%}
+{% call root(start, end, scope) %}
+  {% for group in groups %}
+  {% let key = group.key %}
+  {% let title = group.title %}
+  {% let open = open_all || loop.first %}
+  {% call section(key, title, open) %}
+  {% for item in group.charts %}{{ stat(item) }}{% endfor %}
+  {% endcall %}
+  {% endfor %}
+{% endcall %}
+{%- endmacro -%}

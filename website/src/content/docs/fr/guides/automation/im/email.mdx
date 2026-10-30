@@ -1,0 +1,28 @@
+---
+title: "Intégration e-mail"
+description: "SMTP suffit aux notifications ; les conversations nécessitent IMAP et un modèle."
+sidebar:
+  order: 45
+---
+
+SMTP suffit aux notifications ; les conversations nécessitent IMAP et un modèle.
+
+## Envoyer
+
+Admin renseigne adresse de plateforme, serveur SMTP, port et mot de passe. L’adresse sert aussi d’utilisateur. 465 utilise TLS implicite ; les autres ports utilisent la négociation chiffrée prise en charge.
+
+Certains fournisseurs exigent un mot de passe d’application ; voir [Google](https://support.google.com/accounts/answer/185833). Activez l’abonnement personnel et vérifiez votre adresse.
+
+## Recevoir
+
+Configurez IMAP, généralement 993 en TLS implicite, secret et `authserv_id` du serveur de réception fiable.
+
+Le From doit correspondre à un utilisateur et les résultats fiables doivent valider DKIM et DMARC. From seul ne suffit pas. N’inventez pas authserv_id à partir du domaine expéditeur.
+
+Lecture dans INBOX, à partir de sa fin lors de l’initialisation du curseur ; envoyez un nouveau message après activation.
+
+## Tester
+
+Posez une question en lecture depuis l’e-mail du compte. Si seul l’envoi fonctionne, contrôlez IMAP, [modèle](/docs/fr/guides/automation/models/), identité et authentification.
+
+Vérifiez TLS, réseau, spam et abonnement. Modifier adresse/hôte/port exige les secrets correspondants ; ils ne sont pas réaffichés.

@@ -1,0 +1,37 @@
+---
+title: "API- und MCP-Zugang"
+description: "REST und MCP teilen Operationen und Autorisierung; alle Pfade gehören zu deiner Instanz."
+sidebar:
+  order: 60
+---
+
+REST und MCP teilen Operationen und Autorisierung; alle Pfade gehören zu deiner Instanz.
+
+## Schlüssel
+
+Unter Konto → MCP/API keys Namen mit 1–64 UTF-8-Bytes, Rollenobergrenze und optional zukünftiges Ablaufdatum setzen. Sofort kopieren, einmalige Anzeige.
+
+Je Werkzeug eigener Schlüssel. Rolle kann wirksame Erstellungsrolle nicht übersteigen und bleibt durch aktuelle Nutzerrolle begrenzt. Passwortwechsel erhält Schlüssel; Nutzerlöschung invalidiert ihn.
+
+## REST
+
+URL/Schlüssel lokal setzen:
+
+```sh
+curl --fail-with-body "$CDELIVERY_URL/api/me" \
+  -H "Authorization: Bearer $CDELIVERY_API_KEY"
+```
+
+Eigene Kontodaten erwarten. `/scalar` zeigt das installierte Schema.
+
+Patch: ausgelassen behält Wert, `null` leert nur geeignete Felder, leerer Patch gültig. Enums unterscheiden Groß-/Kleinschreibung: Reader/Operator/Admin.
+
+## MCP
+
+HTTP-Client auf `/mcp` mit `Authorization: Bearer YOUR_API_KEY` richten. Werkzeuge listen und lesend testen. Clientfreigabe ersetzt keine Plattformrechte.
+
+## Fehler
+
+401: ungültig/abgelaufen/widerrufen oder Nutzer unzugänglich. 403: Rechte. 422: Felder/Voraussetzungen. Verbindung: URL/TLS/Proxy.
+
+Nach Widerruf Ablehnung testen. Siehe [Rollen](/docs/de/administration/accounts/roles/).

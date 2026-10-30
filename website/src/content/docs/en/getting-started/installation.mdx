@@ -1,0 +1,46 @@
+---
+title: "Installation and initial setup"
+description: "Run the installer, select a server communication address, and verify administrator access."
+sidebar:
+  order: 4
+---
+
+Complete the [requirements](/docs/getting-started/requirements/) before running the installer. Installation needs administrative permissions and creates platform resources.
+
+## Install
+
+```sh
+curl -fsSL https://cdelivery.dev/install.sh | sh
+```
+
+To explicitly select the address other servers use:
+
+```sh
+curl -fsSL https://cdelivery.dev/install.sh | sh -s -- --advertise-addr 10.0.0.10
+```
+
+Replace the address with one assigned to this server and reachable by its peers. It is not a domain and need not be your browser's public destination.
+
+On Linux, inspect the installer's Docker and networking output. On macOS, start Docker first. If IPv6 preparation fails, follow the displayed options; unattended runs cannot rely on interactive choices. See the [networking FAQ](/docs/guides/networking/faq/).
+
+## Create the first administrator
+
+Open `http://SERVER_IP:9000`; on macOS, normally use `http://localhost:9000`. An SSH tunnel uses its corresponding local address.
+
+For a new installation, enter your name, email, and password on the setup page to create the first Admin. Wait for startup before signing in: submitting initialization is not confirmation that every component is ready.
+
+A resumed installation preserves its account. Rerunning the installer does not reset passwords, erase accounts, or migrate an existing communication address.
+
+## Verify and troubleshoot
+
+Confirm that you can sign in, see the server with its expected address and resources, and open groups and settings. Then deploy the [first application](/docs/getting-started/first-app/) to verify image pulling and execution.
+
+| Failure | Check |
+| --- | --- |
+| Downloads fail | DNS, outbound HTTPS, proxy, original error |
+| Docker connection fails | Daemon, permissions, server version |
+| Browser times out | Address, port 9000, cloud and host firewalls |
+| Tunnel fails | SSH session and local port conflicts |
+| Existing account cannot sign in | [Recovery procedure](/docs/administration/platform/recovery/) |
+
+Remove passwords and tokens before sharing diagnostic output. A working console does not prove that an application is accessible. Configure a [platform domain](/docs/administration/platform/access/) after basic access works.

@@ -1,0 +1,30 @@
+---
+title: "Group management"
+description: "Organize applications and shared communication while understanding naming and deletion constraints."
+sidebar:
+  order: 56
+---
+
+Groups organize applications and provide a common communication network. Names such as `demo` and `production` can express project or environment. Groups do not restrict account visibility.
+
+## Create and use
+
+An Admin creates a group with a unique 1–16-character name using lowercase letters, digits, or hyphens, without leading/trailing hyphens or reserved names. An optional description can contain up to 256 characters.
+
+Select the group when creating an application. Application names remain unique across the entire platform; another group does not allow reusing an existing application name. The console does not rename groups or move existing applications between them.
+
+Verify the group and its applications, then test [internal connectivity](/docs/guides/networking/connectivity/).
+
+## Maintain descriptions
+
+Descriptions record purpose or ownership without changing scheduling or permissions. If network creation succeeded but description saving failed, the group can already exist; refresh and update its description.
+
+An API patch that omits the description preserves it. Explicitly clearing the field removes it.
+
+## Delete and troubleshoot
+
+Remove or resolve applications and network references before deleting the group. Container cleanup is asynchronous, so a group can remain busy briefly after application deletion. Wait for task exit and inspect remaining references before retrying.
+
+Group deletion does not clean business volumes. Record the server and volume names through [volume management](/docs/administration/nodes/volumes/).
+
+For connection failures, check group membership, destination port, listening interface, and server networking. For name conflicts, inspect existing groups before recreating resources.

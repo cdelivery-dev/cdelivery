@@ -1,0 +1,55 @@
+---
+title: "接入 Slack"
+description: "创建 Slack 应用、启用 Socket Mode、配置令牌并绑定自己的 Member ID。"
+sidebar:
+  order: 46
+---
+
+Slack 接入需要工作区安装应用的权限和 CDelivery Admin 权限。建议为 CDelivery 创建专用应用，分别管理 Bot Token 与 App Token。
+
+## 创建并配置应用
+
+1. 在 [Slack 应用管理](https://api.slack.com/apps)创建应用，选择目标工作区。
+2. 在 OAuth 权限中添加发送消息所需的 `chat:write`、打开私信所需的 `im:write`，以及读取私信事件的 `im:history`。
+3. 需要群内提及时添加 `app_mentions:read`；需要显示姓名和头像时添加 `users:read`。
+4. 在 Basic Information 创建带 `connections:write` 的 App-Level Token，得到 `xapp-` 开头的令牌。
+5. 启用 Socket Mode，并启用 Event Subscriptions，订阅 `message.im`；需要群内提及时订阅 `app_mention`。
+6. 在 App Home 允许用户从 Messages 页签向应用发送消息。
+7. 安装到工作区，取得 `xoxb-` 开头的 Bot Token。修改权限后按 Slack 提示重新安装。
+
+Socket Mode 的设置与令牌区别可参考 [Slack 官方说明](https://docs.slack.dev/tools/python-slack-sdk/socket-mode/)。使用 CDelivery 时不需要另写该页面中的示例程序。
+
+## 填入 CDelivery
+
+管理员打开 **设置 → 渠道 → Slack**：
+
+| 字段 | 填写内容 |
+| --- | --- |
+| Bot Token | `xoxb-` 开头的机器人令牌 |
+| App Token | `xapp-` 开头、具有连接权限的应用令牌 |
+
+保存配置。两种令牌不能互换，也不能用个人用户令牌替代 Bot Token。服务器应允许访问 Slack API 及 WebSocket 连接。
+
+## 绑定自己的账户
+
+在 Slack 中打开自己的个人资料，通过更多操作复制 Member ID。然后在 CDelivery 的 **账户 → Slack** 填入该 ID，并保存。
+
+需要接收运维通知时，再打开该渠道的通知开关。不要填写显示名称、电子邮箱、频道 ID 或 Bot 的 Member ID。
+
+## 验证
+
+先确认已配置 AI 模型，再私信 Bot：“查看当前应用列表”。核对能否收到回复及权限是否符合你的 CDelivery 账户。
+
+群内使用时先把 Bot 加入对应频道，并明确提及它；首次验证优先使用私信，减少频道权限与事件订阅的干扰。
+
+## 常见问题
+
+| 现象 | 检查项 |
+| --- | --- |
+| 无法建立连接 | App Token、`connections:write`、Socket Mode 和出站网络 |
+| 能连接但不收私信 | `message.im`、`im:history` 和 Messages 页签设置 |
+| 收到消息但无法回复 | Bot Token、`chat:write`、私信权限及安装范围 |
+| 姓名或头像不显示 | `users:read` |
+| Bot 不识别你 | 当前工作区的个人 Member ID 是否与绑定一致 |
+
+令牌轮换后更新对应字段，再重新验证。旧令牌失效不会自动替你创建新的 Slack 凭据。

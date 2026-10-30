@@ -1,0 +1,26 @@
+---
+title: "Update-Strategien"
+description: "Lege Parallelität, Reihenfolge, Beobachtung und Fehlerreaktion fest."
+sidebar:
+  order: 28
+---
+
+Lege Parallelität, Reihenfolge, Beobachtung und Fehlerreaktion fest.
+
+## Vorgaben
+
+Alle Replikate parallel; StopFirst; 60 Sekunden Beobachtung; Fehleranteil 0; Rollback.
+
+Paralleles StopFirst kann alle Instanzen unterbrechen. StartFirst braucht Kapazität und Unterstützung für Überlappung; zwei Datenbanken auf gleichen Dateien werden dadurch nicht sicher.
+
+## Auswahl
+
+Replikate, Reservierungen, Servermaximum, Startdauer und Versionsverträglichkeit berücksichtigen. Änderung anhand Aufgaben, Logs und echter Anfrage prüfen.
+
+Überleben des Beobachtungsfensters ist keine geschäftliche Assertion.
+
+## Fehler
+
+Rollback verwendet vorhandene vorherige Konfiguration. Sein Ablauf ist parallel und setzt trotz eigener Fehler fort; Endzustand prüfen.
+
+[XHealth](/docs/de/guides/release-safety/xhealth/) liefert Assertions, [Guardian](/docs/de/guides/release-safety/) Kandidatenprüfung. Grenzen stehen bei [Rollback](/docs/de/guides/release-safety/rollback/).

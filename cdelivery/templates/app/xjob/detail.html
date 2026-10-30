@@ -1,0 +1,53 @@
+{% extends "dashboard.html" %}
+
+{% import "app/tabs.html" as tab %}
+{% import "app/resource.html" as resource %}
+{% import "app/xjob/form.html" as form %}
+
+{% block title %}XJob {{ job.name }} - {{ self.name }} | {{ super() }}{% endblock title %}
+
+{% block main %}
+<header>
+  <h1 translate="no">{{ job.name }}</h1>
+  <p><a translate="no" href="/apps/{{ name }}/xjobs">{{ name }}</a></p>
+  {{ tab::tabs(name, "xjob", can_edit) }}
+</header>
+
+<dl>
+  <dt>{{ tt!("ui.xjob.header.interval") }}</dt>
+  <dd>{% let interval = job.interval %}{{ resource::duration(interval) }}</dd>
+  <dt>{{ tt!("ui.xjob.header.timeout") }}</dt>
+  <dd>{% let timeout = job.timeout %}{{ resource::duration(timeout) }}</dd>
+  <dt>{{ tt!("ui.xjob.header.lastRun") }}</dt>
+  <dd>
+    {% match job.status %}
+    {% when crate::operation::typ::RunState::Passed { finished_at } %}<span class="inline-meta"><span>{{ tt!("ui.xjob.status.passed") }}</span> <relative-time datetime="{{ finished_at }}">{{ finished_at }}</relative-time></span>
+    {% when crate::operation::typ::RunState::Failed { error, finished_at } %}<span class="inline-meta"><span>{{ tt!("ui.xjob.status.failed") }}</span> <relative-time datetime="{{ finished_at }}">{{ finished_at }}</relative-time></span><p class="muted">{{ error }}</p>
+    {% when crate::operation::typ::RunState::Running { started_at } %}<span class="inline-meta"><span>{{ tt!("ui.xjob.status.running") }}</span> <relative-time datetime="{{ started_at }}">{{ started_at }}</relative-time></span>
+    {% when crate::operation::typ::RunState::Pending %}{{ tt!("ui.xjob.status.pending") }}
+    {% when crate::operation::typ::RunState::Settled %}{{ tt!("ui.xjob.status.settled") }}
+    {% endmatch %}
+  </dd>
+  <dt>{{ tt!("ui.xjob.header.nextRun") }}</dt>
+  <dd>{% if let Some(next) = job.next_run %}<relative-time datetime="{{ next }}">{{ next }}</relative-time>{% else %}{{ tt!("ui.xjob.nextRun.pending") }}{% endif %}</dd>
+</dl>
+<h2 class="section-title">{{ tt!("ui.app.config.title") }}</h2>
+
+{% if can_edit %}
+<form x-ref="form" class="mt-2" method="post" action="/apps/{{ name }}/xjobs/{{ job.name }}/update" x-data="xjobForm" @submit="prepare($event)">
+  <input x-ref="payload" type="hidden" name="payload" />
+  {{ form::fields(false) }}
+  <div class="actions"><input class="button" type="submit" value='{{ tt!("ui.common.update") }}' :disabled="submitting" /></div>
+</form>
+{% let active = job.is_active() %}
+<div class="actions">
+  <form method="post" action="/apps/{{ name }}/xjobs/{{ job.name }}/delete" x-data="{ submitting: false }" data-confirm='{{ tt!("ui.xjob.deleteConfirm") }}' @submit="if (submitting || !confirm($el.dataset.confirm)) { $event.preventDefault(); return } $refs.payload.value = '{}'; submitting = true"><input x-ref="payload" type="hidden" name="payload" /><input type="submit" class="button danger" value='{{ tt!("ui.xjob.delete") }}' :disabled="submitting" /></form>
+  <form method="post" action="/apps/{{ name }}/xjobs/{{ job.name }}/run" x-data="{ submitting: false }" data-confirm='{{ tt!("ui.xjob.run.confirm") }}' @submit="if (submitting || {{ active }} || !confirm($el.dataset.confirm)) { $event.preventDefault(); return } $refs.payload.value = '{}'; submitting = true"><input x-ref="payload" type="hidden" name="payload" /><input class="button" type="submit" value='{{ tt!("ui.xjob.run.label") }}' :disabled="submitting || {{ active }}" /></form>
+</div>
+{% let initial = self.form() %}
+<script id="xjob-form-init" type="application/json">{{ initial|json|safe }}</script>
+{{ form::script(false) }}
+{% else %}
+<dl><dt>{{ tt!("ui.xjob.command.label") }}</dt><dd><code translate="no">{{ command_line }}</code></dd></dl>
+{% endif %}
+{% endblock main %}

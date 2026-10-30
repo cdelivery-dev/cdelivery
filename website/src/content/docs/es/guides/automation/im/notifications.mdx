@@ -1,0 +1,28 @@
+---
+title: "Notificaciones y diagnóstico"
+description: "La entrega depende de canal de plataforma, suscripción personal y elegibilidad del destinatario."
+sidebar:
+  order: 51
+---
+
+La entrega depende de canal de plataforma, suscripción personal y elegibilidad del destinatario.
+
+## Configurar
+
+Admin habilita el canal. Cada usuario confirma correo o ID propio y activa suscripciones. Vinculación y suscripción son independientes.
+
+Añade [guardia automática](/docs/es/guides/automation/duty/) solo para análisis con IA. Las alertas ordinarias no requieren modelo. Desactivar guardia no desactiva todas las alertas; desactivar suscripción no borra identidad.
+
+## Roles e idioma
+
+Notificaciones de guardia exigen rol del receptor igual o superior al de guardia. Operator notifica a Operator y Admin suscritos, no a Reader.
+
+La guardia usa idioma configurado; conversaciones siguen el idioma del usuario.
+
+## Diagnosticar
+
+Comprueba, en orden: evento real, credenciales y permisos del canal, receptor, interruptores personales, rol, restricciones o spam del proveedor y errores del modelo.
+
+Anota hora, canal, cuenta y evento; elimina tokens y contraseñas. No recibir alertas no prueba que el sistema esté sano. Tras cambiar identidad, verifica con conversación de lectura: avatar o nombre no bastan.
+
+Consulta cada [canal](/docs/es/guides/automation/im/) para pasos específicos.

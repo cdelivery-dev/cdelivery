@@ -1,0 +1,31 @@
+---
+title: "HTTP access logs"
+description: "Inspect Pingress requests, response status, backend selection, and timing."
+sidebar:
+  order: 33
+---
+
+Access logs describe requests passing through Pingress. Direct connections to a published application port do not follow the same gateway path and should not be expected in this source.
+
+## Inspect a request
+
+Select the application or domain and a narrow time range. Look for the requested domain, response result, entry server, target port, byte counts, time to first byte, and service or error details.
+
+| Observation | Next check |
+| --- | --- |
+| No matching request | DNS destination, proxy, selected range, collection |
+| TLS or entry failure | Certificate and gateway reachability |
+| Backend connection error | Application tasks, listening interface, container port |
+| Unexpected route | Domain, path prefix, header and cookie conditions |
+| Slow first byte | Application and downstream latency |
+| Large response time | Transfer size, backend work, network |
+
+The client address can reflect the directly connected peer or upstream proxy behavior. Do not infer the original user's identity from an address without understanding the network path.
+
+## Verify routing changes
+
+After changing a [route](/docs/guides/networking/routing/), make a new request with the intended host and conditions. Compare its target and result with a request that should not match.
+
+A gateway response can fail while the application process remains running. Correlate the request time with [application logs](/docs/guides/observability/logs/application/) and [metrics](/docs/guides/observability/metrics/application/).
+
+If history is missing, verify Insight, storage, retention, and collector health. See [collection settings](/docs/guides/observability/settings/).

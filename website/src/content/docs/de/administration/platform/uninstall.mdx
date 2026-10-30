@@ -1,0 +1,35 @@
+---
+title: "Deinstallation und Bereinigung"
+description: "Entfernen löscht Verwaltungsressourcen, Anwendungsdefinitionen, Konten und Zugangsdaten; Volumes und Beschreibungen bleiben."
+sidebar:
+  order: 64
+---
+
+Entfernen löscht Verwaltungsressourcen, Anwendungsdefinitionen, Konten und Zugangsdaten; Volumes und Beschreibungen bleiben.
+
+## Vorschau
+
+Verwaltungsserver mit Docker CLI, jq und lokalem Unix-Socket nutzen. Einstellungen, Images und Volumezuordnung notieren, sichern, Ressourcenerstellung stoppen.
+
+```sh
+curl -fsSLo /tmp/cdelivery-uninstall.sh https://cdelivery.dev/uninstall.sh
+sh /tmp/cdelivery-uninstall.sh
+```
+
+Ohne Argument nur ausgewählte Ressourcen anzeigen. Endpoint und Liste prüfen.
+
+## Entfernen
+
+```sh
+sh /tmp/cdelivery-uninstall.sh --yes
+```
+
+Zuerst Hauptprogramm stoppen. Docker, Volumes, externes DNS, Objektspeicher und Providerkonten bleiben.
+
+## Prüfen
+
+Entfernte Ressourcen und erhaltene Volumes kontrollieren. Containerende asynchron; Offlinegeräte nach Wiederverbindung prüfen.
+
+Fehler beheben und `--yes` erneut ausführen. Währenddessen weder installieren noch gleiche Ressourcen neu erstellen.
+
+Datenlöschung ist separate Entscheidung. Neue Installation erzeugt neue Verwaltungsdaten; Geschäftswiederherstellung braucht Aufzeichnungen und Speichersicherung.

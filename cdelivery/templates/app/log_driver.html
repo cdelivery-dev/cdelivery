@@ -1,0 +1,57 @@
+{%- macro log_driver_type_select() -%}
+<select id="log-driver-type-select" class="text" x-model="$$logDriverType" aria-label='{{ tt!("ui.app.logDriver.type.label") }}'>
+  <option value="FollowHost">{{ tt!("ui.app.logDriver.type.followHost") }}</option>
+  <option value="JsonFile">{{ tt!("ui.app.logDriver.type.jsonFile") }}</option>
+  <option value="Insight">{{ tt!("ui.app.logDriver.type.insight") }}</option>
+</select>
+{%- endmacro -%}
+
+{%- macro max_files_input() -%}
+<input id="log-driver-max-files-input" class="text inline-number" type="number" min="1" max="100" x-model.number="log_driver.max_file" aria-label='{{ tt!("ui.app.logDriver.maxFiles.label") }}' required />
+{%- endmacro -%}
+
+{%- macro file_size_input() -%}
+<input id="log-driver-file-size-input" class="text inline-number" type="number" min="1" :max="log_driver.max_size.unit === 'GiB' ? 1 : 1024" x-model.number="log_driver.max_size.value" aria-label='{{ tt!("ui.app.logDriver.maxSize.label") }}' required /><select id="log-driver-file-size-unit-select" class="text" x-model="log_driver.max_size.unit" aria-label='{{ tt!("ui.app.logDriver.maxSizeUnit.label") }}'>
+  <option value="MiB">MiB</option>
+  <option value="GiB">GiB</option>
+</select>
+{%- endmacro -%}
+
+{%- macro editable() -%}
+<li x-data="logDriverData">
+  {% match crate::locale::current() %}
+  {% when crate::locale::Locale::ZhCn %}
+  容器运行期间的日志{{ log_driver_type_select() }}<template x-if="$$logDriverType === 'JsonFile'"><span>，最多保留{{ max_files_input() }}个文件，每个文件最多{{ file_size_input() }}</span></template>。
+  {% when crate::locale::Locale::ZhTw %}
+  容器執行期間的日誌{{ log_driver_type_select() }}<template x-if="$$logDriverType === 'JsonFile'"><span>，最多保留{{ max_files_input() }}個檔案，每個檔案最多{{ file_size_input() }}</span></template>。
+  {% when crate::locale::Locale::Ja %}
+  コンテナのログは{{ log_driver_type_select() }}。<template x-if="$$logDriverType === 'JsonFile'"><span>1ファイルあたり{{ file_size_input() }}まで、最大{{ max_files_input() }}ファイルを保存する。</span></template>
+  {% when crate::locale::Locale::PtBr %}
+  Os logs do contêiner {{ log_driver_type_select() }}.<template x-if="$$logDriverType === 'JsonFile'"><span> Manter até {{ max_files_input() }} <span data-one="arquivo" data-other="arquivos" x-text="CDelivery.quantity(log_driver.max_file, $el.dataset)">arquivos</span>, com no máximo {{ file_size_input() }} por arquivo.</span></template>
+  {% when crate::locale::Locale::Es %}
+  Los registros del contenedor {{ log_driver_type_select() }}.<template x-if="$$logDriverType === 'JsonFile'"><span> Conservar hasta {{ max_files_input() }} <span data-one="archivo" data-other="archivos" x-text="CDelivery.quantity(log_driver.max_file, $el.dataset)">archivos</span>, de {{ file_size_input() }} como máximo cada uno.</span></template>
+  {% when crate::locale::Locale::Fr %}
+  Les journaux du conteneur {{ log_driver_type_select() }}.<template x-if="$$logDriverType === 'JsonFile'"><span> Conserver au maximum {{ max_files_input() }} <span data-one="fichier" data-other="fichiers" x-text="CDelivery.quantity(log_driver.max_file, $el.dataset)">fichiers</span>, de {{ file_size_input() }} maximum chacun.</span></template>
+  {% when crate::locale::Locale::De %}
+  Container-Logs {{ log_driver_type_select() }}.<template x-if="$$logDriverType === 'JsonFile'"><span> Höchstens {{ max_files_input() }} <span data-one="Datei" data-other="Dateien" x-text="CDelivery.quantity(log_driver.max_file, $el.dataset)">Dateien</span> mit jeweils maximal {{ file_size_input() }} aufbewahren.</span></template>
+  {% when crate::locale::Locale::En %}
+  Container logs during runtime are {{ log_driver_type_select() }}<template x-if="$$logDriverType === 'JsonFile'"><span>, keeping up to {{ max_files_input() }} <span data-one="file" data-other="files" x-text="CDelivery.quantity(log_driver.max_file, $el.dataset)">files</span>, with each capped at {{ file_size_input() }}</span></template>.
+  {% endmatch %}
+</li>
+<script>
+document.addEventListener("alpine:init", () => {
+  Alpine.data("logDriverData", () => ({
+    get $$logDriverType() {
+      return this.log_driver ? this.log_driver.driver : "FollowHost";
+    },
+    set $$logDriverType(val) {
+      if (val === "JsonFile") {
+        this.log_driver = { driver: val, max_file: 5, max_size: { unit: "MiB", value: 10 } };
+      } else {
+        this.log_driver = { driver: val };
+      }
+    },
+  }));
+});
+</script>
+{%- endmacro -%}

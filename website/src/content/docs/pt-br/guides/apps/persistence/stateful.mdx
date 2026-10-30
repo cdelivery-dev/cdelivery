@@ -1,0 +1,28 @@
+---
+title: "Aplicações com estado"
+description: "O modo com volume local executa uma réplica em servidor fixo e é escolhido ao criar."
+sidebar:
+  order: 15
+---
+
+O modo com volume local executa uma réplica em servidor fixo e é escolhido ao criar.
+
+## Criar
+
+Escolha servidor com espaço, identifique volume, selecione imagem/modelo, revise ambiente e credenciais, monte o diretório correto e teste escrita.
+
+Esse modo não usa posicionamento dinâmico, escala automática, XConfig ou Guardian. O modelo atual PostgreSQL declara `PGDATA=/var/lib/postgresql/data`; confira variável, imagem e montagem em conjunto. Outros bancos podem exigir caminhos diferentes.
+
+Senhas geradas são configuração da aplicação; não suponha que todo ambiente seja oculto.
+
+## Atualizar
+
+Uma réplica pode ficar indisponível na substituição. Revise [estratégia](/docs/pt-br/guides/release-safety/update-strategy/) e instruções do banco. Não use versões incompatíveis no mesmo diretório.
+
+Faça backup consistente antes de mudança de formato. [Reversão](/docs/pt-br/guides/release-safety/rollback/) recupera configuração, não dados.
+
+## Falha e migração
+
+Selecionar outra máquina com volume de mesmo nome não recupera conteúdo. Migre ou restaure pelos procedimentos de armazenamento e verifique dados.
+
+Excluir a aplicação mantém volume. Registre servidor e nome antes de limpar.

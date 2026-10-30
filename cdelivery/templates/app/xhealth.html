@@ -1,0 +1,332 @@
+{% extends "dashboard.html" %}
+
+{% import "app/tabs.html" as tab %}
+
+{% block title %}XHealth - {{ self.name }} | {{ super() }}{% endblock title %}
+
+{% block main %}
+{{ tab::page_header(name, description, "xhealth", can_edit) }}
+
+{% if let Some(info) = xhealth %}
+<div class="mt-2">
+  <p class="muted">{{ tt!("ui.xhealth.status.label") }}</p>
+  <div class="row xhealth-status">
+    {% match info.status %}
+    {% when crate::operation::typ::RunState::Passed { finished_at } %}
+    <span class="inline-meta"><b>{{ tt!("ui.xhealth.status.passed") }}</b>
+    <small><relative-time datetime="{{ finished_at }}">{{ finished_at }}</relative-time></small></span>
+    {% when crate::operation::typ::RunState::Failed { finished_at, .. } %}
+    <span class="inline-meta"><b class="abnormal">{{ tt!("ui.xhealth.status.failed") }}</b>
+    <small><relative-time datetime="{{ finished_at }}">{{ finished_at }}</relative-time></small></span>
+    {% when crate::operation::typ::RunState::Running { started_at } %}
+    <span class="inline-meta"><b>{{ tt!("ui.xhealth.status.running") }}</b>
+    <small><relative-time datetime="{{ started_at }}">{{ started_at }}</relative-time></small></span>
+    {% when crate::operation::typ::RunState::Pending %}
+    <b>{{ tt!("ui.xhealth.status.pending") }}</b>
+    {% when crate::operation::typ::RunState::Settled %}
+    <b>{{ tt!("ui.xhealth.status.settled") }}</b>
+    {% endmatch %}
+    {% if can_edit %}
+    {% let active = matches!(info.status, crate::operation::typ::RunState::Pending | crate::operation::typ::RunState::Running { .. }) %}
+    <form method="post" action="/apps/{{ name }}/xhealth/run" x-data="{ submitting: false }" @submit="if (submitting || {{ active }}) { $event.preventDefault(); return } submitting = true">
+      <input type="hidden" name="payload" value="{}" />
+      <input class="button" type="submit" value='{{ tt!("ui.xhealth.run.label") }}' {% if active %}disabled{% endif %} :disabled="submitting || {{ active }}" />
+    </form>
+    {% endif %}
+  </div>
+  {% if let crate::operation::typ::RunState::Failed { error, .. } = info.status %}
+  <p class="diagnostic-summary" translate="no">{{ error }}</p>
+  <small><a href="/apps/{{ name }}/logs?source=xhealth">{{ tt!("ui.diagnostic.logs") }}</a></small>
+  <details>
+    <summary>{{ tt!("ui.diagnostic.details") }}</summary>
+    <pre class="diagnostic" translate="no">{{ error }}</pre>
+  </details>
+  {% endif %}
+</div>
+<h2 class="section-title">{{ tt!("ui.app.config.title") }}</h2>
+{% endif %}
+
+<div x-data="xhealthForm">
+  <form id="xhealth-choices"></form>
+  <form
+    x-ref="form"
+    class="mt-2"
+    method="post"
+    action="{% if xhealth.is_some() %}/apps/{{ name }}/xhealth/update{% else %}/apps/{{ name }}/xhealth/create{% endif %}"
+    @submit.prevent="submit"
+  >
+    <input x-ref="payload" type="hidden" name="payload" />
+    <div class="stack section-stack">
+      <fieldset>
+        <legend>{{ tt!("ui.xhealth.method.label") }}</legend>
+        <div class="choice-options">
+          <label class="choice">
+            <input type="radio" name="xhealth-method" form="xhealth-choices" value="hurl" x-model="method" :disabled="controlsDisabled" aria-labelledby="xhealth-method-hurl-label" aria-describedby="xhealth-method-hurl-help" />
+            <span id="xhealth-method-hurl-label">{{ tt!("ui.xhealth.method.hurl.label") }}</span>
+            <small id="xhealth-method-hurl-help">{{ tt!("ui.xhealth.method.hurl_description")|safe }}</small>
+          </label>
+          <label class="choice">
+            <input type="radio" name="xhealth-method" form="xhealth-choices" value="custom" x-model="method" :disabled="controlsDisabled" aria-labelledby="xhealth-method-custom-label" aria-describedby="xhealth-method-custom-help" />
+            <span id="xhealth-method-custom-label">{{ tt!("ui.xhealth.method.custom.label") }}</span>
+            <small id="xhealth-method-custom-help">{{ tt!("ui.xhealth.method.custom_description")|safe }}</small>
+          </label>
+        </div>
+      </fieldset>
+      <div class="fields xhealth-fields">
+        <template x-if="method === 'hurl'">
+          <div class="fields">
+            <div class="field">
+              <label for="hurl-file">{% if xhealth.is_some() %}{{ tt!("ui.xhealth.file.update.label") }}{% else %}{{ tt!("ui.xhealth.file.label") }}{% endif %}</label>
+              <input id="hurl-file" class="text" type="file" accept=".hurl" x-ref="hurlFile" :disabled="controlsDisabled" :required="method === 'hurl' && (!enabled || current_method !== 'hurl')" />
+              {% if xhealth.is_some() %}
+              <small>
+                {{ tt!("ui.xhealth.file.update.help") }}
+                {% if let Some(info) = xhealth %}{% if matches!(info.method, crate::operation::xhealth::typ::XHealthMethod::Hurl { .. }) %}
+                <a href="/api/apps/{{ name }}/xhealth/file" download="{{ name }}.hurl">{{ tt!("ui.common.download") }}</a>
+                {% endif %}{% endif %}
+              </small>
+              {% endif %}
+            </div>
+            <div class="field">
+              <label for="hurl-version">{{ tt!("ui.xhealth.version.label") }}</label>
+              <select id="hurl-version" class="text" x-model="version" :disabled="controlsDisabled" :required="method === 'hurl' && (!enabled || current_method !== 'hurl')">
+                {% if let Some(version) = current_version %}<option value="">{{ version }}</option>{% endif %}
+                {% if let Some(version) = target_version %}<option value="{{ version }}">{{ version }}</option>{% else if current_version.is_none() %}<option value="">{{ tt!("ui.xhealth.version.unavailable") }}</option>{% endif %}
+              </select>
+            </div>
+          </div>
+        </template>
+        <template x-if="method === 'custom'">
+          <div class="fields"><div class="field">
+            <label for="custom-command">{{ tt!("ui.xhealth.command.label") }}</label>
+            <input id="custom-command" class="text" type="text" minlength="1" maxlength="8192" x-model="command_line" :disabled="controlsDisabled" placeholder='{{ tt!("ui.xhealth.command.placeholder") }}' spellcheck="false" required />
+            <small>{{ tt!("ui.xhealth.command.helper") }}</small>
+          </div></div>
+        </template>
+        <div class="row field">
+          <label for="xhealth-interval">{{ tt!("ui.xhealth.interval.label") }}</label>
+          <div class="row">
+            <input id="xhealth-interval" aria-label='{{ tt!("ui.xhealth.interval.label") }}' class="text" type="number" :min="interval_unit === 'Seconds' ? 60 : 1" max="1000000" x-model.number="interval_value" :disabled="controlsDisabled" required />
+            <select class="text" x-model="interval_unit" aria-label='{{ tt!("ui.xhealth.interval.unit") }}' :disabled="controlsDisabled" required>
+              <option value="Seconds">{{ tt!("ui.xhealth.duration.seconds") }}</option>
+              <option value="Minutes" data-one='{{ tt!("ui.xhealth.duration.minutesOne") }}' data-other='{{ tt!("ui.xhealth.duration.minutes") }}' x-text="CDelivery.quantity(interval_value, $el.dataset)">{{ tt!("ui.xhealth.duration.minutes") }}</option>
+              <option value="Hours" data-one='{{ tt!("ui.xhealth.duration.hoursOne") }}' data-other='{{ tt!("ui.xhealth.duration.hours") }}' x-text="CDelivery.quantity(interval_value, $el.dataset)">{{ tt!("ui.xhealth.duration.hours") }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <fieldset>
+        <legend>{{ tt!("ui.xhealth.target.label") }}</legend>
+        <div class="choice-options">
+          <div class="row">
+            <label class="choice" :class="{ muted: domain_options.length === 0 }"><input type="radio" name="xhealth-target" form="xhealth-choices" value="domain" x-model="target_mode" :disabled="controlsDisabled || domain_options.length === 0" /><span>{{ tt!("ui.xhealth.target.domain") }}</span></label>
+            <template x-if="target_mode === 'domain'">
+              <select class="text" x-model="domain" aria-label='{{ tt!("ui.xhealth.target.domain") }}' :disabled="controlsDisabled" required>
+                <template x-for="option in domain_options" :key="option"><option :value="option" x-text="option"></option></template>
+              </select>
+            </template>
+          </div>
+          <div class="row">
+            <label class="choice" :class="{ muted: published_options.length === 0 }"><input type="radio" name="xhealth-target" form="xhealth-choices" value="published" x-model="target_mode" :disabled="controlsDisabled || published_options.length === 0" /><span>{{ tt!("ui.xhealth.target.publishedPort") }}</span></label>
+            <template x-if="target_mode === 'published'">
+              <select class="text" x-model.number="published" aria-label='{{ tt!("ui.xhealth.target.publishedPort") }}' :disabled="controlsDisabled" required>
+                <template x-for="option in published_options" :key="option"><option :value="option" x-text="option"></option></template>
+              </select>
+            </template>
+          </div>
+          <div class="row">
+            <label class="choice"><input type="radio" name="xhealth-target" form="xhealth-choices" value="internal" x-model="target_mode" :disabled="controlsDisabled" /><span>{{ tt!("ui.xhealth.target.internalPort") }}</span></label>
+            <template x-if="target_mode === 'internal'">
+              <input class="text" type="number" min="1" max="65535" x-model.number="internal_port" aria-label='{{ tt!("ui.xhealth.target.internalPort") }}' :disabled="controlsDisabled" required />
+            </template>
+          </div>
+        </div>
+      </fieldset>
+      <label class="choice">
+        <input type="checkbox" id="guardian" x-model="guardian" :disabled="controlsDisabled" aria-labelledby="xhealth-guardian-label" aria-describedby="xhealth-guardian-help" />
+        <b id="xhealth-guardian-label">{{ tt!("ui.xhealth.guardian.label") }}</b>
+        <small id="xhealth-guardian-help">{{ tt!("ui.xhealth.guardian.description") }}</small>
+      </label>
+    </div>
+    {% if can_edit %}
+    <div class="actions">
+      {% if xhealth.is_some() %}<input type="submit" form="xhealth-disable-form" class="button danger" value='{{ tt!("ui.common.close") }}' :disabled="submitting" />{% endif %}
+      <input class="button" type="submit" value='{% if xhealth.is_some() %}{{ tt!("ui.common.update") }}{% else %}{{ tt!("ui.common.enable") }}{% endif %}' :disabled="submitting" />
+    </div>
+    {% endif %}
+  </form>
+  {% if can_edit && xhealth.is_some() %}
+  <form id="xhealth-disable-form" method="post" action="/apps/{{ name }}/xhealth/disable" @submit="disable($event)">
+    <input x-ref="disablePayload" type="hidden" name="payload" />
+  </form>
+  {% endif %}
+</div>
+
+<script id="xhealth-current" type="application/json">{{ xhealth|json|safe }}</script>
+<script id="xhealth-command" type="application/json">{{ command_line|json|safe }}</script>
+<script id="xhealth-domains" type="application/json">{{ domains|json|safe }}</script>
+<script id="xhealth-ports" type="application/json">{{ ports|json|safe }}</script>
+<script id="xhealth-target-version" type="application/json">{{ target_version|json|safe }}</script>
+<script>
+document.addEventListener("alpine:init", () => {
+  Alpine.data("xhealthForm", () => {
+    const current = JSON.parse(document.getElementById("xhealth-current").textContent);
+    const originalCommand = JSON.parse(document.getElementById("xhealth-command").textContent) || "";
+    const domains = JSON.parse(document.getElementById("xhealth-domains").textContent);
+    const ports = JSON.parse(document.getElementById("xhealth-ports").textContent);
+    const targetVersion = JSON.parse(document.getElementById("xhealth-target-version").textContent);
+    const domainTargets = new Map();
+    for (const domain of domains) {
+      if (!domainTargets.has(domain.domain)) domainTargets.set(domain.domain, new Set());
+      domainTargets.get(domain.domain).add(domain.target);
+    }
+    const domainOptions = [...domainTargets.entries()]
+      .filter(([, targets]) => targets.size === 1)
+      .map(([domain]) => domain)
+      .sort((a, b) => a.localeCompare(b));
+    const publishedOptions = method => {
+      const targets = new Map();
+      for (const port of ports) {
+        if (method === "hurl" && port.protocol !== "Tcp") continue;
+        if (!targets.has(port.published)) targets.set(port.published, new Set());
+        targets.get(port.published).add(port.target);
+      }
+      return [...targets.entries()]
+        .filter(([, values]) => values.size === 1)
+        .map(([published]) => published)
+        .sort((a, b) => a - b);
+    };
+    const defaultInternal = 8080;
+    const defaultTarget = { InternalPort: { port: defaultInternal } };
+    const enabled = current !== null;
+    const currentIsHurl = current?.method?.Hurl !== undefined;
+    const state = current ? {
+      method: currentIsHurl ? "hurl" : "custom",
+      interval: current.interval,
+      target: current.target,
+      guardian: current.guardian,
+      command_line: originalCommand,
+    } : {
+      method: "hurl",
+      interval: { unit: "Minutes", value: 15 },
+      target: defaultTarget,
+      guardian: false,
+      command_line: "",
+    };
+    let targetMode = state.target.Domain !== undefined ? "domain" : state.target.PublishedPort ? "published" : "internal";
+    const initialPublishedOptions = publishedOptions(state.method);
+    const defaultPublished = initialPublishedOptions.includes(8080) ? 8080 : (initialPublishedOptions[0] || "");
+    const published = targetMode === "published" ? state.target.PublishedPort.published : defaultPublished;
+    const domain = state.target.Domain ?? (domainOptions[0] || "");
+    if (targetMode === "domain" && !domainOptions.includes(domain)) targetMode = "internal";
+    if (targetMode === "published" && !initialPublishedOptions.includes(published)) targetMode = "internal";
+    return {
+      enabled,
+      current_method: current ? (currentIsHurl ? "hurl" : "custom") : null,
+      method: state.method,
+      version: currentIsHurl ? "" : (targetVersion || ""),
+      interval_unit: state.interval.unit,
+      interval_value: state.interval.value,
+      target_mode: targetMode,
+      domain_options: domainOptions,
+      domain,
+      published,
+      internal_port: state.target.InternalPort?.port || defaultInternal,
+      guardian: state.guardian,
+      command_line: state.command_line,
+      original_command: originalCommand,
+      canEdit: {% if can_edit %}true{% else %}false{% endif %},
+      submitting: false,
+
+      get controlsDisabled() {
+        return this.submitting || !this.canEdit;
+      },
+
+      init() {
+        this.$watch("method", () => this.repairPublished());
+        this.repairPublished();
+      },
+
+      get published_options() {
+        return publishedOptions(this.method);
+      },
+
+      repairPublished() {
+        if (!this.published_options.includes(this.published)) this.published = this.published_options[0] || "";
+        if (this.target_mode === "published" && this.published === "") this.target_mode = "internal";
+      },
+
+      targetPayload() {
+        if (this.target_mode === "domain") return { Domain: this.domain };
+        if (this.target_mode === "published") return { PublishedPort: { published: this.published } };
+        return { InternalPort: { port: this.internal_port } };
+      },
+      readText(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => reject(reader.error);
+          reader.readAsText(file);
+        });
+      },
+      async methodPayload() {
+        if (this.method === "custom") {
+          if (!this.enabled || this.current_method !== "custom" || this.command_line !== this.original_command) return { Custom: { command: [] } };
+          return null;
+        }
+        const file = this.$refs.hurlFile?.files[0];
+        const hurl = {};
+        if (file) hurl.file = await this.readText(file);
+        if (this.version) hurl.version = this.version;
+        if (Object.keys(hurl).length > 0 || !this.enabled || this.current_method !== "hurl") return { Hurl: hurl };
+        return null;
+      },
+      async submit() {
+        if (this.submitting) return;
+        const file = this.$refs.hurlFile?.files[0];
+        if (file && file.size > {{ crate::config::XCONFIG_DATA_MAX }}) {
+          alert({{ tt!("ui.xhealth.file.size.exceed")|json|safe }});
+          return;
+        }
+        this.submitting = true;
+        try {
+          const method = await this.methodPayload();
+          const interval = { unit: this.interval_unit, value: this.interval_value };
+          const target = this.targetPayload();
+          let payload;
+          if (!this.enabled) {
+            payload = { spec: { method, interval, target, guardian: this.guardian }, command_line: this.method === "custom" ? this.command_line : null };
+          } else {
+            const spec = {};
+            if (method !== null) spec.method = method;
+            if (JSON.stringify(interval) !== JSON.stringify(current.interval)) spec.interval = interval;
+            if (JSON.stringify(target) !== JSON.stringify(current.target)) spec.target = target;
+            if (this.guardian !== current.guardian) spec.guardian = this.guardian;
+            if (Object.keys(spec).length === 0) {
+              alert({{ tt!("ui.app.noChange")|json|safe }});
+              this.submitting = false;
+              return;
+            }
+            payload = { spec, command_line: method && method.Custom ? this.command_line : null };
+          }
+          this.$refs.payload.value = JSON.stringify(payload);
+          this.$refs.form.submit();
+        } catch {
+          if (this.$refs.hurlFile) this.$refs.hurlFile.value = "";
+          alert({{ tt!("ui.xhealth.file.reselect")|json|safe }});
+          this.submitting = false;
+        }
+      },
+      disable(event) {
+        if (this.submitting || !confirm({{ tt!("ui.common.closeConfirmation")|json|safe }})) {
+          event.preventDefault();
+          return;
+        }
+        this.$refs.disablePayload.value = "{}";
+        this.submitting = true;
+      },
+    };
+  });
+});
+</script>
+{% endblock main %}

@@ -1,0 +1,39 @@
+---
+title: "Prérequis d’installation"
+description: "Préparez droits administratifs, Docker, adresses stables, connectivité et capacité."
+sidebar:
+  order: 3
+---
+
+Préparez droits administratifs, Docker, adresses stables, connectivité et capacité.
+
+## Système
+
+Linux nécessite les droits administratifs et `curl` ; l’installateur prépare Docker sur les systèmes pris en charge. API 1.48 est requise, soit Engine 28.0 ou ultérieur. Vérifiez client et serveur avec `docker version`. Sur macOS, démarrez Docker et vérifiez `docker info`.
+
+Prévoyez plateforme, applications, chevauchement des mises à jour et journaux. Autorisez les connexions sortantes vers installation, registres et fournisseurs.
+
+## Réseau
+
+| Port | Usage | Portée |
+| --- | --- | --- |
+| TCP 9000 | Console/API | Administration |
+| TCP 80/443 | Pingress | Clients |
+| Ports publiés | Applications | Clients prévus |
+| TCP 2377 | Gestion | Entre serveurs |
+| TCP/UDP 7946 | Communication | Entre serveurs |
+| UDP 4789 | Trafic applicatif | Entre serveurs |
+
+Contrôlez pare-feu du système et règles cloud. Restreignez les ports internes aux machines participantes. Voir [Docker](https://docs.docker.com/engine/network/drivers/overlay/#requirements).
+
+L’adresse annoncée doit être joignable par les autres serveurs ; elle peut différer de celle du navigateur. Loopback ne convient pas aux pairs distants.
+
+```sh
+ssh -L 9000:127.0.0.1:9000 your-user@server.example.com
+```
+
+Gardez le tunnel ouvert ; 8080 nécessite un autre transfert.
+
+## Données
+
+Choisissez stockage et sauvegarde avant une application avec état. Le domaine est facultatif. Consultez [IPv6](/docs/fr/guides/networking/faq/) puis [installez](/docs/fr/getting-started/installation/).

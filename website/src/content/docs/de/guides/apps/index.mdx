@@ -1,0 +1,24 @@
+---
+title: "Anwendungsverwaltung"
+description: "Eine Anwendung verbindet Image, Laufzeit, Netzwerk, Ressourcen und Speicher mit einem überprüfbaren Sollzustand."
+sidebar:
+  order: 7
+---
+
+Eine Anwendung verbindet Image, Laufzeit, Netzwerk, Ressourcen und Speicher mit einem überprüfbaren Sollzustand.
+
+## Vor der Erstellung
+
+Name, Gruppe, Datenhaltung, Befehl, Ports und Kapazität bestimmen. Die Konsole benennt Anwendungen nicht um und verschiebt sie nicht. Lokale Volumes werden bei Erstellung gewählt.
+
+Reader liest; Operator/Admin erstellen, ändern, starten neu und löschen. Gruppen und Serverressourcen benötigen Admin.
+
+## Anleitungen
+
+[Erstellen](/docs/de/guides/apps/create/), [Images](/docs/de/guides/apps/images/), [Befehle](/docs/de/guides/apps/container/), [Ressourcen](/docs/de/guides/apps/resources/), [XConfig](/docs/de/guides/apps/xconfig/), [Daten](/docs/de/guides/apps/persistence/), [Skalierung](/docs/de/guides/apps/scaling/), [Platzierung](/docs/de/guides/apps/placement/), [Aktualisierung](/docs/de/guides/apps/lifecycle/) und [Löschen](/docs/de/guides/apps/delete/).
+
+## Vorgaben
+
+Ein Replikat, Image-Befehl, Host-Logs, ohne zusätzliche Reservierung/Label. Update: alle parallel, StopFirst, 60 Sekunden Beobachtung, Fehlerquote 0, Rollback.
+
+[Strategie](/docs/de/guides/release-safety/update-strategy/) für Verfügbarkeit prüfen. Unverändertes Speichern startet nicht neu. Beliebige Variablen/Dateien werden nicht automatisch verborgen. Replikate, Logs und Anfrage kontrollieren.

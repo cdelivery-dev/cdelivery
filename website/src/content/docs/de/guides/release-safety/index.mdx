@@ -1,0 +1,26 @@
+---
+title: "Release-Prüfung mit Guardian"
+description: "Guardian validiert eine Kandidatenkonfiguration vor Übernahme in den laufenden Dienst."
+sidebar:
+  order: 29
+---
+
+Guardian validiert eine Kandidatenkonfiguration vor Übernahme in den laufenden Dienst.
+
+## Vorbereiten
+
+[XHealth](/docs/de/guides/release-safety/xhealth/) sinnvoll konfigurieren, Guardian aktivieren und Kapazität für Kandidat plus Bestand einplanen.
+
+Relevante Image-, Laufzeit- und Dateiänderungen können validieren; nicht jede Metadatenänderung startet einen Release. Lokale Volumes unterstützen Guardian nicht.
+
+## Phasen
+
+Deploying: Planung/Start. Validating: Prüfungen. Failed: Fehler. Promoting: Übernahme.
+
+Wiederholen, überspringen oder abbrechen hängt von Phase ab. Überspringen akzeptiert ohne erfolgreiche Prüfung und macht aus Fehlern keinen Erfolg.
+
+## Kontrolle
+
+GuardianApp- und GuardianCheck-Logs trennen. Ports, Werkzeuge, Umgebung, Kapazität und Assertions prüfen. Nach Übernahme aktive Replikate und Dienst testen.
+
+Guardian stellt keine Daten zurück und garantiert nicht alle Produktionsabhängigkeiten. Siehe [Strategie](/docs/de/guides/release-safety/update-strategy/) und [Rollback](/docs/de/guides/release-safety/rollback/).

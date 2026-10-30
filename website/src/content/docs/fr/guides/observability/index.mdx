@@ -1,0 +1,28 @@
+---
+title: "Journaux, métriques et événements"
+description: "Croisez exécution, consommation et changements pour comprendre un incident."
+sidebar:
+  order: 31
+---
+
+Croisez exécution, consommation et changements pour comprendre un incident.
+
+## Choisir une source
+
+| Question | Guide |
+| --- | --- |
+| Pourquoi le processus échoue ? | [Journaux applicatifs](/docs/fr/guides/observability/logs/application/) |
+| Que devient la requête ? | [Accès HTTP](/docs/fr/guides/observability/logs/access/) |
+| Manque de ressources ? | [Application](/docs/fr/guides/observability/metrics/application/) et [serveur](/docs/fr/guides/observability/metrics/server/) |
+| Quel changement ? | [Événements](/docs/fr/guides/observability/events/) |
+| Historique absent ? | [Collecte](/docs/fr/guides/observability/settings/) |
+
+Admin active Insight, collecteurs et stockage. Les journaux dépendent aussi de leur pilote. Activer la collecte ne reconstitue pas le passé.
+
+## Lire les résultats
+
+Choisissez ressource, source et période, jusqu’à 31 jours pour les requêtes historiques. Resserrez autour de l’incident.
+
+Vide peut signifier absence d’activité, retard, collecte inactive ou expiration. Une requête échouée est autre chose. Données absentes ne signifient pas zéro consommation.
+
+Générez une activité après modification et vérifiez des timestamps récents avant de conclure.

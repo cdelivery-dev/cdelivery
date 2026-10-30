@@ -1,0 +1,184 @@
+[workspace]
+members = [
+    "cdelivery",
+    "cdelivery-agent",
+    "cdelivery-wire",
+    "cipher",
+    "docker",
+    "insight",
+    "insight-agent",
+    "insight-schema",
+    "insight-wire",
+    "logging",
+    "macros",
+    "macros-derive",
+    "pingress",
+    "pingress-wire",
+    "tests",
+    "xtask",
+]
+resolver = "3"
+
+[workspace.package]
+license = "Apache-2.0"
+repository = "https://github.com/cdelivery-dev/cdelivery"
+homepage = "https://cdelivery.dev"
+
+[profile.release-size]
+inherits = "release"
+lto = "fat"
+codegen-units = 1
+opt-level = "z"
+strip = "symbols"
+
+[profile.release-speed]
+inherits = "release"
+lto = "fat"
+codegen-units = 1
+opt-level = 3
+strip = "symbols"
+
+[workspace.dependencies]
+macros = { path = "macros" }
+macros-derive = { path = "macros-derive" }
+logging = { path = "logging" }
+cipher = { path = "cipher" }
+cdelivery-wire = { path = "cdelivery-wire" }
+docker = { path = "docker" }
+pingress-wire = { path = "pingress-wire" }
+insight-wire = { path = "insight-wire" }
+insight-schema = { path = "insight-schema" }
+arc-swap = "1"
+arrow = { version = "59", default-features = false, features = ["ipc"] }
+askama = { version = "0.16", features = ["serde_json"] }
+async-trait = "0.1"
+axum = "0.8"
+axum-extra = { version = "0.12", features = ["cookie", "query"] }
+base64 = "0.23"
+pingora = { version = "0.9", default-features = false, features = ["proxy", "boringssl"] }
+blake3 = "1"
+bytes = "1"
+chacha20poly1305 = "0.11"
+datafusion = { version = "55", default-features = false, features = ["parquet"] }
+object_store = { version = "0.13", features = ["aws", "azure", "gcp"] }
+oci-spec = { version = "0.10.0", default-features = false, features = ["distribution"] }
+parquet = { version = "59", features = ["async"] }
+getrandom = "0.4"
+getset = "0.1"
+hickory-resolver = "0.26"
+http = "1"
+hyper-rustls = { version = "0.27", default-features = false, features = ["http1", "http2", "native-tokio", "tls12", "rustls-platform-verifier"] }
+hyper-util = { version = "0.1", features = ["client", "client-legacy", "http1", "http2", "tokio"] }
+instant-acme = { version = "0.8", features = ["time", "x509-parser"] }
+rustls = { version = "0.23", default-features = false, features = ["aws_lc_rs", "std", "tls12"] }
+rustls-pki-types = "1"
+x509-parser = "0.18"
+reqwest = { version = "0.13", default-features = false, features = ["query"] }
+futures-util = { version = "0.3", default-features = false, features = ["std"] }
+rust-i18n = "4.1"
+rust-i18n-support = { version = "4.2", features = ["codegen"] }
+mail-send = "0.6"
+mail-parser = "1"
+async-imap = { version = "0.12", default-features = false, features = ["runtime-tokio"] }
+prost = "0.14"
+tokio-tungstenite = { version = "0.30", features = ["rustls-tls-native-roots"] }
+twilight-gateway = { version = "0.17.1", default-features = false, features = ["rustls-platform-verifier"] }
+twilight-http = { version = "0.17.1", default-features = false, features = ["rustls-platform-verifier"] }
+twilight-model = { version = "0.17.1", default-features = false }
+tokio-rustls = "0.26"
+rustls-platform-verifier = "0.7"
+mimalloc = "0.1"
+parking_lot = "0.13"
+rmcp = { version = "3.1", default-features = false, features = ["server", "transport-streamable-http-server"] }
+rmpv = { version = "1", features = ["with-serde"] }
+rustix = { version = "1", features = ["fs"] }
+scc = "3"
+semver = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_with = "3"
+sha2 = "0.11"
+shlex = "2.0.1"
+strum = { version = "0.28", features = ["derive"] }
+thiserror = "2"
+utoipa = { version = "6", features = ["jiff_0_2", "uuid"] }
+utoipa-axum = "0.3"
+utoipa-scalar = { version = "0.4", features = ["axum"] }
+zeroize = { version = "1", features = ["serde"] }
+jiff = { version = "0.2", default-features = false, features = [
+    "std",
+    "serde",
+] }
+tokio = { version = "~1.53", features = ["rt-multi-thread", "macros", "time", "net", "sync", "signal", "io-util", "io-std"] }
+tokio-util = { version = "0.7", features = ["rt", "codec"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", default-features = false, features = [
+    "std",
+    "fmt",
+    "registry",
+    "env-filter",
+    "json",
+    "ansi",
+] }
+totp-rs = { version = "6.0.0", default-features = false, features = ["qr", "serde", "zeroize"] }
+console-subscriber = "0.5"
+argon2 = { version = "0.6", default-features = false, features = ["alloc", "password-hash"] }
+garde = { version = "0.23", features = ["derive", "email"] }
+genai = "0.7.1"
+tower = "0.5"
+tower-http = { version = "0.7", features = [
+    "normalize-path",
+    "request-id",
+    "sensitive-headers",
+    "trace",
+    "compression-gzip",
+    "catch-panic",
+] }
+uuid = { version = "1", features = ["v4", "v5", "serde"] }
+url = "2"
+syn = { version = "3", features = ["full"] }
+proc-macro2 = "1"
+quote = "1"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+unreachable_pub = "warn"
+missing_debug_implementations = "warn"
+
+[workspace.lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
+must_use_candidate = "allow"
+
+panic = "deny"
+panic_in_result_fn = "deny"
+unwrap_used = "deny"
+expect_used = "deny"
+
+todo = "warn"
+unimplemented = "warn"
+unreachable = "warn"
+get_unwrap = "warn"
+indexing_slicing = "warn"
+string_slice = "warn"
+unchecked_time_subtraction = "warn"
+fallible_impl_from = "warn"
+exit = "warn"
+dbg_macro = "warn"
+print_stdout = "warn"
+print_stderr = "warn"
+str_to_string = "warn"
+empty_structs_with_brackets = "warn"
+empty_drop = "warn"
+rc_buffer = "warn"
+rc_mutex = "warn"
+rest_pat_in_fully_bound_structs = "warn"
+unnecessary_self_imports = "warn"
+unsafe_derive_deserialize = "warn"
+
+redundant_clone = "warn"
+needless_collect = "warn"
+unused_peekable = "warn"
+debug_assert_with_mut_call = "warn"

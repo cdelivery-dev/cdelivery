@@ -1,0 +1,26 @@
+---
+title: "Gerenciamento de servidores"
+description: "Identifique máquinas pelo ID e endereço, pois nomes de host podem se repetir."
+sidebar:
+  order: 53
+---
+
+Identifique máquinas pelo ID e endereço, pois nomes de host podem se repetir.
+
+## Adicionar
+
+Admin obtém comando Worker ou Manager. Revise [requisitos](/docs/pt-br/getting-started/requirements/), execute na máquina destino e confira Ready, papel, endereço e recursos. Adicione etiquetas depois.
+
+Worker executa cargas; Manager também participa da gestão. Credencial dura 30 minutos e é reutilizável. Após reinício/expiração, gere outra; mudança de permissão do emissor pode invalidá-la. Não publique.
+
+## Estados
+
+Ready/Down/Disconnected: conexão. Active aceita tarefas; Pause não aceita novas; Drain indica esvaziamento. Reachable/Unreachable refere-se ao Manager. Alerta do coletor indica observações antigas, não necessariamente máquina caída.
+
+Mostrar estado não implica oferecer todas as transições. Veja [métricas](/docs/pt-br/guides/observability/metrics/server/) para capacidade atual.
+
+## Remover
+
+A ação não migra, faz backup ou drena automaticamente. Confira aplicações fixas, volumes, componentes e continuidade de gestão.
+
+Não apaga volumes nem confirma saída de contêiner offline. Reincorporar pode mudar ID; revise seleções e etiquetas. Em falhas de entrada, confira IP, credencial, Docker e portas.

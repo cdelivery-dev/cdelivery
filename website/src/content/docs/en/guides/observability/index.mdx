@@ -1,0 +1,31 @@
+---
+title: "Logs, metrics, and events overview"
+description: "Choose the right evidence for application, network, resource, and platform problems."
+sidebar:
+  order: 31
+---
+
+Logs explain individual executions, metrics show changes over time, and events record operational changes. Use them together rather than interpreting one empty view as proof of health.
+
+## Choose a source
+
+| Question | Read |
+| --- | --- |
+| Why did the process fail? | [Application logs](/docs/guides/observability/logs/application/) |
+| What happened to an HTTP request? | [Access logs](/docs/guides/observability/logs/access/) |
+| Is the application constrained? | [Application metrics](/docs/guides/observability/metrics/application/) |
+| Is the host under pressure? | [Server metrics](/docs/guides/observability/metrics/server/) |
+| What changed before the failure? | [Operation events](/docs/guides/observability/events/) |
+| Why is history missing? | [Collection and retention](/docs/guides/observability/settings/) |
+
+## Prepare collection
+
+An Admin enables Insight and the node collectors, chooses storage and placement, and sets retention and sampling. Application log availability also depends on the selected log driver. Enabling collection does not backfill earlier logs.
+
+Select the correct application or server, source, and time range. Most historical queries accept a range of at most 31 days; choose a narrower range for diagnosis.
+
+## Interpret missing results
+
+An empty result can mean no matching activity, collection disabled, delayed samples, or expired history. A query error means the request did not complete successfully. Missing values must not be interpreted as zero usage.
+
+After changing collection settings, create new activity and verify fresh timestamps. Correlate a failed request with access logs, application logs, metrics, and nearby events before changing configuration.

@@ -1,0 +1,30 @@
+---
+title: "Telegram integration"
+description: "Create a dedicated bot, bind your numeric user ID, and understand polling and group behavior."
+sidebar:
+  order: 47
+---
+
+CDelivery receives Telegram updates using long polling. Use a dedicated bot: enabling the channel removes an existing webhook, and another polling consumer can conflict with reception.
+
+## Create and configure
+
+1. Create a bot through BotFather and obtain its token.
+2. Before CDelivery starts polling, message the bot and use the official [getUpdates method](https://core.telegram.org/bots/api#getupdates) to identify your own `message.from.id`.
+3. Save the bot token in CDelivery's Telegram settings as an Admin.
+4. Enter your numeric user ID in your personal account.
+5. Open the bot's private chat, press Start, and enable notifications if desired.
+
+Use the sender's user ID, not `chat.id`, a username, or the bot's ID. Do not leave a separate getUpdates consumer running. See the [Telegram bot tutorial](https://core.telegram.org/bots/tutorial).
+
+## Conversations and groups
+
+Start with a read-only direct message after configuring a [model](/docs/guides/automation/models/). With privacy mode, supported group entry includes explicitly addressed commands such as `/cdelivery@BotUsername` and relevant replies. Telegram topics are not supported.
+
+Keep bot permissions appropriate to its usage; disabling privacy mode is not required simply to use direct messages. The [official FAQ](https://core.telegram.org/bots/faq) explains bot message visibility.
+
+## Troubleshoot
+
+If updates stop, check token validity, outbound network, competing pollers, and webhook ownership. If only one user fails, check Start, the numeric sender ID, and personal notification settings.
+
+Never share the bot token when reporting problems. Entering someone else's ID can expose your notifications and account permissions to that person.

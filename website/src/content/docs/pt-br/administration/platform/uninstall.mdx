@@ -1,0 +1,35 @@
+---
+title: "Desinstalação e limpeza"
+description: "Remover apaga recursos de gestão, definições de aplicações, contas e credenciais, preservando volumes e descrições."
+sidebar:
+  order: 64
+---
+
+Remover apaga recursos de gestão, definições de aplicações, contas e credenciais, preservando volumes e descrições.
+
+## Prévia
+
+Use servidor de gestão com Docker CLI, jq e socket Unix local. Registre configuração, imagens e vínculos servidor/volume; faça backup e suspenda criação de recursos.
+
+```sh
+curl -fsSLo /tmp/cdelivery-uninstall.sh https://cdelivery.dev/uninstall.sh
+sh /tmp/cdelivery-uninstall.sh
+```
+
+Sem argumentos apenas lista recursos selecionados. Confira endpoint e lista.
+
+## Remover
+
+```sh
+sh /tmp/cdelivery-uninstall.sh --yes
+```
+
+Para o programa principal primeiro, depois remove recursos gerenciados. Não desinstala Docker, exclui volumes, DNS externo, object storage ou contas de terceiros.
+
+## Conferir
+
+Verifique recursos removidos e volumes mantidos. Saída de contêiner é assíncrona; máquinas offline precisam de revisão após reconexão.
+
+Ao falhar, corrija conexão/referência/permissão e execute novamente com `--yes`. Não reinstale ou recrie nomes durante limpeza.
+
+Excluir dados preservados é decisão separada. Nova instalação cria gestão nova; restaurar negócio exige registros e procedimento de armazenamento.

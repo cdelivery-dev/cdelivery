@@ -1,0 +1,32 @@
+---
+title: "Archivos de configuración con XConfig"
+description: "XConfig monta contenido de configuración como archivo; utiliza volúmenes para datos modificables."
+sidebar:
+  order: 12
+---
+
+XConfig monta contenido de configuración como archivo; utiliza volúmenes para datos modificables.
+
+## Cargar
+
+Abre los archivos de una aplicación compatible, selecciona un archivo y una ruta absoluta dentro del contenedor. Debe tener contenido y no superar 1,023,999 bytes. La ruta admite 2–255 caracteres y no termina en `/`.
+
+Ejemplo para Nginx:
+
+```text
+/etc/nginx/conf.d/default.conf
+```
+
+Comprueba que la imagen lea esa ubicación y que la sintaxis corresponda a su versión. La carga no valida el lenguaje de configuración.
+
+## Acceso y actualización
+
+Los usuarios con lectura compartida pueden descargar el contenido. No supongas que los secretos incluidos se ocultan.
+
+Reemplazar contenido crea una nueva configuración y actualiza el montaje; no edita un archivo escribible dentro de un contenedor. El modo con volúmenes locales no admite XConfig.
+
+## Verificar
+
+Comprueba tareas, registros y comportamiento dependiente del archivo. Un archivo almacenado correctamente puede estar en una ruta que el programa no utiliza.
+
+Consulta [montaje y actualización](/docs/es/guides/apps/xconfig/mounting/) para cambiar rutas y [persistencia](/docs/es/guides/apps/persistence/) para datos de negocio.

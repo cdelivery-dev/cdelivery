@@ -1,0 +1,43 @@
+---
+title: "域名与 HTTPS 概览"
+description: "选择内部通信、发布端口或域名入口，并按顺序配置 Pingress 和证书。"
+sidebar:
+  order: 20
+---
+
+应用网络可以分为三个层次：组内应用通信、直接发布端口、通过 Pingress 使用域名。先选择访问方式，再配置相应的服务器、防火墙和证书。
+
+## 选择入口
+
+| 访问需求 | 使用方式 | 示例 |
+| --- | --- | --- |
+| 同分组应用互相调用 | 应用名称与容器端口 | `http://backend:8080` |
+| 直接访问某个应用端口 | 发布端口 | `http://SERVER_IP:8080` |
+| 使用网站域名及 HTTPS | Pingress 与域名路由 | `https://app.example.com` |
+
+应用通过 Pingress 暴露容器端口时，不需要为了同一个入口再单独发布该端口。数据库等内部服务也不必为了组内通信暴露公网端口。
+
+## 配置 Pingress
+
+管理员打开 Pingress，选择可用版本及部署位置，可以指定服务器或服务器标签。目标服务器需满足网络条件，HTTP/HTTPS 入口通常使用 TCP 80 和 443。
+
+保存后确认实例数量和运行状态。选择标签时，应把 DNS 或前置负载均衡指向实际运行 Pingress 的可达服务器；给一台服务器加标签不会自动修改外部 DNS。
+
+应用域名路由由 Operator 或 Admin 在应用配置中管理；Pingress 组件和证书管理需要 Admin。
+
+## 推荐配置顺序
+
+1. 验证应用在预期容器端口提供服务。
+2. 配置 Pingress 并确认入口服务器可达。
+3. 添加 DNS 和[域名路由](/docs/zh-cn/guides/networking/routing/)。
+4. 验证 HTTP 请求命中了正确应用。
+5. 启用[自动证书](/docs/zh-cn/guides/networking/automatic-certificates/)或上传[自定义证书](/docs/zh-cn/guides/networking/custom-certificates/)。
+6. 验证 HTTPS、证书域名和实际业务响应。
+
+域名记录、应用路由和证书是分别管理的对象。只添加 DNS 不会自动创建应用路由，只打开 HTTPS 开关也不代表证书已签发。
+
+## 排查访问失败
+
+沿着“客户端 → DNS → Pingress → 应用容器端口”逐段检查。应用副本运行但外部访问失败时，先区分是连接、TLS、路由还是业务响应问题。
+
+使用[访问日志](/docs/zh-cn/guides/observability/logs/access/)检查请求是否到达入口及匹配到哪个应用。IPv6、客户端地址和安装后网络调整见[常见问题](/docs/zh-cn/guides/networking/faq/)。

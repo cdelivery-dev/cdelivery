@@ -1,0 +1,28 @@
+---
+title: "Gestión de usuarios"
+description: "La inicialización crea el primer Admin; otros usuarios se crean desde administración con cuentas individuales."
+sidebar:
+  order: 58
+---
+
+La inicialización crea el primer Admin; otros usuarios se crean desde administración con cuentas individuales.
+
+## Crear y editar
+
+Introduce nombre, correo único, contraseña inicial y [rol](/docs/es/administration/accounts/roles/). Entrega la contraseña y pide cambiarla y habilitar doble factor.
+
+Admin puede modificar nombre, correo y rol. El correo identifica el acceso y afecta notificaciones e identidad de correo entrante. Verifica que pertenezca a la persona correcta.
+
+Cada usuario configura sus vinculaciones y suscripciones; crear la cuenta no lo hace automáticamente.
+
+## Recuperar acceso
+
+Restablecer contraseña invalida todas las sesiones del usuario, pero no API keys. Si hay sospecha de clave expuesta, revócala aparte.
+
+Restablecer doble factor es independiente del cambio de contraseña. Confirma identidad y pide una nueva inscripción después.
+
+## Eliminar
+
+La cuenta eliminada deja de autenticar sesiones y claves. No elimina aplicaciones compartidas ni revoca credenciales externas. Completa transferencia de responsabilidades.
+
+Admin no puede eliminarse ni reducir su propio rol; otro Admin debe hacerlo. Si nadie accede, usa [recuperación](/docs/es/administration/platform/recovery/). Para falta de permisos, revisa rol actual y techo de clave.

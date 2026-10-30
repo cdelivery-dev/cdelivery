@@ -1,0 +1,30 @@
+---
+title: "Operation events"
+description: "Correlate platform changes with failures while distinguishing retained events from runtime diagnostics."
+sidebar:
+  order: 36
+---
+
+Events provide a timeline of operations such as application changes, releases, group updates, and server changes. They help answer what happened before a failure.
+
+## Inspect an incident
+
+1. Select a time range around the incident.
+2. Locate events for the affected application or resource.
+3. Compare the event time and details with logs and metrics.
+4. Check the resulting resource state.
+5. Verify the business endpoint or data after recovery.
+
+An event that an update was submitted does not prove every replacement task became healthy. Read the event's meaning and inspect runtime state separately.
+
+## History and diagnostics
+
+Retained historical events depend on Insight storage and retention. Runtime diagnostic messages can be held in memory and may not survive a restart. Do not treat these as interchangeable historical archives.
+
+An empty list can mean no matching events, an incorrect time range, missing collection, or expired history. A query failure is a separate condition and must be diagnosed as such.
+
+## Practical use
+
+For a failed release, correlate configuration changes, candidate validation, task exits, and rollback activity. For a missing server, correlate removal or label changes with scheduling problems.
+
+Record timestamps and resource identities when reporting an issue. Avoid copying credentials from related logs. See [application logs](/docs/guides/observability/logs/application/), [server metrics](/docs/guides/observability/metrics/server/), and [retention settings](/docs/guides/observability/settings/).

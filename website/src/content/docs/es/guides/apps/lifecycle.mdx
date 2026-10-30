@@ -1,0 +1,26 @@
+---
+title: "Actualizar y reiniciar aplicaciones"
+description: "Una actualización cambia la configuración deseada; reiniciar sustituye tareas con la configuración actual."
+sidebar:
+  order: 18
+---
+
+Una actualización cambia la configuración deseada; reiniciar sustituye tareas con la configuración actual.
+
+## Actualizar
+
+Modifica los campos necesarios y guarda. Imagen, variables, recursos, red y archivos pueden provocar sustitución. Revisa [estrategia](/docs/es/guides/release-safety/update-strategy/) y [Guardian](/docs/es/guides/release-safety/) antes de desplegar.
+
+Guardar valores idénticos no reinicia. Tampoco se despliega automáticamente porque cambie una etiqueta en el registro.
+
+## Reiniciar
+
+La acción de reinicio sigue la estrategia de actualización. El valor predeterminado StopFirst en paralelo puede interrumpir todas las réplicas. No garantiza continuidad.
+
+Reiniciar no borra un volumen bien montado ni repara un comando inválido. Si el proceso vuelve a fallar, revisa registros y corrige la causa.
+
+## Verificar
+
+Comprueba imagen, réplicas, registros, eventos y una petición real. Para aplicaciones con estado, verifica los datos. La solicitud puede completarse antes de finalizar la sustitución; evita lanzar cambios repetidos mientras progresa.
+
+Cuando existe configuración anterior, la [reversión](/docs/es/guides/release-safety/rollback/) puede recuperarla, pero no deshacer migraciones. [Eliminar](/docs/es/guides/apps/delete/) es otra operación y conserva volúmenes.

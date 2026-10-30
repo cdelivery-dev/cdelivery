@@ -1,0 +1,26 @@
+---
+title: "Domaine et accès à la plateforme"
+description: "Admin configure le domaine de la console dans Paramètres → CDelivery."
+sidebar:
+  order: 61
+---
+
+Admin configure le domaine de la console dans Paramètres → CDelivery.
+
+## Configurer
+
+Activez Pingress, dirigez A/AAAA valides, contrôlez 80/443 et proxies, saisissez hostname sans protocole/port/chemin, choisissez HTTPS et enregistrez.
+
+Dans un nouvel onglet, vérifiez login, pages et API. HTTPS exige certificat [automatique](/docs/fr/guides/networking/automatic-certificates/) ou [personnalisé](/docs/fr/guides/networking/custom-certificates/) ; l’option ne prépare pas DNS.
+
+## Changer
+
+Gardez l’ancienne connexion jusqu’au test. Les cookies dépendent du host ; une nouvelle connexion peut être nécessaire. Modifiez les URL MCP/scripts.
+
+Effacer le domaine retire la route, pas DNS externe. Configurer ne ferme pas 9000 ; limitez-le au niveau réseau si souhaité.
+
+## Dépanner
+
+Contrôlez résolution, nom/chaîne TLS et service. Si le port initial fonctionne, corrigez depuis celui-ci.
+
+Les domaines métier se règlent dans [routes applicatives](/docs/fr/guides/networking/routing/) ; évitez un conflit avec le domaine administratif.

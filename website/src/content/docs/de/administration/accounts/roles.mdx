@@ -1,0 +1,31 @@
+---
+title: "Rollen und Berechtigungen"
+description: "Reader, Operator und Admin gewähren aufsteigende Rechte für die gesamte Plattform."
+sidebar:
+  order: 57
+---
+
+Reader, Operator und Admin gewähren aufsteigende Rechte für die gesamte Plattform.
+
+## Matrix
+
+| Fähigkeit | Reader | Operator | Admin |
+| --- | --- | --- | --- |
+| Geteilte Informationen | Ja | Ja | Ja |
+| Eigenes Konto/Schlüssel | Ja | Ja | Ja |
+| Anwendungen, XHealth, XJob, Guardian | Nein | Ja | Ja |
+| Server, Gruppen, Volumes, Einstellungen | Nein | Nein | Ja |
+| Nutzer/Servereinladungen | Nein | Nein | Ja |
+| Sensible Modellabfrage | Nein | Nein | Ja |
+
+Nur erkannte Geheimnisse werden verborgen. Beliebige Logs/Dateien/Variablen können geteilt sein; Reader muss vertrauenswürdig sein.
+
+## Wirksame Rechte
+
+Session nutzt aktuelle Rolle. API-Schlüssel nutzt Minimum aus Nutzerrolle und Schlüsselobergrenze. Herabstufung begrenzt sofort; Beförderung erhöht alte Obergrenzen nicht.
+
+Konsole, REST, MCP und KI-Werkzeuge teilen Regeln. Nachrichten nutzen zugeordnetes Konto, Dienst eigene Rolle ohne persönlichen Bereich.
+
+## Prüfen
+
+Mit Zielkonto testen. Admin kann sich nicht selbst löschen/herabstufen. Passwortänderung beendet Sessions, nicht Schlüssel. Siehe [Nutzerverwaltung](/docs/de/administration/accounts/users/).

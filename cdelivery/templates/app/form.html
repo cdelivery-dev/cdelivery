@@ -1,0 +1,75 @@
+{% import "app/image.html" as image %}
+{% import "app/replicas.html" as replicas %}
+{% import "app/published.html" as published %}
+{% import "app/files.html" as files %}
+{% import "app/container.html" as container %}
+{% import "app/upgrade.html" as upgrade %}
+{% import "app/resource.html" as resource %}
+{% import "app/placement.html" as placement %}
+{% import "app/log_driver.html" as log_driver %}
+{% import "app/restart.html" as restart %}
+
+{%- macro sections(app_name, mode, mount_node_label, default_mount_target) -%}
+<div class="stack section-stack">
+  <div class="fields">
+    {% if mode == "create" %}
+    <div class="field">
+      <label for="app-name">{{ tt!("ui.app.name.label") }}: </label>
+      <input class="text" id="app-name" type="text" placeholder='{{ tt!("ui.app.name.placeholder") }}' minlength="1" maxlength="16" pattern="^[a-z0-9]([a-z0-9\-]*[a-z0-9])?$" title='{{ tt!("ui.app.name.validation") }}' x-model="request.name" spellcheck="false" required />
+    </div>
+    {% endif %}
+    <div x-data="descriptionData" class="field">
+      <label for="app-description">{{ tt!("ui.app.description.label") }}: </label>
+      <input class="text"
+        id="app-description"
+        type="text"
+        placeholder='{{ tt!("ui.app.description.placeholder") }}'
+        maxlength="500"
+        x-model="$$description"
+      />
+    </div>
+  </div>
+    <script>
+    document.addEventListener("alpine:init", () => {
+      Alpine.data("descriptionData", () => ({
+        get $$description() {
+          return this.description ? this.description : "";
+        },
+        set $$description(val) {
+          this.description = val.trim() === "" ? null : val.trim();
+        },
+      }));
+    });
+    </script>
+  <fieldset>
+    <legend>{{ tt!("ui.app.section.image") }}</legend>
+    {{ image::editable() }}
+  </fieldset>
+  <fieldset x-show="mounts === null" x-cloak :disabled="mounts !== null">
+    <legend>{{ tt!("ui.app.section.replicas") }}</legend>
+    {{ replicas::editable(mode) }}
+    {{ placement::editable() }}
+  </fieldset>
+  <fieldset>
+    <legend>{{ tt!("ui.app.section.published") }}</legend>
+    {{ published::editable() }}
+  </fieldset>
+  <fieldset>
+    <legend>{{ tt!("ui.app.section.files") }}</legend>
+    {{ files::editable(app_name, mode, mount_node_label, default_mount_target) }}
+  </fieldset>
+  <fieldset>
+    <legend>{{ tt!("ui.app.section.container") }}</legend>
+    {{ container::editable() }}
+  </fieldset>
+</div>
+<details class="mt-4" @invalid.capture="$el.open = true">
+  <summary>{{ tt!("ui.app.advanced.summary") }}</summary>
+  <ul class="stack bulleted">
+    {{ upgrade::editable() }}
+    {{ resource::editable() }}
+    {{ log_driver::editable() }}
+    {{ restart::editable() }}
+  </ul>
+</details>
+{%- endmacro -%}

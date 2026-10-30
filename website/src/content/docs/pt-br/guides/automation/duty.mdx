@@ -1,0 +1,28 @@
+---
+title: "Plantão automático"
+description: "O plantão analisa eventos e realiza rondas com um papel explícito."
+sidebar:
+  order: 43
+---
+
+O plantão analisa eventos e realiza rondas com um papel explícito.
+
+## Configurar
+
+Prepare [modelo](/docs/pt-br/guides/automation/models/), escolha papel, política, intervalo e idioma, habilite e configure destinatários.
+
+Padrões: Reader, NearCritical, 30 minutos e inglês. Intervalo: 15 minutos–24 horas. Análise por evento não espera a próxima ronda.
+
+EarlyRisk, NearCritical e LimitOrFailure descrevem quando agir diante de risco, não um único limiar numérico universal.
+
+## Permissões
+
+Reader observa; Operator/Admin podem alterar recursos sem acompanhamento dentro de suas permissões. Não existe escopo de conta pessoal.
+
+Notificações exigem assinatura e papel do destinatário igual ou superior ao plantão. Plantão Operator notifica Operator/Admin, não Reader.
+
+## Conferir
+
+Examine eventos, análises, ações e estado real. Sem aviso, confira modelo, canal, assinatura e papel.
+
+Desabilitar plantão não desativa alertas comuns. Notificação usa idioma configurado; conversa segue o usuário. Veja [diagnóstico](/docs/pt-br/guides/automation/im/notifications/).

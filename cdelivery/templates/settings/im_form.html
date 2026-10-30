@@ -1,0 +1,48 @@
+{% import "settings/clear.html" as clear %}
+{% import "settings/secret.html" as secret %}
+
+{%- macro form(platform, title, app_id, secret_set, configured) -%}
+<div
+  class="mt-3"
+  data-secret-set="{{ secret_set }}"
+  x-data="{ submitting: false, appId: '', savedAppId: '', secretSet: false, get secretReusable() { return this.secretSet && this.appId === this.savedAppId } }"
+  x-init="appId = $refs.appId.value; savedAppId = appId; secretSet = $el.dataset.secretSet === 'true'"
+>
+  {% if configured %}<p class="muted">{{ tt!("ui.settings.configured") }}</p>{% endif %}
+  <form
+    method="post"
+    action="/settings/channels/{{ platform }}"
+    @submit="if (submitting) { $event.preventDefault(); return } const body = { app_id: appId }; if ($refs.appSecret.value) body.app_secret = $refs.appSecret.value; $refs.payload.value = JSON.stringify(body); submitting = true"
+  >
+    <input x-ref="payload" type="hidden" name="payload" />
+    <div class="fields">
+      <div class="field">
+        <label for="{{ platform }}-app-id">{{ tt!("ui.settings.channels.im.appId") }}: </label>
+        <input
+          x-ref="appId"
+          id="{{ platform }}-app-id"
+          class="text"
+          type="text"
+          value="{{ app_id }}"
+          x-model="appId"
+          maxlength="255"
+          spellcheck="false"
+          required
+          :disabled="submitting"
+        />
+      </div>
+      <div class="field">
+        <label for="{{ platform }}-app-secret">{{ tt!("ui.settings.channels.im.appSecret") }}: </label>
+        {% let secret_id = platform ~ "-app-secret" %}
+        {{ secret::input(secret_id, "appSecret", "secretReusable") }}
+      </div>
+    </div>
+    <small class="block mt-2">{% if platform == "feishu" %}{{ tt!("ui.settings.channels.feishu.help") }}{% else %}{{ tt!("ui.settings.channels.lark.help") }}{% endif %}</small>
+    <div class="actions">
+      {% if configured %}<input type="submit" form="settings-{{ platform }}-clear" class="button danger" value='{{ tt!("ui.common.clear") }}' :disabled="submitting" />{% endif %}
+      <input class="button" type="submit" value='{{ tt!("ui.common.save") }}' :disabled="submitting" />
+    </div>
+  </form>
+  {% if configured %}{{ clear::form("/settings/channels", platform, title) }}{% endif %}
+</div>
+{%- endmacro form -%}

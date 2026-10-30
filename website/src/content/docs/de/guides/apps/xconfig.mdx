@@ -1,0 +1,32 @@
+---
+title: "Konfigurationsdateien mit XConfig"
+description: "XConfig liefert Konfigurationsdateien; veränderliche Geschäftsdaten gehören in Volumes."
+sidebar:
+  order: 12
+---
+
+XConfig liefert Konfigurationsdateien; veränderliche Geschäftsdaten gehören in Volumes.
+
+## Hochladen
+
+Bei unterstützter Anwendung eine nicht leere Datei bis 1,023,999 Bytes und absoluten Zielpfad mit 2–255 Zeichen wählen. Kein abschließender `/`.
+
+Nginx-Beispiel:
+
+```text
+/etc/nginx/conf.d/default.conf
+```
+
+Image muss diesen Pfad lesen und Syntax verstehen. Upload prüft nicht die Konfigurationssprache.
+
+## Zugriff und Änderung
+
+Leseberechtigte können Inhalte herunterladen. Beliebige Geheimnisse werden nicht automatisch verborgen.
+
+Ersetzen erzeugt neue Konfiguration und Mount-Referenz, keine Änderung einer beschreibbaren Datei im laufenden Container. Lokaler Volume-Modus unterstützt XConfig nicht.
+
+## Verifizieren
+
+Aufgaben, Logs und abhängige Funktion testen. Erfolgreich gespeichert kann trotzdem der falsche Pfad sein.
+
+Siehe [Mounts aktualisieren](/docs/de/guides/apps/xconfig/mounting/) und [Datenhaltung](/docs/de/guides/apps/persistence/).

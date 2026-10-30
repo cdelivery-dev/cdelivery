@@ -1,0 +1,50 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Hero from '../components/Hero.astro';
+import ReleaseSafety from '../components/ReleaseSafety.astro';
+import Observability from '../components/Observability.astro';
+import Gateway from '../components/Gateway.astro';
+import ResourceFootprint from '../components/ResourceFootprint.astro';
+import SystemFlow from '../components/SystemFlow.astro';
+import FAQ from '../components/FAQ.astro';
+import OpenSource from '../components/OpenSource.astro';
+import { translate } from '../i18n';
+import '../styles/home.css';
+
+const t = translate(Astro.currentLocale);
+---
+<SiteLayout title={t('site.home.title')} description={t('site.home.description')}>
+  <Hero />
+  <ReleaseSafety />
+  <Observability />
+  <Gateway />
+  <section class="ai-overview home-columns home-section container" aria-labelledby="ai-title">
+    <h2 class="section-title" id="ai-title">{t('site.ai.title')}</h2>
+    <div class="section-copy">
+      <p>{t('site.ai.context')}</p>
+      <p>{t('site.ai.duty')}</p>
+    </div>
+  </section>
+  <div class="operations-overview home-columns home-section container">
+    <section class="section-copy" aria-labelledby="autoscaling-title">
+      <h2 class="section-title" id="autoscaling-title">{t('site.autoscaling.title')}</h2>
+      <p>{t('site.autoscaling.description')}</p>
+    </section>
+    <section class="section-copy" aria-labelledby="xconfig-title">
+      <h2 class="section-title" id="xconfig-title">{t('site.xconfig.title')}</h2>
+      <p>{t('site.xconfig.description')}</p>
+    </section>
+  </div>
+  <ResourceFootprint />
+  <SystemFlow />
+  <FAQ>
+    <h3>{t('site.faq.kubernetes.question')}</h3>
+    <p>{t('site.faq.kubernetes.answer')}</p>
+    <h3>{t('site.faq.capacity.question')}</h3>
+    <p>{t('site.faq.capacity.answer')}</p>
+  </FAQ>
+  <OpenSource />
+</SiteLayout>
+<script>
+  import '../animation/home';
+</script>

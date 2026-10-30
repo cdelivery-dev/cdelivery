@@ -1,0 +1,63 @@
+---
+title: "Questions fréquentes sur le réseau"
+description: "Diagnostiquer IPv6, les adresses clientes, le DNS, les routes et les certificats."
+sidebar:
+  order: 25
+---
+
+Ces vérifications IPv6 concernent les serveurs Linux exécutant Pingress.
+
+## Pourquoi Pingress enregistre-t-il l’adresse d’une passerelle ?
+
+Un `docker_gwbridge` limité à IPv4 peut traduire les connexions IPv6 et masquer l’adresse d’origine du client, même si l’hôte prend en charge IPv6. Un CDN ou un autre proxy modifie également le correspondant direct : Pingress enregistre son adresse et l’utilise pour `X-Real-IP` et `X-Forwarded-For`.
+
+## Le programme d’installation active-t-il IPv6 automatiquement ?
+
+Lors d’une nouvelle installation ou d’un ajout de serveur, le script détecte IPv6 sur l’hôte et tente de préparer une passerelle à double pile. Si un choix est proposé, sélectionnez **1** pour continuer uniquement avec IPv4, ou **2** pour quitter et résoudre le problème. Par défaut, le script quitte, y compris sans terminal interactif.
+
+`--no-ipv6` ignore la préparation de la passerelle. Cette option ne désactive pas IPv6 sur une passerelle à double pile existante. Sur macOS, le réseau est géré par l’environnement d’exécution de Docker.
+
+## Comment vérifier le fonctionnement ?
+
+Sur le serveur exécutant Pingress :
+
+```sh
+ip -6 address show scope global
+ip -6 route show default
+docker network inspect docker_gwbridge --format '{{.EnableIPv6}}'
+```
+
+La dernière commande doit afficher `true` : cela confirme le réglage, pas la connectivité. Pour un accès public, l’enregistrement AAAA du domaine doit pointer vers une adresse permettant d’atteindre Pingress en IPv6.
+
+Depuis une autre machine disposant d’IPv6, remplacez le domaine d’exemple et testez les deux protocoles :
+
+```sh
+curl -4 --noproxy '*' -I https://app.example.com
+curl -6 --noproxy '*' -I https://app.example.com
+```
+
+Comparez le champ `client_ip` de Pingress, ou les en-têtes de transfert reçus par votre application, avec l’adresse du client qui établit la connexion. Le correspondant direct de l’application est Pingress, pas le client d’origine.
+
+## Comment activer IPv6 ultérieurement ?
+
+Configurez d’abord un accès IPv6 fonctionnel sur l’hôte. Si la passerelle indique déjà `true`, vérifiez la connectivité et le DNS. Pour un serveur qui n’a pas encore rejoint l’installation, exécutez la [commande d’installation](/docs/fr/getting-started/installation/) ou la commande d’ajout fournie dans la liste des serveurs, sans `--no-ipv6`.
+
+**Relancer une installation existante ne met pas sa passerelle à niveau.** Un serveur actif dont la passerelle est limitée à IPv4 nécessite une maintenance :
+
+1. Sauvegardez les données locales et relevez l’ID du nœud, son rôle, toutes ses étiquettes, la configuration de la passerelle et les applications, Pingress ou Insight liés à ce nœud.
+2. Arrêtez ou déplacez ses tâches. Avant le départ d’un nœud gestionnaire, maintenez une majorité de gestionnaires opérationnels et un tableau de bord CDelivery fonctionnel sur un autre nœud, puis rétrogradez le gestionnaire à maintenir. Ne retirez jamais directement l’unique gestionnaire : préparez d’abord un transfert sûr ou un plan de sauvegarde et de restauration. Suivez les [instructions de Docker pour la maintenance des nœuds](https://docs.docker.com/engine/swarm/manage-nodes/).
+3. Une fois le nœud sorti et la passerelle sans aucune référence de conteneur, obtenez une **nouvelle commande d’ajout correspondant à son rôle d’origine** depuis le tableau de bord fonctionnel. Exécutez-la sans `--no-ipv6` ; le script prépare la passerelle par défaut avant l’ajout. Pour une passerelle personnalisée, conservez son sous-réseau et ses options lors de la [préparation d’une passerelle à double pile](https://docs.docker.com/engine/swarm/networking/#customize-the-docker_gwbridge). Les invitations expirent après 30 minutes et deviennent également invalides si CDelivery redémarre ou change de serveur.
+4. Le nouvel ajout crée un nouvel ID de nœud. Restaurez toutes les étiquettes, y compris les descriptions des volumes, et corrigez les services liés à l’ancien ID. Les applications utilisant des volumes locaux et Insight avec un stockage local ne peuvent pas simplement changer de nœud dans l’interface : leurs contraintes de déploiement nécessitent une intervention de l’administrateur. Les données restent sur l’hôte d’origine.
+5. Rétablissez les services, adaptez le DNS si nécessaire et répétez les vérifications IPv4/IPv6 ci-dessus.
+
+Vous pouvez aussi ajouter un autre serveur disposant d’IPv6, y exécuter Pingress et faire pointer le DNS vers lui.
+
+## Que faire en cas de problème de routage IPv6 ou de pare-feu ?
+
+L’activation du transfert peut empêcher une interface avec `accept_ra=1` d’accepter les annonces de routeur (RA), entraînant la perte de sa route par défaut. Configurez durablement les RA avec le gestionnaire réseau de l’interface : ifupdown utilise `accept_ra 2` et ifupdown-ng utilise `ipv6-accept-ra 2`. Ne remplacez pas aveuglément `accept_ra=0` sur les interfaces dont le gestionnaire traite lui-même les RA. Revérifiez les routes après le redémarrage de l’interface ou de l’hôte.
+
+Laissez Docker gérer le pare-feu IPv6 (`ip6tables` ne doit pas être défini sur `false`) et autorisez les ports HTTP/HTTPS de Pingress dans les pare-feu de l’hôte et du cloud. Une passerelle indiquant `true` ne suffit pas à confirmer ces règles ni l’accessibilité depuis l’extérieur.
+
+## Autres problèmes d’accès
+
+Pour les erreurs DNS ou de routage, suivez [Domaines et routage](/docs/fr/guides/networking/routing/). Pour un certificat absent, expiré ou dont l’émission échoue, consultez [Certificats automatiques et renouvellement](/docs/fr/guides/networking/automatic-certificates/). Les [journaux d’accès](/docs/fr/guides/observability/logs/access/) permettent de vérifier si la requête atteint l’entrée, correspond à une application et reçoit une réponse du service cible.

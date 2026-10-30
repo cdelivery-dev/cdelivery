@@ -1,0 +1,11 @@
+{%- macro header(active) -%}
+<header>
+  <h1>Insight</h1>
+  <p>{{ tt!("ui.insight.subtitle") }}</p>
+  <nav class="tab-list" aria-label='{{ tt!("ui.insight.tab.navigation") }}'>
+    <a href="/insight"{% if active == "spec" %} aria-current="page"{% endif %}>{{ tt!("ui.insight.tab.specification") }}</a>
+    <a href="/insight/metrics"{% if active == "metrics" %} aria-current="page"{% endif %}>{{ tt!("ui.insight.tab.metrics") }}</a>
+    <a href="/insight/events"{% if active == "events" %} aria-current="page"{% endif %}>{{ tt!("ui.events.title") }}</a>
+  </nav>
+</header>
+{%- endmacro -%}

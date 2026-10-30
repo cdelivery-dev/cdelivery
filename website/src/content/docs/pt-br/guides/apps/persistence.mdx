@@ -1,0 +1,26 @@
+---
+title: "Persistência de dados"
+description: "A camada gravável do contêiner não é armazenamento durável para substituição de tarefas."
+sidebar:
+  order: 14
+---
+
+A camada gravável do contêiner não é armazenamento durável para substituição de tarefas.
+
+## Escolher
+
+Configuração de leitura usa [XConfig](/docs/pt-br/guides/apps/xconfig/) quando compatível. Dados locais modificáveis usam volume num servidor. Dados compartilhados exigem serviço apropriado. Recuperação exige backup independente e testado.
+
+O modo local é escolhido na criação e fixa uma réplica a um servidor; não é apenas uma opção adicionada depois a qualquer aplicação.
+
+## Montar e testar
+
+Selecione volume e servidor corretos, montando o diretório realmente usado pela imagem. Um caminho incorreto pode deixar o volume vazio enquanto os dados são gravados fora.
+
+Escreva dados, reinicie e confirme persistência. Teste também restauração: reiniciar não prova recuperação de backup.
+
+## Limites
+
+Mesmo nome em outra máquina significa outros dados. Etiquetas não replicam volumes. Remover aplicação preserva volume; excluir volume remove seus dados. Reverter imagem não desfaz migrações.
+
+Continue com [aplicações com estado](/docs/pt-br/guides/apps/persistence/stateful/) e [volumes](/docs/pt-br/administration/nodes/volumes/).

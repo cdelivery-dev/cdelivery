@@ -1,0 +1,33 @@
+---
+title: "Roles and permissions"
+description: "Compare Reader, Operator, and Admin across the console, API keys, messaging, and automated duty."
+sidebar:
+  order: 57
+---
+
+Roles apply across the platform, not per group. Reader, Operator, and Admin provide progressively broader capabilities.
+
+## Permission matrix
+
+| Capability | Reader | Operator | Admin |
+| --- | --- | --- | --- |
+| Inspect shared applications, servers, and runtime information | Yes | Yes | Yes |
+| Manage own profile, password, bindings, and API keys | Yes | Yes | Yes |
+| Change applications, XHealth, XJob, and Guardian | No | Yes | Yes |
+| Manage servers, groups, volumes, and platform settings | No | No | Yes |
+| Manage users and issue join credentials | No | No | Yes |
+| Perform sensitive model discovery | No | No | Yes |
+
+Shared output redacts explicitly recognized secrets. Arbitrary logs, files, and environment values are not guaranteed to be hidden, so Readers must be trusted with operational information.
+
+## Effective permissions
+
+A browser session uses the account's current role. An API key uses the lower of its role ceiling and the user's current role. Downgrading an account limits existing keys immediately; upgrading does not raise an old key's ceiling.
+
+REST, MCP, console operations, and user-initiated AI tools follow the same rules. Message identities use the bound user's permissions. Automated duty uses its configured role, defaults to Reader, and has no user's personal scope.
+
+## Assign and verify
+
+Use Reader for observation, Operator for routine application work, and Admin for platform administration. Verify access with the intended account before attaching automation.
+
+Admins cannot delete or downgrade themselves. Password changes invalidate browser sessions but not API keys. See [users](/docs/administration/accounts/users/) and [API access](/docs/guides/automation/api-mcp/) for handover and revocation.

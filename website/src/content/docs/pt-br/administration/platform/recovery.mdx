@@ -1,0 +1,46 @@
+---
+title: "Recuperar acesso administrativo"
+description: "Um administrador do host pode recuperar contas dentro do contêiner principal em execução."
+sidebar:
+  order: 63
+---
+
+Um administrador do host pode recuperar contas dentro do contêiner principal em execução.
+
+Se outro Admin consegue entrar, use [usuários](/docs/pt-br/administration/accounts/users/). A CLI exige dados e chave mestra existentes; não recupera chave perdida ou volume.
+
+## Identificar
+
+```sh
+docker ps --format '{{.ID}} {{.Names}} {{.Image}}'
+```
+
+Escolha o programa principal e substitua CONTAINER_ID, não gateway ou coletor.
+
+## Conta existente
+
+```sh
+docker exec -it CONTAINER_ID /entrypoint rescue admin@example.com
+```
+
+Imprime senha temporária e desativa dois fatores. Não promove papel nem revoga chaves. Troque senha, recadastre autenticador e revise API keys.
+
+## Novo Admin
+
+Para e-mail ainda inexistente:
+
+```sh
+docker exec -it CONTAINER_ID /entrypoint add-admin admin@example.com Alex Chen
+```
+
+Imprime senha temporária. E-mail existente causa conflito; use rescue.
+
+## API key
+
+```sh
+docker exec -it CONTAINER_ID /entrypoint create-api-key admin@example.com recovery Reader
+```
+
+Aceita `--expires-at` com RFC 3339 futuro. Reader/Operator/Admin não pode superar usuário. Guarde saída única e revogue após uso.
+
+Se não inicializado ou usuário ausente, confira implantação/contêiner/e-mail. Não reinstale por engano nem publique credenciais.

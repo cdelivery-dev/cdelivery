@@ -1,0 +1,26 @@
+---
+title: "Métricas de aplicación"
+description: "Utiliza series de recursos para comparar carga, réplicas y cambios de configuración."
+sidebar:
+  order: 34
+---
+
+Utiliza series de recursos para comparar carga, réplicas y cambios de configuración.
+
+## Leer gráficas
+
+Habilita recogida y elige un periodo de hasta 31 días. Revisa unidades: CPU en núcleos no equivale a porcentaje respecto a un límite.
+
+Los intervalos agregados pueden mostrar mínimo, media y máximo. Una media baja puede ocultar picos; el máximo no representa carga sostenida. Intervalos mayores suavizan eventos breves.
+
+## Aplicar resultados
+
+Compara antes y después de despliegues y reinicios, teniendo en cuenta réplicas reales y consumo por réplica frente al agregado.
+
+El escalado necesita observaciones recientes de todas las réplicas. Muestras parciales o antiguas pueden impedir una decisión; ausencia no equivale a inactividad.
+
+## Datos ausentes
+
+Revisa identidad, periodo, recolector, almacenamiento y retención. No hay historial anterior a la habilitación. El vaciado y sincronización pueden retrasar muestras recientes.
+
+Procesos breves pueden dejar pocas muestras; consulta también [registros](/docs/es/guides/observability/logs/application/) y [eventos](/docs/es/guides/observability/events/). Ajusta [recursos](/docs/es/guides/apps/resources/) con carga representativa y compara [servidor](/docs/es/guides/observability/metrics/server/).

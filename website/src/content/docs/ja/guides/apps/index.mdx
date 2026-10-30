@@ -1,0 +1,24 @@
+---
+title: "アプリ管理の概要"
+description: "イメージ、実行、通信、資源、ストレージを設定し、実際の動作で結果を確認します。"
+sidebar:
+  order: 7
+---
+
+イメージ、実行、通信、資源、ストレージを設定し、実際の動作で結果を確認します。
+
+## 作成前の判断
+
+名前、グループ、永続化、コマンド、ポート、容量を決めます。コンソールで作成後の名前変更やグループ移動はできません。ローカルボリューム方式も作成時に選びます。
+
+Reader は閲覧、Operator/Admin は作成・変更・再起動・削除が可能です。グループやサーバー資源の管理は Admin が行います。
+
+## 手順
+
+[作成](/docs/ja/guides/apps/create/)、[イメージ](/docs/ja/guides/apps/images/)、[コマンド](/docs/ja/guides/apps/container/)、[資源](/docs/ja/guides/apps/resources/)、[XConfig](/docs/ja/guides/apps/xconfig/)、[データ](/docs/ja/guides/apps/persistence/)、[拡縮](/docs/ja/guides/apps/scaling/)、[配置](/docs/ja/guides/apps/placement/)、[更新](/docs/ja/guides/apps/lifecycle/)、[削除](/docs/ja/guides/apps/delete/)を参照します。
+
+## 初期値
+
+固定 1 レプリカ、イメージ標準コマンド、ホストのログ設定、追加予約・ラベルなしです。更新は全並列、StopFirst、60 秒監視、失敗率 0、失敗時 Rollback です。
+
+可用性に応じて[更新方式](/docs/ja/guides/release-safety/update-strategy/)を見直します。変更なし保存は再起動しません。任意の変数やファイルは自動的に秘密扱いされないため、共有範囲を確認してください。

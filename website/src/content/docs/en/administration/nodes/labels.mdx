@@ -1,0 +1,28 @@
+---
+title: "Server labels"
+description: "Organize eligible servers for placement and understand complete label-set updates."
+sidebar:
+  order: 54
+---
+
+Labels select groups of servers for application or component placement. For example, label two application servers `web` and storage machines `storage`.
+
+## Configure
+
+Open a server as an Admin, add labels, and save. Apply the same label to other intended members, then select it in [application placement](/docs/guides/apps/placement/) or component settings.
+
+Each server supports up to 32 scheduling labels. Names use 1–16 lowercase letters, digits, or hyphens, with no leading or trailing hyphen or reserved name. Labels express membership, not arbitrary key-value queries or complex selection expressions.
+
+## Understand changes
+
+Removing a label changes the eligible server set for dependent workloads. If none remain ready and sufficiently resourced, tasks may not start. Before adding a server to a pool, check architecture, capacity, networking, and data requirements.
+
+Fixed-server applications do not move merely because another machine shares a label. Labels do not synchronize local volumes; use the [stateful application guide](/docs/guides/apps/persistence/stateful/) for those workloads.
+
+## Verify
+
+Reopen the server to confirm its labels and inspect actual replica placement. For pending tasks, check matching machines, availability, reservations, and per-server limits.
+
+The API's `labels` field replaces the entire platform scheduling-label set. An empty array clears it. Read the current set and retain required labels when applying a change.
+
+See [server management](/docs/administration/nodes/) for rejoin and removal behavior.

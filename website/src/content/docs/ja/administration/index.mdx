@@ -1,0 +1,31 @@
+---
+title: "プラットフォーム管理"
+description: "資源、アカウント、保守を管理します。プラットフォームの変更は通常 Admin が行います。"
+sidebar:
+  order: 52
+---
+
+資源、アカウント、保守を管理します。プラットフォームの変更は通常 Admin が行います。
+
+## 手順の選択
+
+| 目的 | 参照 |
+| --- | --- |
+| マシン追加 | [サーバー](/docs/ja/administration/nodes/) |
+| 配置とデータ | [ラベル](/docs/ja/administration/nodes/labels/)、[ボリューム](/docs/ja/administration/nodes/volumes/) |
+| アプリ整理 | [グループ](/docs/ja/administration/groups/) |
+| アクセス | [役割](/docs/ja/administration/accounts/roles/)、[ユーザー](/docs/ja/administration/accounts/users/) |
+| 個人設定 | [セキュリティ](/docs/ja/administration/accounts/profile/) |
+| 外部ツール | [API/MCP](/docs/ja/guides/automation/api-mcp/) |
+| 入口と更新 | [ドメイン](/docs/ja/administration/platform/access/)、[バージョン](/docs/ja/administration/platform/upgrades/) |
+| 復旧と撤去 | [復旧](/docs/ja/administration/platform/recovery/)、[アンインストール](/docs/ja/administration/platform/uninstall/) |
+
+## 初期順序
+
+サーバーとアドレス、グループ、アプリを確認し、個別アカウントと役割を作ります。その後、収集、チャネル、ドメインを追加します。
+
+グループは権限を隔離せず、ラベルはデータを複製しません。削除前に依存関係を確認します。
+
+## 検証
+
+保存後の一覧、実行、イベント、アクセスを確認します。置換や収集は継続する場合があります。復旧はコンテナー起動だけでなく業務データも検証します。

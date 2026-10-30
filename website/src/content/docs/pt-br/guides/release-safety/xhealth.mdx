@@ -1,0 +1,37 @@
+---
+title: "Configurar XHealth"
+description: "XHealth executa verificações em tarefas separadas dos contêineres de negócio."
+sidebar:
+  order: 26
+---
+
+XHealth executa verificações em tarefas separadas dos contêineres de negócio.
+
+## Executar agora
+
+Operator/Admin pode selecionar **Executar agora**, chamar `POST /api/apps/{name}/xhealth/run` sem corpo ou usar a ferramenta MCP/Agent `xhealth_run` com `app`. A verificação deve estar ativada e usa a configuração salva na aplicação atual. Solicitações durante a espera ou execução retornam `409`; o próximo intervalo é contado desde o início da nova execução. As verificações de candidatos do Guardian são independentes.
+
+A API retorna `202` com `{"ok":true}` ao aceitar a solicitação, sem esperar o resultado. Atualize a página, use `xhealth_get` ou consulte os logs do XHealth. Um timeout ou uma resposta perdida não significa que o envio falhou: consulte o estado antes de decidir executar novamente. Não há deduplicação; uma nova solicitação após a conclusão inicia outra execução.
+
+## Hurl
+
+Operator/Admin escolhe porta e intervalo mínimo de um minuto e carrega:
+
+```hurl
+GET {{target_url}}/health
+HTTP 200
+```
+
+A execução usa `hurl --test /xhealth.hurl` e `HURL_VARIABLE_TARGET_URL`. Mesmo escolhendo domínio, o destino é HTTP interno; não testa DNS público nem TLS externo. Veja [Hurl](https://hurl.dev/docs/request.html).
+
+## Comando próprio
+
+Usa imagem e configurações pertinentes da aplicação em outro contêiner, não exec no processo atual. Recebe `TARGET_HOST` e `TARGET_PORT`; expansão exige shell explícita.
+
+Código zero é sucesso. Verifique executável disponível, asserções úteis e término no prazo. Um comando que sempre termina com zero não comprova saúde.
+
+## Verificar
+
+Execute, leia status/logs e confirme em teste controlado que resposta inválida falha. O destino selecionado precisa identificar uma porta interna inequívoca.
+
+Veja [estados](/docs/pt-br/guides/release-safety/xhealth/status/) e [Guardian](/docs/pt-br/guides/release-safety/).

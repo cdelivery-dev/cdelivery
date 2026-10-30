@@ -1,0 +1,67 @@
+{% extends "dashboard.html" %}
+
+{% block title %}{{ tt!("ui.volume.title") }} | {{ super() }}{% endblock title %}
+
+{% block main %}
+<header>
+  <h1>{{ tt!("ui.volume.title") }}</h1>
+</header>
+<p><small>{{ tt!("ui.volume.settingsHelp") }}</small></p>
+{% if let Some(version) = current_version %}
+<dl>
+  <dt>{{ tt!("ui.settings.version.current") }}</dt>
+  <dd translate="no">{{ version }}</dd>
+</dl>
+{% else %}
+<p>{{ tt!("ui.volume.disabled") }}</p>
+{% endif %}
+
+{% if can_manage %}
+<div x-data="{ submitting: false }">
+{% if let Some(version) = target_version %}
+<form
+  id="volume-enable-form"
+  method="post"
+  action="/volume/enable"
+  @submit="if (submitting) { $event.preventDefault(); return } $refs.payload.value = JSON.stringify({ version: $refs.version.value }); submitting = true"
+>
+  <input x-ref="payload" type="hidden" name="payload" />
+  <div class="fields">
+    <div class="field">
+      <label for="volume-version">{{ tt!("ui.settings.version.version") }}:</label>
+      <select x-ref="version" id="volume-version" class="text" required :disabled="submitting">
+        <option value="{{ version }}">{{ version }}</option>
+      </select>
+    </div>
+  </div>
+</form>
+{% else if latest_unavailable %}
+<p>{{ tt!("ui.settings.version.unavailable") }}</p>
+{% else if let Some(version) = current_version %}
+<p>{{ tt!("ui.settings.version.upToDate", version = version) }}</p>
+{% endif %}
+
+{% if current_version.is_some() %}
+<form
+  id="volume-disable-form"
+  method="post"
+  action="/volume/disable"
+  data-confirm='{{ tt!("ui.volume.disableConfirm") }}'
+  @submit="if (submitting || !confirm($el.dataset.confirm)) { $event.preventDefault(); return } submitting = true"
+>
+  <input type="hidden" name="payload" value="{}" />
+</form>
+{% endif %}
+{% if current_version.is_some() || target_version.is_some() %}
+<div class="actions">
+  {% if current_version.is_some() %}
+  <input type="submit" form="volume-disable-form" class="button danger" value='{{ tt!("ui.common.disable") }}' :disabled="submitting" />
+  {% endif %}
+  {% if target_version.is_some() %}
+  <input type="submit" form="volume-enable-form" class="button" value='{% if current_version.is_some() %}{{ tt!("ui.common.update") }}{% else %}{{ tt!("ui.common.enable") }}{% endif %}' :disabled="submitting" />
+  {% endif %}
+</div>
+{% endif %}
+</div>
+{% endif %}
+{% endblock main %}

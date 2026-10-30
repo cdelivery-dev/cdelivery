@@ -1,0 +1,31 @@
+---
+title: "Platform domain and access"
+description: "Configure a domain and HTTPS for the console while preserving a verified management path."
+sidebar:
+  order: 61
+---
+
+After installation, the console is available on port 9000. An Admin can configure its own domain under **Settings → CDelivery**, for example `ops.example.com`.
+
+## Configure
+
+1. Enable Pingress on reachable entry servers.
+2. Point A/AAAA records to those servers, publishing only working addresses.
+3. Check ports 80/443, firewalls, and upstream proxies.
+4. Enter the hostname without protocol, port, or path.
+5. Select HTTPS if required and save.
+6. In a new tab, verify login, pages, and API access through the domain.
+
+HTTPS needs a valid [automatic](/docs/guides/networking/automatic-certificates/) or [custom](/docs/guides/networking/custom-certificates/) certificate. Checking the HTTPS option does not prepare DNS or certificates for you.
+
+## Change or remove
+
+Keep the current management connection while verifying a new domain. Browser cookies are host-specific, so a different hostname can require signing in again. Update MCP clients and scripts using the old instance URL.
+
+Clearing the domain removes the platform route but not external DNS records. Configuring a domain does not automatically close port 9000; restrict that port at the host or network layer if needed.
+
+## Troubleshoot
+
+Check DNS for resolution failures, certificate names and chain for TLS failures, and platform tasks for gateway errors. If the original management port still works, use it to correct the domain settings.
+
+Business application domains belong in [application routing](/docs/guides/networking/routing/). Avoid conflicting routes for the management hostname.

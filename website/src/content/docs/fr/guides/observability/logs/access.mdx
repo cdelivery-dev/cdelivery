@@ -1,0 +1,24 @@
+---
+title: "Journaux d’accès HTTP"
+description: "Les journaux Pingress couvrent le gateway, pas les connexions directes à un port publié."
+sidebar:
+  order: 33
+---
+
+Les journaux Pingress couvrent le gateway, pas les connexions directes à un port publié.
+
+## Examiner
+
+Choisissez domaine/application et période. Lisez résultat, serveur d’entrée, port cible, octets, délai du premier octet et erreur.
+
+Sans requête : DNS, proxy, filtre, collecte. TLS : certificat/entrée. Backend : tâches, écoute, port. Route inattendue : domaine, préfixe, en-tête/cookie. Lenteur : traitement, dépendance, transfert et réseau.
+
+L’adresse client peut représenter un proxy ou le pair direct ; ne déduisez pas l’identité d’origine sans connaître le trajet.
+
+## Vérifier
+
+Après une [route](/docs/fr/guides/networking/routing/) modifiée, envoyez une requête correspondante et une exclue. Comparez cible et réponse.
+
+Croisez l’heure avec les [journaux applicatifs](/docs/fr/guides/observability/logs/application/) et métriques. Un processus actif peut échouer aux requêtes.
+
+Si l’historique manque, contrôlez Insight, collecteurs, stockage et [rétention](/docs/fr/guides/observability/settings/).

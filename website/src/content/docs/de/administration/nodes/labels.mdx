@@ -1,0 +1,26 @@
+---
+title: "Serverlabels"
+description: "Labels bestimmen geeignete Servergruppen für Anwendungen und Komponenten."
+sidebar:
+  order: 54
+---
+
+Labels bestimmen geeignete Servergruppen für Anwendungen und Komponenten.
+
+## Konfigurieren
+
+Admin vergibt etwa `web` oder `storage`, anschließend in [Platzierung](/docs/de/guides/apps/placement/) auswählen.
+
+Maximal 32 je Maschine. Name: 1–16 Kleinbuchstaben/Ziffern/Bindestriche, kein Randbindestrich oder reservierter Name. Keine beliebigen Schlüsselwertabfragen.
+
+## Wirkung
+
+Entfernen kann Aufgaben ohne Ziel lassen. Vor Hinzufügen Architektur, Ressourcen, Netzwerk und Daten prüfen.
+
+Fest nach ID platzierte Anwendungen ziehen durch gemeinsame Labels nicht um. Volumes werden nicht kopiert.
+
+## Prüfen
+
+Server erneut öffnen und tatsächliche Verteilung kontrollieren. Bei Warten Verfügbarkeit, Reservierungen und Limits prüfen.
+
+API `labels` ersetzt den vollständigen Satz der Plattformlabels; leeres Array löscht ihn. Bestehende Werte vorher lesen und benötigte behalten. Siehe [Server](/docs/de/administration/nodes/).

@@ -1,0 +1,31 @@
+[package]
+name = "tests"
+version = "0.1.0"
+edition = "2024"
+publish = false
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+
+[[test]]
+name = "system"
+path = "system.rs"
+test = false
+
+[dev-dependencies]
+jiff = { workspace = true }
+base64 = { workspace = true }
+cdelivery-wire = { workspace = true }
+macros = { workspace = true }
+reqwest = { workspace = true, features = ["rustls", "json", "form", "cookies"] }
+rcgen = { version = "0.14.10", default-features = false, features = ["aws_lc_rs", "pem"] }
+serde = { workspace = true }
+serde_json = { workspace = true }
+sha2 = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true }
+uuid = { workspace = true }
+rustix = { workspace = true, features = ["process"] }
+
+[lints]
+workspace = true

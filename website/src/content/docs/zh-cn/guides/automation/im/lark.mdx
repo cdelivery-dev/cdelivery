@@ -1,0 +1,34 @@
+---
+title: "Lark 接入"
+description: "创建 Lark 应用机器人、订阅消息事件并绑定自己的 open_id。"
+sidebar:
+  order: 49
+---
+
+Lark 使用应用机器人和长连接接收消息，无需为事件接收开放公网回调地址。准备 Lark 开放平台的应用管理权限，以及 CDelivery 的 Admin 账户。
+
+## 创建并发布应用
+
+1. 在 Lark 开放平台创建自建应用，启用机器人能力。
+2. 为机器人开启发送消息、读取用户发给机器人的单聊消息，以及需要使用的群聊 @ 消息权限。
+3. 在事件订阅中选择长连接，订阅接收消息事件 `im.message.receive_v1`。
+4. 发布应用版本，将使用者加入应用可用范围；权限变更后按平台要求重新发布或审批。
+5. 将 App ID 和 App Secret 填入 CDelivery 设置的 **Lark** 渠道。
+
+Lark 与飞书使用不同的平台地址和应用凭证。飞书应用应使用[飞书渠道](/docs/zh-cn/guides/automation/im/feishu/)。只有 Webhook 地址的群机器人不能用于这里的双向会话。长连接配置参阅 [Lark 官方文档](https://open.larksuite.com/document/server-docs/event-subscription-guide/event-subscription-configure-/request-url-configuration-case)。
+
+## 绑定自己的账户
+
+绑定值是当前应用下自己的 `open_id`。不要填写 `user_id`、`union_id`、群 ID 或机器人的 ID；同一个人在不同应用下的 open_id 也可能不同。
+
+可通过开放平台的官方 API 调试工具，使用当前应用查询自己的身份；按[通过邮箱或手机号获取用户 ID](https://open.larksuite.com/document/server-docs/contact-v3/user/batch_get_id)选择 open_id 类型。仅为查询身份所需的通讯录权限，也应按应用的数据范围授权。
+
+在 CDelivery 个人账户中填写 Lark open_id，启用需要的通知。填写他人的 ID 会把当前账户的通知与可操作权限交给对应身份，请核对自己的 ID 后保存。
+
+## 验证与排障
+
+打开机器人的单聊，发送只读问题，例如“列出应用状态”；群聊中需明确 @ 机器人。AI 回复还需要[模型配置](/docs/zh-cn/guides/automation/models/)。
+
+如果没有回复，依次检查应用可用范围、事件订阅、机器人权限、长连接出站网络和个人绑定。应用尚未发布时，不在测试范围的用户可能无法使用。
+
+显示个人资料还需要 `contact:contact.base:readonly`、`contact:user.base:readonly`，且用户处于应用通讯录范围内。资料查询失败和消息发送失败应分别排查。更换应用后重新获取 open_id 并更新绑定。

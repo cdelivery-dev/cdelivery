@@ -1,0 +1,32 @@
+---
+title: "Automated duty"
+description: "Configure unattended analysis, patrol intervals, roles, notification language, and recipients."
+sidebar:
+  order: 43
+---
+
+Automated duty responds to operational events and performs periodic patrols. It uses a configured model and can execute tools within its assigned role.
+
+## Configure
+
+1. Prepare a working [model](/docs/guides/automation/models/).
+2. Choose a duty role, policy, patrol interval, and notification language.
+3. Enable duty and configure recipient channels.
+4. Inspect subsequent events, analysis, and notifications.
+5. Verify any resulting operation against actual platform state.
+
+Defaults are Reader, NearCritical, a 30-minute patrol interval, and English notifications. The interval accepts 15 minutes to 24 hours. Event-driven analysis does not wait for the next patrol.
+
+Policies include EarlyRisk, NearCritical, and LimitOrFailure. They describe when the agent should act on risk; they are not one universal fixed numeric threshold for every resource.
+
+## Permissions and recipients
+
+Reader provides observation. Operator and Admin allow unattended writes within their platform permissions. Duty has no personal account scope and does not act as a selected human user.
+
+Recipients must have enabled the relevant notification channel and have a role at least as high as the duty role. For example, Operator duty notifications go to eligible Operators and Admins, not Readers.
+
+## Verify and troubleshoot
+
+Check duty configuration, model errors, recent events, channel delivery, subscriptions, and role filtering. An absent notification does not prove no problem exists.
+
+Disabling duty does not disable ordinary operational alerts. User conversations follow the user's language; duty notifications use the configured notification language. See [notification troubleshooting](/docs/guides/automation/im/notifications/).

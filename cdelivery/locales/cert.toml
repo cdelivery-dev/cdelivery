@@ -1,0 +1,71 @@
+_version = 2
+
+[cert.ChainEmpty]
+en = "empty certificate chain"
+zh-CN = "证书链为空"
+zh-TW = "憑證鏈為空"
+ja = "証明書チェーンが空です。"
+pt-BR = "cadeia de certificados vazia"
+es = "la cadena de certificados está vacía"
+fr = "La chaîne de certificats est vide"
+de = "Leere Zertifikatskette"
+
+[cert.PemDecode]
+en = "certificate or private key PEM decoding failed"
+zh-CN = "证书或私钥 PEM 解码失败"
+zh-TW = "憑證或私密金鑰的 PEM 解碼失敗"
+ja = "証明書または秘密鍵の PEM デコードに失敗しました。"
+pt-BR = "falha ao decodificar o PEM do certificado ou da chave privada"
+es = "falló la decodificación PEM del certificado o de la clave privada"
+fr = "Échec du décodage PEM du certificat ou de la clé privée"
+de = "PEM-Dekodierung des Zertifikats oder privaten Schlüssels fehlgeschlagen"
+
+[cert.Parse]
+en = "certificate parsing failed"
+zh-CN = "证书解析失败"
+zh-TW = "憑證解析失敗"
+ja = "証明書の解析に失敗しました。"
+pt-BR = "falha ao analisar o certificado"
+es = "falló el análisis del certificado"
+fr = "Échec de l’analyse du certificat"
+de = "Zertifikat konnte nicht gelesen werden"
+
+[cert.Expired]
+en = "certificate outside its validity period"
+zh-CN = "证书不在有效期内"
+zh-TW = "憑證不在有效期間內"
+ja = "証明書の有効期間外です。"
+pt-BR = "certificado fora do período de validade"
+es = "el certificado está fuera de su periodo de validez"
+fr = "Le certificat est hors de sa période de validité"
+de = "Zertifikat liegt außerhalb seines Gültigkeitszeitraums"
+
+[cert.DomainNotCovered]
+en = "certificate does not cover domain %{domain}"
+zh-CN = "证书不覆盖域名 %{domain}"
+zh-TW = "憑證未涵蓋網域 %{domain}"
+ja = "ドメイン %{domain} は証明書の対象に含まれていません。"
+pt-BR = "o certificado não cobre o domínio %{domain}"
+es = "el certificado no cubre el dominio %{domain}"
+fr = "Le certificat ne couvre pas le domaine %{domain}"
+de = "Zertifikat gilt nicht für die Domain %{domain}"
+
+[cert.KeyMismatch]
+en = "private key does not match the leaf certificate"
+zh-CN = "私钥与叶证书不匹配"
+zh-TW = "私密金鑰與終端憑證不符"
+ja = "秘密鍵がリーフ証明書と一致しません。"
+pt-BR = "a chave privada não corresponde ao certificado final da cadeia"
+es = "la clave privada no coincide con el primer certificado de la cadena"
+fr = "La clé privée ne correspond pas au certificat final"
+de = "Privater Schlüssel passt nicht zum Endzertifikat"
+
+[cert.KeyUnsupported]
+en = "unsupported private key type"
+zh-CN = "不支持的私钥类型"
+zh-TW = "不支援的私密金鑰類型"
+ja = "この種類の秘密鍵には対応していません。"
+pt-BR = "tipo de chave privada não suportado"
+es = "tipo de clave privada no compatible"
+fr = "Type de clé privée non pris en charge"
+de = "Nicht unterstützter Typ des privaten Schlüssels"

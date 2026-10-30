@@ -1,0 +1,30 @@
+---
+title: "Custom certificates"
+description: "Upload a matching certificate chain and private key, validate HTTPS, and manage renewal yourself."
+sidebar:
+  order: 24
+---
+
+Use a custom certificate when your organization manages issuance outside CDelivery. An Admin uploads the certificate material; domain routing must also be configured.
+
+## Prepare the files
+
+Provide a PEM certificate chain and its matching PEM private key. The certificate must cover the intended hostname and be valid for the current time. Include the chain required by clients to establish trust.
+
+A certificate for another hostname, an expired certificate, or a mismatched key cannot provide valid HTTPS. Keep the private key out of application logs and shared diagnostic messages.
+
+## Upload and verify
+
+1. Open certificate management and choose the target domain.
+2. Upload the certificate chain and private key.
+3. Save and confirm the associated route uses HTTPS.
+4. Connect from a real client and inspect hostname coverage, issuer, chain, and expiry.
+5. Repeat for every relevant entry address, including IPv6 when advertised.
+
+A successful upload does not prove the client reaches that server. DNS or an upstream proxy may direct traffic elsewhere.
+
+## Renewal and replacement
+
+Custom certificates do not participate in automatic ACME renewal. Track expiry and upload replacement material before expiration. Recheck the served certificate after replacement, rather than just the stored record.
+
+For TLS failures, distinguish DNS/address errors from certificate errors. Check the full chain, domain names, validity period, and matching key. If you prefer automatic issuance, review [automatic certificates](/docs/guides/networking/automatic-certificates/) and its validation requirements.

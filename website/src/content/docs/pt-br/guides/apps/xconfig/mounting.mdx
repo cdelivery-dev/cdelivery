@@ -1,0 +1,26 @@
+---
+title: "Montar e atualizar configuração"
+description: "Associe conteúdo a um caminho e confirme que tarefas novas usam o arquivo esperado."
+sidebar:
+  order: 13
+---
+
+Associe conteúdo a um caminho e confirme que tarefas novas usam o arquivo esperado.
+
+## Procedimento
+
+Carregue arquivo válido, selecione caminho absoluto, salve e inspecione tarefas, logs e uma função dependente do conteúdo. Conforme a configuração, a mudança pode passar por [Guardian](/docs/pt-br/guides/release-safety/).
+
+O console não altera diretamente o caminho de uma montagem existente: remova a antiga e adicione outra. Confirme que a imagem lerá a nova localização.
+
+## Exemplo e diagnóstico
+
+Em Nginx, `/etc/nginx/conf.d/default.conf` precisa de sintaxe e referências compatíveis com a versão. Baixar o arquivo confirma armazenamento, não consumo em execução.
+
+Antes de remover, verifique se o programa inicia sem ele. Se falhar, consulte erros de sintaxe, caminhos e inicialização.
+
+## Retenção
+
+A indicação de uso pertence à aplicação, não a um catálogo global. Conteúdo órfão antigo pode ser coletado; não use como histórico de backup.
+
+Mantenha a fonte em seu sistema de controle e faça backup dos dados separadamente. Veja [limites do XConfig](/docs/pt-br/guides/apps/xconfig/).

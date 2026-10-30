@@ -1,0 +1,51 @@
+{% extends "dashboard.html" %}
+
+{% block title %}{{ tt!("ui.group.createTitle") }} | {{ super() }}{% endblock title %}
+
+{% block main %}
+<header>
+  <h1>{{ tt!("ui.group.createTitle") }}</h1>
+</header>
+<form
+  id="create_group_form"
+  autocomplete="off"
+  method="post" action="/groups"
+  x-data="{ submitting: false }"
+  @submit="if (submitting) { $event.preventDefault(); return } $refs.payload.value = JSON.stringify({ name: $refs.name.value, description: $refs.description.value || undefined }); submitting = true"
+>
+  <input x-ref="payload" type="hidden" name="payload" />
+  {% if !fields.is_empty() %}<ul role="alert">{% for (path, message) in fields.iter() %}<li><code>{{ path }}</code> {{ message }}</li>{% endfor %}</ul>{% endif %}
+  <div class="fields">
+    <div class="field">
+      <label for="group-name">{{ tt!("ui.group.name.label") }}: </label>
+      <input class="text"
+        id="group-name"
+        required
+        type="text"
+        placeholder='{{ tt!("ui.group.name.placeholder") }}'
+        pattern="^[a-z0-9]([a-z0-9\-]*[a-z0-9])?$"
+        title='{{ tt!("ui.group.name.validation") }}'
+        minlength="1"
+        maxlength="16"
+        value="{{ name }}"
+        x-ref="name"
+        spellcheck="false"
+      />
+    </div>
+    <div class="field">
+      <label for="group-description">{{ tt!("ui.group.description.label") }}: </label>
+      <input class="text"
+        id="group-description"
+        type="text"
+        placeholder='{{ tt!("ui.group.description.placeholder") }}'
+        maxlength="256"
+        value="{{ description }}"
+        x-ref="description"
+      />
+    </div>
+  </div>
+  <div class="actions">
+    <input class="button" type="submit" value='{{ tt!("ui.common.create") }}' :disabled="submitting" />
+  </div>
+</form>
+{% endblock main %}

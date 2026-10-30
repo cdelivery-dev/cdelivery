@@ -1,0 +1,28 @@
+---
+title: "Integração com Feishu"
+description: "Feishu usa bot de aplicação e conexão longa para eventos."
+sidebar:
+  order: 50
+---
+
+Feishu usa bot de aplicação e conexão longa para eventos.
+
+## Criar e publicar
+
+Crie aplicação própria, habilite bot e conceda envio, leitura de mensagens privadas e menções de grupo quando necessário. Selecione conexão longa e evento `im.message.receive_v1`.
+
+Publique, inclua usuários no escopo e aprove mudanças de permissão. Admin salva App ID e App Secret no canal Feishu. Bot de grupo apenas com webhook não atende este fluxo.
+
+Credenciais Lark pertencem ao [outro canal](/docs/pt-br/guides/automation/im/lark/). Veja [eventos oficiais](https://open.feishu.cn/document/server-docs/event-subscription-guide/event-subscription-configure-/request-url-configuration-case).
+
+## Identidade
+
+Obtenha seu `open_id` desta aplicação no explorador oficial, por exemplo [consulta por e-mail/telefone](https://open.feishu.cn/document/server-docs/contact-v3/user/batch_get_id), com permissões e escopo adequados.
+
+Não use user_id, union_id, chat ou bot. Trocar app pode mudar open_id. Vincule sua identidade e ative assinatura; ID alheio expõe capacidades da sua conta.
+
+## Verificar
+
+Pergunte algo de leitura em privado ou mencione o bot no grupo, com modelo configurado. Confira publicação, escopo, eventos, rede e vínculo.
+
+Perfil precisa de `contact:contact.base:readonly`, `contact:user.base:readonly` e visibilidade do usuário. Diagnostique perfil e mensagens separadamente.

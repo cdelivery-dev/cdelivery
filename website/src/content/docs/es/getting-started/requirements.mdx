@@ -1,0 +1,39 @@
+---
+title: "Requisitos de instalación"
+description: "Prepara permisos, Docker, direcciones estables, conectividad y capacidad antes de instalar."
+sidebar:
+  order: 3
+---
+
+Prepara permisos, Docker, direcciones estables, conectividad y capacidad antes de instalar.
+
+## Sistema
+
+En Linux necesitas privilegios administrativos y `curl`; el instalador prepara Docker donde es compatible. Docker debe admitir API 1.48: Engine 28.0 o posterior. Comprueba cliente y servidor con `docker version`. En macOS inicia antes el entorno Docker y verifica `docker info`.
+
+Reserva recursos para plataforma, aplicaciones, réplicas simultáneas durante actualizaciones y registros. Permite acceso saliente a instalador, registros de imágenes y proveedores.
+
+## Red
+
+| Puerto | Uso | Alcance |
+| --- | --- | --- |
+| TCP 9000 | Consola y API | Red administrativa |
+| TCP 80/443 | Pingress | Clientes |
+| Puertos publicados | Aplicaciones | Clientes previstos |
+| TCP 2377 | Gestión | Entre servidores |
+| TCP/UDP 7946 | Comunicación | Entre servidores |
+| UDP 4789 | Tráfico de aplicaciones | Entre servidores |
+
+Revisa cortafuegos del host y reglas de nube. Restringe los puertos internos a los servidores participantes. Consulta los [requisitos de Docker](https://docs.docker.com/engine/network/drivers/overlay/#requirements).
+
+La dirección anunciada debe ser accesible entre servidores; puede diferir de la dirección del navegador. Loopback no sirve para otros servidores. Para acceso local remoto:
+
+```sh
+ssh -L 9000:127.0.0.1:9000 your-user@server.example.com
+```
+
+Mantén la sesión abierta y visita localhost:9000. El puerto 8080 del ejemplo necesita otro reenvío.
+
+## Datos
+
+Elige servidor de almacenamiento y copias antes de crear aplicaciones con estado. El dominio es opcional. Revisa [IPv6](/docs/es/guides/networking/faq/) y continúa con la [instalación](/docs/es/getting-started/installation/).

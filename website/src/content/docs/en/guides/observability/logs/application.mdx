@@ -1,0 +1,34 @@
+---
+title: "Application logs"
+description: "Select application, check, job, or Guardian logs and understand log-driver retention."
+sidebar:
+  order: 32
+---
+
+Open an application's logs and select the source that actually produced the output. The business process and its checks run in different containers.
+
+## Sources
+
+| Source | Output |
+| --- | --- |
+| App | Business application |
+| XHealth | Health-check task |
+| XJob and task name | Scheduled command |
+| GuardianApp | Release candidate |
+| GuardianCheck | Candidate validation |
+
+Choose a time range around the failure and verify timestamps and task identity. A check failure may have no corresponding error in the application's own log.
+
+## Logging configuration
+
+FollowHost uses the host's logging behavior. JSON-file logging supports local rotation; the console defaults to five files of 10 MiB. The file count can be 1–100 and each file up to 1 GiB. Insight logging requires its collection component.
+
+Changing the log driver affects new tasks. It does not migrate or backfill output from old tasks, whose availability depends on their original driver and retention.
+
+## Diagnose
+
+For an empty view, confirm the source, range, task lifetime, driver, and whether the process writes to standard output/error. Files written only inside the container do not automatically appear here.
+
+For a query failure, inspect collection and storage connectivity rather than assuming there were no errors. Logs may contain application-provided credentials or personal data; arbitrary text is not automatically redacted.
+
+Use [events](/docs/guides/observability/events/) to correlate changes, and [collection settings](/docs/guides/observability/settings/) to manage retained history.

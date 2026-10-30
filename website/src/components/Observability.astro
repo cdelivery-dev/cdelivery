@@ -1,0 +1,88 @@
+---
+import { defaultLocale } from '../config';
+import benchmark from '../data/insight-benchmark.json';
+import { translate } from '../i18n';
+import BenchmarkEnvironment from './BenchmarkEnvironment.astro';
+import LogCostCalculator from './LogCostCalculator.astro';
+
+const locale = Astro.currentLocale ?? defaultLocale;
+const t = translate(locale);
+const run = benchmark.run;
+if (Object.values(run).some(value => !Number.isSafeInteger(value) || value <= 0)) {
+  throw new Error('Insight benchmark measurements must be positive safe integers');
+}
+const throughput = Math.round(run.rawBytes * 1000 / run.ingestNanoseconds);
+const memory = Math.ceil(run.serverPeakRssBytes / 1_048_576);
+const step = Math.max(500, Math.ceil(throughput / 1500) * 500);
+const maximum = step * 3;
+const ticks = [0, step, step * 2, maximum];
+const number = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 });
+const memoryGiB = new Intl.NumberFormat(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(run.serverPeakRssBytes / 1_073_741_824);
+---
+<section class="home-section container" aria-labelledby="observability-title">
+  <header class="section-heading section-copy">
+    <h2 class="section-title" id="observability-title">{t('site.observability.title')}</h2>
+    <p>{t('site.observability.intro')}</p>
+    <p>{t('site.observability.closing')}</p>
+  </header>
+  <div class="observability-row cost-row">
+    <div class="row-copy section-copy">
+      <h3>{t('site.observability.costTitle')}</h3>
+      <p>{t('site.observability.metricsCost')}<br />{t('site.observability.costBody')}</p>
+    </div>
+    <LogCostCalculator />
+  </div>
+  <div class="observability-row performance-row">
+    <div class="row-copy section-copy">
+      <h3>{t('site.observability.performanceTitle')}</h3>
+      <p>{t('site.observability.performanceBody', { throughput: number.format(throughput), memory: memoryGiB })}</p>
+    </div>
+    <figure class="performance-chart" aria-label={t('site.observability.chartDescription', { throughput: number.format(throughput), memory: number.format(memory), indexes: benchmark.indexes, cores: benchmark.cores, instance: benchmark.instanceType })}>
+      <dl class="performance-metrics">
+        <div>
+          <dt class="metric-label">{t('site.observability.throughput')}</dt>
+          <dd class="metric-value">{number.format(throughput)}<span class="metric-unit">MB/s</span></dd>
+        </div>
+        <div>
+          <dt class="metric-label">{t('site.benchmark.memoryLabel')}</dt>
+          <dd class="metric-value">{number.format(memory)}<span class="metric-unit">MiB</span></dd>
+        </div>
+      </dl>
+      <div class="throughput-scale" aria-hidden="true">
+        {ticks.map(value => <div class="scale-tick" style={`left:${value / maximum * 100}%`}><span>{number.format(value)}{value === maximum && ' MB/s'}</span></div>)}
+        <div class="throughput-bar" style={`width:${throughput / maximum * 100}%`}></div>
+      </div>
+      <figcaption>
+        <BenchmarkEnvironment instance={benchmark.instanceType} cpu={benchmark.cpu} cores={benchmark.cores} memoryGiB={benchmark.memoryGiB} storage={benchmark.storage} />
+      </figcaption>
+    </figure>
+  </div>
+</section>
+<style>
+  .section-heading { margin-bottom: 48px; }
+  .observability-row { display: grid; grid-template-columns: minmax(0, .35fr) minmax(0, .65fr); gap: 48px; }
+  .row-copy { min-width: 0; }
+  .row-copy h3 { font-size: 1.25rem; line-height: 1.4; letter-spacing: -.015em; white-space: pre-line; }
+  .row-copy h3:lang(zh), .row-copy h3:lang(ja) { letter-spacing: 0; }
+  .performance-row { margin-top: 72px; }
+  .performance-row .row-copy p { white-space: pre-line; }
+  .performance-chart { min-width: 0; margin: 0; container-type: inline-size; }
+  .performance-metrics { display: grid; gap: 24px; margin: 0; }
+  .metric-value { margin: 8px 0 0; color: var(--color-accent); font-size: 1.625rem; line-height: 1.2; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .throughput-scale { position: relative; height: 80px; margin: 24px 1px 0 0; }
+  .scale-tick { position: absolute; top: 0; height: 48px; border-left: 1px solid var(--color-border); }
+  .scale-tick span { position: absolute; top: 56px; color: var(--color-muted); font-size: .75rem; line-height: 1; white-space: nowrap; transform: translateX(-50%); }
+  .scale-tick:first-child span { transform: none; }
+  .scale-tick:nth-child(4) span { transform: translateX(-100%); }
+  .throughput-bar { position: absolute; top: 20px; height: 8px; border-radius: 0 3px 3px 0; background: var(--color-accent-bar); }
+  figcaption { margin-top: 24px; border-top: 1px solid var(--color-border); padding-top: 16px; }
+  @media (width < 1000px) {
+    .cost-row { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  }
+  @media (width < 800px) {
+    .observability-row { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+    .section-heading { margin-bottom: 32px; }
+    .performance-row { margin-top: 56px; }
+  }
+  @container (min-width: 400px) { .performance-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+</style>

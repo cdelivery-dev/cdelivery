@@ -1,0 +1,30 @@
+---
+title: "Integración con Lark"
+description: "Lark utiliza un bot de aplicación y conexión larga para recibir eventos."
+sidebar:
+  order: 49
+---
+
+Lark utiliza un bot de aplicación y conexión larga para recibir eventos.
+
+## Crear y publicar
+
+1. Crea aplicación propia y habilita bot.
+2. Concede envío, lectura de mensajes privados y menciones de grupo si hacen falta.
+3. Selecciona conexión larga y evento `im.message.receive_v1`.
+4. Publica y añade usuarios al ámbito disponible; aprueba permisos modificados.
+5. Admin guarda App ID y App Secret en el canal Lark.
+
+Un bot de grupo con solo Webhook no sirve para esta integración. Credenciales Feishu pertenecen a su [canal](/docs/es/guides/automation/im/feishu/). Consulta [eventos oficiales](https://open.larksuite.com/document/server-docs/event-subscription-guide/event-subscription-configure-/request-url-configuration-case).
+
+## Identidad
+
+Obtén tu `open_id` de esta aplicación mediante el explorador oficial y [consulta por correo/teléfono](https://open.larksuite.com/document/server-docs/contact-v3/user/batch_get_id). Autoriza los permisos y alcance de contactos necesarios.
+
+No uses user_id, union_id, chat o bot. Cambiar aplicación puede cambiar open_id. Guarda tu identidad y activa notificaciones; una identidad ajena expone permisos de tu cuenta.
+
+## Verificar
+
+Prueba una pregunta de lectura en privado o menciona al bot en grupo, con modelo configurado. Si falla, revisa publicación, alcance, eventos, red y vinculación.
+
+Perfiles necesitan `contact:contact.base:readonly`, `contact:user.base:readonly` y visibilidad del usuario. Diagnostica perfiles y mensajes por separado.

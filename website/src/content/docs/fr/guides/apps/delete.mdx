@@ -1,0 +1,26 @@
+---
+title: "Supprimer une application"
+description: "Operator ou Admin supprime l’application et ses contrôles, tâches et validations associés."
+sidebar:
+  order: 19
+---
+
+Operator ou Admin supprime l’application et ses contrôles, tâches et validations associés.
+
+## Procédure
+
+Notez image, paramètres et stockage si une reprise est possible. Redirigez les clients, examinez XHealth/XJob/Guardian, confirmez puis vérifiez disparition et arrêt des tâches.
+
+L’arrêt des conteneurs est asynchrone ; des références réseau peuvent subsister temporairement.
+
+## Ressources conservées
+
+Volumes métier, groupes et DNS externes restent présents. Nettoyer les données nécessite une décision séparée via [volumes](/docs/fr/administration/nodes/volumes/), après contrôle des références et sauvegardes.
+
+Une application absente n’implique pas un volume vide.
+
+## Reprise
+
+Recréer le nom crée une nouvelle identité, sans restaurer l’ancienne définition. Reconstituez les paramètres et vérifiez le volume original avant un démarrage avec état.
+
+Si le groupe reste occupé, attendez et inspectez les références. Pour un déploiement raté, envisagez [rollback](/docs/fr/guides/release-safety/rollback/) avant suppression.

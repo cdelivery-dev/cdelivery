@@ -1,0 +1,32 @@
+---
+title: "Feishu integration"
+description: "Configure a Feishu application bot, long-connection events, and your app-scoped open_id."
+sidebar:
+  order: 50
+---
+
+Feishu uses an application bot and a long connection for incoming events. You need application-management access and a CDelivery Admin account; no public event callback URL is required.
+
+## Create and publish
+
+1. Create a self-built application in the Feishu developer portal and enable its bot capability.
+2. Grant sending messages and reading users' direct messages to the bot. Add group-mention reception if needed.
+3. Select long-connection event reception and subscribe to `im.message.receive_v1`.
+4. Publish the application and include its users in the availability scope. Complete required approval after permission changes.
+5. Save App ID and App Secret in CDelivery's **Feishu** channel.
+
+A webhook-only group bot is not the application bot required here. Lark credentials belong in the separate [Lark channel](/docs/guides/automation/im/lark/). See [official event configuration](https://open.feishu.cn/document/server-docs/event-subscription-guide/event-subscription-configure-/request-url-configuration-case).
+
+## Bind your identity
+
+Use your own `open_id` for this application, not user_id, union_id, a chat ID, or the bot's ID. The same person can have different open_id values in different apps.
+
+Use the official API explorer and [email/phone user lookup](https://open.feishu.cn/document/server-docs/contact-v3/user/batch_get_id), selecting open_id and granting the required contact scope covering yourself. Save that value in your CDelivery account and enable notifications separately.
+
+Entering another person's identity can expose your account's data and operations to them. Rebind after switching applications.
+
+## Verify and troubleshoot
+
+Ask a read-only question in a direct chat; explicitly mention the bot in a group. AI replies also need a [model](/docs/guides/automation/models/).
+
+Check publication, user availability, message permissions, event subscription, outbound connectivity, and identity binding. Profile lookup additionally needs `contact:contact.base:readonly` and `contact:user.base:readonly`, with the user in the app's contact scope. Profile failures and delivery failures should be diagnosed separately.

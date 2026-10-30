@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block body %}
+<body class="app-shell" x-data>
+  <a id="skip-link" href="#main">{{ tt!("ui.common.skipToContent") }}</a>
+  <div class="app-canvas">
+    <header class="app-header">
+      <span id="header-left">
+        <button id="nav-toggle" type="button" aria-label='{{ tt!("ui.common.menu") }}' aria-controls="page-navigation" aria-expanded="false">
+          <svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path class="menu-icon" d="M2 4h12M2 8h12M2 12h12" />
+            <path class="close-icon" d="m3 3 10 10M3 13 13 3" />
+          </svg>
+        </button>
+        <svg id="logo" aria-hidden="true"><use href="{{ crate::ui::asset::LOGO_PATH.as_str() }}#CDelivery"></use></svg>
+        <a href="/"><strong>CDelivery</strong></a>
+      </span>
+      <span id="header-right">
+        {% block header_account %}{% endblock header_account %}
+      </span>
+    </header>
+    {% block navigation %}{% endblock navigation %}
+    <main id="main" class="page" tabindex="-1">
+      {% block main %}{% endblock main %}
+    </main>
+  </div>
+</body>
+{% endblock body %}

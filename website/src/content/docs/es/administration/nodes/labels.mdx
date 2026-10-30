@@ -1,0 +1,26 @@
+---
+title: "Etiquetas de servidores"
+description: "Las etiquetas definen conjuntos elegibles para aplicaciones y componentes."
+sidebar:
+  order: 54
+---
+
+Las etiquetas definen conjuntos elegibles para aplicaciones y componentes.
+
+## Configurar
+
+Admin abre cada servidor, añade etiquetas como `web` o `storage` y guarda. Selecciona después la etiqueta en [ubicación](/docs/es/guides/apps/placement/).
+
+Máximo 32 por servidor; cada nombre contiene 1–16 minúsculas, números o guiones, sin guion inicial/final ni nombre reservado. Son pertenencias, no consultas arbitrarias de claves y valores.
+
+## Efectos
+
+Eliminar una etiqueta reduce destinos posibles y puede dejar tareas sin servidor. Antes de añadir miembros, verifica arquitectura, recursos, red y datos.
+
+Aplicaciones fijadas a un ID no migran porque otra máquina tenga la etiqueta. Tampoco se replican volúmenes.
+
+## Verificar
+
+Reabre la máquina, confirma etiquetas y distribución real de réplicas. Para espera, comprueba disponibilidad, reservas y máximos por servidor.
+
+En la API, `labels` sustituye el conjunto completo de etiquetas de planificación; un array vacío lo limpia. Lee primero el conjunto actual para conservar lo necesario. Consulta [servidores](/docs/es/administration/nodes/) para reincorporación.

@@ -1,0 +1,63 @@
+services:
+  registry:
+    image: registry:3
+    ports: ["19500:5000"]
+    volumes: [registry:/var/lib/registry]
+  releases:
+    image: busybox:1.37.0-musl
+    command: [httpd, -f, -p, "8080", -h, /www]
+    read_only: true
+    cap_drop: [ALL]
+    ports: ["19080:8080"]
+    volumes: [../target/tests/current/releases:/www:ro]
+  garage:
+    image: dxflrs/garage:v2.3.0
+    command: [/garage, server, --single-node, --default-bucket]
+    healthcheck:
+      test: [CMD, /garage, bucket, info, insight]
+      interval: 2s
+      timeout: 5s
+      retries: 90
+    environment:
+      GARAGE_RPC_SECRET: "1111111111111111111111111111111111111111111111111111111111111111"
+      GARAGE_DEFAULT_ACCESS_KEY: GK00000000000000000000000000000000
+      GARAGE_DEFAULT_SECRET_KEY: "2222222222222222222222222222222222222222222222222222222222222222"
+      GARAGE_DEFAULT_BUCKET: insight
+    ports: ["19390:3900"]
+    volumes: [garage:/var/lib/garage]
+    configs:
+      - source: garage
+        target: /etc/garage.toml
+  pebble:
+    image: ghcr.io/letsencrypt/pebble:2.10.1
+    command: [-strict=false, -dnsserver, "challtestsrv:8053"]
+    environment:
+      PEBBLE_VA_NOSLEEP: "1"
+      PEBBLE_WFE_NONCEREJECT: "0"
+      PEBBLE_AUTHZREUSE: "0"
+    ports: ["19400:14000", "19501:15000"]
+    configs:
+      - source: pebble
+        target: /test/config/pebble-config.json
+  challtestsrv:
+    image: ghcr.io/letsencrypt/pebble-challtestsrv:2.10.1
+    command: [-http01, "", -https01, "", -doh, "", -tlsalpn01, "", -defaultIPv4, "", -defaultIPv6, ""]
+    ports: ["19853:8053/udp", "19805:8055"]
+configs:
+  pebble:
+    content: |
+      {"pebble":{"listenAddress":"0.0.0.0:14000","managementListenAddress":"0.0.0.0:15000","certificate":"test/certs/localhost/cert.pem","privateKey":"test/certs/localhost/key.pem","httpPort":80}}
+  garage:
+    content: |
+      metadata_dir = "/var/lib/garage/meta"
+      data_dir = "/var/lib/garage/data"
+      replication_factor = 1
+      rpc_bind_addr = "[::]:3901"
+      [s3_api]
+      s3_region = "garage"
+      api_bind_addr = "[::]:3900"
+volumes:
+  registry:
+    name: cdelivery-tests-registry
+    external: true
+  garage:

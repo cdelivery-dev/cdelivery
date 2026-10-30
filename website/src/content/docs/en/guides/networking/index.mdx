@@ -1,0 +1,35 @@
+---
+title: "Domains and HTTPS overview"
+description: "Choose internal communication, published ports, or domain routes and configure HTTPS in the right order."
+sidebar:
+  order: 20
+---
+
+Application networking has three distinct uses: communication inside a group, direct access through published ports, and HTTP/HTTPS access through Pingress.
+
+## Choose an entry point
+
+| Need | Configuration |
+| --- | --- |
+| One application calls another | Same-group name and container port |
+| Direct TCP or UDP access | Published port mapping |
+| HTTP application with a domain | Pingress domain route to the container port |
+| Encrypted browser access | Domain route plus a valid certificate |
+
+Publishing a port is not required just to route a domain to an application. The route targets the container port, not the public port number.
+
+## Configure in order
+
+First make the application listen on the intended container interface and port. Verify its replicas and logs. For a domain, enable Pingress, point DNS to its reachable entry servers, and allow ports 80/443. Then configure the route and certificate.
+
+An Operator can manage application routes; an Admin configures platform components. A platform management domain has its own [settings](/docs/administration/platform/access/).
+
+## Continue
+
+- [Connectivity and published ports](/docs/guides/networking/connectivity/)
+- [Domains and routing](/docs/guides/networking/routing/)
+- [Automatic certificates](/docs/guides/networking/automatic-certificates/)
+- [Custom certificates](/docs/guides/networking/custom-certificates/)
+- [Networking FAQ](/docs/guides/networking/faq/)
+
+Verify DNS, TCP reachability, TLS, routing, and the application response separately. A working console or an issued certificate does not prove every stage of the application request succeeds.

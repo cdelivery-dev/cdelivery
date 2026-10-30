@@ -1,0 +1,14 @@
+---
+import { translate } from '../i18n';
+const t = translate(Astro.currentLocale);
+---
+<section class="faq section-copy container" id="faq" aria-labelledby="faq-title">
+  <h2 class="section-title" id="faq-title">{t('site.faq.title')}</h2>
+  <slot />
+</section>
+<style>
+  .faq { max-width: 800px; overflow-wrap: anywhere; }
+  .faq :global(h3) { margin-top: 32px; font-size: 1.125rem; line-height: 1.5; }
+  .faq :global(a) { text-decoration: underline; text-underline-offset: 2px; }
+  .faq :global(a:hover) { text-decoration-color: var(--color-control-hover); }
+</style>

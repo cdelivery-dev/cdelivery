@@ -1,0 +1,34 @@
+---
+title: "Lark 接入"
+description: "建立 Lark 應用程式機器人、訂閱消息事件並綁定自己的 open_id。"
+sidebar:
+  order: 49
+---
+
+Lark 使用應用程式機器人和長連接接收消息，無需為事件接收開放公網回調地址。準備 Lark 開放平台的應用程式管理權限，以及 CDelivery 的 Admin 帳戶。
+
+## 建立併發布應用程式
+
+1. 在 Lark 開放平台建立自建應用程式，啟用機器人能力。
+2. 為機器人開啟發送消息、讀取使用者發給機器人的單聊消息，以及需要使用的群聊 @ 消息權限。
+3. 在事件訂閱中選擇長連接，訂閱接收消息事件 `im.message.receive_v1`。
+4. 發佈應用程式版本，將使用者加入應用程式可用範圍；權限變更後按平台要求重新發佈或審批。
+5. 將 App ID 和 App Secret 填入 CDelivery 設定的 **Lark** 渠道。
+
+Lark 與飛書使用不同的平台地址和應用程式憑證。飛書應用程式應使用[飛書渠道](/docs/zh-tw/guides/automation/im/feishu/)。只有 Webhook 地址的群機器人不能用於這裡的雙向會話。長連接設定參閱 [Lark 官方文件](https://open.larksuite.com/document/server-docs/event-subscription-guide/event-subscription-configure-/request-url-configuration-case)。
+
+## 綁定自己的帳戶
+
+綁定值是當前應用程式下自己的 `open_id`。不要填寫 `user_id`、`union_id`、群 ID 或機器人的 ID；同一個人在不同應用程式下的 open_id 也可能不同。
+
+可通過開放平台的官方 API 調試工具，使用當前應用程式查詢自己的身份；按[通過郵箱或手機號獲取使用者 ID](https://open.larksuite.com/document/server-docs/contact-v3/user/batch_get_id)選擇 open_id 類型。僅為查詢身份所需的通訊錄權限，也應按應用程式的資料範圍授權。
+
+在 CDelivery 個人帳戶中填寫 Lark open_id，啟用需要的通知。填寫他人的 ID 會把當前帳戶的通知與可操作權限交給對應身份，請核對自己的 ID 後儲存。
+
+## 驗證與排障
+
+打開機器人的單聊，發送唯讀問題，例如“列出應用程式狀態”；群聊中需明確 @ 機器人。AI 回復還需要[模型設定](/docs/zh-tw/guides/automation/models/)。
+
+如果沒有回復，依次檢查應用程式可用範圍、事件訂閱、機器人權限、長連接出站網路和個人綁定。應用程式尚未發佈時，不在測試範圍的使用者可能無法使用。
+
+顯示個人資料還需要 `contact:contact.base:readonly`、`contact:user.base:readonly`，且使用者處於應用程式通訊錄範圍內。資料查詢失敗和消息發送失敗應分別排查。更換應用程式後重新獲取 open_id 並更新綁定。

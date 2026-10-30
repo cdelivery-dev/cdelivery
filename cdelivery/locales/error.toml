@@ -1,0 +1,1101 @@
+_version = 2
+
+[error.NoService]
+en = "service %{service} not found"
+zh-CN = "服务 %{service} 不存在"
+zh-TW = "服務 %{service} 不存在"
+ja = "サービス %{service} が見つかりません。"
+pt-BR = "serviço %{service} não encontrado"
+es = "no se encontró el servicio %{service}"
+fr = "Service %{service} introuvable"
+de = "Dienst %{service} nicht gefunden"
+
+[error.AlreadyInitialized]
+en = "already initialized"
+zh-CN = "已初始化"
+zh-TW = "已完成初始設定"
+ja = "初期設定は完了しています。"
+pt-BR = "a configuração inicial já foi concluída"
+es = "la configuración inicial ya se ha completado"
+fr = "Initialisation déjà effectuée"
+de = "Bereits eingerichtet"
+
+[error.NotInitialized]
+en = "setup incomplete"
+zh-CN = "初始化未完成"
+zh-TW = "初始設定尚未完成"
+ja = "初期設定が完了していません。"
+pt-BR = "configuração inicial incompleta"
+es = "configuración inicial incompleta"
+fr = "Configuration initiale incomplète"
+de = "Einrichtung nicht abgeschlossen"
+
+[error.Validation]
+en = "validation failed"
+zh-CN = "参数校验失败"
+zh-TW = "參數驗證失敗"
+ja = "入力内容に誤りがあります。"
+pt-BR = "falha na validação"
+es = "error de validación"
+fr = "Échec de la validation des paramètres"
+de = "Validierung fehlgeschlagen"
+
+[error.InvalidBody]
+en = "invalid request body: %{detail}"
+zh-CN = "请求体无效：%{detail}"
+zh-TW = "請求內容無效：%{detail}"
+ja = "リクエスト本文が無効です：%{detail}"
+pt-BR = "corpo da solicitação inválido: %{detail}"
+es = "cuerpo de la solicitud no válido: %{detail}"
+fr = "Corps de la requête invalide : %{detail}"
+de = "Ungültiger Anfrageinhalt: %{detail}"
+
+[error.InvalidName]
+en = "name '%{name}' must be 1–16 lowercase letters, digits or hyphens, with no leading or trailing hyphen"
+zh-CN = "名称 '%{name}' 须为 1–16 位小写字母、数字或连字符，首尾不能为连字符"
+zh-TW = "名稱 '%{name}' 須為 1–16 個小寫字母、數字或連字號，首尾不能是連字號"
+ja = "名前 '%{name}' は小文字の英字、数字、ハイフンを使い、1〜16文字で指定してください。先頭と末尾にハイフンは使えません。"
+pt-BR = "o nome '%{name}' deve ter de 1 a 16 caracteres: a–z, 0–9 ou hifens, sem hífen no início ou no fim"
+es = "el nombre '%{name}' debe tener de 1 a 16 caracteres: a–z, 0–9 o guiones, sin guion al principio ni al final"
+fr = "Le nom « %{name} » doit contenir de 1 à 16 lettres minuscules, chiffres ou traits d’union, sans trait d’union au début ni à la fin"
+de = "Name „%{name}“ muss aus 1–16 Kleinbuchstaben, Ziffern oder Bindestrichen bestehen, ohne Bindestrich am Anfang oder Ende"
+
+[error.TagNotSemver]
+en = "tag %{tag} is not a semantic version"
+zh-CN = "标签 %{tag} 不是语义化版本"
+zh-TW = "標籤 %{tag} 不是語意化版本"
+ja = "タグ %{tag} はセマンティックバージョンではありません。"
+pt-BR = "a tag %{tag} não é uma versão semântica"
+es = "la etiqueta %{tag} no es una versión semántica"
+fr = "Le tag %{tag} n’est pas une version sémantique"
+de = "Tag %{tag} ist keine semantische Version"
+
+[error.NotBase64]
+en = "invalid Base64 data"
+zh-CN = "Base64 数据无效"
+zh-TW = "Base64 資料無效"
+ja = "Base64 データが無効です。"
+pt-BR = "dados Base64 inválidos"
+es = "datos Base64 no válidos"
+fr = "Données Base64 invalides"
+de = "Ungültige Base64-Daten"
+
+[error.GroupMissing]
+en = "group %{group} not found"
+zh-CN = "分组 %{group} 不存在"
+zh-TW = "分組 %{group} 不存在"
+ja = "グループ %{group} が見つかりません。"
+pt-BR = "grupo %{group} não encontrado"
+es = "no se encontró el grupo %{group}"
+fr = "Groupe %{group} introuvable"
+de = "Gruppe %{group} nicht gefunden"
+
+[error.AuthRequired]
+en = "authentication required"
+zh-CN = "需要身份认证"
+zh-TW = "需要身分驗證"
+ja = "認証が必要です。"
+pt-BR = "autenticação obrigatória"
+es = "se requiere autenticación"
+fr = "Authentification requise"
+de = "Authentifizierung erforderlich"
+
+[error.TokenInvalid]
+en = "invalid or expired token"
+zh-CN = "令牌无效或已过期"
+zh-TW = "權杖無效或已過期"
+ja = "トークンが無効か、有効期限が切れています。"
+pt-BR = "token inválido ou expirado"
+es = "token no válido o caducado"
+fr = "Jeton invalide ou expiré"
+de = "Ungültiges oder abgelaufenes Token"
+
+[error.CredentialsInvalid]
+en = "invalid sign-in credentials"
+zh-CN = "登录凭据错误"
+zh-TW = "登入資訊錯誤"
+ja = "ログインの認証情報が正しくありません。"
+pt-BR = "credenciais de acesso inválidas"
+es = "credenciales de acceso incorrectas"
+fr = "Identifiants de connexion incorrects"
+de = "Ungültige Anmeldedaten"
+
+[error.ApiKeyInvalid]
+en = "invalid API key"
+zh-CN = "API 密钥无效"
+zh-TW = "API 金鑰無效"
+ja = "API キーが無効です。"
+pt-BR = "chave de API inválida"
+es = "clave de API no válida"
+fr = "Clé API invalide"
+de = "Ungültiger API-Schlüssel"
+
+[error.Forbidden]
+en = "permission denied"
+zh-CN = "权限不足"
+zh-TW = "權限不足"
+ja = "権限がありません。"
+pt-BR = "permissão negada"
+es = "permisos insuficientes"
+fr = "Accès refusé"
+de = "Zugriff verweigert"
+
+[error.OperationTimeout]
+en = "operation '%{operation}' timed out; check the current state before retrying"
+zh-CN = "操作 '%{operation}' 超时；重试前先检查当前状态"
+zh-TW = "操作 '%{operation}' 逾時；請先檢查目前狀態再重試"
+ja = "操作 '%{operation}' がタイムアウトしました。現在の状態を確認してから再試行してください。"
+pt-BR = "a operação '%{operation}' excedeu o tempo limite; verifique o estado atual antes de tentar novamente"
+es = "la operación '%{operation}' superó el tiempo de espera; comprobar el estado actual antes de reintentar"
+fr = "Le délai de l’opération « %{operation} » est dépassé ; vérifier l’état actuel avant de réessayer"
+de = "Zeitüberschreitung bei „%{operation}“; vor einem erneuten Versuch den aktuellen Zustand prüfen"
+
+[error.InvalidOperationOutput]
+en = "operation returned a non-object JSON payload"
+zh-CN = "操作返回的 JSON 不是对象"
+zh-TW = "操作傳回的 JSON 不是物件"
+ja = "操作がオブジェクト以外の JSON を返しました。"
+pt-BR = "a operação retornou um conteúdo JSON que não é um objeto"
+es = "la operación devolvió un contenido JSON que no es un objeto"
+fr = "L’opération a renvoyé une valeur JSON qui n’est pas un objet"
+de = "Operation hat JSON zurückgegeben, das kein Objekt ist"
+
+[error.UnknownTool]
+en = "unknown tool: %{detail}"
+zh-CN = "未知工具：%{detail}"
+zh-TW = "未知工具：%{detail}"
+ja = "不明なツールです：%{detail}"
+pt-BR = "ferramenta desconhecida: %{detail}"
+es = "herramienta desconocida: %{detail}"
+fr = "Outil inconnu : %{detail}"
+de = "Unbekanntes Tool: %{detail}"
+
+[error.AppNotFound]
+en = "app not found"
+zh-CN = "应用不存在"
+zh-TW = "應用程式不存在"
+ja = "アプリが見つかりません。"
+pt-BR = "aplicação não encontrada"
+es = "no se encontró la aplicación"
+fr = "Application introuvable"
+de = "App nicht gefunden"
+
+[error.GroupNotFound]
+en = "group not found"
+zh-CN = "分组不存在"
+zh-TW = "分組不存在"
+ja = "グループが見つかりません。"
+pt-BR = "grupo não encontrado"
+es = "no se encontró el grupo"
+fr = "Groupe introuvable"
+de = "Gruppe nicht gefunden"
+
+[error.ConfigNotFound]
+en = "config not found"
+zh-CN = "配置不存在"
+zh-TW = "設定檔不存在"
+ja = "設定ファイルが見つかりません。"
+pt-BR = "configuração não encontrada"
+es = "no se encontró la configuración"
+fr = "Configuration introuvable"
+de = "Konfiguration nicht gefunden"
+
+[error.RouteNotFound]
+en = "path not found"
+zh-CN = "路径不存在"
+zh-TW = "路徑不存在"
+ja = "パスが見つかりません。"
+pt-BR = "caminho não encontrado"
+es = "no se encontró la ruta"
+fr = "Chemin introuvable"
+de = "Pfad nicht gefunden"
+
+[error.MethodNotAllowed]
+en = "method not allowed"
+zh-CN = "不支持此请求方法"
+zh-TW = "不支援此請求方法"
+ja = "このリクエストメソッドには対応していません。"
+pt-BR = "método não permitido"
+es = "método de solicitud no permitido"
+fr = "Méthode non autorisée"
+de = "Anfragemethode nicht zulässig"
+
+[error.Conflict]
+en = "write conflict; retry"
+zh-CN = "写入冲突，请重试"
+zh-TW = "寫入衝突，請重試"
+ja = "書き込みが競合しました。再試行してください。"
+pt-BR = "conflito de gravação; tente novamente"
+es = "conflicto de escritura; volver a intentarlo"
+fr = "Conflit d’écriture ; réessayer"
+de = "Schreibkonflikt; erneut versuchen"
+
+[error.EmailTaken]
+en = "email already registered"
+zh-CN = "邮箱已注册"
+zh-TW = "電子郵件地址已註冊"
+ja = "このメールアドレスは登録済みです。"
+pt-BR = "e-mail já cadastrado"
+es = "el correo electrónico ya está registrado"
+fr = "Adresse e-mail déjà enregistrée"
+de = "E-Mail-Adresse bereits registriert"
+
+[error.CurrentPasswordInvalid]
+en = "incorrect current password"
+zh-CN = "当前密码错误"
+zh-TW = "目前的密碼錯誤"
+ja = "現在のパスワードが正しくありません。"
+pt-BR = "senha atual incorreta"
+es = "contraseña actual incorrecta"
+fr = "Mot de passe actuel incorrect"
+de = "Aktuelles Passwort ist falsch"
+
+[error.GroupExists]
+en = "group already exists"
+zh-CN = "分组已存在"
+zh-TW = "分組已存在"
+ja = "グループはすでに存在します。"
+pt-BR = "o grupo já existe"
+es = "el grupo ya existe"
+fr = "Le groupe existe déjà"
+de = "Gruppe bereits vorhanden"
+
+[error.GroupBusy]
+en = "group still contains services"
+zh-CN = "分组下仍有服务"
+zh-TW = "分組內仍有服務"
+ja = "グループ内にサービスが残っています。"
+pt-BR = "o grupo ainda contém serviços"
+es = "el grupo aún contiene servicios"
+fr = "Le groupe contient encore des services"
+de = "Gruppe enthält noch Dienste"
+
+[error.AppExists]
+en = "app already exists"
+zh-CN = "应用已存在"
+zh-TW = "應用程式已存在"
+ja = "アプリはすでに存在します。"
+pt-BR = "a aplicação já existe"
+es = "la aplicación ya existe"
+fr = "L’application existe déjà"
+de = "App bereits vorhanden"
+
+[error.AlreadyRolledBack]
+en = "already rolled back"
+zh-CN = "已回滚"
+zh-TW = "已回復"
+ja = "ロールバック済みです。"
+pt-BR = "a reversão já foi realizada"
+es = "la actualización ya se ha revertido"
+fr = "La configuration précédente a déjà été rétablie"
+de = "Wiederherstellung bereits gestartet"
+
+[error.NothingToRollBack]
+en = "nothing to roll back"
+zh-CN = "无可回滚的版本"
+zh-TW = "沒有可回復的設定"
+ja = "元に戻せる変更がありません。"
+pt-BR = "nenhuma alteração para reverter"
+es = "no hay ninguna versión a la que volver"
+fr = "Aucune version à rétablir"
+de = "Keine vorherige Konfiguration vorhanden"
+
+[error.StatefulReplicasPinned]
+en = "stateful apps require one replica"
+zh-CN = "有状态应用只能有一个副本"
+zh-TW = "有狀態的應用程式只能有一個副本"
+ja = "永続データを持つアプリのレプリカは1個にする必要があります。"
+pt-BR = "aplicações com armazenamento persistente exigem uma única réplica"
+es = "las aplicaciones con estado requieren una sola réplica"
+fr = "Les applications avec état nécessitent une seule réplique"
+de = "Apps mit persistentem Speicher benötigen genau ein Replikat"
+
+[error.MountsRequireStateful]
+en = "only stateful apps support mount changes"
+zh-CN = "仅有状态应用可修改挂载"
+zh-TW = "只有具備狀態儲存的應用程式可修改掛載"
+ja = "マウントを変更できるのは、永続データを持つアプリのみです。"
+pt-BR = "apenas aplicações com armazenamento persistente permitem alterar montagens"
+es = "solo las aplicaciones con estado permiten modificar los montajes"
+fr = "Seules les applications avec état permettent de modifier les montages"
+de = "Nur Apps mit persistentem Speicher unterstützen Änderungen an Mounts"
+
+[error.MountsPlacementConflict]
+en = "mounts and placement are mutually exclusive"
+zh-CN = "挂载与部署约束互斥"
+zh-TW = "掛載與部署限制不能同時設定"
+ja = "マウントと配置制約は同時に指定できません。"
+pt-BR = "montagens e regras de alocação não podem ser usadas juntas"
+es = "los montajes y las restricciones de despliegue son incompatibles"
+fr = "Les montages et les contraintes de placement sont incompatibles"
+de = "Mounts und Platzierungsbedingungen schließen sich gegenseitig aus"
+
+[error.XConfigMountsConflict]
+en = "configuration files and mounts are mutually exclusive"
+zh-CN = "配置文件与挂载互斥"
+zh-TW = "設定檔與掛載不能同時使用"
+ja = "設定ファイルとマウントは同時に指定できません。"
+pt-BR = "arquivos de configuração e montagens não podem ser usados juntos"
+es = "los archivos de configuración y los montajes son incompatibles"
+fr = "Les fichiers de configuration et les montages sont incompatibles"
+de = "Konfigurationsdateien und Mounts schließen sich gegenseitig aus"
+
+[error.XHealthNotEnabled]
+en = "health check not enabled"
+zh-CN = "健康检查未启用"
+zh-TW = "健康檢查未啟用"
+ja = "ヘルスチェックは無効です。"
+pt-BR = "a verificação de saúde não está ativada"
+es = "la comprobación de estado no está activada"
+fr = "Le contrôle de santé n’est pas activé"
+de = "Zustandsprüfung nicht aktiviert"
+
+[error.XHealthExists]
+en = "health check already enabled"
+zh-CN = "健康检查已启用"
+zh-TW = "健康檢查已啟用"
+ja = "ヘルスチェックはすでに有効です。"
+pt-BR = "a verificação de saúde já está ativada"
+es = "la comprobación de estado ya está activada"
+fr = "Le contrôle de santé est déjà activé"
+de = "Zustandsprüfung bereits aktiviert"
+
+[error.XHealthRunning]
+en = "health check is pending or running"
+zh-CN = "健康检查正在等待启动或运行中"
+zh-TW = "健康檢查正在等待啟動或執行中"
+ja = "ヘルスチェックは開始待ち、または実行中です。"
+pt-BR = "a verificação de saúde está aguardando início ou em execução"
+es = "la comprobación de estado está pendiente de inicio o en ejecución"
+fr = "Le contrôle de santé est en attente de démarrage ou en cours"
+de = "Zustandsprüfung wartet auf den Start oder läuft bereits"
+
+[error.XHealthTargetNotFound]
+en = "health check target not found on this app"
+zh-CN = "应用中不存在此检查目标"
+zh-TW = "應用程式中沒有此檢查目標"
+ja = "このアプリにヘルスチェックの対象が見つかりません。"
+pt-BR = "o destino da verificação de saúde não foi encontrado nesta aplicação"
+es = "no se encontró el destino de la comprobación en esta aplicación"
+fr = "La cible du contrôle est introuvable dans cette application"
+de = "Prüfziel in dieser App nicht gefunden"
+
+[error.XHealthTargetAmbiguous]
+en = "health check target maps to multiple container ports"
+zh-CN = "检查目标对应多个容器端口"
+zh-TW = "檢查目標對應多個容器連接埠"
+ja = "ヘルスチェックの対象が複数のコンテナポートに対応しています。"
+pt-BR = "o destino da verificação de saúde corresponde a várias portas do contêiner"
+es = "el destino de la comprobación corresponde a varios puertos del contenedor"
+fr = "La cible du contrôle correspond à plusieurs ports de conteneur"
+de = "Prüfziel entspricht mehreren Container-Ports"
+
+[error.XHealthIntervalInvalid]
+en = "health check interval must be at least 1 minute"
+zh-CN = "健康检查间隔至少为 1 分钟"
+zh-TW = "健康檢查間隔至少為 1 分鐘"
+ja = "ヘルスチェックの間隔は1分以上にしてください。"
+pt-BR = "o intervalo da verificação de saúde deve ser de pelo menos 1 minuto"
+es = "el intervalo de comprobación debe ser de al menos 1 minuto"
+fr = "L’intervalle entre les contrôles de santé doit être d’au moins 1 minute"
+de = "Intervall der Zustandsprüfung muss mindestens 1 Minute betragen"
+
+[error.GuardianPending]
+en = "guarded update pending"
+zh-CN = "更新保护尚未结束"
+zh-TW = "更新保護尚未結束"
+ja = "Guardian による未完了の更新があります。"
+pt-BR = "há uma atualização pendente no Guardian"
+es = "hay una actualización protegida pendiente"
+fr = "Une mise à jour protégée est en cours"
+de = "Abgesichertes Update noch ausstehend"
+
+[error.GuardianNotFound]
+en = "no guarded update pending"
+zh-CN = "无待处理的更新保护"
+zh-TW = "沒有待處理的更新保護"
+ja = "Guardian による未完了の更新はありません。"
+pt-BR = "nenhuma atualização pendente no Guardian"
+es = "no hay ninguna actualización protegida pendiente"
+fr = "Aucune mise à jour protégée en cours"
+de = "Kein abgesichertes Update ausstehend"
+
+[error.GuardianResolved]
+en = "guarded update already resolved"
+zh-CN = "更新保护已有结论"
+zh-TW = "更新保護已有結論"
+ja = "Guardian による更新の判定は完了しています。"
+pt-BR = "a atualização do Guardian já foi resolvida"
+es = "la actualización protegida ya se ha resuelto"
+fr = "Une décision a déjà été prise pour cette mise à jour protégée"
+de = "Abgesichertes Update bereits entschieden"
+
+[error.GuardianStatefulUnsupported]
+en = "apps with mounts do not support guarded updates"
+zh-CN = "带挂载的应用不支持更新保护"
+zh-TW = "具有掛載的應用程式不支援更新保護"
+ja = "マウントを持つアプリでは Guardian による更新を利用できません。"
+pt-BR = "aplicações com montagens não permitem atualizações pelo Guardian"
+es = "las aplicaciones con montajes no admiten actualizaciones protegidas"
+fr = "Les applications avec des montages ne prennent pas en charge les mises à jour protégées"
+de = "Apps mit Mounts unterstützen keine abgesicherten Updates"
+
+[error.XJobNotFound]
+en = "scheduled job not found"
+zh-CN = "定时任务不存在"
+zh-TW = "排程工作不存在"
+ja = "定期ジョブが見つかりません。"
+pt-BR = "tarefa agendada não encontrada"
+es = "no se encontró la tarea programada"
+fr = "Tâche planifiée introuvable"
+de = "Geplante Aufgabe nicht gefunden"
+
+[error.XJobExists]
+en = "scheduled job already exists"
+zh-CN = "同名定时任务已存在"
+zh-TW = "同名排程工作已存在"
+ja = "同じ名前の定期ジョブがすでに存在します。"
+pt-BR = "a tarefa agendada já existe"
+es = "ya existe una tarea programada con ese nombre"
+fr = "Une tâche planifiée porte déjà ce nom"
+de = "Geplante Aufgabe bereits vorhanden"
+
+[error.XJobRunning]
+en = "job already running"
+zh-CN = "任务正在运行"
+zh-TW = "工作正在執行"
+ja = "ジョブはすでに実行中です。"
+pt-BR = "a tarefa já está em execução"
+es = "la tarea ya se está ejecutando"
+fr = "La tâche est déjà en cours d’exécution"
+de = "Aufgabe läuft bereits"
+
+[error.XJobLimit]
+en = "scheduled job limit reached: %{limit} per app"
+zh-CN = "定时任务数已达上限：每个应用 %{limit} 个"
+zh-TW = "排程工作數已達上限：每個應用程式 %{limit} 個"
+ja = "定期ジョブの上限に達しています：アプリごとに %{limit} 個"
+pt-BR = "limite de tarefas agendadas atingido: %{limit} por aplicação"
+es = "se alcanzó el límite de tareas programadas: %{limit} por aplicación"
+fr = "Limite de tâches planifiées atteinte : %{limit} par application"
+de = "Höchstzahl geplanter Aufgaben erreicht: %{limit} pro App"
+
+[error.PingressExists]
+en = "Pingress already enabled"
+zh-CN = "Pingress 已启用"
+zh-TW = "Pingress 已啟用"
+ja = "Pingress はすでに有効です。"
+pt-BR = "o Pingress já está ativado"
+es = "Pingress ya está activado"
+fr = "Pingress est déjà activé"
+de = "Pingress bereits aktiviert"
+
+[error.PingressNotEnabled]
+en = "Pingress not enabled"
+zh-CN = "Pingress 未启用"
+zh-TW = "Pingress 未啟用"
+ja = "Pingress は無効です。"
+pt-BR = "o Pingress não está ativado"
+es = "Pingress no está activado"
+fr = "Pingress n’est pas activé"
+de = "Pingress nicht aktiviert"
+
+[error.PingressBusy]
+en = "Pingress in use: %{apps}"
+zh-CN = "Pingress 仍被使用：%{apps}"
+zh-TW = "Pingress 仍在使用中：%{apps}"
+ja = "Pingress は使用中です：%{apps}"
+pt-BR = "Pingress em uso: %{apps}"
+es = "Pingress sigue en uso: %{apps}"
+fr = "Pingress est encore utilisé par : %{apps}"
+de = "Pingress wird noch verwendet: %{apps}"
+
+[error.ReservedName]
+en = "name '%{name}' is reserved for the platform"
+zh-CN = "名称 '%{name}' 为平台保留"
+zh-TW = "名稱 '%{name}' 為平台保留"
+ja = "名前 '%{name}' はプラットフォームが予約しています。"
+pt-BR = "o nome '%{name}' é reservado para a plataforma"
+es = "el nombre '%{name}' está reservado para la plataforma"
+fr = "Le nom « %{name} » est réservé à la plateforme"
+de = "Name „%{name}“ ist für die Plattform reserviert"
+
+[error.InsightNotEnabled]
+en = "Insight not enabled"
+zh-CN = "Insight 未启用"
+zh-TW = "Insight 未啟用"
+ja = "Insight は無効です。"
+pt-BR = "o Insight não está ativado"
+es = "Insight no está activado"
+fr = "Insight n’est pas activé"
+de = "Insight nicht aktiviert"
+
+[error.InsightLocalStorageRequiresNode]
+en = "local Insight storage requires a specific node"
+zh-CN = "Insight 本地存储须指定服务器"
+zh-TW = "Insight 使用本機儲存時須指定伺服器"
+ja = "Insight のローカルストレージを使う場合は、サーバーを指定してください。"
+pt-BR = "o armazenamento local do Insight exige um servidor específico"
+es = "el almacenamiento local de Insight requiere un servidor específico"
+fr = "Le stockage local d’Insight nécessite un serveur précis"
+de = "Lokaler Insight-Speicher erfordert einen festgelegten Server"
+
+[error.InsightQueryFailed]
+en = "Insight query failed: %{detail}"
+zh-CN = "Insight 查询失败：%{detail}"
+zh-TW = "Insight 查詢失敗：%{detail}"
+ja = "Insight のクエリに失敗しました：%{detail}"
+pt-BR = "falha na consulta ao Insight: %{detail}"
+es = "falló la consulta a Insight: %{detail}"
+fr = "Échec de la requête Insight : %{detail}"
+de = "Insight-Abfrage fehlgeschlagen: %{detail}"
+
+[error.ImApi]
+en = "%{platform} API call failed: %{detail}"
+zh-CN = "%{platform} 接口调用失败：%{detail}"
+zh-TW = "%{platform} API 呼叫失敗：%{detail}"
+ja = "%{platform} API の呼び出しに失敗しました：%{detail}"
+pt-BR = "falha na chamada à API de %{platform}: %{detail}"
+es = "falló la llamada a la API de %{platform}: %{detail}"
+fr = "Échec de l’appel à l’API %{platform} : %{detail}"
+de = "API-Aufruf für %{platform} fehlgeschlagen: %{detail}"
+
+[error.AgentEmptyResponse]
+en = "Agent returned an empty final reply"
+zh-CN = "Agent 最终回复为空"
+zh-TW = "Agent 的最終回覆為空"
+ja = "Agent の最終回答が空です。"
+pt-BR = "o agente retornou uma resposta final vazia"
+es = "la respuesta final del agente está vacía"
+fr = "La réponse finale de l’Agent est vide"
+de = "Agent hat eine leere abschließende Antwort zurückgegeben"
+
+[error.Llm]
+en = "LLM request failed"
+zh-CN = "LLM 请求失败"
+zh-TW = "LLM 請求失敗"
+ja = "LLM へのリクエストに失敗しました。"
+pt-BR = "falha na solicitação ao LLM"
+es = "falló la solicitud al LLM"
+fr = "Échec de la requête LLM"
+de = "LLM-Anfrage fehlgeschlagen"
+
+[error.LlmTimeout]
+en = "LLM request timed out"
+zh-CN = "LLM 请求超时"
+zh-TW = "LLM 請求逾時"
+ja = "LLM へのリクエストがタイムアウトしました。"
+pt-BR = "a solicitação ao LLM excedeu o tempo limite"
+es = "la solicitud al LLM superó el tiempo de espera"
+fr = "Délai de la requête LLM dépassé"
+de = "Zeitüberschreitung bei der LLM-Anfrage"
+
+[error.AcmeCaMismatch]
+en = "ACME already enabled with another CA"
+zh-CN = "ACME 已使用其他 CA"
+zh-TW = "ACME 已使用其他 CA"
+ja = "ACME は別の CA で有効になっています。"
+pt-BR = "o ACME já está ativado com outra autoridade certificadora"
+es = "ACME ya está activado con otra CA"
+fr = "ACME est déjà activé avec une autre autorité de certification"
+de = "ACME bereits mit einer anderen Zertifizierungsstelle aktiviert"
+
+[error.CertNotFound]
+en = "certificate not found"
+zh-CN = "证书不存在"
+zh-TW = "憑證不存在"
+ja = "証明書が見つかりません。"
+pt-BR = "certificado não encontrado"
+es = "no se encontró el certificado"
+fr = "Certificat introuvable"
+de = "Zertifikat nicht gefunden"
+
+[error.DomainLimit]
+en = "certificate domain limit reached: %{current}/%{limit}"
+zh-CN = "证书域名数已达上限：%{current}/%{limit}"
+zh-TW = "憑證網域數已達上限：%{current}/%{limit}"
+ja = "証明書のドメイン数が上限に達しています：%{current}/%{limit}"
+pt-BR = "limite de domínios do certificado atingido: %{current}/%{limit}"
+es = "se alcanzó el límite de dominios del certificado: %{current}/%{limit}"
+fr = "Limite de domaines de certificats atteinte : %{current}/%{limit}"
+de = "Höchstzahl der Zertifikatsdomains erreicht: %{current}/%{limit}"
+
+[error.InvalidDomain]
+en = "invalid domain name '%{domain}'"
+zh-CN = "域名 '%{domain}' 无效"
+zh-TW = "網域名稱 '%{domain}' 無效"
+ja = "ドメイン名 '%{domain}' が無効です。"
+pt-BR = "nome de domínio inválido: '%{domain}'"
+es = "nombre de dominio no válido: '%{domain}'"
+fr = "Nom de domaine « %{domain} » invalide"
+de = "Ungültiger Domainname „%{domain}“"
+
+[error.NodeNotFound]
+en = "node not found"
+zh-CN = "服务器不存在"
+zh-TW = "伺服器不存在"
+ja = "サーバーが見つかりません。"
+pt-BR = "servidor não encontrado"
+es = "no se encontró el servidor"
+fr = "Serveur introuvable"
+de = "Server nicht gefunden"
+
+[error.NoSwarmManager]
+en = "no Swarm manager available"
+zh-CN = "无可用的 Swarm 管理服务器"
+zh-TW = "沒有可用的 Swarm 管理伺服器"
+ja = "利用できる Swarm マネージャーがありません。"
+pt-BR = "nenhum gerenciador do Swarm disponível"
+es = "no hay ningún servidor gestor de Swarm disponible"
+fr = "Aucun serveur gestionnaire Swarm disponible"
+de = "Kein Swarm-Manager verfügbar"
+
+[error.AcmeClient]
+en = "ACME client error"
+zh-CN = "ACME 客户端错误"
+zh-TW = "ACME 用戶端錯誤"
+ja = "ACME クライアントでエラーが発生しました。"
+pt-BR = "erro no cliente ACME"
+es = "error del cliente ACME"
+fr = "Erreur du client ACME"
+de = "ACME-Clientfehler"
+
+[error.Reqwest]
+en = "HTTP request failed: %{detail}"
+zh-CN = "HTTP 请求失败：%{detail}"
+zh-TW = "HTTP 請求失敗：%{detail}"
+ja = "HTTP リクエストに失敗しました：%{detail}"
+pt-BR = "falha na solicitação HTTP: %{detail}"
+es = "falló la solicitud HTTP: %{detail}"
+fr = "Échec de la requête HTTP : %{detail}"
+de = "HTTP-Anfrage fehlgeschlagen: %{detail}"
+
+[error.Logging]
+en = "logging initialization failed"
+zh-CN = "日志初始化失败"
+zh-TW = "日誌初始化失敗"
+ja = "ログの初期化に失敗しました。"
+pt-BR = "falha ao inicializar o sistema de logs"
+es = "falló la inicialización del sistema de registros"
+fr = "Échec de l’initialisation de la journalisation"
+de = "Initialisierung der Protokollierung fehlgeschlagen"
+
+[error.Io]
+en = "I/O error"
+zh-CN = "I/O 错误"
+zh-TW = "I/O 錯誤"
+ja = "I/O エラーが発生しました。"
+pt-BR = "erro de entrada/saída"
+es = "error de E/S"
+fr = "Erreur d’entrée/sortie"
+de = "E/A-Fehler"
+
+[error.Docker]
+en = "Docker API error"
+zh-CN = "Docker API 错误"
+zh-TW = "Docker API 錯誤"
+ja = "Docker API エラーが発生しました。"
+pt-BR = "erro na API do Docker"
+es = "error de la API de Docker"
+fr = "Erreur de l’API Docker"
+de = "Docker-API-Fehler"
+
+[error.Cipher]
+en = "cipher error"
+zh-CN = "加密组件错误"
+zh-TW = "加密元件錯誤"
+ja = "暗号処理でエラーが発生しました。"
+pt-BR = "erro de criptografia"
+es = "error del componente de cifrado"
+fr = "Erreur du composant de chiffrement"
+de = "Fehler der Verschlüsselungskomponente"
+
+[error.Serde]
+en = "serialization error"
+zh-CN = "序列化错误"
+zh-TW = "序列化錯誤"
+ja = "シリアライズでエラーが発生しました。"
+pt-BR = "erro de serialização"
+es = "error de serialización"
+fr = "Erreur de sérialisation"
+de = "Serialisierungsfehler"
+
+[error.Base64]
+en = "Base64 decoding failed"
+zh-CN = "Base64 解码失败"
+zh-TW = "Base64 解碼失敗"
+ja = "Base64 のデコードに失敗しました。"
+pt-BR = "falha ao decodificar Base64"
+es = "falló la decodificación Base64"
+fr = "Échec du décodage Base64"
+de = "Base64-Dekodierung fehlgeschlagen"
+
+[error.Rng]
+en = "random number generation failed"
+zh-CN = "随机数生成失败"
+zh-TW = "亂數產生失敗"
+ja = "乱数の生成に失敗しました。"
+pt-BR = "falha ao gerar números aleatórios"
+es = "falló la generación de números aleatorios"
+fr = "Échec de la génération de nombres aléatoires"
+de = "Erzeugung von Zufallszahlen fehlgeschlagen"
+
+[error.Argon2]
+en = "password hashing error"
+zh-CN = "密码哈希错误"
+zh-TW = "密碼雜湊錯誤"
+ja = "パスワードのハッシュ処理でエラーが発生しました。"
+pt-BR = "erro ao calcular o hash da senha"
+es = "error al calcular el hash de la contraseña"
+fr = "Erreur de hachage du mot de passe"
+de = "Fehler beim Hashen des Passworts"
+
+[error.Panic]
+en = "service panicked: %{detail}"
+zh-CN = "服务崩溃：%{detail}"
+zh-TW = "服務發生 panic：%{detail}"
+ja = "サービスでパニックが発生しました：%{detail}"
+pt-BR = "o serviço sofreu um panic: %{detail}"
+es = "el servicio terminó por un error irrecuperable: %{detail}"
+fr = "Le service a planté : %{detail}"
+de = "Dienst abgestürzt: %{detail}"
+
+[error.Smtp]
+en = "SMTP send failed"
+zh-CN = "SMTP 发送失败"
+zh-TW = "SMTP 傳送失敗"
+ja = "SMTP 送信に失敗しました。"
+pt-BR = "falha no envio por SMTP"
+es = "falló el envío por SMTP"
+fr = "Échec de l’envoi SMTP"
+de = "SMTP-Versand fehlgeschlagen"
+
+[error.Imap]
+en = "IMAP poll failed"
+zh-CN = "IMAP 拉取失败"
+zh-TW = "IMAP 收取失敗"
+ja = "IMAP での取得に失敗しました。"
+pt-BR = "falha na consulta por IMAP"
+es = "falló la consulta por IMAP"
+fr = "Échec de la récupération IMAP"
+de = "IMAP-Abruf fehlgeschlagen"
+
+[error.Ws]
+en = "IM WebSocket failed"
+zh-CN = "IM 长连接失败"
+zh-TW = "IM WebSocket 連線失敗"
+ja = "IM の WebSocket 接続でエラーが発生しました。"
+pt-BR = "falha no WebSocket da plataforma de mensagens"
+es = "falló la conexión WebSocket de mensajería"
+fr = "Échec de la connexion WebSocket de messagerie"
+de = "IM-WebSocket-Verbindung fehlgeschlagen"
+
+[error.WsProto]
+en = "IM WebSocket frame decoding failed"
+zh-CN = "IM 长连接帧解码失败"
+zh-TW = "IM WebSocket 訊框解碼失敗"
+ja = "IM の WebSocket フレームのデコードに失敗しました。"
+pt-BR = "falha ao decodificar um quadro WebSocket da plataforma de mensagens"
+es = "falló la decodificación de una trama WebSocket de mensajería"
+fr = "Échec du décodage d’une trame WebSocket de messagerie"
+de = "Dekodierung eines IM-WebSocket-Frames fehlgeschlagen"
+
+[error.DiscordHttp]
+en = "Discord HTTP request failed"
+zh-CN = "Discord HTTP 请求失败"
+zh-TW = "Discord HTTP 請求失敗"
+ja = "Discord への HTTP リクエストに失敗しました。"
+pt-BR = "falha na solicitação HTTP ao Discord"
+es = "falló la solicitud HTTP a Discord"
+fr = "Échec de la requête HTTP Discord"
+de = "Discord-HTTP-Anfrage fehlgeschlagen"
+
+[error.DiscordHttpBody]
+en = "Discord HTTP response decoding failed"
+zh-CN = "Discord HTTP 响应解码失败"
+zh-TW = "Discord HTTP 回應解碼失敗"
+ja = "Discord の HTTP レスポンスのデコードに失敗しました。"
+pt-BR = "falha ao decodificar a resposta HTTP do Discord"
+es = "falló la decodificación de la respuesta HTTP de Discord"
+fr = "Échec du décodage de la réponse HTTP Discord"
+de = "Dekodierung der Discord-HTTP-Antwort fehlgeschlagen"
+
+[error.DiscordGateway]
+en = "Discord Gateway receive failed"
+zh-CN = "Discord Gateway 接收失败"
+zh-TW = "Discord Gateway 接收失敗"
+ja = "Discord Gateway からの受信に失敗しました。"
+pt-BR = "falha na recepção pelo Gateway do Discord"
+es = "falló la recepción desde Discord Gateway"
+fr = "Échec de la réception depuis Discord Gateway"
+de = "Empfang vom Discord-Gateway fehlgeschlagen"
+
+[error.UnprocessableBody]
+en = "request body does not match the schema: %{detail}"
+zh-CN = "请求体格式不符：%{detail}"
+zh-TW = "請求內容格式不符：%{detail}"
+ja = "リクエスト本文がスキーマに一致しません：%{detail}"
+pt-BR = "o corpo da solicitação não corresponde ao esquema: %{detail}"
+es = "el cuerpo de la solicitud no cumple el esquema: %{detail}"
+fr = "Le corps de la requête ne respecte pas le schéma : %{detail}"
+de = "Anfrageinhalt entspricht nicht dem Schema: %{detail}"
+
+[error.PayloadTooLarge]
+en = "request body too large"
+zh-CN = "请求体过大"
+zh-TW = "請求內容過大"
+ja = "リクエスト本文が大きすぎます。"
+pt-BR = "corpo da solicitação muito grande"
+es = "el cuerpo de la solicitud es demasiado grande"
+fr = "Corps de la requête trop volumineux"
+de = "Anfrageinhalt zu groß"
+
+[error.UnsupportedMediaType]
+en = "request Content-Type must be %{media_type}"
+zh-CN = "请求 Content-Type 必须为 %{media_type}"
+zh-TW = "請求的 Content-Type 必須為 %{media_type}"
+ja = "リクエストの Content-Type は %{media_type} にしてください。"
+pt-BR = "o Content-Type da solicitação deve ser %{media_type}"
+es = "el Content-Type de la solicitud debe ser %{media_type}"
+fr = "L’en-tête Content-Type de la requête doit être %{media_type}"
+de = "Content-Type der Anfrage muss %{media_type} sein"
+
+[error.InsightStorageMigrationUnsupported]
+en = "changing Insight storage location or moving local data requires a migration"
+zh-CN = "更换 Insight 存储位置或移动本地数据须先迁移"
+zh-TW = "變更 Insight 儲存位置或移動本機資料前，須先遷移資料"
+ja = "Insight の保存先の変更やローカルデータの移動には、データ移行が必要です。"
+pt-BR = "alterar o local de armazenamento do Insight ou mover dados locais exige uma migração"
+es = "cambiar la ubicación del almacenamiento de Insight o mover los datos locales requiere una migración"
+fr = "Changer l’emplacement du stockage Insight ou déplacer les données locales nécessite une migration"
+de = "Ein Wechsel des Insight-Speicherorts oder das Verschieben lokaler Daten erfordert eine Migration"
+
+[error.InsightBusy]
+en = "Insight is used by apps or auxiliary services: %{apps}"
+zh-CN = "应用或辅助服务仍在使用 Insight：%{apps}"
+zh-TW = "應用程式或輔助服務仍在使用 Insight：%{apps}"
+ja = "アプリまたは補助サービスが Insight を使用しています：%{apps}"
+pt-BR = "Aplicações ou serviços auxiliares usam o Insight: %{apps}"
+es = "Aplicaciones o servicios auxiliares usan Insight: %{apps}"
+fr = "Des applications ou services auxiliaires utilisent Insight : %{apps}"
+de = "Apps oder Hilfsdienste verwenden Insight: %{apps}"
+
+[error.ReleaseUnavailable]
+en = "latest release information unavailable"
+zh-CN = "最新版本信息不可用"
+zh-TW = "無法取得最新版本資訊"
+ja = "最新バージョンの情報を取得できません。"
+pt-BR = "informações da versão mais recente indisponíveis"
+es = "la información de la última versión no está disponible"
+fr = "Informations sur la dernière version indisponibles"
+de = "Informationen zur neuesten Version nicht verfügbar"
+
+[error.UserNotFound]
+en = "user not found"
+zh-CN = "用户不存在"
+zh-TW = "使用者不存在"
+ja = "ユーザーが見つかりません。"
+pt-BR = "usuário não encontrado"
+es = "no se encontró el usuario"
+fr = "Utilisateur introuvable"
+de = "Benutzer nicht gefunden"
+
+[error.SelfImmutable]
+en = "cannot demote or delete your own account"
+zh-CN = "不能降级或删除自己的账户"
+zh-TW = "不能降低自己的帳戶權限或刪除自己的帳戶"
+ja = "自分のアカウントの権限引き下げや削除はできません。"
+pt-BR = "não é possível reduzir as permissões ou excluir a própria conta"
+es = "no se puede asignar un rol inferior a la propia cuenta ni eliminarla"
+fr = "Vous ne pouvez ni réduire les droits de votre propre compte ni le supprimer"
+de = "Du kannst dein eigenes Konto weder herabstufen noch löschen"
+
+[error.Askama]
+en = "HTML template rendering failed"
+zh-CN = "HTML 模板渲染失败"
+zh-TW = "HTML 範本轉譯失敗"
+ja = "HTML テンプレートの描画に失敗しました。"
+pt-BR = "falha ao renderizar o template HTML"
+es = "falló la renderización de la plantilla HTML"
+fr = "Échec du rendu du modèle HTML"
+de = "HTML-Vorlage konnte nicht gerendert werden"
+
+[error.ReleaseUrlInvalid]
+en = "CDELIVERY_RELEASES_URL must be a non-empty HTTP or HTTPS URL"
+zh-CN = "CDELIVERY_RELEASES_URL 须为非空的 HTTP 或 HTTPS URL"
+zh-TW = "CDELIVERY_RELEASES_URL 須為非空的 HTTP 或 HTTPS URL"
+ja = "CDELIVERY_RELEASES_URL には空でない HTTP または HTTPS の URL を指定してください。"
+pt-BR = "CDELIVERY_RELEASES_URL deve ser uma URL HTTP ou HTTPS não vazia"
+es = "CDELIVERY_RELEASES_URL debe ser una URL HTTP o HTTPS no vacía"
+fr = "CDELIVERY_RELEASES_URL doit être une URL HTTP ou HTTPS non vide"
+de = "CDELIVERY_RELEASES_URL muss eine nicht leere HTTP- oder HTTPS-URL sein"
+
+[error.TotpAlreadyEnabled]
+en = "2FA already enabled"
+zh-CN = "双重验证已启用"
+zh-TW = "雙重驗證已啟用"
+ja = "二要素認証はすでに有効です。"
+pt-BR = "a autenticação de dois fatores já está ativada"
+es = "la autenticación de dos factores ya está activada"
+fr = "La double authentification est déjà activée"
+de = "Zwei-Faktor-Authentifizierung bereits aktiviert"
+
+[error.TotpCodeInvalid]
+en = "invalid or expired verification code"
+zh-CN = "动态验证码无效或已过期"
+zh-TW = "動態驗證碼無效或已過期"
+ja = "認証コードが無効か、有効期限が切れています。"
+pt-BR = "código de verificação inválido ou expirado"
+es = "código de verificación no válido o caducado"
+fr = "Code de vérification invalide ou expiré"
+de = "Ungültiger oder abgelaufener Bestätigungscode"
+
+[error.Totp]
+en = "2FA failed"
+zh-CN = "双重验证失败"
+zh-TW = "雙重驗證失敗"
+ja = "二要素認証に失敗しました。"
+pt-BR = "falha na autenticação de dois fatores"
+es = "falló la autenticación de dos factores"
+fr = "Échec de la double authentification"
+de = "Zwei-Faktor-Authentifizierung fehlgeschlagen"
+
+[error.InsightLabelMatchesNoNodes]
+en = "no node matches label %{label}"
+zh-CN = "无服务器匹配标签 %{label}"
+zh-TW = "沒有伺服器符合標籤 %{label}"
+ja = "ラベル %{label} に一致するサーバーがありません。"
+pt-BR = "nenhum servidor corresponde ao rótulo %{label}"
+es = "ningún servidor tiene la etiqueta %{label}"
+fr = "Aucun serveur ne correspond à l’étiquette %{label}"
+de = "Kein Server entspricht dem Label %{label}"
+
+[error.ImNotBound]
+en = "IM platform not bound to your account"
+zh-CN = "尚未绑定该 IM 平台"
+zh-TW = "尚未綁定此 IM 平台"
+ja = "この IM プラットフォームはアカウントに連携されていません。"
+pt-BR = "a plataforma de mensagens não está vinculada à sua conta"
+es = "la plataforma de mensajería no está vinculada a la cuenta"
+fr = "Cette plateforme de messagerie n’est pas associée à votre compte"
+de = "IM-Plattform ist nicht mit deinem Konto verknüpft"
+
+[error.VolumeUnavailable]
+en = "Volume agent is unavailable"
+zh-CN = "Volume agent 不可用"
+zh-TW = "Volume agent 無法使用"
+ja = "Volume agent を利用できません。"
+pt-BR = "o agente de volumes está indisponível"
+es = "el agente de volúmenes no está disponible"
+fr = "L’agent de gestion des volumes est indisponible"
+de = "Volume-Agent nicht verfügbar"
+
+[error.VolumeAgentHttp]
+en = "Volume agent request failed: %{detail}"
+zh-CN = "Volume agent 请求失败：%{detail}"
+zh-TW = "Volume agent 請求失敗：%{detail}"
+ja = "Volume agent へのリクエストに失敗しました：%{detail}"
+pt-BR = "falha na solicitação ao agente de volumes: %{detail}"
+es = "falló la solicitud al agente de volúmenes: %{detail}"
+fr = "Échec de la requête à l’agent de gestion des volumes : %{detail}"
+de = "Anfrage an den Volume-Agent fehlgeschlagen: %{detail}"
+
+[error.VolumeExists]
+en = "volume already exists"
+zh-CN = "卷已存在"
+zh-TW = "資料卷已存在"
+ja = "ボリュームはすでに存在します。"
+pt-BR = "o volume já existe"
+es = "el volumen ya existe"
+fr = "Le volume existe déjà"
+de = "Volume bereits vorhanden"
+
+[error.VolumeNotFound]
+en = "volume not found"
+zh-CN = "卷不存在"
+zh-TW = "資料卷不存在"
+ja = "ボリュームが見つかりません。"
+pt-BR = "volume não encontrado"
+es = "no se encontró el volumen"
+fr = "Volume introuvable"
+de = "Volume nicht gefunden"
+
+[error.VolumeDescriptionSave]
+en = "volume was created but its description could not be saved; use Edit to set the description"
+zh-CN = "卷已创建，但描述保存失败；请通过编辑设置描述"
+zh-TW = "資料卷已建立，但說明儲存失敗；請透過編輯設定說明"
+ja = "ボリュームは作成されましたが、説明を保存できませんでした。「編集」から説明を設定してください。"
+pt-BR = "o volume foi criado, mas não foi possível salvar a descrição; use Editar para defini-la"
+es = "el volumen se creó, pero no se pudo guardar su descripción; usar Editar para establecerla"
+fr = "Le volume a été créé, mais sa description n’a pas pu être enregistrée ; utiliser Modifier pour la définir"
+de = "Volume erstellt, aber die Beschreibung konnte nicht gespeichert werden; über Bearbeiten eine Beschreibung hinzufügen"
+
+[error.Image]
+en = "image reference is invalid"
+zh-CN = "镜像引用无效"
+zh-TW = "映像引用無效"
+ja = "イメージ参照が無効です。"
+pt-BR = "a referência da imagem é inválida"
+es = "la referencia de imagen no es válida"
+fr = "La référence d’image est invalide"
+de = "Ungültige Image-Referenz"
+
+[error.FieldRequired]
+en = "%{field} is required"
+zh-CN = "%{field} 为必填项"
+zh-TW = "%{field} 為必填項"
+ja = "%{field} は必須です。"
+pt-BR = "%{field} é obrigatório"
+es = "%{field} es obligatorio"
+fr = "%{field} est obligatoire"
+de = "%{field} ist erforderlich"
+
+[error.SecretRequired]
+en = "%{field} is required when adding credentials or changing their scope"
+zh-CN = "新增凭据或修改其范围时，%{field} 为必填项"
+zh-TW = "新增驗證資訊或變更其適用範圍時，%{field} 為必填項"
+ja = "認証情報の追加や適用範囲の変更には、%{field} が必要です。"
+pt-BR = "%{field} é obrigatório ao adicionar credenciais ou alterar seu escopo"
+es = "%{field} es obligatorio al añadir credenciales o cambiar su ámbito"
+fr = "%{field} est obligatoire lors de l’ajout d’identifiants ou du changement de leur portée"
+de = "%{field} ist beim Hinzufügen von Zugangsdaten oder Ändern ihres Geltungsbereichs erforderlich"
+
+[error.VersionNotLatest]
+en = "%{field} must be the latest version, %{latest}"
+zh-CN = "%{field} 必须是最新版本 %{latest}"
+zh-TW = "%{field} 必須是最新版本 %{latest}"
+ja = "%{field} には最新バージョン %{latest} を指定してください。"
+pt-BR = "%{field} deve ser a versão mais recente, %{latest}"
+es = "%{field} debe ser la versión más reciente, %{latest}"
+fr = "%{field} doit être la dernière version, %{latest}"
+de = "%{field} muss die neueste Version %{latest} sein"
+
+[error.FieldUnsupported]
+en = "%{field} is not supported by this provider"
+zh-CN = "该提供商不支持 %{field}"
+zh-TW = "此供應商不支援 %{field}"
+ja = "このプロバイダーでは %{field} を指定できません。"
+pt-BR = "%{field} não é compatível com este provedor"
+es = "%{field} no es compatible con este proveedor"
+fr = "%{field} n’est pas pris en charge par ce fournisseur"
+de = "%{field} wird von diesem Anbieter nicht unterstützt"
+
+[error.ReplicaBoundsInvalid]
+en = "replica bounds must satisfy 1 <= min <= max <= 65536; max may be omitted"
+zh-CN = "实例数范围必须满足 1 ≤ min ≤ max ≤ 65536；max 可以省略"
+zh-TW = "執行個體數範圍必須符合 1 ≤ min ≤ max ≤ 65536；max 可以省略"
+ja = "インスタンス数は 1 ≤ min ≤ max ≤ 65536 を満たす必要があります。max は省略できます。"
+pt-BR = "os limites de réplicas devem respeitar 1 ≤ min ≤ max ≤ 65536; max pode ser omitido"
+es = "los límites de réplicas deben cumplir 1 ≤ min ≤ max ≤ 65536; max se puede omitir"
+fr = "les limites de réplicas doivent respecter 1 ≤ min ≤ max ≤ 65536 ; max peut être omis"
+de = "Die Replikatgrenzen müssen 1 ≤ min ≤ max ≤ 65536 erfüllen; max kann entfallen"
+
+[error.VolumeInUse]
+en = "volume is still referenced by containers; remove those containers before deleting it"
+zh-CN = "卷仍被容器引用，请先移除引用它的容器"
+zh-TW = "資料卷仍被容器引用，請先移除引用它的容器"
+ja = "ボリュームはまだコンテナから参照されています。削除する前に、参照しているコンテナを削除してください。"
+pt-BR = "o volume ainda é referenciado por contêineres; remova esses contêineres antes de excluí-lo"
+es = "hay contenedores que aún hacen referencia al volumen; elimina esos contenedores antes de borrarlo"
+fr = "Le volume est encore référencé par des conteneurs ; supprimez ces conteneurs avant de supprimer le volume"
+de = "Das Volume wird noch von Containern referenziert; entfernen Sie diese Container, bevor Sie das Volume löschen"

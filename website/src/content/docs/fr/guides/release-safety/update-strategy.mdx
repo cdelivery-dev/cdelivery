@@ -1,0 +1,26 @@
+---
+title: "Stratégies de mise à jour"
+description: "Contrôlez parallélisme, ordre, observation et réaction aux échecs."
+sidebar:
+  order: 28
+---
+
+Contrôlez parallélisme, ordre, observation et réaction aux échecs.
+
+## Valeurs initiales
+
+Tous les réplicas en parallèle, StopFirst, surveillance 60 secondes, proportion d’échec 0, action Rollback.
+
+StopFirst parallèle peut interrompre toutes les instances. StartFirst nécessite capacité supplémentaire et compatibilité avec le chevauchement ; il ne sécurise pas deux bases sur les mêmes fichiers.
+
+## Choisir
+
+Examinez réplicas, réservations, maximum par serveur, démarrage et compatibilité de versions. Après un changement, suivez tâches, journaux et requête.
+
+Survivre à la fenêtre ne constitue pas une assertion métier.
+
+## Échec
+
+Rollback restaure la configuration précédente lorsqu’elle existe. Son exécution est parallèle et continue malgré ses propres échecs : contrôlez le résultat final.
+
+Utilisez [XHealth](/docs/fr/guides/release-safety/xhealth/) pour les assertions, [Guardian](/docs/fr/guides/release-safety/) pour le candidat et [rollback](/docs/fr/guides/release-safety/rollback/) pour les limites de récupération.

@@ -1,0 +1,26 @@
+---
+title: "Reservas e limites de recursos"
+description: "Reservas condicionam o agendamento; limites restringem consumo de cada réplica."
+sidebar:
+  order: 11
+---
+
+Reservas condicionam o agendamento; limites restringem consumo de cada réplica.
+
+## Valores
+
+CPU usa núcleos: 0.5 significa meio núcleo. Intervalo 0.001–10000, passo 0.001. Memória usa unidades exibidas, como MiB e GiB. Mantenha reservas dentro dos limites correspondentes.
+
+Reserva não fornece hardware exclusivo. Limite de CPU estabelece teto; ultrapassar limite de memória pode encerrar o processo. Consulte [restrições do Docker](https://docs.docker.com/engine/containers/resource_constraints/).
+
+## Capacidade
+
+Multiplique necessidades por réplicas e considere sobreposição em StartFirst. Etiquetas e máximo por servidor também restringem localização. Um conjunto válido de campos pode não caber nas máquinas elegíveis.
+
+Limite CPU ajuda o escalonamento automático a avaliar várias réplicas na mesma máquina.
+
+## Conferir
+
+Meça carga representativa, tarefas reais e folga do host. Tarefas pendentes podem indicar reservas impossíveis. Reinícios por memória exigem ajustar limite ou programa.
+
+Dados ausentes não significam zero uso. Consulte [métricas](/docs/pt-br/guides/observability/metrics/application/) e [escala](/docs/pt-br/guides/apps/scaling/).

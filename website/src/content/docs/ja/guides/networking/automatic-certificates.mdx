@@ -1,0 +1,32 @@
+---
+title: "自動証明書と更新"
+description: "ACME はドメイン検証が Pingress に到達できる状態で証明書を発行・更新します。"
+sidebar:
+  order: 23
+---
+
+ACME はドメイン検証が Pingress に到達できる状態で証明書を発行・更新します。
+
+## 準備
+
+DNS と 80/443 を用意します。標準 HTTP-01 は 80 を使います。
+
+```sh
+curl -i http://app.example.com/.well-known/acme-challenge/healthz
+```
+
+リダイレクトに頼らず 200 になることを確認します。AAAA、プロキシ、ファイアウォールを先に修正します。
+
+Admin が ACME を有効化します。標準は Let's Encrypt、staging/Pebble は本番の公開信頼を持たないテスト環境です。API の dns-persist-01 は対応 CA 向けで、汎用 DNS プロバイダー設定ではありません。[検証方式](https://letsencrypt.org/docs/challenge-types/)を参照してください。
+
+## タイミング
+
+発行は約 5 分、更新は約 8 時間ごとに確認します。更新時期は CA の情報または有効期間に従い、保存直後とは限りません。
+
+検証経路を維持してください。手動証明書は自動更新されません。
+
+## 調査
+
+クライアントで名前、発行者、期限を確認し、公開した IPv4/IPv6 双方を試します。IPv4 が成功しても誤った AAAA が失敗を起こします。
+
+原因を直してから再試行します。[独自証明書](/docs/ja/guides/networking/custom-certificates/)も参照してください。

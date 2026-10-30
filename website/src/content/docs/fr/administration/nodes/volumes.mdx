@@ -1,0 +1,26 @@
+---
+title: "Gestion des volumes"
+description: "Les volumes sont locaux ; un nom identique sur une autre machine désigne d’autres données."
+sidebar:
+  order: 55
+---
+
+Les volumes sont locaux ; un nom identique sur une autre machine désigne d’autres données.
+
+## Créer
+
+Admin active cdelivery-agent. Ouvrez les volumes du serveur, créez un nom valide et une description facultative de 256 caractères maximum. Montez dans une [application avec état](/docs/fr/guides/apps/persistence/stateful/) sur la même machine, puis testez.
+
+Création et description sont distinctes. Si la description échoue, actualisez avant de recréer.
+
+## Inspecter
+
+Le calcul de taille parcourt les données et peut être long. Taille absente ne signifie pas vide. Total/disponible décrit le serveur. Les volumes réservés ne se gèrent pas comme volumes métier.
+
+Description ne prouve ni inutilisation ni sauvegarde.
+
+## Supprimer
+
+Vérifiez références et sauvegarde restaurable. Si occupé, attendez l’arrêt ou résolvez l’usage. Désactiver le composant ne supprime pas les données.
+
+Liste inaccessible : serveur/agent. Volume absent : ID/nom ; recréer ailleurs ne restaure rien. Réplication et cohérence des sauvegardes relèvent du stockage. Voir [persistance](/docs/fr/guides/apps/persistence/).

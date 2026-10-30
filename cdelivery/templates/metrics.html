@@ -1,0 +1,31 @@
+{% extends "dashboard.html" %}
+
+{% import "app/tabs.html" as app_tab %}
+{% import "insight/tabs.html" as insight_tab %}
+{% import "metric_chart.html" as metric %}
+{% import "pingress/tabs.html" as pingress_tab %}
+
+{% block title %}{% match target %}{% when crate::ui::target::Target::App(spec) %}{{ tt!("ui.app.tab.metrics") }} - {{ spec.name }}{% when crate::ui::target::Target::Insight %}{{ tt!("ui.insight.tab.metrics") }} - Insight{% when crate::ui::target::Target::Pingress %}{{ tt!("ui.pingress.tab.metrics") }} - Pingress{% endmatch %} | {{ super() }}{% endblock title %}
+
+{% block main %}
+{% match target %}
+{% when crate::ui::target::Target::App(spec) %}
+{% let name = spec.name %}
+{% let description = spec.description %}
+{{ app_tab::page_header(name, description, "metrics", can_edit) }}
+{% when crate::ui::target::Target::Insight %}
+{{ insight_tab::header("metrics") }}
+{% when crate::ui::target::Target::Pingress %}
+{{ pingress_tab::header("metrics") }}
+{% endmatch %}
+
+{% match state %}
+{% when None %}
+<p class="muted">{{ tt!("ui.pingress.status.disabled") }}</p>
+{% when Some(current) %}
+{% let range = window.preset %}
+{% let start = window.range.0 %}
+{% let end = window.range.1 %}
+{{ metric::panel(current, action, start, end, range, instance, instances, show_controls, component) }}
+{% endmatch %}
+{% endblock main %}

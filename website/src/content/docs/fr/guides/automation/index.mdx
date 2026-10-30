@@ -1,0 +1,24 @@
+---
+title: "Exploitation avec l’IA"
+description: "L’IA consulte les informations et appelle les outils selon les autorisations de la plateforme."
+sidebar:
+  order: 41
+---
+
+L’IA consulte les informations et appelle les outils selon les autorisations de la plateforme.
+
+## Parcours
+
+Une conversation nécessite [modèle](/docs/fr/guides/automation/models/), [canal](/docs/fr/guides/automation/im/) et identité associée. La [surveillance](/docs/fr/guides/automation/duty/) ajoute événements et rondes. Un client externe utilise [MCP](/docs/fr/guides/automation/api-mcp/). Les alertes ordinaires ne nécessitent pas de modèle.
+
+Admin configure modèle et surveillance. Conversation : rôle actuel du compte. Surveillance : rôle propre, Reader par défaut, sans périmètre personnel.
+
+## Vérifier
+
+Associez votre identité et commencez par une question en lecture. Confirmez compte et installation avant écriture. Un rôle d’écriture autorise des changements sans intervention ; notification ne signifie pas validation préalable universelle.
+
+## Données
+
+Le fournisseur externe reçoit le contexte nécessaire. Choisissez-le selon les données transmises.
+
+Séparez problèmes de message, modèle et outils. Un modèle listé ne garantit pas les capacités requises. Vérifiez les résultats d’outils et l’état réel, pas seulement le texte produit.

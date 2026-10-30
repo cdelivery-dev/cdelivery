@@ -1,0 +1,32 @@
+---
+title: "Server management"
+description: "Join servers, interpret their state, and check dependencies before removal."
+sidebar:
+  order: 53
+---
+
+The server list shows hostnames, roles, addresses, resources, state, and labels. Hostnames can repeat; use the server ID and address to identify a specific machine.
+
+## Join a server
+
+1. As an Admin, open servers and select the Worker or Manager join command.
+2. Check the target machine's [requirements](/docs/getting-started/requirements/) and connectivity.
+3. Run the provided command on that machine.
+4. Refresh the list and verify Ready state, role, and address.
+5. Add [labels](/docs/administration/nodes/labels/) before placing applications.
+
+Workers run workloads; Managers also participate in management. Join credentials are reusable for 30 minutes. Obtain a fresh command after platform restart or expiry; changed issuer permissions can also invalidate it. Do not publish the credential.
+
+## Read state
+
+Ready, Down, and Disconnected describe runtime connectivity. Active accepts scheduling; Pause does not accept new tasks; Drain indicates draining. Manager reachability is a separate management status. Collector warnings indicate stale observations and should be checked separately.
+
+Displaying a state does not imply the console offers every possible state-changing action. Total resources are not current free capacity; inspect [metrics](/docs/guides/observability/metrics/server/).
+
+## Remove carefully
+
+Removal does not migrate applications, back up volumes, or drain the server for you. Check fixed-server applications, local data, platform components, remaining capacity, and management availability first.
+
+Removing the record does not erase local volumes or confirm that containers on an offline machine stopped. Rejoining may produce a new ID, requiring fixed-server selections and labels to be reviewed.
+
+For join failures, inspect the address, credential, Docker state, ports, and firewalls. Browser access alone does not verify server-to-server communication.

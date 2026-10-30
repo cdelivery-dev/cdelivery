@@ -1,0 +1,28 @@
+---
+title: "Registros, métricas y eventos"
+description: "Combina evidencias de ejecución, recursos y cambios para diagnosticar incidentes."
+sidebar:
+  order: 31
+---
+
+Combina evidencias de ejecución, recursos y cambios para diagnosticar incidentes.
+
+## Elegir fuente
+
+| Pregunta | Guía |
+| --- | --- |
+| ¿Por qué terminó el proceso? | [Registros de aplicación](/docs/es/guides/observability/logs/application/) |
+| ¿Qué pasó con una petición? | [Acceso HTTP](/docs/es/guides/observability/logs/access/) |
+| ¿Faltan recursos? | [Aplicación](/docs/es/guides/observability/metrics/application/) y [servidor](/docs/es/guides/observability/metrics/server/) |
+| ¿Qué cambió? | [Eventos](/docs/es/guides/observability/events/) |
+| ¿Falta historial? | [Recogida y retención](/docs/es/guides/observability/settings/) |
+
+Admin habilita Insight, recolectores, almacenamiento y retención. Los registros también dependen del controlador de la aplicación. Habilitar recogida no importa el pasado.
+
+## Consultar
+
+Selecciona recurso, fuente y periodo correctos; las consultas históricas admiten hasta 31 días. Usa un intervalo estrecho alrededor del incidente.
+
+Vacío puede significar falta de actividad, recogida desactivada, retraso o retención vencida. Un error de consulta significa que no terminó correctamente. No interpretes ausencia como cero.
+
+Tras cambiar ajustes, genera actividad nueva y verifica timestamps recientes. Correlaciona petición, proceso, métricas y evento antes de modificar configuración.

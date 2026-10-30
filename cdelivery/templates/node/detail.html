@@ -1,0 +1,140 @@
+{% extends "dashboard.html" %}
+
+{% import "node/tabs.html" as tab %}
+{% import "node/status.html" as status %}
+{% import "node/facts.html" as facts %}
+
+{% block title %}{{ node.hostname }} - {{ tt!("ui.node.entity") }} | {{ super() }}{% endblock title %}
+
+{% block main %}
+{% let id = node.id %}
+{% let hostname = node.hostname %}
+{{ tab::page_header(id, hostname, "overview") }}
+
+<dl class="node-facts">
+  <dt>{{ tt!("ui.node.header.role") }}</dt>
+  <dd>{% match node.role %}{% when operation::node::typ::NodeRole::Manager %}{{ tt!("ui.node.role.manager") }}{% when operation::node::typ::NodeRole::Worker %}{{ tt!("ui.node.role.worker") }}{% endmatch %}</dd>
+  <dt>{{ tt!("ui.node.header.status") }}</dt>
+  <dd class="chips">{{ status::state(node) }}</dd>
+  <dt>{{ tt!("ui.node.header.address") }}</dt>
+  <dd translate="no">{{ node.addr }}</dd>
+  <dt>{{ tt!("ui.node.header.cpu") }}</dt>
+  <dd translate="no">{{ node.cpus }}</dd>
+  <dt>{{ tt!("ui.node.header.memory") }}</dt>
+  <dd>{{ crate::ui::bytes_text(*node.memory_bytes) }}</dd>
+  {{ facts::render(node) }}
+  {% if let Some(agent) = silent_agent %}
+  <dt>{{ tt!("ui.node.agentSilent") }}</dt>
+  <dd>
+    {{ tt!("ui.node.detail.lastReportAt") }}:
+    {% if let Some(at) = agent.last_report_at %}<relative-time datetime="{{ at }}">{{ at }}</relative-time>{% else %}—{% endif %}
+  </dd>
+  {% endif %}
+</dl>
+
+<h2 class="section-title">{{ tt!("ui.node.detail.labels.title") }}</h2>
+<small>{{ tt!("ui.node.detail.labels.description") }}</small>
+
+{% let label_limit = self.labels_max %}
+{% let platform_name = self.reserved_name %}
+{% if can_relabel || can_delete %}
+<script id="node-labels-init" type="application/json">{"labels":{{ node.labels|json|safe }},"labelsMax":{{ labels_max }},"nameMax":{{ name_max }},"reserved":{{ reserved_name|json|safe }},"messages":{"invalid":{{ tt!("ui.node.detail.labels.invalid")|json|safe }},"reserved":{{ tt!("ui.node.detail.labels.reserved", name = platform_name)|json|safe }},"limit":{{ tt!("ui.node.detail.labels.limit", limit = label_limit)|json|safe }},"removeConfirm":{{ tt!("ui.node.detail.remove.confirm")|json|safe }}}}</script>
+{% endif %}
+
+<div class="mt-2"{% if can_relabel || can_delete %} x-data="nodeLabels"{% endif %}>
+  {% if can_relabel %}
+  <div class="chips cell-wrap">
+    <template x-for="(label, index) in labels" :key="label">
+      <code translate="no">
+        <span x-text="label"></span>
+        <button type="button" aria-label='{{ tt!("ui.node.detail.labels.remove") }}' title='{{ tt!("ui.node.detail.labels.remove") }}' :disabled="submitting" @click="remove(index)">&times;</button>
+      </code>
+    </template>
+    <template x-if="labels.length === 0">
+      <span class="muted">{{ tt!("ui.node.detail.labels.empty") }}</span>
+    </template>
+  </div>
+
+  <div class="row mt-2 add-row">
+    <input
+      aria-label='{{ tt!("ui.node.detail.labels.label") }}'
+      class="text"
+      type="text"
+      x-model="draft"
+      @keydown.enter.prevent="add()"
+      placeholder='{{ tt!("ui.node.detail.labels.placeholder") }}'
+      maxlength="{{ name_max }}"
+      pattern="^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$"
+      spellcheck="false"
+    />
+    <input class="button" type="button" value='+ {{ tt!("ui.common.add") }}' @click="add()" :disabled="submitting || labels.length >= labelsMax" />
+  </div>
+  <small x-cloak x-show="labels.length >= labelsMax">{{ tt!("ui.node.detail.labels.limit", limit = label_limit) }}</small>
+
+  <form id="node-labels-form" method="post" action="/nodes/{{ node.id }}" @submit="if (submitting) { $event.preventDefault(); return } $refs.labelsPayload.value = JSON.stringify({ labels }); submitting = true">
+    <input x-ref="labelsPayload" type="hidden" name="payload" />
+  </form>
+  {% else %}
+  <div class="chips cell-wrap">
+    {% if node.labels.is_empty() %}<span class="muted">{{ tt!("ui.node.detail.labels.empty") }}</span>{% else %}{% for label in node.labels %}<code translate="no">{{ label }}</code>{% endfor %}{% endif %}
+  </div>
+  {% endif %}
+
+  {% if can_delete %}
+  <form id="node-delete-form" method="post" action="/nodes/{{ node.id }}/delete" @submit="if (submitting || !confirm(messages.removeConfirm)) { $event.preventDefault(); return } $refs.deletePayload.value = '{}'; submitting = true">
+    <input x-ref="deletePayload" type="hidden" name="payload" />
+  </form>
+  {% endif %}
+
+  {% if can_relabel || can_delete %}
+  <div class="actions">
+    {% if can_delete %}<input class="button danger" type="submit" form="node-delete-form" value='{{ tt!("ui.node.detail.remove.label") }}' :disabled="submitting" />{% endif %}
+    {% if can_relabel %}<input class="button" type="submit" form="node-labels-form" value='{{ tt!("ui.common.save") }}' :disabled="submitting" />{% endif %}
+  </div>
+  {% endif %}
+</div>
+
+{% if can_relabel || can_delete %}
+<script>
+document.addEventListener("alpine:init", () => {
+  Alpine.data("nodeLabels", () => {
+    const init = JSON.parse(document.getElementById("node-labels-init").textContent);
+    return {
+      labels: init.labels,
+      labelsMax: init.labelsMax,
+      nameMax: init.nameMax,
+      reserved: init.reserved,
+      messages: init.messages,
+      draft: "",
+      submitting: false,
+      add() {
+        const value = this.draft.trim();
+        if (!value) return;
+        if (value.length > this.nameMax || !/^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/.test(value)) {
+          alert(this.messages.invalid);
+          return;
+        }
+        if (value === this.reserved || value.startsWith(`${this.reserved}-`)) {
+          alert(this.messages.reserved);
+          return;
+        }
+        if (this.labels.includes(value)) {
+          this.draft = "";
+          return;
+        }
+        if (this.labels.length >= this.labelsMax) {
+          alert(this.messages.limit);
+          return;
+        }
+        this.labels.push(value);
+        this.draft = "";
+      },
+      remove(index) {
+        this.labels.splice(index, 1);
+      },
+    };
+  });
+});
+</script>
+{% endif %}
+{% endblock main %}

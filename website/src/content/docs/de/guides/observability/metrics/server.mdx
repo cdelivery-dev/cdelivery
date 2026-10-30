@@ -1,0 +1,26 @@
+---
+title: "Servermetriken"
+description: "Untersuche CPU, Speicher, Netzwerk und Dateisysteme zur Beurteilung der Hostbelastung."
+sidebar:
+  order: 35
+---
+
+Untersuche CPU, Speicher, Netzwerk und Dateisysteme zur Beurteilung der Hostbelastung.
+
+## Umfang
+
+Erfasst werden physische Netzwerkschnittstellen und lokale beschreibbare blockbasierte Dateisysteme, nicht alle virtuellen Geräte oder Einzelvolumes.
+
+Normale Messungen standardmäßig alle fünf Sekunden, Dateisysteme alle fünf Minuten. Nicht jede Kurve hat denselben Takt.
+
+## Diagnose
+
+CPU mit Apps/Replikaten, Speicher mit Limits/Abbrüchen, Platte mit Logs/Geschäftsdaten, Netzwerk mit Anfragen vergleichen.
+
+Fehlende Berichte: Server, Sammler, Netzwerk, Insight. Sammlerwarnung beweist keinen Serverausfall.
+
+## Prüfen
+
+Zeitstempel und Einheiten kontrollieren. Nach Freigabe von Platz neue Dateisystemmessung abwarten. Fehlend ist nicht null.
+
+Hostfreiraum und Volumegröße sind verschieden. Siehe [Volumes](/docs/de/administration/nodes/volumes/), [App-Metriken](/docs/de/guides/observability/metrics/application/) und [Erfassung](/docs/de/guides/observability/settings/).

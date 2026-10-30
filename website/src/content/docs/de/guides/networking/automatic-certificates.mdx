@@ -1,0 +1,32 @@
+---
+title: "Automatische Zertifikate und Erneuerung"
+description: "ACME stellt Zertifikate aus und erneuert sie bei erreichbarer Domainvalidierung."
+sidebar:
+  order: 23
+---
+
+ACME stellt Zertifikate aus und erneuert sie bei erreichbarer Domainvalidierung.
+
+## Vorbereiten
+
+DNS und 80/443 einrichten. Standard HTTP-01 verwendet Port 80:
+
+```sh
+curl -i http://app.example.com/.well-known/acme-challenge/healthz
+```
+
+200 ohne erforderliche Weiterleitung erwarten. AAAA, Proxy und Firewall zuerst korrigieren.
+
+Admin aktiviert ACME. Let's Encrypt ist Standard; Staging/Pebble sind Testumgebungen ohne öffentliche Produktionsvertrauensstellung. Die API unterstützt dns-persist-01 bei geeigneter Zertifizierungsstelle, keine allgemeine DNS-Anbieteroberfläche. Siehe [ACME-Verfahren](https://letsencrypt.org/docs/challenge-types/).
+
+## Zeitablauf
+
+Ausstellung ungefähr alle fünf Minuten geprüft, Erneuerung alle acht Stunden. Zeitpunkt folgt Anbieterinformation oder Gültigkeitsfenster, nicht unmittelbar dem Speichern.
+
+Validierung erreichbar halten. Manuelle Zertifikate werden nicht automatisch erneuert.
+
+## Kontrolle
+
+Domain, Aussteller und Ablauf aus Clientperspektive prüfen, auch IPv6. Falsches AAAA kann trotz funktionierendem IPv4 scheitern.
+
+Ursache vor Wiederholung beheben. Siehe [eigene Zertifikate](/docs/de/guides/networking/custom-certificates/).

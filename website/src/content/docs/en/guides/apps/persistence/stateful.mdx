@@ -1,0 +1,33 @@
+---
+title: "Stateful applications"
+description: "Deploy a single replica with local data on a fixed server and plan updates and recovery."
+sidebar:
+  order: 15
+---
+
+Choose stateful mode during creation when an application needs a local data volume. This mode fixes one replica to one server. It does not use dynamic placement, automatic scaling, XConfig, or Guardian.
+
+## Create
+
+1. Select the storage server and verify free space.
+2. Create or identify its volume.
+3. Choose the database template or image.
+4. Review required environment variables and credentials.
+5. Mount the volume at the image's actual data directory.
+6. Save, inspect startup logs, and write test data.
+
+Templates provide defaults, not an independently verified storage design. The current PostgreSQL template explicitly uses `PGDATA=/var/lib/postgresql/data`; verify this setting together with the selected image and mount. Other database images can use different paths and initialization rules.
+
+Generated database passwords are application configuration. Review them and manage access appropriately rather than assuming all environment values are hidden.
+
+## Updates and availability
+
+A single replica can be unavailable during replacement. Review the [update strategy](/docs/guides/release-safety/update-strategy/) and database publisher's upgrade requirements. Do not run incompatible database versions against the same data directory.
+
+Take a consistent backup before a data-format change and test restoration. [Application rollback](/docs/guides/release-safety/rollback/) restores configuration, not the previous database state.
+
+## Failure and migration
+
+If the server is unavailable, selecting another server with a same-named volume does not recover the data. Restore or migrate the data through your storage procedure, then verify the new deployment.
+
+Deleting the application retains its volume. Track the original server and volume name before cleanup; [volume management](/docs/administration/nodes/volumes/) handles the separate deletion.

@@ -1,0 +1,26 @@
+---
+title: "Integración con Discord"
+description: "Discord recibe mediante Gateway y requiere conexión saliente, no callback público."
+sidebar:
+  order: 48
+---
+
+Discord recibe mediante Gateway y requiere conexión saliente, no callback público.
+
+## Configurar
+
+Crea aplicación y bot en el portal, obtén token del bot e instálalo con permisos para ver canales y enviar mensajes; añade envío en hilos si se utilizan. Admin guarda token en CDelivery.
+
+Activa Developer Mode en Discord, copia tu User ID y vincúlalo en tu cuenta. No uses client secret, Application ID, servidor o canal como identidad personal. Consulta la [guía oficial](https://docs.discord.com/developers/quick-start/getting-started).
+
+La integración procesa mensajes directos y menciones explícitas sin depender del intent privilegiado Message Content para mensajes arbitrarios.
+
+## Verificar
+
+Configura [modelo](/docs/es/guides/automation/models/) y pregunta algo de lectura por privado o mención. Comprueba que corresponda a tu cuenta y rol.
+
+## Resolver
+
+Revisa instalación, token, permisos del canal, restricciones de privados, Gateway y vinculación. Estar online no garantiza permiso de envío en todos los canales.
+
+Vincular otro User ID puede exponer tus operaciones y notificaciones. Consulta [suscripciones](/docs/es/guides/automation/im/notifications/) cuando recepción y envío funcionan pero faltan alertas.

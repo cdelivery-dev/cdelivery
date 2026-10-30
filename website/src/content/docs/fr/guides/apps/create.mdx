@@ -1,0 +1,24 @@
+---
+title: "Créer et déployer"
+description: "Créez depuis une image ou un modèle, puis vérifiez la première exécution."
+sidebar:
+  order: 8
+---
+
+Créez depuis une image ou un modèle, puis vérifiez la première exécution.
+
+## Étapes
+
+Dans un groupe existant, Operator/Admin renseigne un nom unique de 1–16 minuscules, chiffres ou tirets, sans tiret initial/final ni nom réservé. Choisissez image/modèle, variables, ports, persistance, ressources, réplicas et placement, puis enregistrez.
+
+Description : 500 caractères maximum. Le nom est unique dans toute la plateforme. La console ne change ensuite ni nom ni groupe.
+
+## Modèles et données
+
+Un modèle fournit des valeurs initiales, pas une politique de sauvegarde. Vérifiez identifiants générés, version et répertoire. Une [application avec état](/docs/fr/guides/apps/persistence/stateful/) reste sur un serveur avec un réplica.
+
+## Contrôler
+
+Attendez le réplica, lisez les journaux et testez le service. Pull échoué : référence, identifiants, réseau, architecture. Tâche en attente : machine éligible et ressources. Processus arrêté : commande/configuration.
+
+L’[exemple Nginx](/docs/fr/getting-started/first-app/) fournit un parcours complet. Voir [registres privés](/docs/fr/guides/apps/images/).

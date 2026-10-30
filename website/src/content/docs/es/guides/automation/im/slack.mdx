@@ -1,0 +1,29 @@
+---
+title: "Integración con Slack"
+description: "Slack usa Socket Mode y no necesita una URL pública de eventos."
+sidebar:
+  order: 46
+---
+
+Slack usa Socket Mode y no necesita una URL pública de eventos.
+
+## Crear aplicación
+
+1. Crea una app en [Slack](https://api.slack.com/apps).
+2. Concede `chat:write`, `im:write` e `im:history`.
+3. Habilita Socket Mode y token de app con `connections:write`.
+4. Suscribe `message.im` y permite mensajes en App Home.
+5. Instala la aplicación.
+6. Guarda token bot `xoxb-` y app `xapp-` en CDelivery.
+
+Para menciones añade `app_mentions:read` y evento `app_mention`; perfiles usan `users:read`. Reinstala o aprueba cambios de permisos. Consulta [Socket Mode](https://docs.slack.dev/tools/java-slack-sdk/guides/socket-mode/).
+
+## Vincular
+
+Copia tu Member ID, guárdalo en tu cuenta y activa notificaciones. No uses ID de canal, app o bot. Con [modelo](/docs/es/guides/automation/models/) configurado, prueba un mensaje directo de lectura.
+
+## Resolver
+
+Comprueba que tokens pertenezcan a la misma app instalada, eventos, permisos, App Home y red saliente. Un perfil ausente puede ser independiente del envío.
+
+Vincular un ID ajeno entrega capacidades de tu cuenta a esa identidad. Revisa también suscripciones personales.

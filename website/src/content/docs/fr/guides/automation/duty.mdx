@@ -1,0 +1,28 @@
+---
+title: "Surveillance automatique"
+description: "La surveillance analyse les événements et effectue des rondes avec un rôle explicite."
+sidebar:
+  order: 43
+---
+
+La surveillance analyse les événements et effectue des rondes avec un rôle explicite.
+
+## Configurer
+
+Préparez [modèle](/docs/fr/guides/automation/models/), rôle, politique, intervalle, langue et destinataires.
+
+Par défaut : Reader, NearCritical, 30 minutes, anglais. Intervalle autorisé : 15 minutes–24 heures. L’analyse d’événements n’attend pas la prochaine ronde.
+
+EarlyRisk, NearCritical et LimitOrFailure décrivent la réponse au risque, pas un seuil numérique universel.
+
+## Autorisations
+
+Reader observe ; Operator/Admin peuvent modifier sans supervision dans leurs droits. Aucun périmètre de compte personnel.
+
+Les destinataires doivent être abonnés et avoir un rôle au moins égal. Une surveillance Operator notifie Operator/Admin, pas Reader.
+
+## Vérifier
+
+Examinez événements, analyses, actions et état final. Si rien n’arrive, contrôlez modèle, canal, abonnement et rôle.
+
+Désactiver la surveillance ne coupe pas les alertes ordinaires. Les notifications suivent la langue configurée, les conversations celle du dialogue. Voir [notifications](/docs/fr/guides/automation/im/notifications/).

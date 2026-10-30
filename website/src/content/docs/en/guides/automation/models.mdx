@@ -1,0 +1,32 @@
+---
+title: "Model configuration"
+description: "Choose a provider, endpoint, credentials, and a model suitable for platform tool use."
+sidebar:
+  order: 42
+---
+
+An Admin configures the model in AI settings. Supported provider choices include OpenAI, Anthropic, Gemini, DeepSeek, OpenRouter, Ollama, and OpenAI-compatible services.
+
+## Provider settings
+
+| Provider type | Endpoint | API key |
+| --- | --- | --- |
+| Built-in hosted providers | Provider-defined; custom endpoint is not accepted | Required |
+| OpenAI-compatible | Required | Required |
+| Ollama | Required | API-key field is not accepted |
+
+Use the endpoint expected by the selected integration. Ensure the CDelivery server can reach it; a URL accessible only from your browser or another machine may fail from the platform.
+
+Enter credentials, discover available models where supported, and select a model. Model discovery requires Admin access and does not guarantee that every listed model supports the tools needed for operations.
+
+## Preserve or replace credentials
+
+Stored keys are not returned in plaintext. An omitted key can reuse the existing one only while provider and endpoint scope remain the same. Changing either scope requires suitable new credentials.
+
+Save the settings, then ask a read-only operational question through a configured channel. Confirm both the model response and any tool results.
+
+## Troubleshoot
+
+Check provider selection, endpoint, key validity, model identifier, outbound network, quota, and tool support. A successful model list request is not a full operational test.
+
+External providers receive the context needed for the conversation and operations. Configure [automated duty](/docs/guides/automation/duty/) separately, and use [messaging guides](/docs/guides/automation/im/) for delivery and identity problems.

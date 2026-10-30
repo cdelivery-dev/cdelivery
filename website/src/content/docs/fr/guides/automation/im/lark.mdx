@@ -1,0 +1,28 @@
+---
+title: "Intégration Lark"
+description: "Lark utilise un bot d’application et une connexion longue pour les événements."
+sidebar:
+  order: 49
+---
+
+Lark utilise un bot d’application et une connexion longue pour les événements.
+
+## Créer et publier
+
+Créez une application interne avec capacité bot, envoi, lecture des messages privés et mentions si nécessaire. Choisissez connexion longue et `im.message.receive_v1`.
+
+Publiez, ajoutez les utilisateurs au périmètre et approuvez les droits modifiés. Admin enregistre App ID/Secret dans Lark. Un bot de groupe avec seulement webhook ne convient pas.
+
+Les identifiants Feishu utilisent [leur canal](/docs/fr/guides/automation/im/feishu/). Voir [configuration officielle](https://open.larksuite.com/document/server-docs/event-subscription-guide/event-subscription-configure-/request-url-configuration-case).
+
+## Identité
+
+Obtenez votre `open_id` pour cette app via explorateur officiel et [recherche e-mail/téléphone](https://open.larksuite.com/document/server-docs/contact-v3/user/batch_get_id), avec droits de contacts appropriés.
+
+N’utilisez pas user_id, union_id, chat ou bot. Changer d’app peut changer open_id. Associez votre propre identité et abonnez-vous ; une identité tierce expose vos droits.
+
+## Vérifier
+
+Question en lecture en privé, ou mention explicite en groupe, avec modèle configuré. Contrôlez publication, périmètre, événements, réseau et association.
+
+Le profil nécessite `contact:contact.base:readonly`, `contact:user.base:readonly` et visibilité du contact. Séparez panne de profil et panne de livraison.

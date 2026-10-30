@@ -1,0 +1,511 @@
+_version = 2
+
+[event.AppCreated]
+en = "App created"
+zh-CN = "应用已创建"
+zh-TW = "應用程式已建立"
+ja = "アプリを作成"
+pt-BR = "Aplicação criada"
+es = "Aplicación creada"
+fr = "Application créée"
+de = "App erstellt"
+
+[event.AppUpdated]
+en = "App updated"
+zh-CN = "应用已更新"
+zh-TW = "應用程式已更新"
+ja = "アプリを更新"
+pt-BR = "Aplicação atualizada"
+es = "Aplicación actualizada"
+fr = "Application mise à jour"
+de = "App aktualisiert"
+
+[event.AppRolledBack]
+en = "App rolled back"
+zh-CN = "应用已回滚"
+zh-TW = "應用程式已回復"
+ja = "アプリをロールバック"
+pt-BR = "Alteração da aplicação revertida"
+es = "Actualización de la aplicación revertida"
+fr = "Configuration précédente de l’application rétablie"
+de = "App-Änderung rückgängig gemacht"
+
+[event.AppRestarted]
+en = "App restarted"
+zh-CN = "应用已重启"
+zh-TW = "應用程式已重新啟動"
+ja = "アプリを再起動"
+pt-BR = "Aplicação reiniciada"
+es = "Aplicación reiniciada"
+fr = "Application redémarrée"
+de = "App neu gestartet"
+
+[event.AppDeleted]
+en = "App deleted"
+zh-CN = "应用已删除"
+zh-TW = "應用程式已刪除"
+ja = "アプリを削除"
+pt-BR = "Aplicação excluída"
+es = "Aplicación eliminada"
+fr = "Application supprimée"
+de = "App gelöscht"
+
+[event.GroupCreated]
+en = "Group created"
+zh-CN = "分组已创建"
+zh-TW = "分組已建立"
+ja = "グループを作成"
+pt-BR = "Grupo criado"
+es = "Grupo creado"
+fr = "Groupe créé"
+de = "Gruppe erstellt"
+
+[event.GroupUpdated]
+en = "Group updated"
+zh-CN = "分组已更新"
+zh-TW = "分組已更新"
+ja = "グループを更新"
+pt-BR = "Grupo atualizado"
+es = "Grupo actualizado"
+fr = "Groupe mis à jour"
+de = "Gruppe aktualisiert"
+
+[event.GroupDeleted]
+en = "Group deleted"
+zh-CN = "分组已删除"
+zh-TW = "分組已刪除"
+ja = "グループを削除"
+pt-BR = "Grupo excluído"
+es = "Grupo eliminado"
+fr = "Groupe supprimé"
+de = "Gruppe gelöscht"
+
+[event.NodeRelabeled]
+en = "Node labels updated"
+zh-CN = "服务器标签已更新"
+zh-TW = "伺服器標籤已更新"
+ja = "サーバーのラベルを更新"
+pt-BR = "Rótulos do servidor atualizados"
+es = "Etiquetas del servidor actualizadas"
+fr = "Étiquettes du serveur mises à jour"
+de = "Serverlabels aktualisiert"
+
+[event.NodeRemoved]
+en = "Node removed"
+zh-CN = "服务器已移除"
+zh-TW = "伺服器已移除"
+ja = "サーバーを削除"
+pt-BR = "Servidor removido"
+es = "Servidor retirado del clúster"
+fr = "Serveur retiré"
+de = "Server entfernt"
+
+[event.NodeOffline]
+en = "Node not ready"
+zh-CN = "服务器未就绪"
+zh-TW = "伺服器尚未就緒"
+ja = "サーバーが準備未完了"
+pt-BR = "Servidor não está pronto"
+es = "El servidor no está listo"
+fr = "Serveur non prêt"
+de = "Server nicht bereit"
+
+[event.NodeOnline]
+en = "Node ready"
+zh-CN = "服务器已就绪"
+zh-TW = "伺服器已就緒"
+ja = "サーバーが準備完了"
+pt-BR = "Servidor pronto"
+es = "Servidor listo"
+fr = "Serveur prêt"
+de = "Server bereit"
+
+[event.RuntimeIssue]
+en = "Runtime issue"
+zh-CN = "运行异常"
+zh-TW = "執行異常"
+ja = "実行時の異常"
+pt-BR = "Problema de execução"
+es = "Problema de ejecución"
+fr = "Problème d’exécution"
+de = "Laufzeitproblem"
+
+[event.RuntimeRecovered]
+en = "Runtime issue resolved"
+zh-CN = "运行异常已解除"
+zh-TW = "執行異常已解除"
+ja = "実行時の異常が解消"
+pt-BR = "Problema de execução resolvido"
+es = "Problema de ejecución resuelto"
+fr = "Problème d’exécution résolu"
+de = "Laufzeitproblem behoben"
+
+[event.PingressEnabled]
+en = "Pingress enabled"
+zh-CN = "Pingress 已启用"
+zh-TW = "Pingress 已啟用"
+ja = "Pingress を有効化"
+pt-BR = "Pingress ativado"
+es = "Pingress activado"
+fr = "Pingress activé"
+de = "Pingress aktiviert"
+
+[event.PingressUpdated]
+en = "Pingress updated"
+zh-CN = "Pingress 已更新"
+zh-TW = "Pingress 已更新"
+ja = "Pingress を更新"
+pt-BR = "Pingress atualizado"
+es = "Pingress actualizado"
+fr = "Pingress mis à jour"
+de = "Pingress aktualisiert"
+
+[event.PingressDisabled]
+en = "Pingress disabled"
+zh-CN = "Pingress 已停用"
+zh-TW = "Pingress 已停用"
+ja = "Pingress を無効化"
+pt-BR = "Pingress desativado"
+es = "Pingress desactivado"
+fr = "Pingress désactivé"
+de = "Pingress deaktiviert"
+
+[event.AcmeEnabled]
+en = "ACME enabled"
+zh-CN = "ACME 已启用"
+zh-TW = "ACME 已啟用"
+ja = "ACME を有効化"
+pt-BR = "ACME ativado"
+es = "ACME activado"
+fr = "ACME activé"
+de = "ACME aktiviert"
+
+[event.AcmeDisabled]
+en = "ACME disabled"
+zh-CN = "ACME 已停用"
+zh-TW = "ACME 已停用"
+ja = "ACME を無効化"
+pt-BR = "ACME desativado"
+es = "ACME desactivado"
+fr = "ACME désactivé"
+de = "ACME deaktiviert"
+
+[event.CertUploaded]
+en = "Certificate uploaded"
+zh-CN = "证书已上传"
+zh-TW = "憑證已上傳"
+ja = "証明書をアップロード"
+pt-BR = "Certificado enviado"
+es = "Certificado subido"
+fr = "Certificat importé"
+de = "Zertifikat hochgeladen"
+
+[event.CertRemoved]
+en = "Certificate removed"
+zh-CN = "证书已移除"
+zh-TW = "憑證已移除"
+ja = "証明書を削除"
+pt-BR = "Certificado removido"
+es = "Certificado eliminado"
+fr = "Certificat retiré"
+de = "Zertifikat entfernt"
+
+[event.CertIssued]
+en = "Certificate issued"
+zh-CN = "证书已签发"
+zh-TW = "憑證已簽發"
+ja = "証明書を発行"
+pt-BR = "Certificado emitido"
+es = "Certificado emitido"
+fr = "Certificat émis"
+de = "Zertifikat ausgestellt"
+
+[event.CertRenewed]
+en = "Certificate renewed"
+zh-CN = "证书已续期"
+zh-TW = "憑證已更新"
+ja = "証明書を更新"
+pt-BR = "Certificado renovado"
+es = "Certificado renovado"
+fr = "Certificat renouvelé"
+de = "Zertifikat erneuert"
+
+[event.CertIssueFailed]
+en = "Certificate issuance or renewal failed"
+zh-CN = "证书签发或续期失败"
+zh-TW = "憑證簽發或更新失敗"
+ja = "証明書の発行・更新に失敗"
+pt-BR = "Falha na emissão ou renovação de certificado"
+es = "Falló la emisión o renovación del certificado"
+fr = "Échec de l’émission ou du renouvellement du certificat"
+de = "Ausstellung oder Erneuerung des Zertifikats fehlgeschlagen"
+
+[event.CertIssueRecovered]
+en = "Certificate issuance or renewal recovered"
+zh-CN = "证书签发或续期已恢复"
+zh-TW = "憑證簽發或更新已恢復"
+ja = "証明書の発行・更新が復旧"
+pt-BR = "Emissão ou renovação de certificado normalizada"
+es = "Emisión o renovación del certificado restablecida"
+fr = "Émission ou renouvellement du certificat rétabli"
+de = "Ausstellung oder Erneuerung des Zertifikats wieder erfolgreich"
+
+[event.XHealthEnabled]
+en = "XHealth enabled"
+zh-CN = "XHealth 已启用"
+zh-TW = "XHealth 已啟用"
+ja = "XHealth を有効化"
+pt-BR = "XHealth ativado"
+es = "XHealth activado"
+fr = "XHealth activé"
+de = "XHealth aktiviert"
+
+[event.XHealthUpdated]
+en = "XHealth updated"
+zh-CN = "XHealth 已更新"
+zh-TW = "XHealth 已更新"
+ja = "XHealth を更新"
+pt-BR = "XHealth atualizado"
+es = "XHealth actualizado"
+fr = "XHealth mis à jour"
+de = "XHealth aktualisiert"
+
+[event.XHealthTriggered]
+en = "XHealth run requested"
+zh-CN = "XHealth 执行请求已提交"
+zh-TW = "XHealth 執行請求已提交"
+ja = "XHealth の実行を要求"
+pt-BR = "Execução do XHealth solicitada"
+es = "Ejecución de XHealth solicitada"
+fr = "Exécution de XHealth demandée"
+de = "XHealth-Ausführung angefordert"
+
+[event.XHealthDisabled]
+en = "XHealth disabled"
+zh-CN = "XHealth 已停用"
+zh-TW = "XHealth 已停用"
+ja = "XHealth を無効化"
+pt-BR = "XHealth desativado"
+es = "XHealth desactivado"
+fr = "XHealth désactivé"
+de = "XHealth deaktiviert"
+
+[event.XHealthFailed]
+en = "XHealth check failed"
+zh-CN = "XHealth 检查未通过"
+zh-TW = "XHealth 檢查未通過"
+ja = "XHealth のチェックに失敗"
+pt-BR = "Falha na verificação do XHealth"
+es = "Comprobación de XHealth fallida"
+fr = "Échec de la vérification XHealth"
+de = "XHealth-Prüfung fehlgeschlagen"
+
+[event.XHealthRecovered]
+en = "XHealth check recovered"
+zh-CN = "XHealth 检查已恢复"
+zh-TW = "XHealth 檢查已恢復"
+ja = "XHealth のチェックが復旧"
+pt-BR = "Verificação do XHealth normalizada"
+es = "Comprobación de XHealth restablecida"
+fr = "Vérification XHealth rétablie"
+de = "XHealth-Prüfung wieder erfolgreich"
+
+[event.XJobCreated]
+en = "XJob created"
+zh-CN = "XJob 已创建"
+zh-TW = "XJob 已建立"
+ja = "XJob を作成"
+pt-BR = "XJob criado"
+es = "XJob creado"
+fr = "XJob créé"
+de = "XJob erstellt"
+
+[event.XJobUpdated]
+en = "XJob updated"
+zh-CN = "XJob 已更新"
+zh-TW = "XJob 已更新"
+ja = "XJob を更新"
+pt-BR = "XJob atualizado"
+es = "XJob actualizado"
+fr = "XJob mis à jour"
+de = "XJob aktualisiert"
+
+[event.XJobDeleted]
+en = "XJob deleted"
+zh-CN = "XJob 已删除"
+zh-TW = "XJob 已刪除"
+ja = "XJob を削除"
+pt-BR = "XJob excluído"
+es = "XJob eliminado"
+fr = "XJob supprimé"
+de = "XJob gelöscht"
+
+[event.XJobFailed]
+en = "XJob failed"
+zh-CN = "XJob 失败"
+zh-TW = "XJob 失敗"
+ja = "XJob の実行に失敗"
+pt-BR = "Falha no XJob"
+es = "Fallo en XJob"
+fr = "Échec de XJob"
+de = "XJob fehlgeschlagen"
+
+[event.XJobRecovered]
+en = "XJob recovered"
+zh-CN = "XJob 已恢复"
+zh-TW = "XJob 已恢復"
+ja = "XJob が復旧"
+pt-BR = "XJob recuperado"
+es = "XJob recuperado"
+fr = "XJob rétabli"
+de = "XJob wieder erfolgreich"
+
+[event.GuardianSubmitted]
+en = "Guardian submitted"
+zh-CN = "Guardian 已提交"
+zh-TW = "Guardian 已提交"
+ja = "Guardian に更新を登録"
+pt-BR = "Atualização enviada ao Guardian"
+es = "Actualización enviada a Guardian"
+fr = "Guardian soumis"
+de = "Guardian eingereicht"
+
+[event.GuardianPromoted]
+en = "Guardian promoted"
+zh-CN = "Guardian 已发布"
+zh-TW = "Guardian 已發布"
+ja = "Guardian が更新を適用"
+pt-BR = "Atualização aplicada pelo Guardian"
+es = "Actualización publicada por Guardian"
+fr = "Guardian publié"
+de = "Guardian-Update übernommen"
+
+[event.GuardianRetried]
+en = "Guardian retried"
+zh-CN = "Guardian 已重试"
+zh-TW = "Guardian 已重試"
+ja = "Guardian を再試行"
+pt-BR = "Nova tentativa do Guardian"
+es = "Comprobación de Guardian reintentada"
+fr = "Guardian relancé"
+de = "Guardian erneut gestartet"
+
+[event.GuardianSkipped]
+en = "Guardian check skipped"
+zh-CN = "Guardian 检查已跳过"
+zh-TW = "Guardian 檢查已略過"
+ja = "Guardian のチェックをスキップ"
+pt-BR = "Verificações do Guardian puladas"
+es = "Comprobación de Guardian omitida"
+fr = "Contrôle Guardian ignoré"
+de = "Guardian-Prüfung übersprungen"
+
+[event.GuardianCancelled]
+en = "Guardian cancelled"
+zh-CN = "Guardian 已取消"
+zh-TW = "Guardian 已取消"
+ja = "Guardian をキャンセル"
+pt-BR = "Atualização do Guardian cancelada"
+es = "Actualización de Guardian cancelada"
+fr = "Guardian annulé"
+de = "Guardian abgebrochen"
+
+[event.GuardianFailed]
+en = "Guardian failed"
+zh-CN = "Guardian 失败"
+zh-TW = "Guardian 失敗"
+ja = "Guardian の処理に失敗"
+pt-BR = "Falha no Guardian"
+es = "Fallo en Guardian"
+fr = "Échec de Guardian"
+de = "Guardian fehlgeschlagen"
+
+[event.GuardianRecovered]
+en = "Guardian recovered"
+zh-CN = "Guardian 已恢复"
+zh-TW = "Guardian 已恢復"
+ja = "Guardian が復旧"
+pt-BR = "Guardian recuperado"
+es = "Guardian recuperado"
+fr = "Guardian rétabli"
+de = "Guardian wieder funktionsfähig"
+
+[event.Patrol]
+en = "Patrol"
+zh-CN = "巡检"
+zh-TW = "巡查"
+ja = "巡回"
+pt-BR = "Verificação periódica"
+es = "Comprobación periódica"
+fr = "Contrôle périodique"
+de = "Regelmäßige Prüfung"
+
+[event.InsightUpdated]
+en = "Insight updated"
+zh-CN = "Insight 已更新"
+zh-TW = "Insight 已更新"
+ja = "Insight を更新"
+pt-BR = "Insight atualizado"
+es = "Insight actualizado"
+fr = "Insight mis à jour"
+de = "Insight aktualisiert"
+
+[event.PlatformUpdated]
+en = "Platform updated"
+zh-CN = "平台已更新"
+zh-TW = "平台已更新"
+ja = "プラットフォームを更新"
+pt-BR = "Plataforma atualizada"
+es = "Plataforma actualizada"
+fr = "Plateforme mise à jour"
+de = "Plattform aktualisiert"
+
+[event.ReconcileError]
+en = "Resource observation failed"
+zh-CN = "资源观测失败"
+zh-TW = "資源觀測失敗"
+ja = "リソースの状態取得に失敗"
+pt-BR = "Falha na consulta ao estado dos recursos"
+es = "Falló la observación de recursos"
+fr = "Échec de l’observation des ressources"
+de = "Erfassung des Ressourcenzustands fehlgeschlagen"
+
+[event.AcmeIssueError]
+en = "Certificate issuance error"
+zh-CN = "证书签发错误"
+zh-TW = "憑證簽發錯誤"
+ja = "証明書の発行エラー"
+pt-BR = "Erro na emissão de certificado"
+es = "Error al emitir el certificado"
+fr = "Erreur d’émission du certificat"
+de = "Fehler bei der Zertifikatsausstellung"
+
+[event.AcmeRenewError]
+en = "Certificate renewal error"
+zh-CN = "证书续期错误"
+zh-TW = "憑證更新錯誤"
+ja = "証明書の更新エラー"
+pt-BR = "Erro na renovação de certificado"
+es = "Error al renovar el certificado"
+fr = "Erreur de renouvellement du certificat"
+de = "Fehler bei der Zertifikatserneuerung"
+
+[event.AppScaled]
+en = "App scaled automatically"
+zh-CN = "应用已自动调整副本数"
+zh-TW = "應用程式已自動調整副本數"
+ja = "アプリのレプリカ数を自動調整"
+pt-BR = "Réplicas da aplicação ajustadas automaticamente"
+es = "Réplicas de la aplicación ajustadas automáticamente"
+fr = "Nombre de répliques de l’application ajusté automatiquement"
+de = "Replikate der App automatisch angepasst"
+
+[event.AppScalingBlocked]
+en = "Automatic scaling is waiting"
+zh-CN = "自动伸缩等待中"
+zh-TW = "自動伸縮等待中"
+ja = "自動スケーリング待機中"
+pt-BR = "Escalonamento automático em espera"
+es = "Escalado automático en espera"
+fr = "Mise à l’échelle automatique en attente"
+de = "Automatische Skalierung wartet"

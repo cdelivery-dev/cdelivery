@@ -1,0 +1,63 @@
+{% extends "account.html" %}
+
+{% import "account/nav.html" as nav %}
+
+{% macro totp_proof() %}
+<input x-ref="payload" type="hidden" name="payload" />
+<div class="fields">
+  <div class="field">
+    <label for="two-factor-password">{{ tt!("ui.form.user.currentPassword.label") }}: </label>
+    <input x-ref="currentPassword" id="two-factor-password" class="text" type="password" autocomplete="current-password" minlength="8" required />
+  </div>
+  <div class="field">
+    <label for="two-factor-code">{{ tt!("ui.account.twoFactor.code") }}: </label>
+    <input x-ref="code" id="two-factor-code" class="text" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" required />
+  </div>
+</div>
+{% endmacro %}
+
+{% block title %}{{ tt!("ui.account.twoFactor.title") }} - {{ tt!("ui.account.nav.account") }} | {{ super() }}{% endblock title %}
+
+{% block account_navigation %}{{ nav::nav("two-factor") }}{% endblock account_navigation %}
+
+{% block main %}
+<header>
+  <h1>{{ tt!("ui.account.twoFactor.title") }}</h1>
+  <p>{{ tt!("ui.account.twoFactor.subtitle") }}</p>
+</header>
+<noscript><p>{{ tt!("ui.javascript.required") }}</p></noscript>
+
+{% if let Some(enrollment) = enrollment %}
+<p>{{ tt!("ui.account.twoFactor.disabled") }}</p>
+<img class="totp-qr" src="data:image/png;base64,{{ enrollment.qr }}" alt="" />
+<p><a href="{{ enrollment.uri }}">{{ tt!("ui.account.twoFactor.link") }}</a></p>
+<p>{{ tt!("ui.account.twoFactor.secret") }}: <code translate="no">{{ enrollment.secret_base32 }}</code></p>
+<form
+  method="post"
+  action="/account/two-factor/enable"
+  x-data="{ submitting: false }"
+  @submit="if (submitting) { $event.preventDefault(); return } $refs.payload.value = JSON.stringify({ current_password_sha256: sha256($refs.currentPassword.value), secret_base32: $refs.secret.value, code: $refs.code.value }); submitting = true"
+>
+  <input x-ref="secret" type="hidden" value="{{ enrollment.secret_base32 }}" />
+  {{ totp_proof() }}
+  <div class="actions">
+    <input class="button" type="submit" value='{{ tt!("ui.common.enable") }}' :disabled="submitting" />
+  </div>
+</form>
+{% else %}
+<p>{{ tt!("ui.account.twoFactor.enabled") }}</p>
+<small class="block">{{ tt!("ui.account.twoFactor.recovery") }}</small>
+<form
+  method="post"
+  action="/account/two-factor/disable"
+  x-data="{ submitting: false }"
+  @submit="if (submitting) { $event.preventDefault(); return } $refs.payload.value = JSON.stringify({ current_password_sha256: sha256($refs.currentPassword.value), code: $refs.code.value }); submitting = true"
+>
+  {{ totp_proof() }}
+  <small class="block mt-2">{{ tt!("ui.account.twoFactor.disable.help") }}</small>
+  <div class="actions">
+    <input class="button danger" type="submit" value='{{ tt!("ui.common.disable") }}' :disabled="submitting" />
+  </div>
+</form>
+{% endif %}
+{% endblock main %}

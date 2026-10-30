@@ -1,0 +1,33 @@
+---
+title: "Introduction to CDelivery"
+description: "Understand applications, groups, servers, and the components used for daily operations."
+sidebar:
+  order: 2
+---
+
+CDelivery is an operations platform for deploying container images and maintaining applications. Start with one server, then add capacity when your workloads require it.
+
+## Main objects
+
+| Object | Purpose |
+| --- | --- |
+| Application | An image, startup settings, networking, resources, and storage |
+| Group | Organizes applications and provides a common network |
+| Server | Supplies compute and local storage |
+| Account | Controls access through Reader, Operator, or Admin permissions |
+
+Groups are not account permission boundaries. Application names are unique across the platform. Local data belongs to a particular server; replicas and application rollback do not replace backups.
+
+## Optional capabilities
+
+Pingress provides domains and HTTPS. XHealth runs application checks; Guardian validates a candidate before promoting a change. Insight collects logs, metrics, and events. XJob runs scheduled commands in separate task containers.
+
+AI can answer operational questions and use platform tools within its effective permissions. Automated duty uses its configured role, while a conversation started by a user uses that user's permissions. Messaging channels provide notifications and conversational access.
+
+These capabilities require their own configuration. Installing the console does not mean certificates, collection, or model credentials are already ready.
+
+## First deployment
+
+Prepare the [requirements](/docs/getting-started/requirements/), [install](/docs/getting-started/installation/), and deploy the [first application](/docs/getting-started/first-app/). The example uses a published port, so you can verify image pulling and application access before adding a domain.
+
+For daily work, an Operator can manage applications; creating groups, administering servers, and changing platform settings require an Admin. See [roles and permissions](/docs/administration/accounts/roles/).

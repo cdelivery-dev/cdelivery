@@ -1,0 +1,63 @@
+---
+title: "网络常见问题"
+description: "排查 IPv6、客户端地址、DNS、路由与证书问题。"
+sidebar:
+  order: 25
+---
+
+以下 IPv6 检查适用于运行 Pingress 的 Linux 服务器。
+
+## 为什么 Pingress 记录的是网关地址？
+
+只有 IPv4 的 `docker_gwbridge` 可能转换 IPv6 连接，导致原始客户端地址丢失，即使宿主机支持 IPv6。前置 CDN 或其他代理也会改变直接连接方：Pingress 记录该连接方的地址，并用它填写 `X-Real-IP` 和 `X-Forwarded-For`。
+
+## 安装器会自动开启 IPv6 吗？
+
+首次安装或加入时，脚本会检测宿主 IPv6，并尝试准备双栈网桥。遇到选择提示时，选 **1** 继续使用 IPv4，选 **2** 退出并解决问题；默认退出，没有交互终端时也是如此。
+
+`--no-ipv6` 跳过网桥准备，不会关闭已有双栈网桥的 IPv6。macOS 的网络由 Docker 运行环境管理。
+
+## 如何检查是否正常？
+
+在运行 Pingress 的服务器上执行：
+
+```sh
+ip -6 address show scope global
+ip -6 route show default
+docker network inspect docker_gwbridge --format '{{.EnableIPv6}}'
+```
+
+最后一条应输出 `true`，它只确认配置，不代表连通性正常。需要公网访问时，域名的 AAAA 记录应指向可通过 IPv6 访问 Pingress 的地址。
+
+从另一台支持 IPv6 的机器测试两种协议，将示例域名替换为实际域名：
+
+```sh
+curl -4 --noproxy '*' -I https://app.example.com
+curl -6 --noproxy '*' -I https://app.example.com
+```
+
+核对 Pingress 的 `client_ip`，或应用收到的转发请求头，是否为发起连接的客户端地址。应用自身连接的对端是 Pingress，不是原始客户端。
+
+## 安装后如何再启用 IPv6？
+
+先让宿主机具备可用 IPv6。网桥已经输出 `true` 时，检查连通性和 DNS 即可。尚未入群的服务器，执行[安装命令](/docs/zh-cn/getting-started/installation/)或服务器列表提供的加入命令，不添加 `--no-ipv6`。
+
+**重跑已有安装不会升级网桥。** 已运行且网桥只有 IPv4 的服务器需要安排维护：
+
+1. 备份本地数据，记录节点 ID、角色、完整节点标签、网桥配置，以及绑定该节点的应用、Pingress 或 Insight。
+2. 停止或迁移其任务。管理节点退出前，须保持多数管理节点健康，并让 CDelivery 控制台在其他节点正常运行，再将待维护节点降级。唯一管理节点不能直接退出，应先完成安全接管或制定备份恢复方案。具体操作参见 [Docker 节点维护说明](https://docs.docker.com/engine/swarm/manage-nodes/)。
+3. 节点退出且网桥没有容器引用后，从正常运行的控制台获取**原角色的新加入命令**，不添加 `--no-ipv6`；脚本会在加入前准备默认网桥。自定义网桥需保留原子网和选项，另行[准备双栈网桥](https://docs.docker.com/engine/swarm/networking/#customize-the-docker_gwbridge)。邀请有效期为 30 分钟，CDelivery 重启或迁移后也会失效。
+4. 重新加入会生成新的节点 ID。恢复完整标签（包括卷说明），修复服务对旧 ID 的绑定。本地卷应用和使用本地存储的 Insight 不能简单地在界面更换节点，需要管理员维护部署约束。数据仍在原宿主机上。
+5. 恢复服务，按需调整 DNS，重新验证上述 IPv4、IPv6 访问与客户端地址。
+
+也可以新增一台支持 IPv6 的服务器加入，将 Pingress 部署过去，再将 DNS 指向它。
+
+## IPv6 路由或防火墙异常怎么办？
+
+开启转发后，`accept_ra=1` 的接口可能停止接收路由通告（RA），导致默认路由消失。通过接口所属的网络管理器持久配置 RA：ifupdown 使用 `accept_ra 2`，ifupdown-ng 使用 `ipv6-accept-ra 2`。网络管理器自行处理 RA 的接口，不要盲目覆盖其 `accept_ra=0`。重启接口或宿主机后再次检查路由。
+
+保持 Docker 的 IPv6 防火墙管理开启（`ip6tables` 不能为 `false`），并在宿主防火墙和云安全组中放行 Pingress 的 HTTP/HTTPS 端口。网桥输出 `true` 并不能证明这些规则或外部访问正常。
+
+## 其他访问问题
+
+DNS 或路由问题先按[域名与路由](/docs/zh-cn/guides/networking/routing/)逐段检查；证书缺失、过期或签发失败见[自动证书与续期](/docs/zh-cn/guides/networking/automatic-certificates/)。使用[访问日志](/docs/zh-cn/guides/observability/logs/access/)判断请求是否到达入口、是否匹配应用以及上游是否成功响应。

@@ -1,0 +1,26 @@
+---
+title: "Operaciones con IA"
+description: "La IA consulta información y ejecuta herramientas respetando los permisos de la plataforma."
+sidebar:
+  order: 41
+---
+
+La IA consulta información y ejecuta herramientas respetando los permisos de la plataforma.
+
+## Elegir flujo
+
+Conversar requiere [modelo](/docs/es/guides/automation/models/), [canal](/docs/es/guides/automation/im/) e identidad personal. La [guardia automática](/docs/es/guides/automation/duty/) añade análisis de eventos y rondas. Un cliente externo usa [MCP](/docs/es/guides/automation/api-mcp/). Las notificaciones ordinarias no requieren modelo.
+
+Admin configura modelo y guardia. Las conversaciones usan rol actual del usuario; la guardia usa su propio rol, Reader por defecto, sin ámbito personal.
+
+## Verificar
+
+Configura modelo y canal, vincula tu identidad y comienza con una pregunta de lectura. Confirma cuenta y despliegue antes de permitir acciones.
+
+Roles de escritura permiten cambios desatendidos dentro de sus permisos. Las notificaciones no son una aprobación previa para cada operación.
+
+## Datos y fallos
+
+Un proveedor externo recibe contexto de conversación y operaciones necesario para responder. Elige configuración acorde con esos datos.
+
+Si falla, separa recepción de mensajes, conexión del modelo y soporte de herramientas. Aparecer en una lista de modelos no garantiza capacidad operativa. Verifica resultados y estado real, además del texto de respuesta.

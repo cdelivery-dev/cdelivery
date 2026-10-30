@@ -1,0 +1,58 @@
+---
+title: "CDelivery ドキュメント"
+description: "インストールからアプリの運用、ネットワーク、監視、自動化、プラットフォーム管理までを説明します。"
+sidebar:
+  order: 1
+---
+
+import { Card, CardGrid } from '@prosefly/astro-components';
+
+インストールからアプリの運用、ネットワーク、監視、自動化、プラットフォーム管理までを説明します。
+
+## はじめに
+
+1. [概要](/docs/ja/getting-started/introduction/)で構成と用語を確認します。
+2. [事前準備](/docs/ja/getting-started/requirements/)でサーバーとネットワークを整えます。
+3. [インストール](/docs/ja/getting-started/installation/)で管理者を作成します。
+4. [最初のアプリ](/docs/ja/getting-started/first-app/)を公開し、実際の応答を確認します。
+5. [コンソール](/docs/ja/getting-started/console/)で各機能の場所を確認します。
+
+## 使い方ガイド
+
+<CardGrid>
+
+<Card title="アプリ管理" href="/docs/ja/guides/apps/">
+  作成、実行設定、ファイル、データ、拡縮、配置、更新
+</Card>
+
+<Card title="ドメインと HTTPS" href="/docs/ja/guides/networking/">
+  通信、ポート、ルーティング、証明書
+</Card>
+
+<Card title="ヘルスチェックとリリース" href="/docs/ja/guides/release-safety/xhealth/">
+  XHealth、更新方式、Guardian、ロールバック
+</Card>
+
+<Card title="ログ・メトリクス・イベント" href="/docs/ja/guides/observability/">
+  調査、収集、保存期間
+</Card>
+
+<Card title="定期タスク" href="/docs/ja/guides/automation/xjob/">
+  コマンド、スケジュール、結果
+</Card>
+
+<Card title="AI 運用" href="/docs/ja/guides/automation/">
+  モデルと自動当番
+</Card>
+
+<Card title="メッセージと通知" href="/docs/ja/guides/automation/im/">
+  メール、Slack、Telegram、Discord、Lark、Feishu
+</Card>
+
+</CardGrid>
+
+## 管理
+
+[プラットフォーム管理](/docs/ja/administration/)ではサーバー、アカウント、保守を扱います。外部ツールは [API/MCP](/docs/ja/guides/automation/api-mcp/) を参照してください。
+
+例のアドレスや認証情報を自分の値に置き換え、保存後は実際の動作を確認します。データを変更する操作では、バックアップと復元も確認してください。

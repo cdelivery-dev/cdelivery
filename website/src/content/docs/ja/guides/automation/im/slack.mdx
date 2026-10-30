@@ -1,0 +1,22 @@
+---
+title: "Slack 接続"
+description: "Socket Mode を使用し、公開イベント受信 URL は不要です。"
+sidebar:
+  order: 46
+---
+
+Socket Mode を使用し、公開イベント受信 URL は不要です。
+
+## アプリ作成
+
+[Slack](https://api.slack.com/apps) で作成し、`chat:write`、`im:write`、`im:history` を付与します。Socket Mode と `connections:write` の app token を有効化し、`message.im` を購読、App Home のメッセージ送信を許可してインストールします。
+
+Admin が `xoxb-` bot token と `xapp-` app token を保存します。メンションには `app_mentions:read` と `app_mention`、プロフィールには `users:read` が必要です。権限変更後は再承認・インストールします。[公式手順](https://docs.slack.dev/tools/java-slack-sdk/guides/socket-mode/)も参照してください。
+
+## 紐付け
+
+本人の Member ID をアカウントに入力し、通知を購読します。チャネル、app、bot ID は使いません。[モデル](/docs/ja/guides/automation/models/)設定後、個別メッセージで読み取りを試します。
+
+## 調査
+
+トークンの組、インストール、イベント、権限、App Home、通信を確認します。プロフィール取得と配信の問題は別です。他人の ID は自分の権限を渡し得るため、本人確認を行ってください。

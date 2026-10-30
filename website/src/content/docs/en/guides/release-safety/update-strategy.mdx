@@ -1,0 +1,32 @@
+---
+title: "Application update strategies"
+description: "Control update parallelism, task order, monitoring, and failure actions."
+sidebar:
+  order: 28
+---
+
+The update strategy controls how replacement tasks are introduced. Operators and Admins configure it for each application.
+
+## Settings and defaults
+
+| Setting | Default | Effect |
+| --- | --- | --- |
+| Parallelism | All replicas | Number replaced together |
+| Order | StopFirst | Stop the old task before starting its replacement |
+| Monitor | 60 seconds | Observe replacement failures |
+| Failure ratio | 0 | Tolerated failure proportion |
+| Failure action | Rollback | Response when the failure threshold is crossed |
+
+All-at-once, stop-first updates can interrupt every replica. Start-first needs spare resources and application support for overlapping instances. It does not automatically make a single-replica database safe to run twice against its data.
+
+## Choose and verify
+
+Review replica count, per-server caps, reservations, startup time, and whether multiple versions can operate concurrently. Select a smaller batch or start-first when the workload and available capacity support it.
+
+Submit one change and observe task progression, errors, logs, and a real request. A task remaining alive through the monitor window is not equivalent to a business readiness assertion.
+
+## Failure handling
+
+A configured rollback restores the previous application configuration when available. Its own execution uses all-parallel replacement and continues on rollback failures; inspect the resulting state rather than assuming recovery completed.
+
+Use [XHealth](/docs/guides/release-safety/xhealth/) for explicit assertions and [Guardian](/docs/guides/release-safety/) for candidate validation before promotion. See [rollback and failures](/docs/guides/release-safety/rollback/) for data and recovery boundaries.

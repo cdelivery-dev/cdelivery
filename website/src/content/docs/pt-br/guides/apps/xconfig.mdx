@@ -1,0 +1,32 @@
+---
+title: "Arquivos de configuração com XConfig"
+description: "XConfig fornece arquivos de configuração; volumes armazenam dados de negócio modificáveis."
+sidebar:
+  order: 12
+---
+
+XConfig fornece arquivos de configuração; volumes armazenam dados de negócio modificáveis.
+
+## Carregar
+
+Abra arquivos de uma aplicação compatível e selecione conteúdo não vazio de até 1,023,999 bytes. A montagem usa caminho absoluto de arquivo, com 2–255 caracteres e sem `/` final.
+
+Para Nginx:
+
+```text
+/etc/nginx/conf.d/default.conf
+```
+
+Confira se a imagem lê esse caminho e aceita a sintaxe. Upload não valida a linguagem de configuração.
+
+## Visibilidade e alterações
+
+Usuários com leitura compartilhada podem baixar o conteúdo; segredos arbitrários não são ocultados automaticamente. Substituir cria nova configuração e atualiza a montagem, não edita um arquivo gravável dentro do contêiner.
+
+Aplicações com volumes locais não usam XConfig.
+
+## Verificar
+
+Confira tarefas, logs e comportamento dependente do arquivo. Conteúdo salvo corretamente pode estar em caminho ignorado pelo programa.
+
+Veja [montagem e atualização](/docs/pt-br/guides/apps/xconfig/mounting/) e [persistência](/docs/pt-br/guides/apps/persistence/) para escolher o mecanismo correto.

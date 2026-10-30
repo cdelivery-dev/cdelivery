@@ -1,0 +1,21 @@
+---
+import { translate } from '../i18n';
+
+interface Props {
+  instance: string;
+  cpu: string;
+  cores: number;
+  memoryGiB: number;
+  storage?: string;
+}
+
+const { instance, cpu, cores, memoryGiB, storage } = Astro.props;
+const t = translate(Astro.currentLocale);
+const specs = [cpu, `${cores} vCPU`, t('site.benchmark.memory', { memory: memoryGiB }), storage].filter(Boolean);
+---
+<div class="benchmark-environment" role="group" aria-label={t('site.benchmark.environment')}>
+  AWS EC2 {instance} ({specs.join(' / ')})
+</div>
+<style>
+  .benchmark-environment { min-width: 0; overflow-x: auto; color: var(--color-muted); font-size: .75rem; line-height: 1.5; white-space: nowrap; }
+</style>

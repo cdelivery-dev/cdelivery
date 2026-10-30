@@ -1,0 +1,36 @@
+{% extends "account.html" %}
+
+{% import "account/nav.html" as nav %}
+{% import "user/role.html" as role %}
+
+{% block title %}{{ tt!("ui.account.apikeys.created.title") }} - {{ tt!("ui.account.nav.account") }} | {{ super() }}{% endblock title %}
+
+{% block account_navigation %}{{ nav::nav("apikeys") }}{% endblock account_navigation %}
+
+{% block main %}
+<header>
+  <h1>{{ tt!("ui.account.apikeys.created.title") }}</h1>
+</header>
+<p><strong>{{ tt!("ui.account.apikeys.created.notice") }}</strong></p>
+
+<div x-data="{ copied: false, async copy() { try { await navigator.clipboard.writeText(this.$refs.key.textContent.trim()); this.copied = true } catch (_) { this.copied = false } } }">
+  <pre x-ref="key" translate="no">{{ issued.key }}</pre>
+  <button class="button" type="button" @click="copy()"><span x-show="!copied">{{ tt!("ui.common.copy") }}</span><span x-show="copied" x-cloak>{{ tt!("ui.common.copied") }}</span></button>
+</div>
+<p>{{ tt!("ui.account.apikeys.created.usage") }}</p>
+
+{% include "account/connection.html" %}
+
+<h2 class="mt-4">{{ tt!("ui.account.apikeys.details.title") }}</h2>
+<dl>
+  <dt>{{ tt!("ui.account.apikeys.name") }}</dt>
+  <dd>{{ issued.name }}</dd>
+  <dt>{{ tt!("ui.account.profile.role") }}</dt>
+  <dd>{% let issued_role = issued.role %}{{ role::label(issued_role) }}</dd>
+  <dt>{{ tt!("ui.account.apikeys.createdAt") }}</dt>
+  <dd><relative-time datetime="{{ issued.created_at }}">{{ issued.created_at }}</relative-time></dd>
+  <dt>{{ tt!("ui.account.apikeys.expiresAt") }}</dt>
+  <dd>{% if let Some(expires_at) = issued.expires_at %}<relative-time datetime="{{ expires_at }}">{{ expires_at }}</relative-time>{% else %}{{ tt!("ui.account.apikeys.never") }}{% endif %}</dd>
+</dl>
+
+{% endblock main %}

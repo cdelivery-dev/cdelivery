@@ -1,0 +1,30 @@
+---
+title: "Update and restart applications"
+description: "Distinguish saving configuration, restarting tasks, and rolling back a previous application change."
+sidebar:
+  order: 18
+---
+
+Use a configuration update to change desired behavior. Use restart to replace running tasks without inventing a configuration change.
+
+## Update
+
+Open application settings, make the intended change, and save. Changes to images, environment, resources, networking, or supported configuration files may cause task replacement. Review the [update strategy](/docs/guides/release-safety/update-strategy/) and any [Guardian](/docs/guides/release-safety/) validation before a release.
+
+Saving identical settings is a no-op and does not force new containers. A registry tag changing outside CDelivery also does not automatically schedule an update.
+
+## Restart
+
+Use the application's restart action when tasks need replacement. Restart follows the application's update strategy; it does not guarantee uninterrupted service. The default stop-first, all-at-once strategy can interrupt all replicas.
+
+Restarting does not delete a correctly mounted volume, reset database contents, or solve an invalid command. If the process immediately fails again, inspect logs and fix its cause.
+
+## Verify
+
+Compare desired and actual replicas, inspect the image and startup logs, check relevant events, and issue a business request. For a stateful application, verify data as well.
+
+An accepted request may precede completed replacement. Do not submit repeated updates just because the first replacement is still progressing.
+
+## Rollback and removal
+
+When a previous configuration is available, [rollback](/docs/guides/release-safety/rollback/) can restore it. It does not undo migrations or restore files. [Deleting an application](/docs/guides/apps/delete/) is separate and retains its data volumes.

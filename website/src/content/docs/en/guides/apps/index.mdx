@@ -1,0 +1,34 @@
+---
+title: "Application management overview"
+description: "Understand application configuration, runtime state, and the operations used throughout its lifecycle."
+sidebar:
+  order: 7
+---
+
+An application combines an image, startup parameters, networking, resources, and storage into its desired configuration. Verify the result through replicas, logs, and actual requests.
+
+## Decide before creating
+
+| Decision | Why it matters |
+| --- | --- |
+| Group and name | The console does not rename applications or move them between groups |
+| Persistent data | Local volume mode is chosen during creation |
+| Image and startup | Know the listening port, command, and required environment variables |
+| Access | Internal communication, published ports, and domains are separate settings |
+| Capacity | Each replica and overlapping update tasks need resources |
+
+Readers can inspect shared information. Operators and Admins can create, change, restart, and delete applications. Groups and server resources require an Admin.
+
+## Guides by task
+
+Start with [creation](/docs/guides/apps/create/), [images and registries](/docs/guides/apps/images/), [commands and environment](/docs/guides/apps/container/), and [resource limits](/docs/guides/apps/resources/).
+
+Use [configuration files](/docs/guides/apps/xconfig/) for application configuration and [persistence](/docs/guides/apps/persistence/) for mutable data. [Scaling](/docs/guides/apps/scaling/) and [placement](/docs/guides/apps/placement/) control capacity and location. [Updates and restarts](/docs/guides/apps/lifecycle/) and [deletion](/docs/guides/apps/delete/) complete the lifecycle.
+
+## Defaults and verification
+
+A blank form defaults to one fixed replica, the image's command, host logging, and no additional reservations or placement label. Updates default to all replicas in parallel, stop-first order, a 60-second monitor, zero failure tolerance, and rollback on failure. Review the [update strategy](/docs/guides/release-safety/update-strategy/) for availability requirements.
+
+Saving unchanged configuration does not force a redeployment; use restart when replacement is intended. Arbitrary environment values and file contents are not automatically secret or redacted.
+
+Add [XHealth](/docs/guides/release-safety/xhealth/) for business checks and [Guardian](/docs/guides/release-safety/) for candidate validation before promotion.

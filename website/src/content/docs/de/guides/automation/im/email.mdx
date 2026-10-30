@@ -1,0 +1,28 @@
+---
+title: "E-Mail-Anbindung"
+description: "SMTP genügt für Hinweise; Gespräche benötigen zusätzlich IMAP und Modell."
+sidebar:
+  order: 45
+---
+
+SMTP genügt für Hinweise; Gespräche benötigen zusätzlich IMAP und Modell.
+
+## Senden
+
+Admin setzt Plattformadresse, SMTP-Host, Port und Passwort. Adresse ist auch Benutzername. 465 verwendet implizites TLS, andere Ports unterstütztes verschlüsseltes Upgrade.
+
+Anbieter können App-Passwörter verlangen; siehe [Google](https://support.google.com/accounts/answer/185833). Persönliches Abonnement und Empfängeradresse prüfen.
+
+## Empfangen
+
+IMAP-Host, normalerweise 993 mit implizitem TLS, Passwort und `authserv_id` des vertrauenswürdigen Empfangsservers setzen.
+
+Absender muss zum Konto passen; vertrauenswürdige Ergebnisse müssen DKIM und DMARC bestätigen. From allein genügt nicht. authserv_id nicht willkürlich aus Absenderdomain ableiten.
+
+INBOX wird gelesen; neuer Cursor beginnt am aktuellen Ende. Nach Einrichtung neue Nachricht senden.
+
+## Testen
+
+Lesende Frage von Konto-E-Mail senden. Wenn nur Senden funktioniert: IMAP, [Modell](/docs/de/guides/automation/models/), Identität und Authentifizierung prüfen.
+
+TLS, Netzwerk, Spam und Abonnement kontrollieren. Änderung von Adresse/Host/Port benötigt passenden Zugang. Gespeicherte Passwörter bleiben verborgen.

@@ -1,0 +1,32 @@
+---
+title: "Certificados automáticos y renovación"
+description: "ACME emite y renueva certificados cuando DNS y validación pueden alcanzar Pingress."
+sidebar:
+  order: 23
+---
+
+ACME emite y renueva certificados cuando DNS y validación pueden alcanzar Pingress.
+
+## Preparar
+
+Dirige el dominio a Pingress y permite 80/443. HTTP-01 necesita el puerto 80:
+
+```sh
+curl -i http://app.example.com/.well-known/acme-challenge/healthz
+```
+
+Espera HTTP 200 sin depender de redirecciones. Corrige DNS, AAAA, proxy y cortafuegos antes de solicitar emisión.
+
+Admin habilita ACME. Let's Encrypt es la autoridad predeterminada; staging y Pebble son entornos de prueba sin confianza pública de producción. La API también ofrece dns-persist-01 cuando la autoridad lo admite; no es un formulario genérico de proveedores DNS. Consulta [validaciones ACME](https://letsencrypt.org/docs/challenge-types/).
+
+## Tiempos
+
+Se revisa emisión aproximadamente cada cinco minutos y renovación cada ocho horas. La renovación usa información de la autoridad o ventana de validez; no necesariamente ocurre al guardar.
+
+La validación debe seguir accesible. Los certificados cargados manualmente no se renuevan así.
+
+## Verificar
+
+Comprueba dominio, emisor y caducidad desde un cliente real, con IPv4 e IPv6 si ambos están publicados. Una AAAA incorrecta puede fallar aunque IPv4 funcione.
+
+Revisa el error concreto y evita repetir solicitudes sin corregirlo. Para gestión externa, utiliza [certificados propios](/docs/es/guides/networking/custom-certificates/).

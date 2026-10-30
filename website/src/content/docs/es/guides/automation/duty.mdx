@@ -1,0 +1,28 @@
+---
+title: "Guardia automática"
+description: "La guardia analiza eventos y realiza rondas periódicas con un rol explícito."
+sidebar:
+  order: 43
+---
+
+La guardia analiza eventos y realiza rondas periódicas con un rol explícito.
+
+## Configurar
+
+Prepara [modelo](/docs/es/guides/automation/models/), elige rol, política, intervalo e idioma, habilita guardia y configura receptores.
+
+Los valores iniciales son Reader, NearCritical, 30 minutos e inglés. Intervalo permitido: 15 minutos–24 horas. El análisis por eventos no espera a la ronda siguiente.
+
+EarlyRisk, NearCritical y LimitOrFailure expresan cuándo actuar ante riesgo; no equivalen a un umbral numérico universal.
+
+## Permisos y destinatarios
+
+Reader observa; Operator y Admin permiten escrituras desatendidas dentro de sus permisos. La guardia no tiene ámbito de cuenta personal.
+
+Solo reciben sus notificaciones usuarios suscritos con rol igual o superior al de guardia. Una guardia Operator notifica a Operator y Admin, no a Reader.
+
+## Verificar
+
+Comprueba eventos, análisis, operaciones y estado real. Si no llega notificación, revisa modelo, canal, suscripción y filtro de rol.
+
+Deshabilitar guardia no desactiva alertas ordinarias. Las notificaciones usan el idioma configurado; conversaciones siguen al usuario. Consulta [diagnóstico de notificaciones](/docs/es/guides/automation/im/notifications/).

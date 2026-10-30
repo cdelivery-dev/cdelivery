@@ -1,0 +1,24 @@
+---
+title: "Créer des tâches XJob"
+description: "XJob lance une commande planifiée dans un conteneur indépendant utilisant l’image et l’environnement pertinents."
+sidebar:
+  order: 38
+---
+
+XJob lance une commande planifiée dans un conteneur indépendant utilisant l’image et l’environnement pertinents.
+
+## Créer
+
+Operator/Admin ouvre XJob, renseigne nom, commande disponible, intervalle après la fin et délai d’exécution. Enregistrez puis observez une exécution.
+
+Maximum : 16 tâches par application, intervalle et délai obligatoires, chacun de 1 à 1440 minutes. Expansion et pipes exigent un shell explicite.
+
+Ce n’est pas exec dans le conteneur métier. Ne présumez pas l’accès à ses fichiers temporaires ou données ; vérifiez les sources disponibles.
+
+## Concevoir et vérifier
+
+Les commandes avec effets externes doivent gérer les répétitions. Le planificateur n’offre pas de transaction globale.
+
+Code zéro doit représenter le succès métier. Vérifiez l’effet et les journaux XJob du bon nom.
+
+Voir [planification](/docs/fr/guides/automation/xjob/schedule/) et [résultats](/docs/fr/guides/automation/xjob/results/) pour les intervalles et les échecs.

@@ -1,0 +1,24 @@
+---
+title: "XJob-Aufgaben erstellen"
+description: "XJob führt geplante Befehle in unabhängigen Containern mit relevantem Image und Umgebung aus."
+sidebar:
+  order: 38
+---
+
+XJob führt geplante Befehle in unabhängigen Containern mit relevantem Image und Umgebung aus.
+
+## Erstellen
+
+Operator/Admin öffnet XJob, wählt Name, vorhandenen Befehl, Warteintervall nach Laufende und Ausführungszeitlimit, speichert und prüft einen Lauf.
+
+Maximal 16 Aufgaben je Anwendung und Intervall und Zeitlimit jeweils von 1 bis 1440 Minuten; beide sind erforderlich. Expansion/Pipes benötigen Shell.
+
+Kein exec im Geschäftscontainer: temporäre Dateien und beschreibbare Daten nicht voraussetzen, tatsächliche Quellen prüfen.
+
+## Entwerfen und prüfen
+
+Externe Wirkungen müssen Wiederholung sinnvoll behandeln. Planung erzeugt keine übergreifende Transaktion.
+
+Exitcode null soll echten Geschäftserfolg ausdrücken. Wirkung und XJob-Logs des richtigen Namens prüfen.
+
+Siehe [Zeitplan](/docs/de/guides/automation/xjob/schedule/) und [Ergebnisse](/docs/de/guides/automation/xjob/results/).

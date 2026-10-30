@@ -1,0 +1,28 @@
+---
+title: "Nutzerverwaltung"
+description: "Initialisierung erzeugt ersten Admin; weitere Personen erhalten eigene Konten."
+sidebar:
+  order: 58
+---
+
+Initialisierung erzeugt ersten Admin; weitere Personen erhalten eigene Konten.
+
+## Erstellen/ändern
+
+Name, eindeutige E-Mail, Anfangspasswort und [Rolle](/docs/de/administration/accounts/roles/) setzen. Passwort passend übergeben, Änderung und Zweifaktor anfordern.
+
+Admin ändert Name/E-Mail/Rolle. E-Mail bestimmt Anmeldung, Zustellung und eingehende Identität; richtigen Eigentümer prüfen.
+
+Nutzer richten Bindungen/Abonnements selbst ein.
+
+## Zugang retten
+
+Passwortreset beendet alle Sessions, erhält aber API-Schlüssel. Kompromittierten Schlüssel separat widerrufen.
+
+Zweifaktorreset ist unabhängig. Identität prüfen und neue Registrierung veranlassen.
+
+## Löschen
+
+Sessions und Schlüssel authentifizieren nicht mehr. Geteilte Apps und externe Zugangsdaten bleiben. Übergabe vorher abschließen.
+
+Admin darf sich nicht selbst löschen/herabstufen; anderer Admin übernimmt. Ohne Zugang [Wiederherstellung](/docs/de/administration/platform/recovery/). Bei Rechtefehler aktueller Rolle und Schlüsselobergrenze nachgehen.

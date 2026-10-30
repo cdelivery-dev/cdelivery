@@ -1,0 +1,26 @@
+---
+title: "Métricas de aplicação"
+description: "Compare séries de recursos com réplicas e mudanças de configuração."
+sidebar:
+  order: 34
+---
+
+Compare séries de recursos com réplicas e mudanças de configuração.
+
+## Ler
+
+Habilite coleta e escolha período de até 31 dias. Observe unidades: CPU em núcleos difere de percentual relativo a um limite.
+
+Buckets podem mostrar mínimo, média e máximo. Média esconde picos; máximo não significa uso sustentado. Agregações maiores suavizam eventos curtos.
+
+## Usar
+
+Compare antes/depois de atualização, reinício e escala. Distinga consumo agregado e por réplica e confira quantidade real.
+
+Escala automática precisa de observações recentes de todas as réplicas. Dados parciais ou antigos podem impedir decisão; ausentes não são ociosos.
+
+## Investigar lacunas
+
+Confira identidade, período, coletor, armazenamento e retenção. Não existe histórico anterior à coleta; flush e sincronização podem atrasar dados recentes.
+
+Processos breves podem gerar poucas amostras. Use [logs](/docs/pt-br/guides/observability/logs/application/) e eventos, ajuste [recursos](/docs/pt-br/guides/apps/resources/) sob carga real e compare [host](/docs/pt-br/guides/observability/metrics/server/).

@@ -1,0 +1,34 @@
+---
+title: "Registros de aplicación"
+description: "Selecciona el contenedor que produjo la salida y comprueba periodo, tarea y controlador de registros."
+sidebar:
+  order: 32
+---
+
+Selecciona el contenedor que produjo la salida y comprueba periodo, tarea y controlador de registros.
+
+## Fuentes
+
+| Fuente | Salida |
+| --- | --- |
+| App | Proceso de negocio |
+| XHealth | Comprobación |
+| XJob y nombre | Tarea programada |
+| GuardianApp | Candidato |
+| GuardianCheck | Validación |
+
+El error de una prueba puede no aparecer en App.
+
+## Conservación
+
+FollowHost utiliza ajustes del host. JSON-file permite rotación: el formulario propone cinco archivos de 10 MiB, con 1–100 archivos y hasta 1 GiB por archivo. Insight necesita el componente de recogida.
+
+Cambiar controlador afecta a nuevas tareas; no migra registros antiguos. La disponibilidad de tareas previas depende de su controlador y retención.
+
+## Diagnóstico
+
+Si no hay datos, verifica fuente, periodo, vida de la tarea y que el programa escriba stdout/stderr. Archivos internos no aparecen automáticamente.
+
+Si la consulta falla, revisa recogida y almacenamiento. Texto arbitrario no se oculta automáticamente y puede contener secretos.
+
+Relaciona con [eventos](/docs/es/guides/observability/events/) y revisa [ajustes](/docs/es/guides/observability/settings/).

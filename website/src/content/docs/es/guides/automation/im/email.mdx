@@ -1,0 +1,28 @@
+---
+title: "Integración de correo"
+description: "SMTP envía notificaciones; conversaciones necesitan además IMAP y modelo."
+sidebar:
+  order: 45
+---
+
+SMTP envía notificaciones; conversaciones necesitan además IMAP y modelo.
+
+## Envío
+
+Admin configura correo de plataforma, host SMTP, puerto y contraseña. El correo también es usuario de autenticación. 465 usa TLS implícito; otros puertos utilizan actualización cifrada compatible.
+
+El proveedor puede exigir contraseña de aplicación; consulta [Google](https://support.google.com/accounts/answer/185833) para sus requisitos. Activa notificaciones en tu cuenta y verifica dirección receptora.
+
+## Recepción
+
+Configura host IMAP, puerto normalmente 993 con TLS implícito, contraseña y `authserv_id` del servidor receptor confiable.
+
+El remitente debe coincidir con un usuario existente y pasar DKIM y DMARC según Authentication-Results confiable. From correcto no basta. No uses arbitrariamente el dominio del remitente como authserv_id.
+
+CDelivery lee INBOX y comienza desde el final al inicializar cursor; envía un mensaje nuevo después de configurar.
+
+## Verificar
+
+Desde tu correo de cuenta, envía una pregunta de lectura. Si solo funciona envío, revisa IMAP, [modelo](/docs/es/guides/automation/models/), identidad y autenticación.
+
+Para fallos revisa TLS, red, contraseña, spam y suscripción. Cambiar correo, host o puerto requiere credenciales correspondientes. Las contraseñas guardadas no se muestran.

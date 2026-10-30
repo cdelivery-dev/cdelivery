@@ -1,0 +1,37 @@
+---
+title: "XHealth konfigurieren"
+description: "XHealth prüft Anwendungen in separaten Aufgaben statt im Geschäftscontainer."
+sidebar:
+  order: 26
+---
+
+XHealth prüft Anwendungen in separaten Aufgaben statt im Geschäftscontainer.
+
+## Jetzt ausführen
+
+Operator/Admin kann **Jetzt ausführen** wählen, `POST /api/apps/{name}/xhealth/run` ohne Body aufrufen oder das MCP/Agent-Tool `xhealth_run` mit `app` verwenden. Die Prüfung muss aktiviert sein und verwendet die gespeicherte Konfiguration für die aktuelle Anwendung. Weitere Aufrufe während des Wartens oder der Ausführung liefern `409`; das nächste Intervall beginnt mit dem Start des neuen Laufs. Guardian-Prüfungen für Kandidaten bleiben unabhängig.
+
+Die API liefert bei Annahme `202` mit `{"ok":true}`, ohne das Ergebnis abzuwarten. Aktualisieren Sie die Seite, verwenden Sie `xhealth_get` oder lesen Sie die XHealth-Logs. Ein Timeout oder eine verlorene Antwort bedeutet nicht, dass die Übermittlung fehlgeschlagen ist: Prüfen Sie den Status vor einem erneuten Aufruf. Anfragen werden nicht dedupliziert; ein weiterer Aufruf nach Abschluss startet einen neuen Lauf.
+
+## Hurl
+
+Operator/Admin wählt Zielport und Intervall ab einer Minute:
+
+```hurl
+GET {{target_url}}/health
+HTTP 200
+```
+
+Ausführung: `hurl --test /xhealth.hurl`, Variable `HURL_VARIABLE_TARGET_URL`. Auch bei Domainauswahl wird internes HTTP geprüft, nicht öffentliches DNS/TLS. Siehe [Hurl](https://hurl.dev/docs/request.html).
+
+## Eigener Befehl
+
+Verwendet Image und relevante Konfiguration in einem anderen Container, kein exec. `TARGET_HOST` und `TARGET_PORT` stehen bereit; Expansion benötigt Shell.
+
+Exitcode null bedeutet Erfolg. Werkzeug, sinnvolle Assertion und Laufzeit prüfen. Ein immer erfolgreicher Befehl beweist keine Gesundheit.
+
+## Verifizieren
+
+Ausführen, Status/Logs lesen und kontrolliert testen, dass ungültige Antworten fehlschlagen. Zielport muss eindeutig sein.
+
+Siehe [Zustände](/docs/de/guides/release-safety/xhealth/status/) und [Guardian](/docs/de/guides/release-safety/).

@@ -1,9 +1,0 @@
-.home-section { margin-bottom: clamp(88px, calc(24vw - 88px), 200px); }
-.home-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: clamp(32px, 5vw, 64px); }
-.home-columns > * { min-width: 0; overflow-wrap: anywhere; }
-.home-columns > figure { margin: 0; }
-.section-title { font-size: clamp(1.75rem, calc(.75rem + 2vw), 2.25rem); letter-spacing: -.025em; line-height: 1.2; }
-.section-title:lang(zh), .section-title:lang(ja) { font-size: clamp(1.75rem, calc(1.25rem + 1vw), 2rem); letter-spacing: 0; line-height: 1.4; }
-@media (width < 800px) {
-  .home-columns { grid-template-columns: minmax(0, 1fr); gap: 32px; }
-}

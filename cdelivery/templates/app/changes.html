@@ -1,0 +1,366 @@
+{% import "app/upgrade.html" as upgrade %}
+{% import "app/resource.html" as resource %}
+{% import "app/restart.html" as restart %}
+{% import "app/published.html" as published %}
+{% import "app/replicas.html" as replicas_macro %}
+
+{%- macro change(change, attribution) -%}
+{% let changes = change.changes %}
+{{ readonly(changes) }}
+{% if let Some(attribution) = attribution %}
+<small class="block mt-2 end">
+  <span class="inline-meta"><span>{{ attribution }}</span>{% if let Some(changed_at) = change.changed_at %} <relative-time datetime="{{ changed_at }}">{{ changed_at }}</relative-time>{% endif %}</span>
+</small>
+{% endif %}
+{%- endmacro -%}
+
+{%- macro readonly(changes) -%}
+<ul class="stack bulleted">
+  {% if let Some(description) = changes.description %}
+  <li>
+    {% if let Some(d) = description %}
+    {% match crate::locale::current() %}
+    {% when crate::locale::Locale::ZhCn %}
+    <p>应用描述改为 <span translate="no">{{ d }}</span>。</p>
+    {% when crate::locale::Locale::ZhTw %}
+    <p>應用程式說明改為 <span translate="no">{{ d }}</span>。</p>
+    {% when crate::locale::Locale::Ja %}
+    <p>アプリの説明を<span translate="no">{{ d }}</span>に変更しました。</p>
+    {% when crate::locale::Locale::PtBr %}
+    <p>Descrição alterada para <span translate="no">{{ d }}</span>.</p>
+    {% when crate::locale::Locale::Es %}
+    <p>Descripción cambiada a <span translate="no">{{ d }}</span>.</p>
+    {% when crate::locale::Locale::Fr %}
+    <p>Description modifiée : <span translate="no">{{ d }}</span>.</p>
+    {% when crate::locale::Locale::De %}
+    <p>Beschreibung geändert: <span translate="no">{{ d }}</span>.</p>
+    {% when crate::locale::Locale::En %}
+    <p>Changed the description to <span translate="no">{{ d }}</span>.</p>
+    {% endmatch %}
+    {% else %}
+    <p>{{ tt!("ui.app.changes.description.cleared") }}</p>
+    {% endif %}
+  </li>
+  {% endif %}
+
+  {% if let Some(group) = changes.group %}
+  <li>
+    {% match crate::locale::current() %}
+    {% when crate::locale::Locale::ZhCn %}
+    <p>迁移到分组 <span translate="no">{{ group }}</span>。</p>
+    {% when crate::locale::Locale::ZhTw %}
+    <p>移至分組 <span translate="no">{{ group }}</span>。</p>
+    {% when crate::locale::Locale::Ja %}
+    <p>グループ<span translate="no">{{ group }}</span>に移動しました。</p>
+    {% when crate::locale::Locale::PtBr %}
+    <p>Aplicação movida para o grupo <span translate="no">{{ group }}</span>.</p>
+    {% when crate::locale::Locale::Es %}
+    <p>Aplicación trasladada al grupo <span translate="no">{{ group }}</span>.</p>
+    {% when crate::locale::Locale::Fr %}
+    <p>Application déplacée dans le groupe <span translate="no">{{ group }}</span>.</p>
+    {% when crate::locale::Locale::De %}
+    <p>In Gruppe <span translate="no">{{ group }}</span> verschoben.</p>
+    {% when crate::locale::Locale::En %}
+    <p>Moved to group <span translate="no">{{ group }}</span>.</p>
+    {% endmatch %}
+  </li>
+  {% endif %}
+
+  {% if let Some(image) = changes.image %}
+  <li>
+    {% match crate::locale::current() %}
+    {% when crate::locale::Locale::ZhCn %}
+    <p>镜像更新为 <span translate="no">{{ image }}</span>。</p>
+    {% when crate::locale::Locale::ZhTw %}
+    <p>映像檔更新為 <span translate="no">{{ image }}</span>。</p>
+    {% when crate::locale::Locale::Ja %}
+    <p>イメージを<span translate="no">{{ image }}</span>に更新しました。</p>
+    {% when crate::locale::Locale::PtBr %}
+    <p>Imagem atualizada para <span translate="no">{{ image }}</span>.</p>
+    {% when crate::locale::Locale::Es %}
+    <p>Imagen actualizada a <span translate="no">{{ image }}</span>.</p>
+    {% when crate::locale::Locale::Fr %}
+    <p>Image remplacée par <span translate="no">{{ image }}</span>.</p>
+    {% when crate::locale::Locale::De %}
+    <p>Image geändert in <span translate="no">{{ image }}</span>.</p>
+    {% when crate::locale::Locale::En %}
+    <p>Updated the image to <span translate="no">{{ image }}</span>.</p>
+    {% endmatch %}
+  </li>
+  {% endif %}
+
+  {% if let Some(auth) = changes.image_auth %}
+  <li>
+    <p>{% if auth.is_some() %}{{ tt!("ui.app.changes.imageAuth.updated") }}{% else %}{{ tt!("ui.app.changes.imageAuth.removed") }}{% endif %}</p>
+  </li>
+  {% endif %}
+
+  {% if let Some(replicas) = changes.replicas %}
+  <li>
+    {{ replicas_macro::readonly(replicas) }}
+  </li>
+  {% endif %}
+
+  {% if let Some(ports) = changes.ports %}
+  <li>
+    {% if ports.is_empty() %}
+    <p>{{ tt!("ui.app.changes.ports.removed") }}</p>
+    {% else %}
+    {% match crate::locale::current() %}
+    {% when crate::locale::Locale::ZhCn %}
+    <p>对外端口更新为 {% for p in ports %}<span translate="no">{{ p.published }}→{{ p.target }}/{% match p.protocol %}{% when crate::operation::app::typ::network::PortProtocol::Tcp %}TCP{% when crate::operation::app::typ::network::PortProtocol::Udp %}UDP{% endmatch %}</span>{% if !loop.last %} {% endif %}{% endfor %}。</p>
+    {% when crate::locale::Locale::ZhTw %}
+    <p>對外連接埠更新為 {% for p in ports %}<span translate="no">{{ p.published }}→{{ p.target }}/{% match p.protocol %}{% when crate::operation::app::typ::network::PortProtocol::Tcp %}TCP{% when crate::operation::app::typ::network::PortProtocol::Udp %}UDP{% endmatch %}</span>{% if !loop.last %} {% endif %}{% endfor %}。</p>
+    {% when crate::locale::Locale::Ja %}
+    <p>公開ポートを{% for p in ports %}<span translate="no">{{ p.published }}→{{ p.target }}/{% match p.protocol %}{% when crate::operation::app::typ::network::PortProtocol::Tcp %}TCP{% when crate::operation::app::typ::network::PortProtocol::Udp %}UDP{% endmatch %}</span>{% if !loop.last %}、{% endif %}{% endfor %}に変更しました。</p>
+    {% when crate::locale::Locale::PtBr %}
+    <p>Portas publicadas alteradas para {% for p in ports %}<span translate="no">{{ p.published }}→{{ p.target }}/{% match p.protocol %}{% when crate::operation::app::typ::network::PortProtocol::Tcp %}TCP{% when crate::operation::app::typ::network::PortProtocol::Udp %}UDP{% endmatch %}</span>{% if !loop.last %} {% endif %}{% endfor %}.</p>
+    {% when crate::locale::Locale::Es %}
+    <p>Puertos publicados cambiados a {% for p in ports %}<span translate="no">{{ p.published }}→{{ p.target }}/{% match p.protocol %}{% when crate::operation::app::typ::network::PortProtocol::Tcp %}TCP{% when crate::operation::app::typ::network::PortProtocol::Udp %}UDP{% endmatch %}</span>{% if !loop.last %} {% endif %}{% endfor %}.</p>
+    {% when crate::locale::Locale::Fr %}
+    <p>Ports publiés modifiés : {% for p in ports %}<span translate="no">{{ p.published }}→{{ p.target }}/{% match p.protocol %}{% when crate::operation::app::typ::network::PortProtocol::Tcp %}TCP{% when crate::operation::app::typ::network::PortProtocol::Udp %}UDP{% endmatch %}</span>{% if !loop.last %} {% endif %}{% endfor %}.</p>
+    {% when crate::locale::Locale::De %}
+    <p>Veröffentlichte Ports geändert: {% for p in ports %}<span translate="no">{{ p.published }}→{{ p.target }}/{% match p.protocol %}{% when crate::operation::app::typ::network::PortProtocol::Tcp %}TCP{% when crate::operation::app::typ::network::PortProtocol::Udp %}UDP{% endmatch %}</span>{% if !loop.last %} {% endif %}{% endfor %}.</p>
+    {% when crate::locale::Locale::En %}
+    <p>Set published ports to {% for p in ports %}<span translate="no">{{ p.published }}→{{ p.target }}/{% match p.protocol %}{% when crate::operation::app::typ::network::PortProtocol::Tcp %}TCP{% when crate::operation::app::typ::network::PortProtocol::Udp %}UDP{% endmatch %}</span>{% if !loop.last %} {% endif %}{% endfor %}.</p>
+    {% endmatch %}
+    {% endif %}
+  </li>
+  {% endif %}
+
+  {% if let Some(domains) = changes.domains %}
+  <li>
+    {% if domains.is_empty() %}
+    <p>{{ tt!("ui.app.changes.domains.removed") }}</p>
+    {% else %}
+    {% match crate::locale::current() %}
+    {% when crate::locale::Locale::ZhCn %}
+    <p>域名更新为 {% for d in domains %}<span translate="no">{{ published::url(d) }} → {{ d.target }}{{ published::flags(d) }}</span>{% if !loop.last %} {% endif %}{% endfor %}。</p>
+    {% when crate::locale::Locale::ZhTw %}
+    <p>網域更新為 {% for d in domains %}<span translate="no">{{ published::url(d) }} → {{ d.target }}{{ published::flags(d) }}</span>{% if !loop.last %} {% endif %}{% endfor %}。</p>
+    {% when crate::locale::Locale::Ja %}
+    <p>ドメインを{% for d in domains %}<span translate="no">{{ published::url(d) }} → {{ d.target }}{{ published::flags(d) }}</span>{% if !loop.last %}、{% endif %}{% endfor %}に変更しました。</p>
+    {% when crate::locale::Locale::PtBr %}
+    <p>Domínios alterados para {% for d in domains %}<span translate="no">{{ published::url(d) }} → {{ d.target }}{{ published::flags(d) }}</span>{% if !loop.last %} {% endif %}{% endfor %}.</p>
+    {% when crate::locale::Locale::Es %}
+    <p>Dominios cambiados a {% for d in domains %}<span translate="no">{{ published::url(d) }} → {{ d.target }}{{ published::flags(d) }}</span>{% if !loop.last %} {% endif %}{% endfor %}.</p>
+    {% when crate::locale::Locale::Fr %}
+    <p>Domaines modifiés : {% for d in domains %}<span translate="no">{{ published::url(d) }} → {{ d.target }}{{ published::flags(d) }}</span>{% if !loop.last %} {% endif %}{% endfor %}.</p>
+    {% when crate::locale::Locale::De %}
+    <p>Domains geändert: {% for d in domains %}<span translate="no">{{ published::url(d) }} → {{ d.target }}{{ published::flags(d) }}</span>{% if !loop.last %} {% endif %}{% endfor %}.</p>
+    {% when crate::locale::Locale::En %}
+    <p>Set domains to {% for d in domains %}<span translate="no">{{ published::url(d) }} → {{ d.target }}{{ published::flags(d) }}</span>{% if !loop.last %} {% endif %}{% endfor %}.</p>
+    {% endmatch %}
+    {% endif %}
+  </li>
+  {% endif %}
+
+  {% if let Some(xconfigs) = changes.xconfigs %}
+  <li>
+    {% if xconfigs.is_empty() %}
+    <p>{{ tt!("ui.app.changes.xconfigs.removed") }}</p>
+    {% else %}
+    {% match crate::locale::current() %}
+    {% when crate::locale::Locale::ZhCn %}
+    <p>配置文件更新为 {% for x in xconfigs %}<span translate="no">{% match x %}{% when crate::operation::app::typ::xconfig::XConfigAction::Upload(u) %}{{ u.target }}{% when crate::operation::app::typ::xconfig::XConfigAction::InUse(r) %}{{ r.target }}{% endmatch %}</span>{% if !loop.last %} {% endif %}{% endfor %}。</p>
+    {% when crate::locale::Locale::ZhTw %}
+    <p>設定檔更新為 {% for x in xconfigs %}<span translate="no">{% match x %}{% when crate::operation::app::typ::xconfig::XConfigAction::Upload(u) %}{{ u.target }}{% when crate::operation::app::typ::xconfig::XConfigAction::InUse(r) %}{{ r.target }}{% endmatch %}</span>{% if !loop.last %} {% endif %}{% endfor %}。</p>
+    {% when crate::locale::Locale::Ja %}
+    <p>設定ファイルを{% for x in xconfigs %}<span translate="no">{% match x %}{% when crate::operation::app::typ::xconfig::XConfigAction::Upload(u) %}{{ u.target }}{% when crate::operation::app::typ::xconfig::XConfigAction::InUse(r) %}{{ r.target }}{% endmatch %}</span>{% if !loop.last %}、{% endif %}{% endfor %}に変更しました。</p>
+    {% when crate::locale::Locale::PtBr %}
+    <p>Arquivos de configuração alterados para {% for x in xconfigs %}<span translate="no">{% match x %}{% when crate::operation::app::typ::xconfig::XConfigAction::Upload(u) %}{{ u.target }}{% when crate::operation::app::typ::xconfig::XConfigAction::InUse(r) %}{{ r.target }}{% endmatch %}</span>{% if !loop.last %} {% endif %}{% endfor %}.</p>
+    {% when crate::locale::Locale::Es %}
+    <p>Archivos de configuración cambiados a {% for x in xconfigs %}<span translate="no">{% match x %}{% when crate::operation::app::typ::xconfig::XConfigAction::Upload(u) %}{{ u.target }}{% when crate::operation::app::typ::xconfig::XConfigAction::InUse(r) %}{{ r.target }}{% endmatch %}</span>{% if !loop.last %} {% endif %}{% endfor %}.</p>
+    {% when crate::locale::Locale::Fr %}
+    <p>Fichiers de configuration modifiés : {% for x in xconfigs %}<span translate="no">{% match x %}{% when crate::operation::app::typ::xconfig::XConfigAction::Upload(u) %}{{ u.target }}{% when crate::operation::app::typ::xconfig::XConfigAction::InUse(r) %}{{ r.target }}{% endmatch %}</span>{% if !loop.last %} {% endif %}{% endfor %}.</p>
+    {% when crate::locale::Locale::De %}
+    <p>Konfigurationsdateien geändert: {% for x in xconfigs %}<span translate="no">{% match x %}{% when crate::operation::app::typ::xconfig::XConfigAction::Upload(u) %}{{ u.target }}{% when crate::operation::app::typ::xconfig::XConfigAction::InUse(r) %}{{ r.target }}{% endmatch %}</span>{% if !loop.last %} {% endif %}{% endfor %}.</p>
+    {% when crate::locale::Locale::En %}
+    <p>Set config files to {% for x in xconfigs %}<span translate="no">{% match x %}{% when crate::operation::app::typ::xconfig::XConfigAction::Upload(u) %}{{ u.target }}{% when crate::operation::app::typ::xconfig::XConfigAction::InUse(r) %}{{ r.target }}{% endmatch %}</span>{% if !loop.last %} {% endif %}{% endfor %}.</p>
+    {% endmatch %}
+    {% endif %}
+  </li>
+  {% endif %}
+
+  {% if let Some(mounts) = changes.mounts %}
+  <li>
+    {% if mounts.is_empty() %}
+    <p>{{ tt!("ui.app.changes.mounts.removed") }}</p>
+    {% else %}
+    {% match crate::locale::current() %}
+    {% when crate::locale::Locale::ZhCn %}
+    <p>挂载更新为 {% for m in mounts %}<span translate="no">{{ m.volume }}:{{ m.target }}{% if m.read_only %}:ro{% endif %}</span>{% if !loop.last %} {% endif %}{% endfor %}。</p>
+    {% when crate::locale::Locale::ZhTw %}
+    <p>掛載更新為 {% for m in mounts %}<span translate="no">{{ m.volume }}:{{ m.target }}{% if m.read_only %}:ro{% endif %}</span>{% if !loop.last %} {% endif %}{% endfor %}。</p>
+    {% when crate::locale::Locale::Ja %}
+    <p>マウントを{% for m in mounts %}<span translate="no">{{ m.volume }}:{{ m.target }}{% if m.read_only %}:ro{% endif %}</span>{% if !loop.last %}、{% endif %}{% endfor %}に変更しました。</p>
+    {% when crate::locale::Locale::PtBr %}
+    <p>Montagens alteradas para {% for m in mounts %}<span translate="no">{{ m.volume }}:{{ m.target }}{% if m.read_only %}:ro{% endif %}</span>{% if !loop.last %} {% endif %}{% endfor %}.</p>
+    {% when crate::locale::Locale::Es %}
+    <p>Montajes cambiados a {% for m in mounts %}<span translate="no">{{ m.volume }}:{{ m.target }}{% if m.read_only %}:ro{% endif %}</span>{% if !loop.last %} {% endif %}{% endfor %}.</p>
+    {% when crate::locale::Locale::Fr %}
+    <p>Montages modifiés : {% for m in mounts %}<span translate="no">{{ m.volume }}:{{ m.target }}{% if m.read_only %}:ro{% endif %}</span>{% if !loop.last %} {% endif %}{% endfor %}.</p>
+    {% when crate::locale::Locale::De %}
+    <p>Volume-Einbindungen geändert: {% for m in mounts %}<span translate="no">{{ m.volume }}:{{ m.target }}{% if m.read_only %}:ro{% endif %}</span>{% if !loop.last %} {% endif %}{% endfor %}.</p>
+    {% when crate::locale::Locale::En %}
+    <p>Set mounts to {% for m in mounts %}<span translate="no">{{ m.volume }}:{{ m.target }}{% if m.read_only %}:ro{% endif %}</span>{% if !loop.last %} {% endif %}{% endfor %}.</p>
+    {% endmatch %}
+    {% endif %}
+  </li>
+  {% endif %}
+
+  {% if let Some(container_options) = changes.container_options %}
+  <li>
+    {% if let Some(co) = container_options %}
+    {% match crate::locale::current() %}
+    {% when crate::locale::Locale::ZhCn %}
+    <p>启动配置更新{% if !co.command.is_empty() %}，启动命令 <code translate="no">{% for c in co.command %}{{ c }}{% if !loop.last %} {% endif %}{% endfor %}</code>{% endif %}{% if !co.env.is_empty() %}，环境变量 {% for e in co.env %}<span translate="no">{{ e.name }}={{ e.value }}</span>{% if !loop.last %} {% endif %}{% endfor %}{% endif %}。</p>
+    {% when crate::locale::Locale::ZhTw %}
+    <p>啟動設定已更新{% if !co.command.is_empty() %}，啟動指令 <code translate="no">{% for c in co.command %}{{ c }}{% if !loop.last %} {% endif %}{% endfor %}</code>{% endif %}{% if !co.env.is_empty() %}，環境變數 {% for e in co.env %}<span translate="no">{{ e.name }}={{ e.value }}</span>{% if !loop.last %} {% endif %}{% endfor %}{% endif %}。</p>
+    {% when crate::locale::Locale::Ja %}
+    <p>起動設定を更新しました。{% if !co.command.is_empty() %}起動コマンド：<code translate="no">{% for c in co.command %}{{ c }}{% if !loop.last %} {% endif %}{% endfor %}</code>。{% endif %}{% if !co.env.is_empty() %}環境変数：{% for e in co.env %}<span translate="no">{{ e.name }}={{ e.value }}</span>{% if !loop.last %}、{% endif %}{% endfor %}。{% endif %}</p>
+    {% when crate::locale::Locale::PtBr %}
+    <p>Configurações do contêiner atualizadas{% if !co.command.is_empty() %}; comando de inicialização: <code translate="no">{% for c in co.command %}{{ c }}{% if !loop.last %} {% endif %}{% endfor %}</code>{% endif %}{% if !co.env.is_empty() %}; variáveis de ambiente: {% for e in co.env %}<span translate="no">{{ e.name }}={{ e.value }}</span>{% if !loop.last %} {% endif %}{% endfor %}{% endif %}.</p>
+    {% when crate::locale::Locale::Es %}
+    <p>Configuración del contenedor actualizada{% if !co.command.is_empty() %}; comando de inicio: <code translate="no">{% for c in co.command %}{{ c }}{% if !loop.last %} {% endif %}{% endfor %}</code>{% endif %}{% if !co.env.is_empty() %}; variables de entorno: {% for e in co.env %}<span translate="no">{{ e.name }}={{ e.value }}</span>{% if !loop.last %} {% endif %}{% endfor %}{% endif %}.</p>
+    {% when crate::locale::Locale::Fr %}
+    <p>Options du conteneur modifiées{% if !co.command.is_empty() %} ; commande : <code translate="no">{% for c in co.command %}{{ c }}{% if !loop.last %} {% endif %}{% endfor %}</code>{% endif %}{% if !co.env.is_empty() %} ; variables d’environnement : {% for e in co.env %}<span translate="no">{{ e.name }}={{ e.value }}</span>{% if !loop.last %} {% endif %}{% endfor %}{% endif %}.</p>
+    {% when crate::locale::Locale::De %}
+    <p>Container-Einstellungen geändert{% if !co.command.is_empty() %}, Startbefehl <code translate="no">{% for c in co.command %}{{ c }}{% if !loop.last %} {% endif %}{% endfor %}</code>{% endif %}{% if !co.env.is_empty() %}, Umgebungsvariablen {% for e in co.env %}<span translate="no">{{ e.name }}={{ e.value }}</span>{% if !loop.last %} {% endif %}{% endfor %}{% endif %}.</p>
+    {% when crate::locale::Locale::En %}
+    <p>Updated the container options{% if !co.command.is_empty() %}, command <code translate="no">{% for c in co.command %}{{ c }}{% if !loop.last %} {% endif %}{% endfor %}</code>{% endif %}{% if !co.env.is_empty() %}, environment {% for e in co.env %}<span translate="no">{{ e.name }}={{ e.value }}</span>{% if !loop.last %} {% endif %}{% endfor %}{% endif %}.</p>
+    {% endmatch %}
+    {% else %}
+    <p>{{ tt!("ui.app.changes.container.reverted") }}</p>
+    {% endif %}
+  </li>
+  {% endif %}
+
+  {% if let Some(resources) = changes.resources %}
+  <li>
+    {% if let Some(r) = resources %}
+    {% match crate::locale::current() %}
+    {% when crate::locale::Locale::ZhCn %}
+    <p>资源配置更新：内存{% if let Some(reservations) = r.reservations %}{% if let Some(memory) = reservations.memory %}预留 <span translate="no">{{ resource::bytesize(memory) }}</span>{% else %}不预留{% endif %}{% else %}不预留{% endif %}、{% if let Some(limits) = r.limits %}{% if let Some(memory) = limits.memory %}上限 <span translate="no">{{ resource::bytesize(memory) }}</span>{% else %}不限制{% endif %}{% else %}不限制{% endif %}；CPU{% if let Some(reservations) = r.reservations %}{% if let Some(cpus) = reservations.cpus %}预留 <span translate="no">{{ cpus }}</span> 核心{% else %}不预留{% endif %}{% else %}不预留{% endif %}、{% if let Some(limits) = r.limits %}{% if let Some(cpus) = limits.cpus %}上限 <span translate="no">{{ cpus }}</span> 核心{% else %}不限制{% endif %}{% else %}不限制{% endif %}。</p>
+    {% when crate::locale::Locale::ZhTw %}
+    <p>資源設定已更新：記憶體{% if let Some(reservations) = r.reservations %}{% if let Some(memory) = reservations.memory %}預留 <span translate="no">{{ resource::bytesize(memory) }}</span>{% else %}不預留{% endif %}{% else %}不預留{% endif %}、{% if let Some(limits) = r.limits %}{% if let Some(memory) = limits.memory %}上限 <span translate="no">{{ resource::bytesize(memory) }}</span>{% else %}不設上限{% endif %}{% else %}不設上限{% endif %}；CPU{% if let Some(reservations) = r.reservations %}{% if let Some(cpus) = reservations.cpus %}預留 <span translate="no">{{ cpus }}</span> 核心{% else %}不預留{% endif %}{% else %}不預留{% endif %}、{% if let Some(limits) = r.limits %}{% if let Some(cpus) = limits.cpus %}上限 <span translate="no">{{ cpus }}</span> 核心{% else %}不設上限{% endif %}{% else %}不設上限{% endif %}。</p>
+    {% when crate::locale::Locale::Ja %}
+    <p>リソース設定を更新しました。メモリの予約量は{% if let Some(reservations) = r.reservations %}{% if let Some(memory) = reservations.memory %}<span translate="no">{{ resource::bytesize(memory) }}</span>{% else %}指定なし{% endif %}{% else %}指定なし{% endif %}、上限は{% if let Some(limits) = r.limits %}{% if let Some(memory) = limits.memory %}<span translate="no">{{ resource::bytesize(memory) }}</span>{% else %}制限なし{% endif %}{% else %}制限なし{% endif %}。CPU の予約量は{% if let Some(reservations) = r.reservations %}{% if let Some(cpus) = reservations.cpus %}<span translate="no">{{ cpus }}</span>コア{% else %}指定なし{% endif %}{% else %}指定なし{% endif %}、上限は{% if let Some(limits) = r.limits %}{% if let Some(cpus) = limits.cpus %}<span translate="no">{{ cpus }}</span>コア{% else %}制限なし{% endif %}{% else %}制限なし{% endif %}。</p>
+    {% when crate::locale::Locale::PtBr %}
+    <p>Recursos atualizados: memória {% if let Some(reservations) = r.reservations %}{% if let Some(memory) = reservations.memory %}com reserva de <span translate="no">{{ resource::bytesize(memory) }}</span>{% else %}sem reserva{% endif %}{% else %}sem reserva{% endif %}, {% if let Some(limits) = r.limits %}{% if let Some(memory) = limits.memory %}com limite de <span translate="no">{{ resource::bytesize(memory) }}</span>{% else %}sem limite{% endif %}{% else %}sem limite{% endif %}; CPU, em núcleos, {% if let Some(reservations) = r.reservations %}{% if let Some(cpus) = reservations.cpus %}com reserva de <span translate="no">{{ cpus }}</span>{% else %}sem reserva{% endif %}{% else %}sem reserva{% endif %}, {% if let Some(limits) = r.limits %}{% if let Some(cpus) = limits.cpus %}com limite de <span translate="no">{{ cpus }}</span>{% else %}sem limite{% endif %}{% else %}sem limite{% endif %}.</p>
+    {% when crate::locale::Locale::Es %}
+    <p>Recursos actualizados: memoria {% if let Some(reservations) = r.reservations %}{% if let Some(memory) = reservations.memory %}con reserva de <span translate="no">{{ resource::bytesize(memory) }}</span>{% else %}sin reserva{% endif %}{% else %}sin reserva{% endif %}, {% if let Some(limits) = r.limits %}{% if let Some(memory) = limits.memory %}con límite de <span translate="no">{{ resource::bytesize(memory) }}</span>{% else %}sin límite{% endif %}{% else %}sin límite{% endif %}; CPU, en núcleos, {% if let Some(reservations) = r.reservations %}{% if let Some(cpus) = reservations.cpus %}con reserva de <span translate="no">{{ cpus }}</span>{% else %}sin reserva{% endif %}{% else %}sin reserva{% endif %}, {% if let Some(limits) = r.limits %}{% if let Some(cpus) = limits.cpus %}con límite de <span translate="no">{{ cpus }}</span>{% else %}sin límite{% endif %}{% else %}sin límite{% endif %}.</p>
+    {% when crate::locale::Locale::Fr %}
+    <p>Ressources modifiées : mémoire, {% if let Some(reservations) = r.reservations %}{% if let Some(memory) = reservations.memory %}réservation <span translate="no">{{ resource::bytesize(memory) }}</span>{% else %}aucune réservation{% endif %}{% else %}aucune réservation{% endif %}, {% if let Some(limits) = r.limits %}{% if let Some(memory) = limits.memory %}limite <span translate="no">{{ resource::bytesize(memory) }}</span>{% else %}aucune limite{% endif %}{% else %}aucune limite{% endif %} ; CPU (en cœurs), {% if let Some(reservations) = r.reservations %}{% if let Some(cpus) = reservations.cpus %}réservation <span translate="no">{{ cpus }}</span>{% else %}aucune réservation{% endif %}{% else %}aucune réservation{% endif %}, {% if let Some(limits) = r.limits %}{% if let Some(cpus) = limits.cpus %}limite <span translate="no">{{ cpus }}</span>{% else %}aucune limite{% endif %}{% else %}aucune limite{% endif %}.</p>
+    {% when crate::locale::Locale::De %}
+    <p>Ressourcen geändert: Arbeitsspeicher, {% if let Some(reservations) = r.reservations %}{% if let Some(memory) = reservations.memory %}Reservierung von <span translate="no">{{ resource::bytesize(memory) }}</span>{% else %}keine Reservierung{% endif %}{% else %}keine Reservierung{% endif %}, {% if let Some(limits) = r.limits %}{% if let Some(memory) = limits.memory %}Obergrenze von <span translate="no">{{ resource::bytesize(memory) }}</span>{% else %}keine Obergrenze{% endif %}{% else %}keine Obergrenze{% endif %}; CPU (in Kernen), {% if let Some(reservations) = r.reservations %}{% if let Some(cpus) = reservations.cpus %}Reservierung von <span translate="no">{{ cpus }}</span>{% else %}keine Reservierung{% endif %}{% else %}keine Reservierung{% endif %}, {% if let Some(limits) = r.limits %}{% if let Some(cpus) = limits.cpus %}Obergrenze von <span translate="no">{{ cpus }}</span>{% else %}keine Obergrenze{% endif %}{% else %}keine Obergrenze{% endif %}.</p>
+    {% when crate::locale::Locale::En %}
+    <p>Updated resources — memory: {% if let Some(reservations) = r.reservations %}{% if let Some(memory) = reservations.memory %}reservation <span translate="no">{{ resource::bytesize(memory) }}</span>{% else %}no reservation{% endif %}{% else %}no reservation{% endif %}, {% if let Some(limits) = r.limits %}{% if let Some(memory) = limits.memory %}limit <span translate="no">{{ resource::bytesize(memory) }}</span>{% else %}no limit{% endif %}{% else %}no limit{% endif %}; CPU (cores): {% if let Some(reservations) = r.reservations %}{% if let Some(cpus) = reservations.cpus %}reservation <span translate="no">{{ cpus }}</span>{% else %}no reservation{% endif %}{% else %}no reservation{% endif %}, {% if let Some(limits) = r.limits %}{% if let Some(cpus) = limits.cpus %}limit <span translate="no">{{ cpus }}</span>{% else %}no limit{% endif %}{% else %}no limit{% endif %}.</p>
+    {% endmatch %}
+    {% else %}
+    <p>{{ tt!("ui.app.changes.resource.removed") }}</p>
+    {% endif %}
+  </li>
+  {% endif %}
+
+  {% if let Some(placement) = changes.placement %}
+  <li>
+    {% if let Some(p) = placement %}
+    {% match crate::locale::current() %}
+    {% when crate::locale::Locale::ZhCn %}
+    <p>运行位置更新：{% if let Some(label) = p.label %}只能运行在带有 <span translate="no">{{ label }}</span> 标签的服务器上{% else %}可运行在任意服务器上{% endif %}，{% if let Some(max_replicas) = p.max_replicas_per_node %}每台服务器最多 <span translate="no">{{ max_replicas }}</span> 个容器{% else %}每台服务器容器数量不限{% endif %}。</p>
+    {% when crate::locale::Locale::ZhTw %}
+    <p>執行位置已更新：{% if let Some(label) = p.label %}只能在具有 <span translate="no">{{ label }}</span> 標籤的伺服器上執行{% else %}可在任何伺服器上執行{% endif %}，{% if let Some(max_replicas) = p.max_replicas_per_node %}每台伺服器最多 <span translate="no">{{ max_replicas }}</span> 個容器{% else %}每台伺服器的容器數量不限{% endif %}。</p>
+    {% when crate::locale::Locale::Ja %}
+    <p>配置を変更しました。{% if let Some(label) = p.label %}<span translate="no">{{ label }}</span>ラベルのあるサーバーでのみ実行します{% else %}任意のサーバーで実行します{% endif %}。{% if let Some(max_replicas) = p.max_replicas_per_node %}サーバー1台あたりのコンテナ数は最大<span translate="no">{{ max_replicas }}</span>個です{% else %}サーバー1台あたりのコンテナ数に制限はありません{% endif %}。</p>
+    {% when crate::locale::Locale::PtBr %}
+    <p>Local de execução alterado: {% if let Some(label) = p.label %}somente servidores com o rótulo <span translate="no">{{ label }}</span>{% else %}qualquer servidor{% endif %}, {% if let Some(max_replicas) = p.max_replicas_per_node %}no máximo <span translate="no">{{ max_replicas }}</span> {{ crate::locale::current().quantity(**max_replicas, "contêiner", "contêineres") }} por servidor{% else %}sem limite de contêineres por servidor{% endif %}.</p>
+    {% when crate::locale::Locale::Es %}
+    <p>Ubicación de ejecución modificada: {% if let Some(label) = p.label %}solo servidores con la etiqueta <span translate="no">{{ label }}</span>{% else %}cualquier servidor{% endif %}, {% if let Some(max_replicas) = p.max_replicas_per_node %}como máximo <span translate="no">{{ max_replicas }}</span> {{ crate::locale::current().quantity(**max_replicas, "contenedor", "contenedores") }} por servidor{% else %}sin límite de contenedores por servidor{% endif %}.</p>
+    {% when crate::locale::Locale::Fr %}
+    <p>Placement modifié : {% if let Some(label) = p.label %}exécution uniquement sur les serveurs portant l’étiquette <span translate="no">{{ label }}</span>{% else %}exécution possible sur n’importe quel serveur{% endif %}, {% if let Some(max_replicas) = p.max_replicas_per_node %}au maximum <span translate="no">{{ max_replicas }}</span> {{ crate::locale::current().quantity(**max_replicas, "conteneur", "conteneurs") }} par serveur{% else %}aucune limite de conteneurs par serveur{% endif %}.</p>
+    {% when crate::locale::Locale::De %}
+    <p>Ausführungsort geändert: {% if let Some(label) = p.label %}nur Server mit Label <span translate="no">{{ label }}</span>{% else %}jeder Server erlaubt{% endif %}, {% if let Some(max_replicas) = p.max_replicas_per_node %}höchstens <span translate="no">{{ max_replicas }}</span> Container pro Server{% else %}keine Begrenzung der Containerzahl pro Server{% endif %}.</p>
+    {% when crate::locale::Locale::En %}
+    <p>Updated placement: {% if let Some(label) = p.label %}must run on nodes labeled <span translate="no">{{ label }}</span>{% else %}can run on any node{% endif %}, {% if let Some(max_replicas) = p.max_replicas_per_node %}at most <span translate="no">{{ max_replicas }}</span> {{ crate::locale::current().quantity(**max_replicas, "container", "containers") }} per node{% else %}unlimited containers per node{% endif %}.</p>
+    {% endmatch %}
+    {% else %}
+    <p>{{ tt!("ui.app.changes.placement.removed") }}</p>
+    {% endif %}
+  </li>
+  {% endif %}
+
+  {% if let Some(log_driver) = changes.log_driver %}
+  <li>
+    {% match crate::locale::current() %}
+    {% when crate::locale::Locale::ZhCn %}
+    <p>日志存储方式改为 {% match log_driver %}{% when crate::operation::app::typ::container::LogDriver::JsonFile { max_size, max_file } %}{{ tt!("ui.app.logDriver.name.jsonFile") }}，最多保留 <span translate="no">{{ max_file }}</span> 个文件，每个文件最多 <span translate="no">{{ resource::bytesize(max_size) }}</span>{% when crate::operation::app::typ::container::LogDriver::Insight %}<span translate="no">Insight</span>{% when crate::operation::app::typ::container::LogDriver::FollowHost %}{{ tt!("ui.app.logDriver.name.followHost") }}{% endmatch %}。</p>
+    {% when crate::locale::Locale::ZhTw %}
+    <p>日誌儲存方式改為 {% match log_driver %}{% when crate::operation::app::typ::container::LogDriver::JsonFile { max_size, max_file } %}{{ tt!("ui.app.logDriver.name.jsonFile") }}，最多保留 <span translate="no">{{ max_file }}</span> 個檔案，每個檔案最多 <span translate="no">{{ resource::bytesize(max_size) }}</span>{% when crate::operation::app::typ::container::LogDriver::Insight %}<span translate="no">Insight</span>{% when crate::operation::app::typ::container::LogDriver::FollowHost %}{{ tt!("ui.app.logDriver.name.followHost") }}{% endmatch %}。</p>
+    {% when crate::locale::Locale::Ja %}
+    <p>ログの保存方法を{% match log_driver %}{% when crate::operation::app::typ::container::LogDriver::JsonFile { max_size, max_file } %}{{ tt!("ui.app.logDriver.name.jsonFile") }}に変更しました。1ファイルあたり<span translate="no">{{ resource::bytesize(max_size) }}</span>まで、最大<span translate="no">{{ max_file }}</span>ファイルを保存します{% when crate::operation::app::typ::container::LogDriver::Insight %}<span translate="no">Insight</span>に変更しました{% when crate::operation::app::typ::container::LogDriver::FollowHost %}{{ tt!("ui.app.logDriver.name.followHost") }}に変更しました{% endmatch %}。</p>
+    {% when crate::locale::Locale::PtBr %}
+    <p>Logs configurados para {% match log_driver %}{% when crate::operation::app::typ::container::LogDriver::JsonFile { max_size, max_file } %}usar {{ tt!("ui.app.logDriver.name.jsonFile") }}, mantendo até <span translate="no">{{ max_file }}</span> {{ crate::locale::current().quantity(**max_file, "arquivo", "arquivos") }}, com no máximo <span translate="no">{{ resource::bytesize(max_size) }}</span> por arquivo{% when crate::operation::app::typ::container::LogDriver::Insight %}usar <span translate="no">Insight</span>{% when crate::operation::app::typ::container::LogDriver::FollowHost %}seguir o {{ tt!("ui.app.logDriver.name.followHost") }}{% endmatch %}.</p>
+    {% when crate::locale::Locale::Es %}
+    <p>Registros configurados para {% match log_driver %}{% when crate::operation::app::typ::container::LogDriver::JsonFile { max_size, max_file } %}usar {{ tt!("ui.app.logDriver.name.jsonFile") }}, conservando hasta <span translate="no">{{ max_file }}</span> {{ crate::locale::current().quantity(**max_file, "archivo", "archivos") }}, de <span translate="no">{{ resource::bytesize(max_size) }}</span> como máximo cada uno{% when crate::operation::app::typ::container::LogDriver::Insight %}usar <span translate="no">Insight</span>{% when crate::operation::app::typ::container::LogDriver::FollowHost %}seguir la {{ tt!("ui.app.logDriver.name.followHost") }}{% endmatch %}.</p>
+    {% when crate::locale::Locale::Fr %}
+    <p>Stockage des journaux modifié : {% match log_driver %}{% when crate::operation::app::typ::container::LogDriver::JsonFile { max_size, max_file } %}{{ tt!("ui.app.logDriver.name.jsonFile") }}, avec au maximum <span translate="no">{{ max_file }}</span> {{ crate::locale::current().quantity(**max_file, "fichier", "fichiers") }}, de <span translate="no">{{ resource::bytesize(max_size) }}</span> maximum chacun{% when crate::operation::app::typ::container::LogDriver::Insight %}<span translate="no">Insight</span>{% when crate::operation::app::typ::container::LogDriver::FollowHost %}{{ tt!("ui.app.logDriver.name.followHost") }}{% endmatch %}.</p>
+    {% when crate::locale::Locale::De %}
+    <p>Log-Speicherung geändert: {% match log_driver %}{% when crate::operation::app::typ::container::LogDriver::JsonFile { max_size, max_file } %}{{ tt!("ui.app.logDriver.name.jsonFile") }}, höchstens <span translate="no">{{ max_file }}</span> {{ crate::locale::current().quantity(**max_file, "Datei", "Dateien") }} mit jeweils maximal <span translate="no">{{ resource::bytesize(max_size) }}</span>{% when crate::operation::app::typ::container::LogDriver::Insight %}<span translate="no">Insight</span>{% when crate::operation::app::typ::container::LogDriver::FollowHost %}{{ tt!("ui.app.logDriver.name.followHost") }}{% endmatch %}.</p>
+    {% when crate::locale::Locale::En %}
+    <p>Switched log storage to {% match log_driver %}{% when crate::operation::app::typ::container::LogDriver::JsonFile { max_size, max_file } %}{{ tt!("ui.app.logDriver.name.jsonFile") }}, keeping up to <span translate="no">{{ max_file }}</span> {{ crate::locale::current().quantity(**max_file, "file", "files") }}, each capped at <span translate="no">{{ resource::bytesize(max_size) }}</span>{% when crate::operation::app::typ::container::LogDriver::Insight %}<span translate="no">Insight</span>{% when crate::operation::app::typ::container::LogDriver::FollowHost %}{{ tt!("ui.app.logDriver.name.followHost") }}{% endmatch %}.</p>
+    {% endmatch %}
+  </li>
+  {% endif %}
+
+  {% if let Some(restart_policy) = changes.restart_policy %}
+  <li>
+    {% let interval = restart_policy.delay %}
+    {% match crate::locale::current() %}
+    {% when crate::locale::Locale::ZhCn %}
+    <p>重启策略改为：容器退出后等待 <span translate="no">{{ resource::duration(interval) }}</span> 再重启。</p>
+    {% when crate::locale::Locale::ZhTw %}
+    <p>重新啟動策略改為：容器結束執行後，等待 <span translate="no">{{ resource::duration(interval) }}</span> 再重新啟動。</p>
+    {% when crate::locale::Locale::Ja %}
+    <p>再起動の設定を変更しました。コンテナの終了後、<span translate="no">{{ resource::duration(interval) }}</span>待ってから再起動します。</p>
+    {% when crate::locale::Locale::PtBr %}
+    <p>Política de reinício alterada: após o encerramento do contêiner, aguardar <span translate="no">{{ resource::duration(interval) }}</span> antes de reiniciá-lo.</p>
+    {% when crate::locale::Locale::Es %}
+    <p>Política de reinicio modificada: cuando el contenedor termine, esperar <span translate="no">{{ resource::duration(interval) }}</span> antes de reiniciarlo.</p>
+    {% when crate::locale::Locale::Fr %}
+    <p>Redémarrage modifié : attendre <span translate="no">{{ resource::duration(interval) }}</span> après l’arrêt du conteneur avant de le redémarrer.</p>
+    {% when crate::locale::Locale::De %}
+    <p>Neustartverhalten geändert: Nach dem Beenden des Containers <span translate="no">{{ resource::duration(interval) }}</span> warten und ihn dann neu starten.</p>
+    {% when crate::locale::Locale::En %}
+    <p>Changed the restart policy: after exit, wait <span translate="no">{{ resource::duration(interval) }}</span> before restarting.</p>
+    {% endmatch %}
+  </li>
+  {% endif %}
+
+  {% if let Some(update_config) = changes.update_config %}
+  <li>
+    {% let update_order = update_config.order %}
+    {% let monitor = update_config.monitor %}
+    {% let failure_action = update_config.failure_action %}
+    {% match crate::locale::current() %}
+    {% when crate::locale::Locale::ZhCn %}
+    <p>更新策略调整为：每次更新 <span translate="no">{% if let Some(parallelism) = update_config.parallelism %}{{ parallelism }} 个{% else %}全部{% endif %}</span>容器，先{{ upgrade::order(update_order) }}容器，每个更新后的容器启动后观察 <span translate="no">{{ resource::duration(monitor) }}</span>，最多容忍 <span translate="no">{{ update_config.max_failure_percent }}%</span> 失败，超限时{{ upgrade::action(failure_action) }}。</p>
+    {% when crate::locale::Locale::ZhTw %}
+    <p>更新策略調整為：每次更新 <span translate="no">{% if let Some(parallelism) = update_config.parallelism %}{{ parallelism }} 個{% else %}全部{% endif %}</span>容器，先{{ upgrade::order(update_order) }}容器，每個更新後的容器啟動後觀察 <span translate="no">{{ resource::duration(monitor) }}</span>，最多允許 <span translate="no">{{ update_config.max_failure_percent }}%</span> 失敗，超過上限時{{ upgrade::action(failure_action) }}。</p>
+    {% when crate::locale::Locale::Ja %}
+    <p>更新の設定を変更しました。コンテナを{% if let Some(parallelism) = update_config.parallelism %}最大<span translate="no">{{ parallelism }}</span>個{% else %}すべて{% endif %}同時に更新し、{{ upgrade::order(update_order) }}を先に行います。更新後の状態を<span translate="no">{{ resource::duration(monitor) }}</span>監視し、失敗率が<span translate="no">{{ update_config.max_failure_percent }}%</span>を超えた場合は更新を{{ upgrade::action(failure_action) }}します。</p>
+    {% when crate::locale::Locale::PtBr %}
+    <p>Estratégia de atualização alterada: atualizar {% if let Some(parallelism) = update_config.parallelism %}até <span translate="no">{{ parallelism }}</span> {{ crate::locale::current().quantity(**parallelism, "contêiner", "contêineres") }}{% else %}todos os contêineres{% endif %} de cada vez; primeiro, {{ upgrade::order(update_order) }}; monitorar o estado dos contêineres por <span translate="no">{{ resource::duration(monitor) }}</span>; se a taxa de falhas ultrapassar <span translate="no">{{ update_config.max_failure_percent }}%</span>, {{ upgrade::action(failure_action) }}.</p>
+    {% when crate::locale::Locale::Es %}
+    <p>Estrategia de actualización modificada: actualizar {% if let Some(parallelism) = update_config.parallelism %}hasta <span translate="no">{{ parallelism }}</span> {{ crate::locale::current().quantity(**parallelism, "contenedor", "contenedores") }}{% else %}todos los contenedores{% endif %} a la vez; primero, {{ upgrade::order(update_order) }}; supervisar el estado de los contenedores durante <span translate="no">{{ resource::duration(monitor) }}</span>; si el porcentaje de fallos supera <span translate="no">{{ update_config.max_failure_percent }} %</span>, {{ upgrade::action(failure_action) }}.</p>
+    {% when crate::locale::Locale::Fr %}
+    <p>Stratégie de mise à jour modifiée : mettre à jour {% if let Some(parallelism) = update_config.parallelism %}jusqu’à <span translate="no">{{ parallelism }}</span> {{ crate::locale::current().quantity(**parallelism, "conteneur", "conteneurs") }}{% else %}tous les conteneurs{% endif %} à la fois. Commencer par {{ upgrade::order(update_order) }}. Surveiller l’état des conteneurs pendant <span translate="no">{{ resource::duration(monitor) }}</span>. Si le taux d’échec dépasse <span translate="no">{{ update_config.max_failure_percent }} %</span>, {{ upgrade::action(failure_action) }}.</p>
+    {% when crate::locale::Locale::De %}
+    <p>Update-Strategie geändert: Jeweils {% if let Some(parallelism) = update_config.parallelism %}bis zu <span translate="no">{{ parallelism }}</span> Container{% else %}alle Container{% endif %} aktualisieren. Zuerst {{ upgrade::order(update_order) }}. Den Zustand der Container anschließend <span translate="no">{{ resource::duration(monitor) }}</span> überwachen. Wenn die Fehlerrate <span translate="no">{{ update_config.max_failure_percent }} %</span> übersteigt, das Update {{ upgrade::action(failure_action) }}.</p>
+    {% when crate::locale::Locale::En %}
+    <p>Adjusted the update strategy: update {% if let Some(parallelism) = update_config.parallelism %}<span translate="no">{{ parallelism }}</span> {{ crate::locale::current().quantity(**parallelism, "container", "containers") }}{% else %}all containers{% endif %} at a time, {{ upgrade::order(update_order) }} containers first, monitor failures for <span translate="no">{{ resource::duration(monitor) }}</span> after each updated container starts, tolerate up to <span translate="no">{{ update_config.max_failure_percent }}%</span> failures, and above that limit {{ upgrade::action(failure_action) }}.</p>
+    {% endmatch %}
+  </li>
+  {% endif %}
+</ul>
+{%- endmacro -%}

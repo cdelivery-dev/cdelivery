@@ -1,0 +1,26 @@
+---
+title: "Intégration Telegram"
+description: "La réception utilise long polling ; réservez un bot dédié pour éviter les consommateurs concurrents."
+sidebar:
+  order: 47
+---
+
+La réception utilise long polling ; réservez un bot dédié pour éviter les consommateurs concurrents.
+
+## Préparer
+
+Créez le bot avec BotFather. Avant activation dans CDelivery, envoyez-lui un message puis consultez [getUpdates](https://core.telegram.org/bots/api#getupdates) pour votre `message.from.id`.
+
+Admin enregistre le token ; associez l’ID numérique, ouvrez le privé, appuyez sur Start et abonnez-vous. N’utilisez pas chat.id, pseudonyme ou ID du bot.
+
+L’activation supprime le webhook existant. Ne laissez pas un autre poller actif. Voir [tutoriel](https://core.telegram.org/bots/tutorial).
+
+## Conversation
+
+Avec [modèle](/docs/fr/guides/automation/models/), commencez en privé. En groupe avec mode confidentialité, utilisez commande explicite `/cdelivery@BotUsername` ou réponse pertinente. Les topics ne sont pas pris en charge.
+
+Le privé n’exige pas de désactiver la confidentialité ; voir [FAQ officielle](https://core.telegram.org/bots/faq).
+
+## Dépanner
+
+Vérifiez token, réseau, webhook et pollers. Pour un utilisateur : Start, ID et abonnement. Ne partagez pas le token et n’associez pas un tiers, qui recevrait vos droits.

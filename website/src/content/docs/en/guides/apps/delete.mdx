@@ -1,0 +1,32 @@
+---
+title: "Delete an application"
+description: "Remove an application and its checks and jobs while understanding retained data and asynchronous cleanup."
+sidebar:
+  order: 19
+---
+
+Deletion requires Operator or Admin access. Before deleting, identify callers, domain routes, scheduled work, and data that must be retained.
+
+## Delete
+
+1. Record the image, required settings, and storage location if recovery may be needed.
+2. Stop or redirect clients that depend on the application.
+3. Review attached XHealth checks, XJob tasks, and Guardian activity.
+4. Confirm deletion in the application page.
+5. Verify that the application disappears and its tasks finish exiting.
+
+Application deletion removes its associated checks, jobs, and release-validation resources. Container exit is asynchronous, so related network resources can remain in use briefly.
+
+## What remains
+
+Business data volumes remain on their original servers. Groups remain until separately deleted. External DNS records and third-party resources are not automatically removed.
+
+If data is no longer needed, delete its volume through [volume management](/docs/administration/nodes/volumes/) after checking backups and references. Do not interpret an absent application as proof that a volume is empty.
+
+## Recovery and troubleshooting
+
+Recreating the same name creates a new application identity; it is not an undo operation or a restoration of the previous definition. Reconstruct configuration from your records and verify the appropriate existing volume before starting a stateful service.
+
+If group deletion reports that it is busy immediately afterward, wait for tasks to exit and inspect remaining network references. See [groups](/docs/administration/groups/).
+
+For an unsuccessful release, consider [rollback](/docs/guides/release-safety/rollback/) before deleting the application.

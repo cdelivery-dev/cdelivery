@@ -1,0 +1,30 @@
+---
+title: "Montar y actualizar configuración"
+description: "Relaciona contenido cargado con una ruta de archivo y verifica que las nuevas tareas lo utilicen."
+sidebar:
+  order: 13
+---
+
+Relaciona contenido cargado con una ruta de archivo y verifica que las nuevas tareas lo utilicen.
+
+## Procedimiento
+
+1. Abre la configuración de archivos.
+2. Carga contenido no vacío dentro del límite permitido.
+3. Selecciona una ruta absoluta de archivo.
+4. Guarda y observa las tareas.
+5. Revisa registros y una función que dependa del archivo.
+
+La sustitución genera una nueva versión; según los ajustes puede pasar por [Guardian](/docs/es/guides/release-safety/). La consola no modifica directamente la ruta de un montaje existente: elimina el montaje antiguo y añade el nuevo.
+
+## Comprobar
+
+Para Nginx, `/etc/nginx/conf.d/default.conf` debe contener sintaxis y rutas compatibles con la imagen. Descargar el archivo confirma el contenido guardado, no su uso en ejecución.
+
+Si falla el arranque, revisa ruta, permisos esperados y errores del programa. Antes de retirar un montaje, confirma que la aplicación puede arrancar sin él.
+
+## Conservación
+
+La indicación de uso corresponde a la aplicación, no a un catálogo global. El contenido huérfano antiguo puede limpiarse y no constituye historial de respaldo.
+
+Conserva la fuente de configuración en tu propio sistema. Consulta [XConfig](/docs/es/guides/apps/xconfig/) para límites y visibilidad.

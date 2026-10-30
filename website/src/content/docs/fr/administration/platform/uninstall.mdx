@@ -1,0 +1,35 @@
+---
+title: "Désinstallation et nettoyage"
+description: "Le retrait supprime gestion, définitions d’applications, comptes et secrets, mais conserve volumes et descriptions."
+sidebar:
+  order: 64
+---
+
+Le retrait supprime gestion, définitions d’applications, comptes et secrets, mais conserve volumes et descriptions.
+
+## Prévisualiser
+
+Utilisez un serveur de gestion avec Docker CLI, jq et socket Unix local. Notez paramètres/images/volumes, sauvegardez et arrêtez les créations concurrentes.
+
+```sh
+curl -fsSLo /tmp/cdelivery-uninstall.sh https://cdelivery.dev/uninstall.sh
+sh /tmp/cdelivery-uninstall.sh
+```
+
+Sans argument, seule la liste sélectionnée est affichée. Vérifiez endpoint et ressources.
+
+## Retirer
+
+```sh
+sh /tmp/cdelivery-uninstall.sh --yes
+```
+
+Le programme principal est arrêté d’abord. Docker, volumes, DNS, stockage objet et comptes externes ne sont pas supprimés.
+
+## Vérifier
+
+Confirmez disparition des ressources et présence des volumes. Arrêt asynchrone ; machines hors ligne à vérifier après reconnexion.
+
+En cas d’échec, corrigez connexion/référence/droits puis relancez `--yes`. Ne réinstallez ni ne recréez les noms pendant le nettoyage.
+
+Supprimer les données conservées est une décision distincte. Une nouvelle installation crée une gestion neuve ; restaurer le métier nécessite paramètres enregistrés et stockage.

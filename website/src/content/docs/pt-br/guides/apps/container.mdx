@@ -1,0 +1,30 @@
+---
+title: "Comando e variáveis de ambiente"
+description: "Configure o processo principal sem confundir argumentos com execução por shell."
+sidebar:
+  order: 10
+---
+
+Configure o processo principal sem confundir argumentos com execução por shell.
+
+## Comando
+
+Mantenha o padrão da imagem, salvo necessidade específica. A entrada é dividida em argumentos com aspas; expansão, pipes e redirecionamentos exigem shell explícita:
+
+```sh
+sh -c 'exec ./server --port "$PORT"'
+```
+
+A imagem precisa conter shell e executável. Use processo em primeiro plano; terminar o comando principal encerra o contêiner.
+
+## Ambiente
+
+Nomes: 1–128 caracteres, sem `=`. Valores: até 4096 caracteres. Use variáveis entendidas pelo programa. `PORT=8080` não publica a porta nem obriga o processo a utilizá-la.
+
+Valores arbitrários são configuração compartilhada, sem ocultação automática. Para arquivos, considere [XConfig](/docs/pt-br/guides/apps/xconfig/).
+
+## Verificar
+
+Salve e examine tarefas novas e logs. Sem mudanças não há reinício. Confira caminhos, aspas e ferramentas da imagem. Expansão literal indica ausência de shell.
+
+O processo deve escutar numa interface acessível, não apenas loopback interno. Configure [portas e rede](/docs/pt-br/guides/networking/connectivity/) separadamente.

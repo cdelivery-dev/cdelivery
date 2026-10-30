@@ -1,0 +1,28 @@
+---
+title: "Gestion des utilisateurs"
+description: "Le premier Admin est créé à l’initialisation ; les suivants utilisent des comptes individuels administrés."
+sidebar:
+  order: 58
+---
+
+Le premier Admin est créé à l’initialisation ; les suivants utilisent des comptes individuels administrés.
+
+## Créer et modifier
+
+Renseignez nom, e-mail unique, mot de passe initial et [rôle](/docs/fr/administration/accounts/roles/). Transmettez le secret et demandez changement et double facteur.
+
+Admin modifie nom, e-mail et rôle. L’e-mail identifie connexion, notifications et messages entrants : vérifiez son propriétaire.
+
+Chaque utilisateur configure associations et abonnements ; création ne les active pas automatiquement.
+
+## Récupérer
+
+Réinitialiser le mot de passe invalide toutes les sessions mais conserve les clés API. Révoquez séparément une clé compromise.
+
+Le double facteur est réinitialisé par une action distincte. Vérifiez l’identité, puis demandez une nouvelle inscription.
+
+## Supprimer
+
+Sessions/clés cessent d’authentifier. Applications partagées et identifiants externes restent. Terminez le transfert de responsabilité avant suppression.
+
+Admin ne peut se supprimer ni se rétrograder ; un autre Admin doit intervenir. Sans accès, utilisez [récupération](/docs/fr/administration/platform/recovery/). Pour refus d’accès, vérifiez rôle actuel et plafond de clé.

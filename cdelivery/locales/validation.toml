@@ -1,0 +1,451 @@
+_version = 2
+
+[validation.length_lower_than]
+en = "Minimum length: %{min}"
+zh-CN = "长度至少 %{min}"
+zh-TW = "長度至少為 %{min}"
+ja = "長さは %{min} 以上にしてください。"
+pt-BR = "Comprimento mínimo: %{min}"
+es = "Longitud mínima: %{min}"
+fr = "Longueur minimale : %{min}"
+de = "Mindestlänge: %{min}"
+
+[validation.length_greater_than]
+en = "Maximum length: %{max}"
+zh-CN = "长度最多 %{max}"
+zh-TW = "長度最多為 %{max}"
+ja = "長さは %{max} 以下にしてください。"
+pt-BR = "Comprimento máximo: %{max}"
+es = "Longitud máxima: %{max}"
+fr = "Longueur maximale : %{max}"
+de = "Maximale Länge: %{max}"
+
+[validation.range_lower_than]
+en = "Minimum: %{min}"
+zh-CN = "最小值为 %{min}"
+zh-TW = "最小值為 %{min}"
+ja = "%{min} 以上の値を指定してください。"
+pt-BR = "Mínimo: %{min}"
+es = "Mínimo: %{min}"
+fr = "Minimum : %{min}"
+de = "Minimum: %{min}"
+
+[validation.range_greater_than]
+en = "Maximum: %{max}"
+zh-CN = "最大值为 %{max}"
+zh-TW = "最大值為 %{max}"
+ja = "%{max} 以下の値を指定してください。"
+pt-BR = "Máximo: %{max}"
+es = "Máximo: %{max}"
+fr = "Maximum : %{max}"
+de = "Maximum: %{max}"
+
+[validation.pattern_no_match]
+en = "Invalid format"
+zh-CN = "格式无效"
+zh-TW = "格式無效"
+ja = "形式が正しくありません。"
+pt-BR = "Formato inválido"
+es = "Formato no válido"
+fr = "Format invalide"
+de = "Ungültiges Format"
+
+[validation.email_invalid]
+en = "Invalid email address"
+zh-CN = "邮箱地址无效"
+zh-TW = "電子郵件地址無效"
+ja = "メールアドレスが正しくありません。"
+pt-BR = "Endereço de e-mail inválido"
+es = "Correo electrónico no válido"
+fr = "Adresse e-mail invalide"
+de = "Ungültige E-Mail-Adresse"
+
+[validation.ip_invalid]
+en = "Invalid IP address"
+zh-CN = "IP 地址无效"
+zh-TW = "IP 位址無效"
+ja = "IP アドレスが正しくありません。"
+pt-BR = "Endereço IP inválido"
+es = "Dirección IP no válida"
+fr = "Adresse IP invalide"
+de = "Ungültige IP-Adresse"
+
+[validation.ascii_invalid]
+en = "ASCII characters only"
+zh-CN = "仅限 ASCII 字符"
+zh-TW = "僅限 ASCII 字元"
+ja = "ASCII 文字のみ使用できます。"
+pt-BR = "Use apenas caracteres ASCII"
+es = "Solo caracteres ASCII"
+fr = "Caractères ASCII uniquement"
+de = "Nur ASCII-Zeichen"
+
+[validation.alphanumeric_invalid]
+en = "Letters and digits only"
+zh-CN = "仅限字母和数字"
+zh-TW = "僅限字母和數字"
+ja = "英数字のみ使用できます。"
+pt-BR = "Use apenas letras e números"
+es = "Solo letras y dígitos"
+fr = "Lettres et chiffres uniquement"
+de = "Nur Buchstaben und Ziffern"
+
+[validation.required_not_set]
+en = "Required"
+zh-CN = "必填"
+zh-TW = "必填"
+ja = "必須項目です。"
+pt-BR = "Campo obrigatório"
+es = "Campo obligatorio"
+fr = "Champ obligatoire"
+de = "Pflichtfeld"
+
+[validation.sha256_hex]
+en = "Use lowercase hex(sha256(password))"
+zh-CN = "使用小写 hex(sha256(password))"
+zh-TW = "使用小寫 hex(sha256(password))"
+ja = "hex(sha256(password)) を小文字で指定してください。"
+pt-BR = "Use hex(sha256(password)) em letras minúsculas"
+es = "Usar hex(sha256(password)) en minúsculas"
+fr = "Utiliser hex(sha256(password)) en minuscules"
+de = "hex(sha256(password)) in Kleinbuchstaben verwenden"
+
+[validation.name]
+en = "Use 1–16 characters: a–z, 0–9 or -, with no leading or trailing -; cdelivery and cdelivery-* are reserved"
+zh-CN = "1–16 个字符，仅限 a–z、0–9 和 -，不能以 - 开头或结尾；cdelivery 和 cdelivery-* 为保留名称"
+zh-TW = "1–16 個字元，僅限 a–z、0–9 和 -，首尾不能是 -；cdelivery 和 cdelivery-* 為保留名稱"
+ja = "a–z、0–9、- を使い、1〜16文字で指定してください。先頭と末尾に - は使えません。cdelivery と cdelivery-* は予約済みです。"
+pt-BR = "Use de 1 a 16 caracteres: a–z, 0–9 ou -, sem - no início ou no fim; cdelivery e cdelivery-* são reservados"
+es = "Usar de 1 a 16 caracteres: a–z, 0–9 o -, sin - al principio ni al final; cdelivery y cdelivery-* están reservados"
+fr = "Utiliser de 1 à 16 caractères : a–z, 0–9 ou -, sans - au début ni à la fin ; cdelivery et cdelivery-* sont réservés"
+de = "1–16 Zeichen: a–z, 0–9 oder -; kein - am Anfang oder Ende; cdelivery und cdelivery-* sind reserviert"
+
+[validation.cpu_cores]
+en = "Use 0.001–10000 in steps of 0.001"
+zh-CN = "范围 0.001–10000，步长 0.001"
+zh-TW = "範圍為 0.001–10000，以 0.001 為單位"
+ja = "0.001〜10000 の範囲で、0.001 刻みで指定してください。"
+pt-BR = "Use de 0.001 a 10000, em incrementos de 0.001"
+es = "Usar valores de 0.001 a 10000, en incrementos de 0.001"
+fr = "Utiliser une valeur de 0,001 à 10 000, par pas de 0,001"
+de = "0.001–10000 in Schritten von 0.001"
+
+[validation.future_or_absent]
+en = "Must be in the future"
+zh-CN = "必须是未来时间"
+zh-TW = "必須是未來的時間"
+ja = "未来の日時を指定してください。"
+pt-BR = "Informe uma data e hora no futuro"
+es = "Debe ser una fecha futura"
+fr = "La date doit être dans le futur"
+de = "Muss in der Zukunft liegen"
+
+[validation.log_max_size]
+en = "Use 1 MiB–1 GiB"
+zh-CN = "范围 1 MiB–1 GiB"
+zh-TW = "範圍為 1 MiB–1 GiB"
+ja = "1 MiB〜1 GiB の範囲で指定してください。"
+pt-BR = "Use de 1 MiB a 1 GiB"
+es = "Usar de 1 MiB a 1 GiB"
+fr = "Utiliser une valeur de 1 MiB à 1 GiB"
+de = "1 MiB–1 GiB"
+
+[validation.domain]
+en = "Use a valid DNS name with at least two labels"
+zh-CN = "使用至少两级的有效 DNS 域名"
+zh-TW = "使用至少兩層的有效 DNS 網域名稱"
+ja = "2つ以上のラベルを持つ有効な DNS 名を指定してください。"
+pt-BR = "Use um nome DNS válido com pelo menos dois componentes"
+es = "Usar un nombre DNS válido con al menos dos etiquetas"
+fr = "Utiliser un nom DNS valide comportant au moins deux niveaux"
+de = "Gültigen DNS-Namen mit mindestens zwei Bestandteilen verwenden"
+
+[validation.path_prefix]
+en = "Start with /, use at most 1024 bytes, and omit query and fragment"
+zh-CN = "以 / 开头，最多 1024 字节，不含查询串或片段"
+zh-TW = "以 / 開頭，最多 1024 位元組，不含查詢字串或片段"
+ja = "/ で始まる1024バイト以内のパスを指定してください。クエリとフラグメントは含められません。"
+pt-BR = "Comece com /, use no máximo 1024 bytes e não inclua parâmetros de consulta nem fragmento"
+es = "Debe empezar por /, ocupar como máximo 1024 bytes y no incluir consulta ni fragmento"
+fr = "Commencer par /, sans dépasser 1 024 octets et sans paramètres de requête ni fragment"
+de = "Mit / beginnen, höchstens 1024 Byte, ohne Query oder Fragment"
+
+[validation.node_id]
+en = "Use 1–64 letters or digits"
+zh-CN = "1–64 个字母或数字"
+zh-TW = "1–64 個字母或數字"
+ja = "1〜64文字の英数字で指定してください。"
+pt-BR = "Use de 1 a 64 letras ou números"
+es = "Usar de 1 a 64 caracteres: A–Z, a–z o 0–9"
+fr = "Utiliser de 1 à 64 lettres ou chiffres"
+de = "1–64 Buchstaben oder Ziffern"
+
+[validation.xjob_duration]
+en = "Use integer minutes or hours, from 1 minute to 24 hours"
+zh-CN = "使用整数分钟或小时，范围 1 分钟至 24 小时"
+zh-TW = "使用整數分鐘或小時，範圍 1 分鐘至 24 小時"
+ja = "整数の分または時間を指定してください。範囲は1分～24時間です。"
+pt-BR = "Use minutos ou horas inteiros, de 1 minuto a 24 horas"
+es = "Usar minutos u horas enteros, de 1 minuto a 24 horas"
+fr = "Utiliser des minutes ou heures entières, de 1 minute à 24 heures"
+de = "Ganze Minuten oder Stunden verwenden, von 1 Minute bis 24 Stunden"
+
+[validation.xjob_argument]
+en = "Use 1–256 bytes without NUL characters"
+zh-CN = "1–256 字节，不含 NUL 字符"
+zh-TW = "1–256 位元組，不含 NUL 字元"
+ja = "NUL文字を含まない1～256バイトを指定してください。"
+pt-BR = "Use de 1 a 256 bytes sem caracteres NUL"
+es = "Usar de 1 a 256 bytes sin caracteres NUL"
+fr = "Utiliser de 1 à 256 octets sans caractères NUL"
+de = "1–256 Byte ohne NUL-Zeichen verwenden"
+
+[validation.feishu_open_id]
+en = "Use a Feishu/Lark open_id starting with ou_"
+zh-CN = "使用 ou_ 开头的飞书/Lark open_id"
+zh-TW = "使用以 ou_ 開頭的飛書/Lark open_id"
+ja = "ou_ で始まる Feishu/Lark の open_id を指定してください。"
+pt-BR = "Use um open_id do Feishu/Lark que comece com ou_"
+es = "Usar un open_id de Feishu/Lark que empiece por ou_"
+fr = "Utiliser un open_id Feishu/Lark commençant par ou_"
+de = "Feishu/Lark-open_id verwenden, die mit ou_ beginnt"
+
+[validation.settings_host]
+en = "Use a host without scheme, path or credentials"
+zh-CN = "填写主机名，不含协议、路径或凭据"
+zh-TW = "填寫主機名稱，不含通訊協定、路徑或驗證資訊"
+ja = "ホスト名を指定してください。スキーム、パス、認証情報は含められません。"
+pt-BR = "Use um nome de host sem esquema, caminho ou credenciais"
+es = "Usar un nombre de host sin esquema, ruta ni credenciales"
+fr = "Saisir un nom d’hôte sans schéma, chemin ni identifiants"
+de = "Hostnamen ohne Schema, Pfad oder Zugangsdaten angeben"
+
+[validation.settings_endpoint]
+en = "Use an HTTP or HTTPS URL without credentials, query or fragment"
+zh-CN = "使用 HTTP 或 HTTPS URL，不含凭据、查询串或片段"
+zh-TW = "使用 HTTP 或 HTTPS URL，不含驗證資訊、查詢字串或片段"
+ja = "HTTP または HTTPS の URL を指定してください。認証情報、クエリ、フラグメントは含められません。"
+pt-BR = "Use uma URL HTTP ou HTTPS sem credenciais, parâmetros de consulta ou fragmento"
+es = "Usar una URL HTTP o HTTPS sin credenciales, consulta ni fragmento"
+fr = "Utiliser une URL HTTP ou HTTPS sans identifiants, paramètres de requête ni fragment"
+de = "HTTP- oder HTTPS-URL ohne Zugangsdaten, Query oder Fragment verwenden"
+
+[validation.settings_patrol_interval]
+en = "Use minutes or hours, from 15 minutes to 24 hours"
+zh-CN = "使用分钟或小时，范围 15 分钟–24 小时"
+zh-TW = "使用分鐘或小時，範圍為 15 分鐘–24 小時"
+ja = "15分〜24時間の範囲で、分または時間を単位に指定してください。"
+pt-BR = "Use minutos ou horas, de 15 minutos a 24 horas"
+es = "Usar minutos u horas, entre 15 minutos y 24 horas"
+fr = "Utiliser des minutes ou des heures, de 15 minutes à 24 heures"
+de = "Minuten oder Stunden verwenden, von 15 Minuten bis 24 Stunden"
+
+[validation.totp_code]
+en = "Use 6 digits"
+zh-CN = "填写 6 位数字"
+zh-TW = "填寫 6 位數字"
+ja = "6桁の数字を入力してください。"
+pt-BR = "Use 6 dígitos"
+es = "Usar 6 dígitos"
+fr = "Saisir 6 chiffres"
+de = "6 Ziffern eingeben"
+
+[validation.totp_secret]
+en = "Use a 32-character uppercase Base32 secret"
+zh-CN = "使用 32 位大写 Base32 密钥"
+zh-TW = "使用 32 個大寫 Base32 字元的金鑰"
+ja = "大文字の Base32 形式で、32文字のシークレットを指定してください。"
+pt-BR = "Use um segredo Base32 de 32 caracteres em letras maiúsculas"
+es = "Usar un secreto Base32 de 32 caracteres en mayúsculas"
+fr = "Utiliser un secret Base32 de 32 caractères en majuscules"
+de = "Base32-Schlüssel mit 32 Zeichen in Großbuchstaben verwenden"
+
+[validation.query_time_range]
+en = "Start must precede end"
+zh-CN = "开始时间须早于结束时间"
+zh-TW = "開始時間須早於結束時間"
+ja = "開始日時は終了日時より前にしてください。"
+pt-BR = "O início deve ser anterior ao fim"
+es = "El inicio debe ser anterior al fin"
+fr = "Le début doit précéder la fin"
+de = "Beginn muss vor dem Ende liegen"
+
+[validation.xconfig_name]
+en = "Use app name + - + 32-character lowercase hexadecimal ID"
+zh-CN = "格式：应用名 + - + 32 位小写十六进制 ID"
+zh-TW = "格式：應用程式名稱 + - + 32 個小寫十六進位字元的 ID"
+ja = "アプリ名 + - + 32桁の小文字16進数 ID の形式で指定してください。"
+pt-BR = "Use o nome da aplicação + - + um ID hexadecimal de 32 caracteres em letras minúsculas"
+es = "Usar el nombre de la aplicación + - + un ID hexadecimal de 32 caracteres en minúsculas"
+fr = "Utiliser le nom de l’application suivi de - et d’un identifiant hexadécimal de 32 caractères en minuscules"
+de = "Format: App-Name + - + 32-stellige Hexadezimal-ID in Kleinbuchstaben"
+
+[validation.xconfig_target]
+en = "Start with / and do not end with /"
+zh-CN = "以 / 开头，不能以 / 结尾"
+zh-TW = "以 / 開頭，不能以 / 結尾"
+ja = "/ で始まり、/ で終わらないパスを指定してください。"
+pt-BR = "Comece com / e não termine com /"
+es = "Debe empezar por / y no terminar en /"
+fr = "Commencer par / sans terminer par /"
+de = "Mit / beginnen, nicht mit / enden"
+
+[validation.query_time_range_max]
+en = "Time range exceeds %{days} days"
+zh-CN = "时间范围超过 %{days} 天"
+zh-TW = "時間範圍超過 %{days} 天"
+ja = "期間が %{days} 日を超えています。"
+pt-BR = "O intervalo excede %{days} dias"
+es = "El intervalo supera %{days} días"
+fr = "La période dépasse %{days} jours"
+de = "Zeitraum überschreitet %{days} Tage"
+
+[validation.slack_user_id]
+en = "Use a Slack user ID starting with U or W"
+zh-CN = "使用 U 或 W 开头的 Slack 用户 ID"
+zh-TW = "使用以 U 或 W 開頭的 Slack 使用者 ID"
+ja = "U または W で始まる Slack ユーザー ID を指定してください。"
+pt-BR = "Use um ID de usuário do Slack que comece com U ou W"
+es = "Usar un ID de usuario de Slack que empiece por U o W"
+fr = "Utiliser un identifiant utilisateur Slack commençant par U ou W"
+de = "Slack-Benutzer-ID verwenden, die mit U oder W beginnt"
+
+[validation.telegram_user_id]
+en = "Use a Telegram user ID from 1 to 4503599627370495"
+zh-CN = "使用 1–4503599627370495 的 Telegram 用户 ID"
+zh-TW = "使用 1–4503599627370495 的 Telegram 使用者 ID"
+ja = "1〜4503599627370495 の Telegram ユーザー ID を指定してください。"
+pt-BR = "Use um ID de usuário do Telegram entre 1 e 4503599627370495"
+es = "Usar un ID de usuario de Telegram entre 1 y 4503599627370495"
+fr = "Utiliser un identifiant utilisateur Telegram compris entre 1 et 4503599627370495"
+de = "Telegram-Benutzer-ID zwischen 1 und 4503599627370495 verwenden"
+
+[validation.discord_user_id]
+en = "Use a positive decimal Discord user ID"
+zh-CN = "使用正十进制 Discord 用户 ID"
+zh-TW = "使用正十進位整數的 Discord 使用者 ID"
+ja = "正の10進整数で Discord ユーザー ID を指定してください。"
+pt-BR = "Use um número inteiro decimal positivo como ID de usuário do Discord"
+es = "Usar un ID de usuario de Discord que sea un entero decimal positivo"
+fr = "Utiliser un identifiant utilisateur Discord sous forme d’entier décimal positif"
+de = "Discord-Benutzer-ID als positive Dezimalzahl verwenden"
+
+[validation.host]
+en = "Use a valid DNS name or IP address, at most 253 bytes"
+zh-CN = "使用有效的 DNS 名称或 IP 地址，最多 253 字节"
+zh-TW = "使用有效的 DNS 名稱或 IP 位址，最多 253 位元組"
+ja = "253バイト以内の有効な DNS 名または IP アドレスを指定してください。"
+pt-BR = "Use um nome DNS ou endereço IP válido, com no máximo 253 bytes"
+es = "Usar un nombre DNS o una dirección IP válidos, de un máximo de 253 bytes"
+fr = "Utiliser un nom DNS ou une adresse IP valide, sans dépasser 253 octets"
+de = "Gültigen DNS-Namen oder gültige IP-Adresse mit höchstens 253 Byte verwenden"
+
+[validation.absolute_path]
+en = "Use an absolute path starting with /"
+zh-CN = "使用 / 开头的绝对路径"
+zh-TW = "使用以 / 開頭的絕對路徑"
+ja = "/ で始まる絶対パスを指定してください。"
+pt-BR = "Use um caminho absoluto que comece com /"
+es = "Usar una ruta absoluta que empiece por /"
+fr = "Utiliser un chemin absolu commençant par /"
+de = "Absoluten Pfad verwenden, der mit / beginnt"
+
+[validation.credit_card_invalid]
+en = "Invalid credit card"
+zh-CN = "信用卡号无效"
+zh-TW = "信用卡號碼無效"
+ja = "クレジットカード番号が正しくありません。"
+pt-BR = "Cartão de crédito inválido"
+es = "Tarjeta de crédito no válida"
+fr = "Numéro de carte bancaire invalide"
+de = "Ungültige Kreditkartennummer"
+
+[validation.contains_missing]
+en = "Must contain %{pattern}"
+zh-CN = "须包含 %{pattern}"
+zh-TW = "須包含 %{pattern}"
+ja = "%{pattern} を含めてください。"
+pt-BR = "Deve conter %{pattern}"
+es = "Debe contener %{pattern}"
+fr = "Doit contenir %{pattern}"
+de = "Muss %{pattern} enthalten"
+
+[validation.url_invalid]
+en = "Invalid URL"
+zh-CN = "URL 无效"
+zh-TW = "URL 無效"
+ja = "URL が正しくありません。"
+pt-BR = "URL inválida"
+es = "URL no válida"
+fr = "URL invalide"
+de = "Ungültige URL"
+
+[validation.prefix_missing]
+en = "Must start with %{prefix}"
+zh-CN = "须以 %{prefix} 开头"
+zh-TW = "須以 %{prefix} 開頭"
+ja = "先頭は %{prefix} にしてください。"
+pt-BR = "Deve começar com %{prefix}"
+es = "Debe empezar por %{prefix}"
+fr = "Doit commencer par %{prefix}"
+de = "Muss mit %{prefix} beginnen"
+
+[validation.suffix_missing]
+en = "Must end with %{suffix}"
+zh-CN = "须以 %{suffix} 结尾"
+zh-TW = "須以 %{suffix} 結尾"
+ja = "末尾は %{suffix} にしてください。"
+pt-BR = "Deve terminar com %{suffix}"
+es = "Debe terminar en %{suffix}"
+fr = "Doit se terminer par %{suffix}"
+de = "Muss mit %{suffix} enden"
+
+[validation.phone_number_invalid]
+en = "Invalid phone number"
+zh-CN = "电话号码无效"
+zh-TW = "電話號碼無效"
+ja = "電話番号が正しくありません。"
+pt-BR = "Número de telefone inválido"
+es = "Número de teléfono no válido"
+fr = "Numéro de téléphone invalide"
+de = "Ungültige Telefonnummer"
+
+[validation.matches_field_mismatch]
+en = "Must match %{field}"
+zh-CN = "须与 %{field} 一致"
+zh-TW = "須與 %{field} 一致"
+ja = "%{field} と一致する値を指定してください。"
+pt-BR = "Deve corresponder a %{field}"
+es = "Debe coincidir con %{field}"
+fr = "Doit correspondre à %{field}"
+de = "Muss mit %{field} übereinstimmen"
+
+[validation.volume_name_reserved]
+en = "agent and insight-data are reserved system volume names"
+zh-CN = "agent 和 insight-data 是系统保留的卷名"
+zh-TW = "agent 和 insight-data 是系統保留的資料卷名稱"
+ja = "agent と insight-data はシステムが予約しているボリューム名です。"
+pt-BR = "agent e insight-data são nomes de volumes reservados pelo sistema"
+es = "agent e insight-data son nombres de volumen reservados para el sistema"
+fr = "agent et insight-data sont des noms de volumes réservés au système"
+de = "agent und insight-data sind reservierte Namen für System-Volumes"
+
+[validation.image_reference]
+en = "Use an image reference such as busybox:1.38, with a lowercase repository and no @digest"
+zh-CN = "使用镜像引用，例如 busybox:1.38；仓库名须小写，不能带 @digest"
+zh-TW = "使用映像引用，例如 busybox:1.38；儲存庫名稱須為小寫，不能帶 @digest"
+ja = "busybox:1.38 のようなイメージ参照を指定してください。リポジトリ名は小文字で、@digest は付けられません。"
+pt-BR = "Use uma referência de imagem como busybox:1.38, com repositório em minúsculas e sem @digest"
+es = "Usar una referencia de imagen como busybox:1.38, con el repositorio en minúsculas y sin @digest"
+fr = "Utiliser une référence d’image comme busybox:1.38, avec un dépôt en minuscules et sans @digest"
+de = "Image-Referenz wie busybox:1.38 verwenden, Repository in Kleinbuchstaben, ohne @digest"
+
+[validation.key_pem_length]
+en = "Use a PEM private key of at most 16384 bytes"
+zh-CN = "PEM 私钥不能超过 16384 字节"
+zh-TW = "PEM 私密金鑰不能超過 16384 位元組"
+ja = "16384 バイト以下の PEM 秘密鍵を指定してください。"
+pt-BR = "Use uma chave privada PEM de no máximo 16384 bytes"
+es = "Usar una clave privada PEM de 16384 bytes como máximo"
+fr = "Utiliser une clé privée PEM de 16384 octets au maximum"
+de = "Privaten PEM-Schlüssel mit höchstens 16384 Byte verwenden"

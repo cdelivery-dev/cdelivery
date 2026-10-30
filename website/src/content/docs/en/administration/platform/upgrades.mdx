@@ -1,0 +1,32 @@
+---
+title: "Upgrades and versions"
+description: "Update the main program and independent components, then verify each capability."
+sidebar:
+  order: 62
+---
+
+CDelivery, Pingress, Insight, Insight Agent, and volume management have separate versions. Updating the main program does not mean all components update together.
+
+## Prepare
+
+As an Admin, inspect the current and available versions in the relevant settings. Read release notes, verify image-registry access and architecture, and allow time for replacement. Back up business data using its storage procedure; recording a version is not a backup.
+
+The current release catalog provides each component's latest version. Update requests require that latest version. The console does not offer an arbitrary historical-version selector or a general downgrade button.
+
+## Update and verify
+
+1. Select the available version under **Settings → CDelivery** and confirm.
+2. Wait for the main program to restart; management access may briefly disappear.
+3. Reopen the page and confirm the running version.
+4. Check servers, applications, events, and API/MCP connections.
+5. Update other components separately where required.
+
+After Pingress updates, test real domains and HTTPS. After Insight or collector updates, verify fresh logs and metrics. After volume-management updates, read a volume list.
+
+Obtain fresh server join credentials after a platform restart. A temporary console interruption does not by itself prove application downtime.
+
+## Troubleshoot
+
+Unavailable release metadata does not mean the installation is current. Check connectivity to the release service. For failed image pulls, inspect network, architecture, and task errors.
+
+[Application rollback](/docs/guides/release-safety/rollback/) does not restore platform versions or business data. Use [access recovery](/docs/administration/platform/recovery/) for login problems.

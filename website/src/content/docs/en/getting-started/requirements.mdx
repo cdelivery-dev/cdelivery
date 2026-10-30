@@ -1,0 +1,45 @@
+---
+title: "Installation requirements"
+description: "Prepare Docker, server addresses, firewall rules, storage, and administrative access."
+sidebar:
+  order: 3
+---
+
+One server is enough to begin. Multiple servers need stable addresses through which they can reach each other.
+
+## System and capacity
+
+Linux needs administrative access and `curl`; the installer prepares Docker where supported. Existing Docker installations must support API 1.48, meaning Docker Engine 28.0 or newer. Check both client and server with `docker version`.
+
+On macOS, prepare and start a Docker environment first; `docker info` must succeed. Allow outbound access to installation resources, image registries, and external services you plan to use.
+
+Reserve capacity for the platform, applications, overlapping replicas during updates, and retained logs. A generic minimum memory figure cannot establish whether your workload will fit.
+
+## Addresses and ports
+
+The address used between servers can differ from the public address used by your browser. Use a reachable private address where appropriate; loopback cannot serve as the address other servers use to reach this machine.
+
+| Port | Purpose | Access |
+| --- | --- | --- |
+| TCP 9000 | Console and API | Management network or SSH tunnel |
+| TCP 80, 443 | Pingress HTTP/HTTPS | Application clients |
+| Published application ports | Direct application access | Intended clients |
+| TCP 2377 | Management communication | Participating servers |
+| TCP/UDP 7946 | Discovery and communication | Participating servers |
+| UDP 4789 | Cross-server application traffic | Participating servers |
+
+Check both cloud security rules and host firewalls. Keep server communication ports restricted to participating machines. See [Docker networking requirements](https://docs.docker.com/engine/network/drivers/overlay/#requirements).
+
+For remote administration:
+
+```sh
+ssh -L 9000:127.0.0.1:9000 your-user@server.example.com
+```
+
+Keep the session open and visit `http://localhost:9000`. The first application also needs port 8080 forwarded.
+
+## Data planning
+
+Choose a storage server and backup procedure before creating a stateful application. A domain is optional for your first deployment. For IPv6, check addresses, routes, and firewalls, then read the [networking FAQ](/docs/guides/networking/faq/).
+
+Continue to [installation](/docs/getting-started/installation/).

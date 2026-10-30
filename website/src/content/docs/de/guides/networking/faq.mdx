@@ -1,0 +1,63 @@
+---
+title: "Häufige Netzwerkfragen"
+description: "IPv6, Clientadressen, DNS, Routing und Zertifikate untersuchen."
+sidebar:
+  order: 25
+---
+
+Diese IPv6-Prüfungen gelten für Linux-Server, auf denen Pingress läuft.
+
+## Warum protokolliert Pingress eine Gateway-Adresse?
+
+Ein `docker_gwbridge` mit ausschließlich IPv4 kann IPv6-Verbindungen übersetzen und dadurch die ursprüngliche Clientadresse verbergen, selbst wenn der Host IPv6 unterstützt. Auch ein CDN oder ein anderer Proxy verändert den direkten Verbindungspartner: Pingress protokolliert dessen Adresse und verwendet sie für `X-Real-IP` und `X-Forwarded-For`.
+
+## Aktiviert das Installationsskript IPv6 automatisch?
+
+Bei einer Neuinstallation oder beim Beitritt erkennt das Skript IPv6 auf dem Host und versucht, ein Gateway für IPv4 und IPv6 vorzubereiten. Wenn eine Auswahl erscheint, wähle **1**, um nur mit IPv4 fortzufahren, oder **2**, um abzubrechen und das Problem zu beheben. Standardmäßig wird abgebrochen, auch ohne interaktives Terminal.
+
+`--no-ipv6` überspringt die Gateway-Vorbereitung. IPv6 auf einem vorhandenen Dual-Stack-Gateway wird dadurch nicht deaktiviert. Unter macOS verwaltet die Docker-Laufzeitumgebung das Netzwerk.
+
+## Wie prüfe ich die Funktion?
+
+Führe auf dem Server, auf dem Pingress läuft, Folgendes aus:
+
+```sh
+ip -6 address show scope global
+ip -6 route show default
+docker network inspect docker_gwbridge --format '{{.EnableIPv6}}'
+```
+
+Der letzte Befehl sollte `true` ausgeben. Das bestätigt die Einstellung, aber nicht die Erreichbarkeit. Für öffentlichen Zugriff muss der AAAA-Eintrag der Domain auf eine Adresse zeigen, über die Pingress per IPv6 erreichbar ist.
+
+Teste beide Protokolle von einem anderen Rechner mit IPv6 aus und ersetze die Beispieldomain:
+
+```sh
+curl -4 --noproxy '*' -I https://app.example.com
+curl -6 --noproxy '*' -I https://app.example.com
+```
+
+Vergleiche `client_ip` in Pingress oder die Weiterleitungsheader deiner Anwendung mit der Adresse des verbindenden Clients. Der direkte Verbindungspartner der Anwendung ist Pingress, nicht der ursprüngliche Client.
+
+## Wie aktiviere ich IPv6 nachträglich?
+
+Richte zuerst funktionierendes IPv6 auf dem Host ein. Meldet das Gateway bereits `true`, prüfe Erreichbarkeit und DNS. Ist der Server noch nicht beigetreten, führe den [Installationsbefehl](/docs/de/getting-started/installation/) oder den Beitrittsbefehl aus der Serverliste ohne `--no-ipv6` aus.
+
+**Ein erneuter Aufruf des Installationsskripts aktualisiert das Gateway einer bestehenden Installation nicht.** Ein aktiver Server mit einem reinen IPv4-Gateway benötigt eine Wartung:
+
+1. Sichere lokale Daten und notiere Knoten-ID, Rolle, sämtliche Knotenlabels, Gateway-Konfiguration sowie Anwendungen, Pingress oder Insight, die an diesen Knoten gebunden sind.
+2. Stoppe oder verlagere seine Workloads. Bevor ein Manager den Verbund verlässt, müssen eine gesunde Mehrheit der Manager und ein funktionierendes CDelivery-Dashboard auf einem anderen Knoten verfügbar sein. Stufe den zu wartenden Manager dann herab. Entferne niemals direkt den einzigen Manager; bereite zuerst eine sichere Übergabe oder einen Sicherungs- und Wiederherstellungsplan vor. Befolge die [Docker-Anleitung zur Knotenwartung](https://docs.docker.com/engine/swarm/manage-nodes/).
+3. Sobald der Knoten ausgetreten ist und keine Container mehr auf das Gateway verweisen, hole im funktionierenden Dashboard einen **neuen Beitrittsbefehl für seine ursprüngliche Rolle**. Führe ihn ohne `--no-ipv6` aus; das Skript bereitet das Standard-Gateway vor dem Beitritt vor. Bei einem angepassten Gateway musst du dessen Subnetz und Optionen beim [Vorbereiten eines Dual-Stack-Ersatzes](https://docs.docker.com/engine/swarm/networking/#customize-the-docker_gwbridge) beibehalten. Einladungen verfallen nach 30 Minuten und werden auch bei einem Neustart oder Umzug von CDelivery ungültig.
+4. Beim erneuten Beitritt entsteht eine neue Knoten-ID. Stelle sämtliche Labels einschließlich der Volume-Beschreibungen wieder her und korrigiere Dienstbindungen an die alte ID. Anwendungen mit lokalen Volumes und Insight mit lokalem Speicher können den Knoten nicht einfach über die Oberfläche wechseln; ihre Platzierungsbedingungen müssen administrativ angepasst werden. Die Daten bleiben auf dem ursprünglichen Host.
+5. Stelle die Dienste wieder her, passe bei Bedarf DNS an und wiederhole die IPv4-/IPv6-Prüfungen oben.
+
+Alternativ kannst du einen weiteren Server mit IPv6 hinzufügen, Pingress dort ausführen und DNS auf ihn ausrichten.
+
+## Was tun bei Problemen mit IPv6-Routen oder Firewall-Regeln?
+
+Das Aktivieren der Weiterleitung kann dazu führen, dass eine Schnittstelle mit `accept_ra=1` keine Router Advertisements (RA) mehr annimmt und ihre Standardroute verliert. Konfiguriere RA dauerhaft über die Netzwerkverwaltung der Schnittstelle: ifupdown verwendet `accept_ra 2`, ifupdown-ng verwendet `ipv6-accept-ra 2`. Überschreibe `accept_ra=0` nicht pauschal bei Schnittstellen, deren Netzwerkverwaltung RA selbst verarbeitet. Prüfe die Routen nach einem Neustart der Schnittstelle oder des Hosts erneut.
+
+Lass Dockers Verwaltung der IPv6-Firewall aktiviert (`ip6tables` darf nicht `false` sein) und gib die HTTP-/HTTPS-Ports von Pingress in den Host- und Cloud-Firewalls frei. Die Gateway-Ausgabe `true` allein bestätigt weder diese Regeln noch die externe Erreichbarkeit.
+
+## Weitere Zugriffsprobleme
+
+Bei DNS- oder Routingfehlern hilft [Domains und Routing](/docs/de/guides/networking/routing/). Fehlende oder abgelaufene Zertifikate sowie Fehler bei der Ausstellung behandelt [Automatische Zertifikate und Erneuerung](/docs/de/guides/networking/automatic-certificates/). Prüfen Sie mit den [Zugriffslogs](/docs/de/guides/observability/logs/access/), ob eine Anfrage den Eingang erreicht, einer Anwendung zugeordnet wird und eine Antwort vom Ziel erhält.

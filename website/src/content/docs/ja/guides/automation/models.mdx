@@ -1,0 +1,28 @@
+---
+title: "モデルの設定"
+description: "Admin が提供元、認証情報、運用ツールに適したモデルを選びます。"
+sidebar:
+  order: 42
+---
+
+Admin が提供元、認証情報、運用ツールに適したモデルを選びます。
+
+## 提供元
+
+OpenAI、Anthropic、Gemini、DeepSeek、OpenRouter、Ollama、OpenAI-compatible を選べます。
+
+組み込み提供元は標準 endpoint と必須キーを使い、独自 endpoint は受け付けません。Compatible は endpoint とキーが必須、Ollama は endpoint 必須でキー指定は不可です。
+
+CDelivery サーバーから到達できる必要があり、ブラウザーだけのアクセスでは不十分です。
+
+## 設定と試験
+
+認証を入力し、対応する場合モデル検出して選択します。検出は Admin 限定で、ツール機能を保証しません。
+
+秘密は返されません。省略して保持できるのは提供元と endpoint の範囲が変わらない場合です。変更時は適切な新しい認証を指定します。
+
+読み取り質問とツール結果を確認します。
+
+## 調査
+
+提供元、URL、モデル名、キー、割当、通信、機能を確認します。一覧取得だけでは全体試験になりません。[自動当番](/docs/ja/guides/automation/duty/)は別途設定します。

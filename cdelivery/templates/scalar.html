@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+    <title>API Reference | CDelivery</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="icon" href="$favicon_light" type="image/svg+xml" sizes="any" media="(prefers-color-scheme: light)" />
+    <link rel="icon" href="$favicon_dark" type="image/svg+xml" sizes="any" media="(prefers-color-scheme: dark)" />
+</head>
+<body>
+    <div id="app"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference@1.65.1/dist/browser/standalone.js"
+            integrity="sha384-G6dkutu2k5IYVyNESLoFIpgaHx38IJTZ/HhrwN0fecTle9te75y8Kru3rJEJ0ZJV"
+            crossorigin="anonymous"></script>
+    <script>
+        const methodRank = {
+            get: 0,
+            head: 1,
+            post: 2,
+            put: 3,
+            patch: 4,
+            delete: 5,
+            options: 6,
+            trace: 7,
+        };
+        Scalar.createApiReference('#app', {
+            content: $spec,
+            hideDarkModeToggle: true,
+            documentDownloadType: 'json',
+            defaultOpenFirstTag: false,
+            defaultOpenAllTags: false,
+            expandAllResponses: false,
+            operationTitleSource: 'path',
+            operationsSorter: (a, b) =>
+                a.path.localeCompare(b.path) ||
+                (methodRank[a.method] ?? 8) - (methodRank[b.method] ?? 8),
+            mcp: {disabled: true},
+            agent: {disabled: true},
+            hideClientButton: true,
+            showDeveloperTools: "never",
+            withDefaultFonts: false,
+            customCss: "html {font-size: 0.8125rem;} @media (width >= 120rem) {html {font-size: 0.875rem;}} * {font-family: ui-monospace, monospace;}",
+        })
+    </script>
+</body>
+</html>

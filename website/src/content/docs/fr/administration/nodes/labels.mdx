@@ -1,0 +1,26 @@
+---
+title: "Étiquettes de serveurs"
+description: "Les étiquettes définissent des ensembles éligibles pour applications et composants."
+sidebar:
+  order: 54
+---
+
+Les étiquettes définissent des ensembles éligibles pour applications et composants.
+
+## Configurer
+
+Admin ajoute `web`, `storage` ou autre étiquette puis la choisit dans le [placement](/docs/fr/guides/apps/placement/).
+
+Maximum 32 par serveur. Noms de 1–16 minuscules, chiffres ou tirets, sans tiret initial/final ni nom réservé. Ce ne sont pas des requêtes clé-valeur arbitraires.
+
+## Conséquences
+
+Retirer peut laisser des tâches sans cible. Ajouter nécessite vérifier architecture, ressources, réseau et données.
+
+Une application fixée par ID ne migre pas grâce à une étiquette commune. Aucun volume n’est répliqué.
+
+## Vérifier
+
+Rouvrez le serveur, contrôlez étiquettes et répartition réelle. Si attente, examinez disponibilité, réservations et plafonds.
+
+L’API `labels` remplace tout l’ensemble d’étiquettes de placement ; un tableau vide l’efface. Lisez d’abord l’existant pour préserver les valeurs nécessaires. Voir [serveurs](/docs/fr/administration/nodes/).

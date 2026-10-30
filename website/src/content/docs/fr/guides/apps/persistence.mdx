@@ -1,0 +1,26 @@
+---
+title: "Persistance des données"
+description: "La couche inscriptible d’un conteneur n’assure pas la conservation lors de son remplacement."
+sidebar:
+  order: 14
+---
+
+La couche inscriptible d’un conteneur n’assure pas la conservation lors de son remplacement.
+
+## Choisir
+
+Configuration en lecture : [XConfig](/docs/fr/guides/apps/xconfig/). Données locales : volume sur un serveur. Données partagées : service de stockage adapté. Récupération : sauvegarde indépendante et testée.
+
+Le mode local se choisit à la création et fixe un réplica à une machine ; il ne s’ajoute pas simplement après coup.
+
+## Monter et tester
+
+Choisissez le bon volume/serveur et le répertoire réellement écrit par l’image. Un chemin erroné peut laisser le volume vide pendant que l’application écrit ailleurs.
+
+Créez des données, redémarrez et vérifiez leur présence. Testez aussi une restauration : redémarrer ne prouve pas la qualité du backup.
+
+## Limites
+
+Un volume homonyme ailleurs contient d’autres données. Les étiquettes ne répliquent pas. Supprimer l’application conserve les volumes ; supprimer un volume retire ses données. Revenir à une image ne défait pas une migration.
+
+Voir [applications avec état](/docs/fr/guides/apps/persistence/stateful/) et [gestion des volumes](/docs/fr/administration/nodes/volumes/).

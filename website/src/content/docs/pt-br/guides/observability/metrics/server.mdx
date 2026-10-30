@@ -1,0 +1,26 @@
+---
+title: "Métricas de servidor"
+description: "Inspecione CPU, memória, rede e sistemas de arquivos para compreender pressão no host."
+sidebar:
+  order: 35
+---
+
+Inspecione CPU, memória, rede e sistemas de arquivos para compreender pressão no host.
+
+## Cobertura
+
+Coleta considera interfaces físicas e sistemas de arquivos locais graváveis sobre dispositivos de bloco, não todos os dispositivos virtuais nem volumes individuais.
+
+Amostras comuns: padrão cinco segundos. Sistemas de arquivos: cinco minutos. Não espere a mesma frequência em todas as curvas.
+
+## Diagnóstico
+
+Compare CPU com aplicações e réplicas; memória com limites e encerramentos; disco com logs e dados; rede com padrões de requisições.
+
+Relatórios ausentes exigem verificar servidor, coletor, rede e Insight. Alerta do coletor não prova que o servidor caiu.
+
+## Conferir
+
+Verifique timestamps e unidades. Após liberar disco, espere amostra de filesystem nova. Ausência não é zero uso.
+
+Espaço do host difere do tamanho de cada volume. Consulte [volumes](/docs/pt-br/administration/nodes/volumes/), [métricas de aplicações](/docs/pt-br/guides/observability/metrics/application/) e [coleta](/docs/pt-br/guides/observability/settings/).

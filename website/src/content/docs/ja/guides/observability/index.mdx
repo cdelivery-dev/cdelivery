@@ -1,0 +1,28 @@
+---
+title: "ログ・メトリクス・イベント"
+description: "実行記録、使用量、変更履歴を組み合わせて問題を調査します。"
+sidebar:
+  order: 31
+---
+
+実行記録、使用量、変更履歴を組み合わせて問題を調査します。
+
+## 選択
+
+| 調べたいこと | 参照 |
+| --- | --- |
+| プロセスの失敗 | [アプリログ](/docs/ja/guides/observability/logs/application/) |
+| HTTP 要求 | [アクセスログ](/docs/ja/guides/observability/logs/access/) |
+| 資源不足 | [アプリ指標](/docs/ja/guides/observability/metrics/application/)、[サーバー指標](/docs/ja/guides/observability/metrics/server/) |
+| 変更の経緯 | [イベント](/docs/ja/guides/observability/events/) |
+| 履歴の不足 | [収集と保持](/docs/ja/guides/observability/settings/) |
+
+Admin が Insight、収集器、保存先を設定します。ログはドライバーにも依存し、有効化しても過去分は取り込まれません。
+
+## 読み方
+
+対象、ソース、期間を選びます。履歴クエリーは最大 31 日で、調査では発生時刻付近に絞ります。
+
+空は活動なし、遅延、未収集、期限切れの可能性があります。クエリー失敗と区別し、欠測をゼロと扱いません。
+
+変更後に新しい活動を発生させ、新鮮な時刻を確認してから判断します。

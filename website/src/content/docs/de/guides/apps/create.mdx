@@ -1,0 +1,24 @@
+---
+title: "Erstellen und bereitstellen"
+description: "Erstelle eine Anwendung aus Image oder Vorlage und überprüfe ihren ersten Start."
+sidebar:
+  order: 8
+---
+
+Erstelle eine Anwendung aus Image oder Vorlage und überprüfe ihren ersten Start.
+
+## Schritte
+
+Operator/Admin wählt vorhandene Gruppe und eindeutigen Namen: 1–16 Kleinbuchstaben, Ziffern oder Bindestriche, ohne Randbindestrich oder reservierten Namen. Image/Vorlage, Variablen, Ports, Datenmodus, Ressourcen und Replikate prüfen, dann speichern.
+
+Beschreibung: höchstens 500 Zeichen. Namen sind global eindeutig. Name und Gruppe lassen sich in der Konsole später nicht ändern.
+
+## Vorlagen
+
+Vorlagen liefern Anfangswerte, keine Sicherung. Generierte Zugangsdaten, Version und Datenpfad kontrollieren. [Zustandsbehaftete Anwendungen](/docs/de/guides/apps/persistence/stateful/) verwenden einen Server und ein Replikat.
+
+## Kontrolle
+
+Auf laufendes Replikat warten, Logs lesen, Dienst aufrufen. Pullfehler: Referenz, Zugang, Netzwerk, Architektur. Wartende Aufgabe: geeignete Maschine/Ressourcen. Prozessende: Befehl/Konfiguration.
+
+Das [Nginx-Beispiel](/docs/de/getting-started/first-app/) zeigt den Ablauf. Für private Quellen siehe [Registries](/docs/de/guides/apps/images/).

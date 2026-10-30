@@ -1,0 +1,26 @@
+---
+title: "Collecte et conservation"
+description: "Admin configure Insight, collecteurs, stockage et durée de conservation."
+sidebar:
+  order: 37
+---
+
+Admin configure Insight, collecteurs, stockage et durée de conservation.
+
+## Stockage
+
+Choisissez Local, S3, S3-compatible avec endpoint, GCS avec JSON de compte de service ou Azure. Préparez emplacement et identifiants.
+
+Après activation, type et identité ne se changent pas comme un simple paramètre ; identifiants et région applicable peuvent évoluer. Local impose un serveur fixe. Migration et sauvegarde restent distinctes.
+
+## Fréquences
+
+Conservation par défaut : 30 jours, plage 1–3650. Échantillons : cinq secondes, plage 1–60. Flush : trois minutes. Systèmes de fichiers : cadence propre de cinq minutes.
+
+Un serveur fixe peut lire son buffer. Placement distribué par étiquette peut attendre flush et synchronisation. Plus de fréquence/conservation consomme plus d’espace.
+
+## Vérifier
+
+Générez activité et contrôlez journaux, métriques et événements récents sur chaque serveur. L’historique antérieur n’est pas importé.
+
+Si lacunes, vérifiez composants, réseau, secrets, période et expiration. Réduire conservation peut supprimer l’historique. Le [pilote de journaux](/docs/fr/guides/observability/logs/application/) se règle séparément.

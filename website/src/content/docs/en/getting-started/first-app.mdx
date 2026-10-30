@@ -1,0 +1,45 @@
+---
+title: "Deploy your first application"
+description: "Deploy Nginx with a published port and verify its response from a client."
+sidebar:
+  order: 5
+---
+
+This example uses a public Nginx image and a published port. It needs a working installation, an Admin to create the group, and an Operator or Admin to deploy.
+
+## Prepare access
+
+Use an available TCP port 8080. Allow it through the server's firewall, or forward both console and application ports:
+
+```sh
+ssh -L 9000:127.0.0.1:9000 -L 8080:127.0.0.1:8080 your-user@server.example.com
+```
+
+Keep that SSH session open. The local application address will then be `http://localhost:8080`.
+
+## Create and deploy
+
+1. Create a group named `demo`.
+2. Create an application named `hello-web` in that group.
+3. Select image `nginx:stable-alpine`.
+4. Keep the image's default startup command and one fixed replica.
+5. Publish container port **80** as host port **8080**, using TCP.
+6. Save and wait for the replica to run.
+
+No domain, custom command, configuration file, or persistent volume is needed. The [official Nginx image](https://hub.docker.com/_/nginx) already starts its web server in the foreground.
+
+## Verify a request
+
+Visit `http://SERVER_IP:8080`, or the local forwarded address, and check the welcome page:
+
+```sh
+curl -i http://localhost:8080
+```
+
+Expect HTTP 200 and the Nginx page. A saved form alone does not prove success: check the replica, application logs, and this client request.
+
+If pulling fails, inspect registry access and image architecture. If the container exits, restore the default command and inspect logs. If access times out, check port mapping, firewall, server address, and tunnel. A domain route targets container port 80, not published port 8080.
+
+## Continue or clean up
+
+Read [the console guide](/docs/getting-started/console/) and [application management](/docs/guides/apps/). To remove the example, delete `hello-web`, wait for its containers to exit, then delete the empty `demo` group. Do not delete a group still used by other applications.

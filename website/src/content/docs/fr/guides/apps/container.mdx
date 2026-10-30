@@ -1,0 +1,30 @@
+---
+title: "Commande et variables d’environnement"
+description: "Configurez le processus principal en distinguant arguments et interprétation par un shell."
+sidebar:
+  order: 10
+---
+
+Configurez le processus principal en distinguant arguments et interprétation par un shell.
+
+## Commande
+
+Gardez la commande de l’image sauf nécessité. Guillemets sont reconnus, mais variables, pipes et redirections exigent un shell explicite :
+
+```sh
+sh -c 'exec ./server --port "$PORT"'
+```
+
+L’image doit contenir shell et exécutable. Le processus principal doit rester au premier plan ; sa fin arrête le conteneur.
+
+## Variables
+
+Noms : 1–128 caractères, sans `=`. Valeurs : 4096 caractères maximum. Utilisez les noms compris par le programme. `PORT=8080` ne publie pas de port et ne force pas l’écoute.
+
+Ces valeurs sont partagées et ne sont pas automatiquement masquées. Pour des fichiers, utilisez [XConfig](/docs/fr/guides/apps/xconfig/) si compatible.
+
+## Vérifier
+
+Enregistrez, inspectez tâches et journaux. Sans changement, aucun redémarrage. Vérifiez chemins, outils et guillemets ; expansion littérale signifie souvent shell manquant.
+
+L’écoute doit être accessible aux autres conteneurs, pas seulement loopback. Configurez [réseau et ports](/docs/fr/guides/networking/connectivity/) séparément.

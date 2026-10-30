@@ -1,0 +1,40 @@
+---
+title: "飛書接入"
+description: "設定飛書應用程式機器人、長連接事件訂閱和使用者身份綁定。"
+sidebar:
+  order: 50
+---
+
+飛書渠道使用自建應用程式機器人的 App ID、App Secret，以及長連接事件訂閱。管理者負責平台渠道設定，每位使用者在個人帳戶中填寫自己的身份。
+
+## 設定機器人
+
+1. 在飛書開放平台建立自建應用程式，開啟機器人能力。
+2. 授予發送消息、接收使用者單聊消息的權限；需要群聊時再授予接收群聊 @ 消息的權限。
+3. 在事件訂閱中選擇長連接模式，添加 `im.message.receive_v1` 接收消息事件。
+4. 發佈應用程式，把使用者加入可用範圍；新增權限後完成相應審批和發佈。
+5. 以 Admin 在 CDelivery 的 **飛書** 渠道填寫 App ID 與 App Secret，儲存設定。
+
+這裡需要應用程式機器人，不能使用只有 Webhook 的群機器人。長連接由 CDelivery 主動連接飛書，不需要設定公網事件回調 URL。參閱[飛書事件訂閱文件](https://open.feishu.cn/document/server-docs/event-subscription-guide/event-subscription-configure-/request-url-configuration-case)。海外 Lark 應用程式請使用 [Lark 渠道](/docs/zh-tw/guides/automation/im/lark/)。
+
+## 獲取並綁定 open_id
+
+使用當前應用程式在官方 API 調試工具中查詢自己的使用者 ID，選擇回傳 `open_id`，例如[通過郵箱或手機號獲取使用者 ID](https://open.feishu.cn/document/server-docs/contact-v3/user/batch_get_id)。查詢所需的通訊錄授權和資料範圍需覆蓋本人。
+
+在 CDelivery 個人帳戶中填寫該 open_id，然後按需開啟飛書通知。綁定不使用手機號、郵箱、user_id、union_id 或群 ID。open_id 屬於特定應用程式，更換應用程式後需要重新獲取。
+
+請只填寫自己的身份。若填寫他人 ID，對方可能接收當前帳戶的通知，並以該帳戶權限發起操作。
+
+## 驗證與排障
+
+先與機器人單聊，詢問應用程式狀態；群聊需明確 @ 機器人。模型未設定時不能完成 AI 對話，但通知渠道與模型設定相互獨立。
+
+| 現象 | 檢查 |
+| --- | --- |
+| 找不到機器人 | 應用程式是否發佈、本人是否在可用範圍 |
+| 能發送但收不到回復 | 接收消息權限、事件訂閱、長連接網路、模型 |
+| 收到消息卻無法識別帳戶 | 是否使用當前應用程式下本人的 open_id |
+| 個人資料無法顯示 | 通訊錄權限和使用者可見範圍 |
+| 更換憑證後失效 | App ID/Secret 是否成對、綁定是否屬於新應用程式 |
+
+個人資料讀取需要 `contact:contact.base:readonly` 和 `contact:user.base:readonly`。確認後可繼續檢查[通知設定](/docs/zh-tw/guides/automation/im/notifications/)。

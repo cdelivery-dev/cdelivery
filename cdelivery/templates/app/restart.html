@@ -1,0 +1,29 @@
+{%- macro restart_interval_input() -%}
+<input id="restart-interval-input" class="text inline-number" type="number" min="1" x-model.number="restart_policy.delay.value" aria-label='{{ tt!("ui.app.restart.interval.label") }}' required /><select id="restart-interval-unit-select" class="text" x-model="restart_policy.delay.unit" aria-label='{{ tt!("ui.app.restart.intervalUnit.label") }}'>
+  <option value="Seconds" data-one='{{ tt!("ui.app.duration.secondsOne") }}' data-other='{{ tt!("ui.app.duration.seconds") }}' x-text="CDelivery.quantity(restart_policy.delay.value, $el.dataset)">{{ tt!("ui.app.duration.seconds") }}</option>
+  <option value="Minutes" data-one='{{ tt!("ui.app.duration.minutesOne") }}' data-other='{{ tt!("ui.app.duration.minutes") }}' x-text="CDelivery.quantity(restart_policy.delay.value, $el.dataset)">{{ tt!("ui.app.duration.minutes") }}</option>
+</select>
+{%- endmacro -%}
+
+{%- macro editable() -%}
+<li>
+  {% match crate::locale::current() %}
+  {% when crate::locale::Locale::ZhCn %}
+  容器退出后，等待{{ restart_interval_input() }}再重启。
+  {% when crate::locale::Locale::ZhTw %}
+  容器結束執行後，等待{{ restart_interval_input() }}再重新啟動。
+  {% when crate::locale::Locale::Ja %}
+  コンテナの終了後、{{ restart_interval_input() }}待ってから再起動する。
+  {% when crate::locale::Locale::PtBr %}
+  Após o encerramento do contêiner, aguardar {{ restart_interval_input() }} antes de reiniciá-lo.
+  {% when crate::locale::Locale::Es %}
+  Cuando el contenedor termine, esperar {{ restart_interval_input() }} antes de reiniciarlo.
+  {% when crate::locale::Locale::Fr %}
+  Après l’arrêt du conteneur, attendre {{ restart_interval_input() }} avant de le redémarrer.
+  {% when crate::locale::Locale::De %}
+  Nach dem Beenden des Containers {{ restart_interval_input() }} warten und ihn dann neu starten.
+  {% when crate::locale::Locale::En %}
+  After the container exits, wait {{ restart_interval_input() }} before restarting.
+  {% endmatch %}
+</li>
+{%- endmacro -%}

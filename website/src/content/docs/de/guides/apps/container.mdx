@@ -1,0 +1,30 @@
+---
+title: "Startbefehl und Umgebungsvariablen"
+description: "Konfiguriere den Hauptprozess und unterscheide Argumente von Shell-Auswertung."
+sidebar:
+  order: 10
+---
+
+Konfiguriere den Hauptprozess und unterscheide Argumente von Shell-Auswertung.
+
+## Befehl
+
+Image-Standard beibehalten, sofern kein anderer Befehl nötig ist. Anführungszeichen werden verarbeitet; Variablen, Pipes und Umleitungen benötigen explizite Shell:
+
+```sh
+sh -c 'exec ./server --port "$PORT"'
+```
+
+Image muss Shell und Programm enthalten. Hauptprozess im Vordergrund ausführen; sein Ende beendet den Container.
+
+## Umgebung
+
+Namen: 1–128 Zeichen, kein `=`. Werte: bis 4096 Zeichen. Nur vom Programm verstandene Variablen verwenden. `PORT=8080` veröffentlicht keinen Port und erzwingt keinen Listener.
+
+Beliebige Werte sind geteilte Konfiguration ohne automatische Geheimniserkennung. Für Dateien siehe [XConfig](/docs/de/guides/apps/xconfig/).
+
+## Prüfen
+
+Speichern, neue Aufgaben und Logs kontrollieren. Ohne Änderung kein Neustart. Pfade, Werkzeuge und Quotes prüfen; wörtliche Expansion deutet auf fehlende Shell.
+
+Nur internes Loopback verhindert externe Containerzugriffe. [Netzwerk/Ports](/docs/de/guides/networking/connectivity/) getrennt konfigurieren.

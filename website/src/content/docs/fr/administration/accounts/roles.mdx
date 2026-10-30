@@ -1,0 +1,31 @@
+---
+title: "Rôles et autorisations"
+description: "Reader, Operator et Admin accordent des droits croissants sur toute la plateforme."
+sidebar:
+  order: 57
+---
+
+Reader, Operator et Admin accordent des droits croissants sur toute la plateforme.
+
+## Matrice
+
+| Capacité | Reader | Operator | Admin |
+| --- | --- | --- | --- |
+| Informations partagées | Oui | Oui | Oui |
+| Compte et clés personnels | Oui | Oui | Oui |
+| Applications, XHealth, XJob, Guardian | Non | Oui | Oui |
+| Serveurs, groupes, volumes, paramètres | Non | Non | Oui |
+| Utilisateurs et invitations serveur | Non | Non | Oui |
+| Découverte sensible de modèles | Non | Non | Oui |
+
+Seuls les secrets reconnus sont masqués. Journaux, fichiers et variables arbitraires restent potentiellement partagés ; Reader doit être digne de confiance.
+
+## Droits effectifs
+
+Session : rôle actuel. Clé : minimum entre rôle actuel et plafond de clé. Réduire le rôle limite immédiatement les clés ; augmenter ne relève pas leur plafond.
+
+Console, REST, MCP et outils IA suivent les mêmes règles. Messages utilisent le compte associé ; surveillance utilise son rôle, sans compte personnel.
+
+## Vérifier
+
+Attribuez puis testez avec le compte. Admin ne peut se supprimer/rétrograder lui-même. Changer le mot de passe invalide sessions, pas clés. Voir [utilisateurs](/docs/fr/administration/accounts/users/).

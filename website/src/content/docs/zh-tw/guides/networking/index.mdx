@@ -1,0 +1,43 @@
+---
+title: "網域與 HTTPS 概覽"
+description: "選擇內部通信、發佈連接埠或網域入口，並按順序設定 Pingress 和憑證。"
+sidebar:
+  order: 20
+---
+
+應用程式網路可以分為三個層次：組內應用程式通信、直接發佈連接埠、通過 Pingress 使用網域。先選擇存取方式，再設定相應的伺服器、防火牆和憑證。
+
+## 選擇入口
+
+| 存取需求 | 使用方式 | 示例 |
+| --- | --- | --- |
+| 同分組應用程式互相呼叫 | 應用程式名稱與容器連接埠 | `http://backend:8080` |
+| 直接存取某個應用程式連接埠 | 發佈連接埠 | `http://SERVER_IP:8080` |
+| 使用網站網域及 HTTPS | Pingress 與網域路由 | `https://app.example.com` |
+
+應用程式通過 Pingress 暴露容器連接埠時，不需要為了同一個入口再單獨發佈該連接埠。資料庫等內部服務也不必為了組內通信暴露公網連接埠。
+
+## 設定 Pingress
+
+管理員打開 Pingress，選擇可用版本及部署位置，可以指定伺服器或伺服器標籤。目標伺服器需滿足網路條件，HTTP/HTTPS 入口通常使用 TCP 80 和 443。
+
+儲存後確認實例數量和執行狀態。選擇標籤時，應把 DNS 或前置負載均衡指向實際執行 Pingress 的可達伺服器；給一台伺服器加標籤不會自動修改外部 DNS。
+
+應用程式網域路由由 Operator 或 Admin 在應用程式設定中管理；Pingress 組件和憑證管理需要 Admin。
+
+## 推薦設定順序
+
+1. 驗證應用程式在預期容器連接埠提供服務。
+2. 設定 Pingress 並確認入口伺服器可達。
+3. 添加 DNS 和[網域路由](/docs/zh-tw/guides/networking/routing/)。
+4. 驗證 HTTP 請求命中了正確應用程式。
+5. 啟用[自動憑證](/docs/zh-tw/guides/networking/automatic-certificates/)或上傳[自訂憑證](/docs/zh-tw/guides/networking/custom-certificates/)。
+6. 驗證 HTTPS、憑證網域和實際業務回應。
+
+網域記錄、應用程式路由和憑證是分別管理的對象。只添加 DNS 不會自動建立應用程式路由，只打開 HTTPS 開關也不代表憑證已簽發。
+
+## 排查存取失敗
+
+沿著“用戶端 → DNS → Pingress → 應用程式容器連接埠”逐段檢查。應用程式副本執行但外部存取失敗時，先區分是連接、TLS、路由還是業務回應問題。
+
+使用[存取日誌](/docs/zh-tw/guides/observability/logs/access/)檢查請求是否到達入口及匹配到哪個應用程式。IPv6、用戶端地址和安裝後網路調整見[常見問題](/docs/zh-tw/guides/networking/faq/)。

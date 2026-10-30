@@ -1,0 +1,36 @@
+---
+title: "Erste Anwendung bereitstellen"
+description: "Stelle Nginx über einen veröffentlichten Port bereit und prüfe eine echte HTTP-Antwort."
+sidebar:
+  order: 5
+---
+
+Stelle Nginx über einen veröffentlichten Port bereit und prüfe eine echte HTTP-Antwort.
+
+## Vorbereitung
+
+Admin erstellt die Gruppe; Operator/Admin die Anwendung. TCP 8080 freigeben oder:
+
+```sh
+ssh -L 9000:127.0.0.1:9000 -L 8080:127.0.0.1:8080 your-user@server.example.com
+```
+
+## Bereitstellung
+
+Gruppe `demo`, Anwendung `hello-web`, Image `nginx:stable-alpine`. Standardbefehl und ein festes Replikat behalten. Internen Port **80** als **8080/TCP** veröffentlichen, speichern und auf laufende Aufgabe warten.
+
+Domain, Volume und eigener Befehl sind nicht nötig. Das [offizielle Image](https://hub.docker.com/_/nginx) startet Nginx im Vordergrund.
+
+## Test
+
+`http://SERVER_IP:8080` oder localhost im Tunnel öffnen:
+
+```sh
+curl -i http://localhost:8080
+```
+
+HTTP 200 und Nginx-Seite erwarten; zusätzlich Replikate und Logs prüfen.
+
+Pullfehler: Registry/Architektur. Prozessende: Befehl/Logs. Timeout: Zuordnung, Adresse, Firewall, Tunnel. Eine Domainroute würde internen Port 80 nutzen.
+
+Zum Aufräumen Anwendung löschen, Aufgabenende abwarten, leere Gruppe löschen. Weiter zur [Konsole](/docs/de/getting-started/console/).

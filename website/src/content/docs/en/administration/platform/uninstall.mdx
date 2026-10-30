@@ -1,0 +1,37 @@
+---
+title: "Uninstall and cleanup"
+description: "Preview resource removal and understand retained volumes and interrupted cleanup."
+sidebar:
+  order: 64
+---
+
+Uninstall removes platform management resources, application definitions, accounts, and credentials. The script preserves all data volumes and their descriptions. Preserved volumes do not provide a one-step restoration of the platform.
+
+## Preview
+
+Run on a management server with Docker CLI and jq, using its local Docker Unix socket. Record application settings, images, servers, and volumes, and back up business data. Stop creating or recreating resources during removal.
+
+```sh
+curl -fsSLo /tmp/cdelivery-uninstall.sh https://cdelivery.dev/uninstall.sh
+sh /tmp/cdelivery-uninstall.sh
+```
+
+Without arguments, the script only lists selected services, configurations, credentials, networks, and platform placement labels. Verify the Docker endpoint and resource list.
+
+## Remove
+
+After reviewing the preview:
+
+```sh
+sh /tmp/cdelivery-uninstall.sh --yes
+```
+
+The script stops the main program first, then removes platform-managed resources. It does not uninstall Docker, erase business volumes, or delete external DNS, object storage, or provider accounts.
+
+## Verify and recover from interruption
+
+Check that the listed management resources are gone and retained volumes remain on their original servers. Container cleanup is asynchronous; exit on offline machines cannot be confirmed until they reconnect.
+
+On a deletion error, the script stops. Resolve the connection, reference, or permission problem and rerun with `--yes`. Do not reinstall or recreate same-named resources while cleanup is unfinished.
+
+Deleting retained volumes requires a separate decision. A new installation creates new management data; restoring business workloads requires your saved configuration and storage recovery procedure.

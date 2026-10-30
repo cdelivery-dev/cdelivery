@@ -1,0 +1,151 @@
+{% extends "public.html" %}
+
+{% block title %}{{ tt!("ui.setup.title") }} | {{ super() }}{% endblock title %}
+
+{% block head %}
+{% match state %}
+{% when State::NeedsSetup %}
+{% when State::NeedsResume %}
+{% when State::Provisioning %}
+<meta http-equiv="refresh" content="2;url=/setup" />
+{% endmatch %}
+{% endblock head %}
+
+{% block main %}
+{% match state %}
+{% when State::NeedsSetup %}
+<form
+  id="setup_form"
+  method="post"
+  action="/setup"
+  x-data
+  @submit="
+      $refs.payload.value = JSON.stringify({
+        first_name: $refs.firstName.value,
+        last_name: $refs.lastName.value,
+        email: $refs.email.value,
+        password_sha256: sha256($refs.password.value)
+      })
+  "
+>
+  <input x-ref="payload" type="hidden" name="payload" />
+  <header>
+    <h1>CDelivery</h1>
+    <p>{{ tt!("ui.setup.subtitle") }}</p>
+  </header>
+  <noscript><p>{{ tt!("ui.javascript.required") }}</p></noscript>
+  {% if !fields.is_empty() %}
+  <ul role="alert">
+    {% for (path, message) in fields.iter() %}
+    <li><code>{{ path }}</code> {{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  <fieldset>
+    <legend>{{ tt!("ui.setup.form.legend") }}</legend>
+    <div class="field">
+      <label for="first_name">{{ tt!("ui.form.user.firstName.label") }}:</label>
+      <input
+        x-ref="firstName"
+        id="first_name"
+        class="text"
+        type="text"
+        value="{{ first_name }}"
+        placeholder='{{ tt!("ui.form.user.firstName.placeholder") }}'
+        autocomplete="given-name"
+        minlength="1"
+        maxlength="64"
+        required
+      />
+    </div>
+    <div class="field">
+      <label for="last_name">{{ tt!("ui.form.user.lastName.label") }}:</label>
+      <input
+        x-ref="lastName"
+        id="last_name"
+        class="text"
+        type="text"
+        value="{{ last_name }}"
+        placeholder='{{ tt!("ui.form.user.lastName.placeholder") }}'
+        autocomplete="family-name"
+        minlength="1"
+        maxlength="64"
+        required
+      />
+    </div>
+    <div class="field">
+      <label for="email">{{ tt!("ui.form.user.email.label") }}:</label>
+      <input
+        x-ref="email"
+        id="email"
+        class="text"
+        type="email"
+        value="{{ email }}"
+        placeholder='{{ tt!("ui.form.user.email.placeholder") }}'
+        autocomplete="email"
+        maxlength="254"
+        spellcheck="false"
+        required
+      />
+    </div>
+    <div class="field">
+      <label for="password">{{ tt!("ui.form.user.password.label") }}:</label>
+      <input
+        x-ref="password"
+        id="password"
+        class="text"
+        type="password"
+        autocomplete="new-password"
+        minlength="8"
+        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$"
+        title='{{ tt!("ui.form.user.password.validation") }}'
+        required
+        @input="$refs.confirmPassword.setCustomValidity($refs.password.value === $refs.confirmPassword.value ? '' : $refs.confirmPassword.dataset.mismatch)"
+      />
+    </div>
+    <div class="field">
+      <label for="confirm_password">{{ tt!("ui.form.user.confirmPassword.label") }}:</label>
+      <input
+        x-ref="confirmPassword"
+        id="confirm_password"
+        class="text"
+        type="password"
+        autocomplete="new-password"
+        minlength="8"
+        required
+        data-mismatch='{{ tt!("ui.form.user.confirmPassword.validation") }}'
+        @input="$refs.confirmPassword.setCustomValidity($refs.password.value === $refs.confirmPassword.value ? '' : $refs.confirmPassword.dataset.mismatch)"
+      />
+    </div>
+    <div class="mt-3 end">
+      <input class="button" type="submit" value='{{ tt!("ui.common.create") }}' />
+    </div>
+  </fieldset>
+  <small class="public-agreement">
+    {{ tt!("ui.setup.agreement", terms_url = "#", privacy_url = "#") | safe }}
+  </small>
+</form>
+{% when State::NeedsResume %}
+<form
+  method="post"
+  action="/setup/resume"
+>
+  <input type="hidden" name="payload" value="{}" />
+  <h1>CDelivery</h1>
+  <p>{{ tt!("ui.setup.whenIncomplete") }}</p>
+  <div class="mt-3 end">
+    <input
+      class="button"
+      id="setup_resume_button"
+      type="submit"
+      value='{{ tt!("ui.common.continue") }}'
+    />
+  </div>
+</form>
+{% when State::Provisioning %}
+<div role="status">
+  <h1>CDelivery</h1>
+  <p>{{ tt!("ui.setup.whenProvisioning") }}</p>
+</div>
+{% endmatch %}
+{% endblock main %}

@@ -1,0 +1,31 @@
+---
+title: "メッセージと通知"
+description: "Admin がチャネルを接続し、各ユーザーが本人の ID と購読を設定します。"
+sidebar:
+  order: 44
+---
+
+Admin がチャネルを接続し、各ユーザーが本人の ID と購読を設定します。
+
+## チャネル
+
+| 種類 | 管理用認証 | 個人の識別子 |
+| --- | --- | --- |
+| [メール](/docs/ja/guides/automation/im/email/) | SMTP、任意の IMAP | アカウントのメール |
+| [Slack](/docs/ja/guides/automation/im/slack/) | bot/app token | Member ID |
+| [Telegram](/docs/ja/guides/automation/im/telegram/) | bot token | 数値 user ID |
+| [Discord](/docs/ja/guides/automation/im/discord/) | bot token | User ID |
+| [Lark](/docs/ja/guides/automation/im/lark/) | App ID/Secret | open_id |
+| [Feishu](/docs/ja/guides/automation/im/feishu/) | App ID/Secret | open_id |
+
+表示名、グループ、bot の ID は本人 ID の代わりになりません。
+
+## 設定と確認
+
+作成、権限、公開、イベント受信を設定し、認証と本人 ID を保存して通知を購読します。会話には[モデル](/docs/ja/guides/automation/models/)が必要で、読み取り質問から確認します。
+
+他人の ID を入れると、その人物に自分の通知や操作権限を渡す可能性があります。
+
+## 調査
+
+認証、通信、イベント、紐付け、購読、モデルを分けて確認します。アバターだけでは配信や本人の正しさは証明できません。[通知設定](/docs/ja/guides/automation/im/notifications/)を参照してください。

@@ -1,0 +1,27 @@
+---
+title: "Gestión de aplicaciones"
+description: "Una aplicación combina imagen, ejecución, red, recursos y almacenamiento; verifica siempre su estado real."
+sidebar:
+  order: 7
+---
+
+Una aplicación combina imagen, ejecución, red, recursos y almacenamiento; verifica siempre su estado real.
+
+## Decidir antes de crear
+
+Determina grupo, nombre, persistencia, comando, puertos y capacidad. La consola no renombra aplicaciones ni las mueve entre grupos. El modo de volúmenes locales se elige al crear.
+
+Reader consulta; Operator y Admin crean, modifican, reinician y eliminan. Grupos y recursos de servidores requieren Admin.
+
+## Guías
+
+- [Crear](/docs/es/guides/apps/create/), [imágenes](/docs/es/guides/apps/images/) y [comandos](/docs/es/guides/apps/container/).
+- [Recursos](/docs/es/guides/apps/resources/), [XConfig](/docs/es/guides/apps/xconfig/) y [persistencia](/docs/es/guides/apps/persistence/).
+- [Escalado](/docs/es/guides/apps/scaling/) y [ubicación](/docs/es/guides/apps/placement/).
+- [Actualizar y reiniciar](/docs/es/guides/apps/lifecycle/) o [eliminar](/docs/es/guides/apps/delete/).
+
+## Valores iniciales
+
+El formulario vacío usa una réplica fija, comando de imagen y registros del host, sin reservas ni etiqueta adicional. La actualización predeterminada sustituye todas las réplicas en paralelo, detiene primero las antiguas, observa 60 segundos, tolera cero fallos y revierte al fallar.
+
+Revisa la [estrategia](/docs/es/guides/release-safety/update-strategy/) si necesitas continuidad. Guardar sin cambios no fuerza un despliegue. Variables y archivos arbitrarios no se ocultan automáticamente. Verifica réplicas, registros y petición real; añade [XHealth](/docs/es/guides/release-safety/xhealth/) o [Guardian](/docs/es/guides/release-safety/) según la necesidad.

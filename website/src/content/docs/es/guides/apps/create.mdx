@@ -1,0 +1,29 @@
+---
+title: "Crear y desplegar"
+description: "Crea una aplicación desde una imagen o plantilla y comprueba su primera ejecución."
+sidebar:
+  order: 8
+---
+
+Crea una aplicación desde una imagen o plantilla y comprueba su primera ejecución.
+
+## Procedimiento
+
+1. Como Operator o Admin, abre un grupo existente.
+2. Introduce un nombre único de 1–16 letras minúsculas, dígitos o guiones; sin guion inicial/final ni nombres reservados.
+3. Selecciona imagen o plantilla de base de datos.
+4. Revisa variables, puertos y acceso.
+5. Elige ahora la persistencia si la necesitas.
+6. Revisa recursos, réplicas, ubicación y estrategia; guarda.
+
+La descripción admite 500 caracteres. El nombre es único en toda la plataforma. La consola no cambia después nombre ni grupo.
+
+## Plantillas y datos
+
+Las plantillas aportan valores iniciales, no copias de seguridad. Revisa credenciales generadas, versión y directorio de datos. Las [aplicaciones con estado](/docs/es/guides/apps/persistence/stateful/) usan una réplica en un servidor fijo.
+
+## Verificación
+
+Espera la réplica, lee registros y prueba el servicio. Un error de descarga exige revisar referencia, credenciales, red y arquitectura. Una tarea pendiente puede carecer de servidor elegible o recursos. Un proceso que termina requiere revisar comando y configuración.
+
+Sigue el [ejemplo de Nginx](/docs/es/getting-started/first-app/) para una comprobación completa y consulta [imágenes](/docs/es/guides/apps/images/) para registros privados.

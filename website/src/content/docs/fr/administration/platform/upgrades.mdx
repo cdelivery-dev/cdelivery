@@ -1,0 +1,28 @@
+---
+title: "Mises à jour et versions"
+description: "Programme principal, Pingress, Insight, Insight Agent et gestion des volumes ont des versions indépendantes."
+sidebar:
+  order: 62
+---
+
+Programme principal, Pingress, Insight, Insight Agent et gestion des volumes ont des versions indépendantes.
+
+## Préparer
+
+Admin consulte versions et notes. Vérifiez registre, architecture et temps disponible. Sauvegardez les données ; noter une version n’est pas un backup.
+
+Le catalogue fournit la dernière version et les demandes l’exigent. Aucun sélecteur général d’historique ou bouton universel de rétrogradation.
+
+## Actualiser
+
+Choisissez la version dans Paramètres → CDelivery, confirmez et attendez le redémarrage. Contrôlez ensuite version, serveurs, applications, événements et API/MCP.
+
+Actualisez chaque composant séparément. Testez HTTPS après Pingress, nouvelles mesures après Insight/collecteurs, volumes après l’agent. Renouvelez invitations serveur après redémarrage.
+
+Une interruption de console ne prouve pas une panne des applications.
+
+## Diagnostic
+
+Métadonnées indisponibles ne signifient pas à jour. Vérifiez accès au service de publication. Pull échoué : image, architecture, tâches.
+
+[Rollback applicatif](/docs/fr/guides/release-safety/rollback/) ne restaure ni plateforme ni données. Voir [récupération](/docs/fr/administration/platform/recovery/) pour login.

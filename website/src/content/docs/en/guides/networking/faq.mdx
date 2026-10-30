@@ -1,0 +1,63 @@
+---
+title: "Networking FAQ"
+description: "Troubleshoot IPv6, client addresses, DNS, routing, and certificates."
+sidebar:
+  order: 25
+---
+
+These IPv6 checks apply to Linux servers running Pingress.
+
+## Why does Pingress record a gateway address?
+
+An IPv4-only `docker_gwbridge` can translate IPv6 connections, hiding the original client address even when the host supports IPv6. A CDN or another proxy also changes the direct peer: Pingress records that peer and uses it for `X-Real-IP` and `X-Forwarded-For`.
+
+## Does the installer enable IPv6 automatically?
+
+During a fresh installation or when joining, the script detects host IPv6 and attempts to prepare a dual-stack gateway. If it asks how to proceed, choose **1** to continue with IPv4 only, or **2** to exit and resolve the problem; exiting is the default, including without a terminal.
+
+`--no-ipv6` skips gateway preparation. It does not disable IPv6 on an existing dual-stack gateway. On macOS, networking is managed by the Docker runtime.
+
+## How do I check it?
+
+On the server running Pingress:
+
+```sh
+ip -6 address show scope global
+ip -6 route show default
+docker network inspect docker_gwbridge --format '{{.EnableIPv6}}'
+```
+
+The last command should print `true`; that confirms the setting, not connectivity. For public access, the domain's AAAA record must reach Pingress over IPv6.
+
+From another machine with IPv6, replace the example domain and test both protocols:
+
+```sh
+curl -4 --noproxy '*' -I https://app.example.com
+curl -6 --noproxy '*' -I https://app.example.com
+```
+
+Compare Pingress's `client_ip`, or the forwarding headers received by your application, with the connecting client's address. The application's socket peer is Pingress, so it is not the original client.
+
+## How do I enable IPv6 later?
+
+First configure working IPv6 on the host. If the gateway already reports `true`, check connectivity and DNS. For a server that has not joined yet, run the [installation command](/docs/getting-started/installation/) or the join command from the server list, without `--no-ipv6`.
+
+**Rerunning an existing installation does not upgrade its gateway.** An active server with an IPv4-only gateway needs maintenance:
+
+1. Back up local data and record the node ID, role, complete node labels, gateway configuration, and applications, Pingress or Insight bound to that node.
+2. Stop or move its workloads. Before a manager leaves, keep a healthy majority of managers and a working CDelivery dashboard elsewhere, then demote it. Never directly remove the only manager; establish a safe handover or a backup-and-recovery plan first. Follow [Docker's node maintenance instructions](https://docs.docker.com/engine/swarm/manage-nodes/).
+3. After the node leaves and the gateway has no container references, obtain a **fresh join command for its original role** from the working dashboard. Run it without `--no-ipv6`; the script prepares the default gateway before joining. For a custom gateway, preserve its subnet and options when [preparing a dual-stack replacement](https://docs.docker.com/engine/swarm/networking/#customize-the-docker_gwbridge). Invitations expire after 30 minutes and also become invalid when CDelivery restarts or moves.
+4. Rejoining creates a new node ID. Restore the complete labels, including volume descriptions, and repair service bindings to the old ID. Local-volume applications and locally stored Insight cannot simply switch nodes in the UI; their deployment constraints need administrator maintenance. Data stays on the original host.
+5. Restore services, update DNS as needed, and repeat the IPv4/IPv6 checks above.
+
+Alternatively, join another IPv6-capable server, run Pingress there, and point DNS to it.
+
+## What if IPv6 routing or firewall rules fail?
+
+Enabling forwarding can stop an interface with `accept_ra=1` from accepting router advertisements (RA), removing its default route. Configure RA persistence through the interface's network manager: ifupdown uses `accept_ra 2`; ifupdown-ng uses `ipv6-accept-ra 2`. Do not blindly override `accept_ra=0` on interfaces whose manager handles RA itself. Recheck routes after restarting the interface or host.
+
+Keep Docker's IPv6 firewall management enabled (`ip6tables` must not be `false`), and allow Pingress's HTTP/HTTPS ports through host and cloud firewalls. A gateway reporting `true` alone does not verify these rules or external reachability.
+
+## Other access problems
+
+For DNS or routing failures, follow [Domains and routing](/docs/guides/networking/routing/). For missing or expired certificates and issuance failures, see [Automatic certificates and renewal](/docs/guides/networking/automatic-certificates/). Use [Access logs](/docs/guides/observability/logs/access/) to determine whether the request reached the gateway, matched an application, and received an upstream response.

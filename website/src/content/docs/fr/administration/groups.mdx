@@ -1,0 +1,28 @@
+---
+title: "Gestion des groupes"
+description: "Les groupes organisent applications et réseau commun sans isoler les comptes."
+sidebar:
+  order: 56
+---
+
+Les groupes organisent applications et réseau commun sans isoler les comptes.
+
+## Créer
+
+Admin renseigne un nom unique de 1–16 minuscules, chiffres ou tirets, sans tiret initial/final ni nom réservé. Description : 256 caractères maximum.
+
+Choisissez le groupe à la création d’application. Les noms d’applications restent uniques globalement. La console ne renomme pas les groupes ni ne déplace les applications existantes.
+
+Testez la [communication interne](/docs/fr/guides/networking/connectivity/).
+
+## Description
+
+Elle décrit usage/responsable sans changer placement ou accès. Si le réseau a été créé mais pas la description, le groupe peut exister : actualisez et complétez.
+
+Omettre dans un patch préserve ; effacer explicitement retire.
+
+## Supprimer
+
+Résolvez applications et références réseau. L’arrêt asynchrone peut garder le groupe occupé momentanément.
+
+Les volumes métier restent. Notez serveur/nom dans [volumes](/docs/fr/administration/nodes/volumes/). Pour les connexions, vérifiez groupe, port, interface et réseau.

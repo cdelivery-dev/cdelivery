@@ -1,0 +1,40 @@
+---
+title: "Notification settings and troubleshooting"
+description: "Check platform channels, personal subscriptions, recipient roles, language, and delivery."
+sidebar:
+  order: 51
+---
+
+Notification delivery depends on the platform channel, personal receiving preferences, and recipient eligibility. Saving bot credentials does not bind or subscribe every user automatically.
+
+## Configure the chain
+
+1. An Admin enables the email or messaging channel.
+2. Each user verifies their account email or binds their own immutable message-platform ID.
+3. Each user enables the desired notification subscriptions.
+4. Configure the model and [automated duty](/docs/guides/automation/duty/) only if AI analysis is needed.
+5. Correlate a real operational event with its resulting notification and recipients.
+
+A binding and a subscription are separate. Disabling notifications does not delete a binding, and stopping duty does not disable ordinary operational alerts.
+
+## Roles and language
+
+Ordinary alerts go to eligible subscribed users. AI duty notifications additionally require the recipient's role to be at least the configured duty role. Operator duty therefore notifies eligible Operators and Admins, not Readers.
+
+Duty notifications use the configured notification language. User conversations follow the conversation language.
+
+## Troubleshoot in order
+
+| Stage | Check |
+| --- | --- |
+| Event | Actual application state, check result, and operation events |
+| Channel | Credentials, publication, sending permissions, outbound network |
+| Recipient | Correct email or immutable user ID |
+| Subscription | Personal email and channel switches |
+| Role | User role compared with duty role |
+| Delivery service | Spam folders, direct-message restrictions, rate limits |
+| AI | Model settings and analysis errors |
+
+Record time, channel, account, and related event when investigating. Remove tokens and passwords from diagnostics. After changing a binding, use a read-only conversation to verify the account; an avatar or display name alone is insufficient.
+
+Channel-specific setup is in [messaging](/docs/guides/automation/im/).

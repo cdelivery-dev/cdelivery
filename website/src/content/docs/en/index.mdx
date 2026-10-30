@@ -1,0 +1,58 @@
+---
+title: "CDelivery documentation"
+description: "Install CDelivery, deploy applications, and manage networking, observability, automation, and your platform."
+sidebar:
+  order: 1
+---
+
+import { Card, CardGrid } from '@prosefly/astro-components';
+
+CDelivery helps you deploy applications and manage servers, with checks, logs, metrics, and automation for daily operations. Each guide explains setup, verification, limits, and troubleshooting.
+
+## Getting started
+
+1. [Introduction](/docs/getting-started/introduction/): understand the platform and its main objects.
+2. [Requirements](/docs/getting-started/requirements/): prepare your server, network, and access.
+3. [Installation](/docs/getting-started/installation/): start the platform and create an administrator.
+4. [Your first application](/docs/getting-started/first-app/): deploy an example and verify a real request.
+5. [The console](/docs/getting-started/console/): find applications, servers, settings, and your account.
+
+## Guides
+
+<CardGrid>
+
+<Card title="Applications" href="/docs/guides/apps/">
+  Creation, runtime settings, configuration and data, scaling, placement, lifecycle
+</Card>
+
+<Card title="Domains and HTTPS" href="/docs/guides/networking/">
+  Internal connections, published ports, routing, certificates, troubleshooting
+</Card>
+
+<Card title="Health checks and releases" href="/docs/guides/release-safety/xhealth/">
+  XHealth, update strategies, Guardian validation, rollback
+</Card>
+
+<Card title="Logs, metrics, and events" href="/docs/guides/observability/">
+  Application and access logs, application and server metrics, collection and retention
+</Card>
+
+<Card title="Scheduled tasks" href="/docs/guides/automation/xjob/">
+  XJob setup, schedules, results
+</Card>
+
+<Card title="AI operations" href="/docs/guides/automation/">
+  Models, conversations, automated duty
+</Card>
+
+<Card title="Messages and notifications" href="/docs/guides/automation/im/">
+  Email, Slack, Telegram, Discord, Lark, Feishu, delivery settings
+</Card>
+
+</CardGrid>
+
+## Platform management
+
+[Platform management](/docs/administration/) covers servers and groups, accounts and permissions, and platform maintenance. External integrations use [API and MCP access](/docs/guides/automation/api-mcp/).
+
+Replace example addresses, domains, accounts, and credentials with your own. After each change, verify the actual result using the relevant guide. Changes affecting stored data also require checking your backup and recovery procedure.

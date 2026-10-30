@@ -1,0 +1,46 @@
+---
+title: "Récupérer l’accès administratif"
+description: "Un administrateur de l’hôte peut secourir les comptes dans le conteneur principal actif."
+sidebar:
+  order: 63
+---
+
+Un administrateur de l’hôte peut secourir les comptes dans le conteneur principal actif.
+
+Si un Admin se connecte encore, utilisez [utilisateurs](/docs/fr/administration/accounts/users/). La CLI nécessite données et clé maîtresse existantes ; elle ne récupère pas une clé perdue.
+
+## Identifier
+
+```sh
+docker ps --format '{{.ID}} {{.Names}} {{.Image}}'
+```
+
+Remplacez CONTAINER_ID par le programme principal, pas un gateway/collecteur.
+
+## Compte existant
+
+```sh
+docker exec -it CONTAINER_ID /entrypoint rescue admin@example.com
+```
+
+Affiche un mot de passe temporaire et désactive double facteur, sans promouvoir le rôle ni révoquer les clés. Changez ensuite le secret, réinscrivez l’authentificateur et révisez les clés.
+
+## Nouvel Admin
+
+Pour un e-mail inexistant :
+
+```sh
+docker exec -it CONTAINER_ID /entrypoint add-admin admin@example.com Alex Chen
+```
+
+Affiche un secret temporaire. Un e-mail existant entre en conflit ; utilisez rescue.
+
+## Clé API
+
+```sh
+docker exec -it CONTAINER_ID /entrypoint create-api-key admin@example.com recovery Reader
+```
+
+Option `--expires-at` avec RFC 3339 futur. Reader/Operator/Admin ne peut dépasser le compte. Conservez la sortie unique puis révoquez.
+
+Si non initialisé/utilisateur absent, vérifiez installation, conteneur et e-mail. Ne réinstallez pas par erreur et ne publiez pas ces sorties.

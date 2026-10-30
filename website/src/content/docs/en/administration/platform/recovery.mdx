@@ -1,0 +1,48 @@
+---
+title: "Recover management access"
+description: "Use the host management CLI to reset an account, add an administrator, or issue a temporary API key."
+sidebar:
+  order: 63
+---
+
+If another Admin can sign in, use [user management](/docs/administration/accounts/users/). Otherwise, a host administrator can run recovery inside the running CDelivery main container.
+
+The commands require existing platform data and its master key. A fresh container without those resources cannot substitute for the deployed instance, and login recovery cannot repair a lost key or business volume.
+
+## Find the container
+
+On the server running the main program:
+
+```sh
+docker ps --format '{{.ID}} {{.Names}} {{.Image}}'
+```
+
+Identify the main CDelivery container and replace `CONTAINER_ID` below. Do not choose a gateway or collector.
+
+## Reset an existing account
+
+```sh
+docker exec -it CONTAINER_ID /entrypoint rescue admin@example.com
+```
+
+This prints a temporary password and disables that account's two-factor authentication. It does not promote the user to Admin or revoke API keys. Sign in, change the password, re-enroll two-factor authentication, and review keys.
+
+## Add an administrator
+
+For an email that does not already exist:
+
+```sh
+docker exec -it CONTAINER_ID /entrypoint add-admin admin@example.com Alex Chen
+```
+
+The command prints a temporary password. An existing email conflicts; rescue that account instead. Remove unneeded temporary accounts after recovery.
+
+## Issue an API key
+
+```sh
+docker exec -it CONTAINER_ID /entrypoint create-api-key admin@example.com recovery Reader
+```
+
+Optionally append `--expires-at` with a future RFC 3339 timestamp. Roles are `Reader`, `Operator`, or `Admin` and cannot exceed the user's role. Save the one-time output and revoke the key after use.
+
+For uninitialized or missing-user errors, verify the container, deployment, and email. Do not reinstall over existing data to solve an identification mistake. Output contains credentials and must not enter public logs.

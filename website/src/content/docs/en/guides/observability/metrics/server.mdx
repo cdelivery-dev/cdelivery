@@ -1,0 +1,32 @@
+---
+title: "Server metrics"
+description: "Inspect host CPU, memory, network, and filesystem observations and their different sampling rates."
+sidebar:
+  order: 35
+---
+
+Server metrics show host pressure and help explain pending tasks, slow applications, or storage exhaustion. Open a server's metrics view and choose the relevant period.
+
+## Available observations
+
+Inspect CPU, memory, network, and filesystem series using the displayed units. Host collection focuses on physical network interfaces and writable local block-backed filesystems; it is not a list of every virtual device or application volume.
+
+Ordinary samples default to five seconds. Filesystem sampling occurs every five minutes, so a filesystem chart should not be expected to change at the same cadence as CPU.
+
+## Diagnose pressure
+
+| Symptom | Compare |
+| --- | --- |
+| CPU saturation | Application CPU, replica count, reservations and limits |
+| Memory pressure | Host available memory, process failures, application limits |
+| Disk nearly full | Filesystem usage, retained logs, business volumes |
+| Missing reports | Server state, collector status, network and Insight |
+| Traffic spike | Physical interface series and application access patterns |
+
+Host free space and individual volume size answer different questions. Use [volume management](/docs/administration/nodes/volumes/) to inspect local volumes.
+
+## Verify and interpret
+
+Check sample timestamps and time range before acting. Missing observations are not zero usage; a collector warning does not necessarily mean the server itself is down.
+
+After adjusting collection or freeing space, wait for fresh samples at the appropriate cadence. Compare with [application metrics](/docs/guides/observability/metrics/application/) and review [collection settings](/docs/guides/observability/settings/) if reports remain stale.

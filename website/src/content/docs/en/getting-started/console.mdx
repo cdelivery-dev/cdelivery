@@ -1,0 +1,33 @@
+---
+title: "Using the console"
+description: "Find application operations, server resources, platform settings, and personal account controls."
+sidebar:
+  order: 6
+---
+
+The console separates application work, platform administration, and personal settings. Available actions depend on your current role.
+
+## Find the right area
+
+| Area | What to do |
+| --- | --- |
+| Groups and applications | Create applications, inspect replicas, change runtime settings |
+| Application logs and metrics | Diagnose startup, traffic, and resource use |
+| XHealth, Guardian, XJob | Inspect checks, release validation, and scheduled tasks |
+| Servers | Inspect machine state, labels, metrics, and local volumes |
+| Settings | Manage platform components, models, messaging channels, users, and versions |
+| Account | Change your profile, password, two-factor authentication, API keys, and notifications |
+
+A Reader can inspect shared information and manage their own account. An Operator can also operate applications. An Admin manages platform resources and settings. See [permissions](/docs/administration/accounts/roles/) when an action is unavailable.
+
+## Read configuration and runtime separately
+
+A successful save confirms the configuration request, while image pulling, scheduling, container startup, and collection may continue afterward. Compare expected replicas with running replicas, then inspect logs and perform a real request.
+
+An empty chart may mean collection is disabled, samples are delayed, or the selected time range contains no data. A failed query is a different condition. Use [observability](/docs/guides/observability/) to distinguish them.
+
+## Routine workflow
+
+Choose the group and application, inspect its current state, make a focused change, and verify replicas, logs, events, and the business endpoint. For destructive operations, follow the resource's deletion guide and check retained data separately.
+
+Platform credentials are configured by an Admin; personal notification subscriptions and message identities belong in your account. See [messaging](/docs/guides/automation/im/) and [platform management](/docs/administration/).

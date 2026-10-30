@@ -1,0 +1,26 @@
+---
+title: "Validação com Guardian"
+description: "Guardian testa uma configuração candidata antes de promovê-la para a aplicação ativa."
+sidebar:
+  order: 29
+---
+
+Guardian testa uma configuração candidata antes de promovê-la para a aplicação ativa.
+
+## Preparar
+
+Configure [XHealth](/docs/pt-br/guides/release-safety/xhealth/), habilite Guardian numa aplicação compatível e reserve capacidade para candidato e aplicação atual.
+
+Mudanças relevantes de imagem, execução ou arquivos podem iniciar validação; nem toda edição de metadados inicia. Aplicações de volume local não suportam Guardian.
+
+## Fases
+
+Deploying: posicionamento, download e início. Validating: asserções. Failed: detalhes da falha. Promoting: substituição ativa.
+
+Repetir, ignorar e cancelar aparecem conforme a fase. Ignorar aceita sem validação bem-sucedida; não transforma falha em sucesso. Cancelamento depende do estado.
+
+## Conferir
+
+Separe logs GuardianApp e GuardianCheck. Revise portas, ferramentas, ambiente, capacidade e asserções. Depois da promoção, teste réplicas reais e serviço.
+
+Validação não restaura dados nem garante todas as dependências de produção. Leia [estratégia](/docs/pt-br/guides/release-safety/update-strategy/) e [rollback](/docs/pt-br/guides/release-safety/rollback/).

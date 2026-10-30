@@ -1,0 +1,31 @@
+---
+title: "Recogida y retención"
+description: "Admin configura Insight, recolectores, almacenamiento y duración del historial."
+sidebar:
+  order: 37
+---
+
+Admin configura Insight, recolectores, almacenamiento y duración del historial.
+
+## Almacenamiento
+
+Elige Local, S3, S3-compatible con endpoint, GCS con JSON de cuenta de servicio o Azure. Prepara ubicación y credenciales antes de habilitar.
+
+Después, tipo e identidad de almacenamiento no se cambian como una edición ordinaria; se permiten credenciales y región cuando corresponda. Local exige servidor fijo. Una migración necesita planificación propia.
+
+## Valores y retrasos
+
+| Ajuste | Predeterminado | Rango |
+| --- | --- | --- |
+| Retención | 30 días | 1–3650 días |
+| Muestreo | 5 segundos | 1–60 segundos |
+| Vaciado | 3 minutos | Según configuración |
+| Filesystem | 5 minutos | Cadencia propia |
+
+Servidor fijo puede consultar datos en buffer. La ubicación distribuida por etiqueta puede requerir vaciado y sincronización. Más frecuencia y retención consumen más almacenamiento.
+
+## Verificar
+
+Genera actividad nueva y confirma registros, métricas y eventos recientes por servidor. No se importan automáticamente registros anteriores.
+
+Para huecos, revisa componentes, red, credenciales, periodo y retención. Reducir retención puede eliminar historial. El [controlador de registros](/docs/es/guides/observability/logs/application/) se configura por separado.

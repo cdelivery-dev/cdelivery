@@ -1,0 +1,26 @@
+---
+title: "Rollback und fehlgeschlagene Releases"
+description: "Rollback stellt vorherige Anwendungskonfiguration wieder her, nicht Daten oder Plattformversionen."
+sidebar:
+  order: 30
+---
+
+Rollback stellt vorherige Anwendungskonfiguration wieder her, nicht Daten oder Plattformversionen.
+
+## Entscheiden
+
+Prüfe, ob das alte Image aktuelle Daten versteht. Migration kann Datenwiederherstellung vor dem alten Programm erfordern.
+
+Rollback manuell bei vorhandener Vorgängerkonfiguration oder automatisch durch Strategie starten. Er ersetzt parallel mit Continue bei eigenen Fehlern; relevante Reihenfolge, Beobachtung und Fehlerquote bleiben erhalten.
+
+## Verifizieren
+
+Konfiguration/Image, Replikate, Logs, Anfrage, Daten, XHealth und Ereignisse prüfen. Abgeschlossene Anfrage bedeutet nicht vollständige Erholung.
+
+Ohne Vorgänger eine bekannte Konfiguration rekonstruieren. Gleicher neuer Name stellt keine Historie her.
+
+## Weitere Fehler
+
+Kapazität, Registry, Zugangsdaten, Speicher und Kompatibilität kontrollieren. Wiederholen repariert keine unerreichbare Abhängigkeit.
+
+[Guardian-Aktionen](/docs/de/guides/release-safety/) betreffen Kandidaten; [Plattformupdates](/docs/de/administration/platform/upgrades/) sind separat.

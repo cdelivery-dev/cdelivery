@@ -1,0 +1,28 @@
+---
+title: "Feishu-Anbindung"
+description: "Feishu verwendet einen App-Bot und eine dauerhafte Verbindung für Ereignisse."
+sidebar:
+  order: 50
+---
+
+Feishu verwendet einen App-Bot und eine dauerhafte Verbindung für Ereignisse.
+
+## Erstellen
+
+Eigene Anwendung mit Bot, Senden, privaten Nachrichten und bei Bedarf Gruppenerwähnungen konfigurieren. Dauerverbindung wählen und `im.message.receive_v1` abonnieren.
+
+Veröffentlichen, Nutzerbereich freigeben, neue Rechte genehmigen. Admin setzt App ID/Secret im Feishu-Kanal. Ein reiner Gruppen-Webhook-Bot reicht nicht.
+
+Lark-Zugang gehört in den [anderen Kanal](/docs/de/guides/automation/im/lark/). Siehe [offizielle Ereigniseinrichtung](https://open.feishu.cn/document/server-docs/event-subscription-guide/event-subscription-configure-/request-url-configuration-case).
+
+## Identität
+
+Eigene appbezogene `open_id` über offiziellen API-Explorer und etwa [E-Mail/Telefon-Abfrage](https://open.feishu.cn/document/server-docs/contact-v3/user/batch_get_id) mit nötigen Kontaktrechten ermitteln.
+
+Keine user_id, union_id, Chat- oder Bot-ID. Andere App kann andere open_id erzeugen. Eigene ID zuordnen und abonnieren; fremde ID exponiert deine Rechte.
+
+## Prüfen
+
+Mit Modell privat lesend fragen oder in Gruppe erwähnen. Veröffentlichung, Nutzerbereich, Events, Netzwerk und Bindung prüfen.
+
+Profil benötigt `contact:contact.base:readonly`, `contact:user.base:readonly` und Kontaktsichtbarkeit. Profil- und Nachrichtenfehler getrennt behandeln.

@@ -1,0 +1,33 @@
+---
+title: "Create and manage XJob tasks"
+description: "Run scheduled application commands in separate task containers and verify their outcomes."
+sidebar:
+  order: 38
+---
+
+XJob runs a command on a schedule using an application's image and relevant runtime environment. It creates an independent task container; it does not execute inside the running business container.
+
+## Create a task
+
+1. Open the application's XJob area as an Operator or Admin.
+2. Give the task a recognizable name.
+3. Enter a command available in the image.
+4. Set the waiting interval after each run ends.
+5. Set the maximum runtime and save.
+6. Run or wait for an execution, then inspect status and logs.
+
+Each application supports up to 16 tasks. Interval and execution timeout are required, each from 1 to 1440 minutes. Use an explicit shell when your command needs variable expansion, pipes, or other shell behavior.
+
+Do not assume a job inherits writable data from a live container. Make required services and data accessible through the task's actual configuration.
+
+## Operational design
+
+Commands that send messages, write records, or call external APIs should handle repeated execution appropriately. Scheduling is not a transaction system for those external side effects.
+
+A successful container exit only proves the command reported success. Make its exit status reflect the operation you intend to verify.
+
+## Verify and troubleshoot
+
+Check the selected image, command tools, environment, target service connectivity, and execution time. Inspect the XJob log source for the specific task name.
+
+[Scheduling rules](/docs/guides/automation/xjob/schedule/) explain intervals, timeouts, and recovery. [Results and troubleshooting](/docs/guides/automation/xjob/results/) explain last/current execution state and failures.

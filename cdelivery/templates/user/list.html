@@ -1,0 +1,44 @@
+{% extends "settings.html" %}
+
+{% import "settings/nav.html" as nav %}
+{% import "user/role.html" as role %}
+
+{% block title %}{{ tt!("ui.user.title") }} - {{ tt!("ui.nav.settings") }} | {{ super() }}{% endblock title %}
+
+{% block settings_navigation %}{{ nav::nav("users") }}{% endblock settings_navigation %}
+
+{% block main %}
+<header>
+  <h1>{{ tt!("ui.user.title") }}</h1>
+</header>
+
+<div class="table-scroll mt-3">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">{{ tt!("ui.user.name") }}</th>
+        <th scope="col">{{ tt!("ui.form.user.email.label") }}</th>
+        <th scope="col">{{ tt!("ui.user.role") }}</th>
+        <th scope="col">{{ tt!("ui.account.twoFactor.title") }}</th>
+        <th scope="col">{{ tt!("ui.account.profile.id") }}</th>
+        <th scope="col" aria-label='{{ tt!("ui.common.actions") }}'></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      <tr>
+        <th scope="row"><span translate="no">{{ user.first_name }} {{ user.last_name }}</span>{% if user.id.as_str() == current_user_id.as_str() %} <small>({{ tt!("ui.user.current") }})</small>{% endif %}</th>
+        <td translate="no">{{ user.email }}</td>
+        <td>{% let user_role = user.role %}{{ role::label(user_role) }}</td>
+        <td>{% if user.totp_enabled %}{{ tt!("ui.user.totp.enabled") }}{% else %}<span class="muted">{{ tt!("ui.user.totp.disabled") }}</span>{% endif %}</td>
+        <td translate="no">{{ user.id }}</td>
+        <td><a href="/settings/users/{{ user.id }}" class="row-action">{{ tt!("ui.common.edit") }}</a></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6">{{ tt!("ui.user.empty") }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<div class="end"><a class="row-action" href="/settings/users/.create">{{ tt!("ui.common.create") }}</a></div>
+{% endblock main %}

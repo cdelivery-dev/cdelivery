@@ -1,0 +1,26 @@
+---
+title: "Gestión de volúmenes"
+description: "Los volúmenes pertenecen a un servidor; nombres iguales en máquinas distintas no comparten datos."
+sidebar:
+  order: 55
+---
+
+Los volúmenes pertenecen a un servidor; nombres iguales en máquinas distintas no comparten datos.
+
+## Crear
+
+Admin habilita gestión de volúmenes mediante cdelivery-agent. Abre volúmenes del servidor, crea nombre válido y descripción opcional de hasta 256 caracteres. Monta en una [aplicación con estado](/docs/es/guides/apps/persistence/stateful/) del mismo servidor y comprueba persistencia.
+
+Crear volumen y guardar descripción son pasos separados. Si falla descripción, actualiza lista antes de intentar crear otra vez.
+
+## Capacidad
+
+Consultar tamaño recorre datos y puede tardar; tamaño ausente no significa vacío. Espacio total/disponible describe el host. Volúmenes reservados de plataforma no se gestionan como datos ordinarios.
+
+La descripción no demuestra ausencia de referencias ni constituye copia.
+
+## Eliminar y diagnosticar
+
+Comprueba usuarios del volumen y copia recuperable. Si sigue ocupado, espera salida de contenedores o resuelve referencias. Desactivar componente no borra datos.
+
+Si falla lista, revisa servidor y componente. Si falta volumen, comprueba ID y nombre: crear uno homónimo en otra máquina no recupera nada. Replicación y copias consistentes corresponden al almacenamiento. Consulta [persistencia](/docs/es/guides/apps/persistence/).

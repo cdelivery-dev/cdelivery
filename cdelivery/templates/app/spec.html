@@ -1,0 +1,85 @@
+{% extends "dashboard.html" %}
+
+{% import "app/form.html" as form_macro %}
+{% import "app/tabs.html" as tab %}
+
+{% block title %}{{ tt!("ui.app.tab.specification") }} - {{ self.spec.name }} | {{ super() }}{% endblock title %}
+
+{% block main %}
+{% let name = self.spec.name %}
+{% let description = self.spec.description %}
+{{ tab::page_header(name, description, "spec", true) }}
+<div x-data="{ pageSubmitting: false }">
+<script id="app-spec-init" type="application/json">{{ spec|json|safe }}</script>
+<script id="app-command-init" type="application/json">{{ command_line|json|safe }}</script>
+<script id="app-node-init" type="application/json">{{ nodes|json|safe }}</script>
+<form method="post" action="/apps/{{ name }}/spec" autocomplete="off" x-data="appForm" @submit="prepare($event); if (!$event.defaultPrevented) pageSubmitting = true">
+  <input x-ref="payload" type="hidden" name="payload" />
+  {{ form_macro::sections(name, "update", self.mount_node_label(), "") }}
+  <div class="actions">
+    <button type="submit" class="button danger" form="delete_app_form" :disabled="pageSubmitting">{{ tt!("ui.common.delete") }}</button>
+    <input class="button" type="submit" value='{{ tt!("ui.common.update") }}' :disabled="pageSubmitting || (mounts && mounts.length === 0)" />
+  </div>
+</form>
+<form id="delete_app_form" method="post" action="/apps/{{ name }}/delete" data-confirm='{{ tt!("ui.app.deleteConfirmation", name = name) }}' @submit="if (pageSubmitting) { $event.preventDefault(); return } if (!confirm($el.dataset.confirm)) { $event.preventDefault(); return } $refs.deletePayload.value = '{}'; pageSubmitting = true">
+  <input x-ref="deletePayload" type="hidden" name="payload" />
+</form>
+<script>
+document.addEventListener("alpine:init", () => {
+  Alpine.data("appForm", () => {
+    const spec = JSON.parse(document.getElementById("app-spec-init").textContent);
+    const serverCommand = JSON.parse(document.getElementById("app-command-init").textContent);
+    const baseline = JSON.parse(JSON.stringify(spec));
+    delete baseline.desired_replicas;
+    if (baseline.replicas.Dynamic) baseline.replicas.Dynamic.max ??= null;
+    baseline.mounts = baseline.mounts ? baseline.mounts.mounts : null;
+    if (baseline.container_options) baseline.container_options.command = [];
+    const draft = JSON.parse(JSON.stringify(baseline));
+    const data = {
+      draft,
+      baseline,
+      desiredReplicas: spec.desired_replicas,
+      commandLine: serverCommand,
+      baselineCommand: serverCommand,
+      nodes: JSON.parse(document.getElementById("app-node-init").textContent).nodes,
+      authDirty: false,
+      xconfigsDirty: false,
+      mountNodeId: spec.mounts?.node_id || "",
+      prepare(event) {
+        if (this.draft.xconfigs.some(x => !x.config_name && !x.data)) {
+          event.preventDefault();
+          alert({{ tt!("ui.app.xconfig.file.invalid")|json|safe }});
+          return;
+        }
+        const changes = {};
+        for (const key of ["description", "image", "replicas", "ports", "domains", "resources", "placement", "log_driver", "restart_policy", "update_config", "mounts"]) {
+          if (JSON.stringify(this.draft[key] ?? null) !== JSON.stringify(this.baseline[key] ?? null)) changes[key] = this.draft[key] ?? null;
+        }
+        const optionsChanged = JSON.stringify(this.draft.container_options ?? null) !== JSON.stringify(this.baseline.container_options ?? null) || this.commandLine !== this.baselineCommand;
+        let commandLine = null;
+        if (optionsChanged) {
+          changes.container_options = this.draft.container_options ? JSON.parse(JSON.stringify(this.draft.container_options)) : null;
+          if (changes.container_options) changes.container_options.command = [];
+          commandLine = this.commandLine;
+        }
+        if (this.authDirty) changes.image_auth = this.draft.image_auth;
+        if (this.xconfigsDirty) {
+          changes.xconfigs = this.draft.xconfigs.map(x => x.data
+            ? { Upload: { target: x.target, data_base64: x.data } }
+            : { InUse: { target: x.target, config_name: x.config_name, config_id: x.config_id } });
+        }
+        if (Object.keys(changes).length === 0) {
+          event.preventDefault();
+          alert({{ tt!("ui.app.noChange")|json|safe }});
+          return;
+        }
+        this.$refs.payload.value = JSON.stringify({ changes, command_line: commandLine });
+      },
+    };
+    CDelivery.expose(data, "draft", ["description", "image", "image_auth", "replicas", "ports", "domains", "xconfigs", "mounts", "container_options", "resources", "placement", "log_driver", "restart_policy", "update_config"]);
+    return data;
+  });
+});
+</script>
+</div>
+{% endblock main %}

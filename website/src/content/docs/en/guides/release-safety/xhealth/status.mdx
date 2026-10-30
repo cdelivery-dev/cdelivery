@@ -1,0 +1,34 @@
+---
+title: "XHealth status and troubleshooting"
+description: "Distinguish waiting, execution, success, failure, and checks that finished without a result."
+sidebar:
+  order: 27
+---
+
+A scheduled check and a completed successful check are different states. Inspect both the latest execution status and its logs.
+
+## Status meanings
+
+| State | Meaning |
+| --- | --- |
+| Pending | Waiting to execute |
+| Running | The check task is executing |
+| Passed | Completed successfully |
+| Failed | Reported failure |
+| Settled | Finished without a usable success/failure result |
+
+Do not count Settled as Passed. Guardian treats a settled check without a result as a validation problem.
+
+## Diagnose by stage
+
+For a pending task, inspect server availability, resources, image pulling, and scheduling. For a running task that never finishes, check network timeouts and whether the command waits indefinitely.
+
+For a failure, open the XHealth log source and inspect the Hurl assertion or command exit error. Verify target port, path, expected status, and required environment. The check image must contain the command you invoke.
+
+A connection failure to internal HTTP is not evidence of a public certificate failure. Conversely, a passing internal check does not prove that DNS, public access, or HTTPS works. Test those paths separately.
+
+## After changing a check
+
+Run it again and confirm the new execution uses the intended definition. Check the timestamp rather than relying on an old green result. Make assertions relevant to readiness, not merely to process existence.
+
+Return to [configuration](/docs/guides/release-safety/xhealth/) or inspect [application logs](/docs/guides/observability/logs/application/) when the target itself is failing.

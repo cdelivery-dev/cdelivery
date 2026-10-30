@@ -1,0 +1,31 @@
+---
+title: "Nachrichten und Benachrichtigungen"
+description: "Admin verbindet Kanäle; jeder Nutzer ordnet seine Identität und Abonnements selbst zu."
+sidebar:
+  order: 44
+---
+
+Admin verbindet Kanäle; jeder Nutzer ordnet seine Identität und Abonnements selbst zu.
+
+## Kanäle
+
+| Kanal | Zugang | Persönliche Identität |
+| --- | --- | --- |
+| [E-Mail](/docs/de/guides/automation/im/email/) | SMTP, optional IMAP | Konto-E-Mail |
+| [Slack](/docs/de/guides/automation/im/slack/) | Bot-/App-Token | Member ID |
+| [Telegram](/docs/de/guides/automation/im/telegram/) | Bot-Token | Numerische User-ID |
+| [Discord](/docs/de/guides/automation/im/discord/) | Bot-Token | User ID |
+| [Lark](/docs/de/guides/automation/im/lark/) | App ID/Secret | open_id |
+| [Feishu](/docs/de/guides/automation/im/feishu/) | App ID/Secret | open_id |
+
+Anzeigename, Gruppen- und Bot-ID ersetzen keine Nutzer-ID.
+
+## Konfigurieren
+
+Erstellung, Rechte, Veröffentlichung und Ereignisse einrichten. Zugang speichern, eigene ID zuordnen und abonnieren. Gespräche benötigen [Modell](/docs/de/guides/automation/models/); mit lesender Frage beginnen.
+
+Fremde ID kann dieser Person deine Nachrichten und Rechte zugänglich machen.
+
+## Diagnose
+
+Zugang, Netzwerk, Ereignisse, Identität, Abonnement und Modell trennen. Avatar beweist weder Zustellung noch korrekte Zuordnung. Siehe [Benachrichtigungen](/docs/de/guides/automation/im/notifications/).

@@ -1,0 +1,29 @@
+---
+title: "Einführung in CDelivery"
+description: "CDelivery stellt Container-Images bereit und unterstützt den Betrieb auf einem oder mehreren Servern."
+sidebar:
+  order: 2
+---
+
+CDelivery stellt Container-Images bereit und unterstützt den Betrieb auf einem oder mehreren Servern.
+
+## Objekte
+
+| Objekt | Aufgabe |
+| --- | --- |
+| Anwendung | Image, Befehl, Netzwerk, Ressourcen, Speicher |
+| Gruppe | Organisation und gemeinsames Netzwerk |
+| Server | Rechenleistung und lokaler Speicher |
+| Konto | Reader-, Operator- oder Admin-Rechte |
+
+Gruppen trennen keine Kontoberechtigungen. Anwendungsnamen sind plattformweit eindeutig. Lokale Volumes gehören zu einem Server; Replikate und Rollback ersetzen keine Sicherung.
+
+## Funktionen
+
+Pingress liefert Domains und HTTPS. XHealth prüft Anwendungen, Guardian validiert Kandidaten. Insight sammelt Logs, Metriken und Ereignisse. XJob führt Befehle in separaten Containern aus.
+
+KI-Werkzeuge verwenden wirksame Berechtigungen: Gespräche die des zugeordneten Kontos, Bereitschaftsdienst seine eigene Rolle. Jede Funktion benötigt Konfiguration; eine installierte Konsole bedeutet nicht fertige Zertifikate, Erfassung oder Modellzugang.
+
+## Start
+
+Prüfe [Voraussetzungen](/docs/de/getting-started/requirements/), [installiere](/docs/de/getting-started/installation/) und teste die [erste Anwendung](/docs/de/getting-started/first-app/). Operator betreibt Anwendungen; Admin verwaltet Gruppen, Server und Einstellungen.

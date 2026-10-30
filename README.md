@@ -1,70 +1,61 @@
-# CDelivery
+<h1 align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/logo-dark.svg">
+    <img src=".github/assets/logo-light.svg" alt="" width="46" height="28">
+  </picture>
+  CDelivery
+</h1>
 
-**Safer deployments. Simpler operations. More time for what matters to you.**
+<p align="center"><strong>Safer deployments. Simpler operations.</strong></p>
 
-CDelivery is a self-hosted operations platform for running applications on your own servers. It brings deployment, business workflow checks, logs and metrics, HTTPS, configuration distribution, and AI assistance into one place.
+<p align="center">A lightweight, self-hosted operations platform for deploying and running applications on your own servers.</p>
 
-Start with one server and add more as your applications grow. Spend less time integrating and maintaining infrastructure tools, and more time building your product.
+<p align="center">
+  <a href="https://cdelivery.dev">Website</a> ·
+  <a href="https://cdelivery.dev/docs/">Documentation</a> ·
+  <a href="#get-started">Getting started</a>
+</p>
 
-[Website](https://cdelivery.dev) · [Documentation](https://cdelivery.dev/docs/) · [Getting started](https://cdelivery.dev/docs/getting-started/introduction/)
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue?style=flat-square" alt="License: Apache-2.0"></a>
+</p>
+
+## Features
+
+- **Deploy and scale.** [Run container images](https://cdelivery.dev/docs/guides/apps/) on your own servers, starting with one machine and adding more as your applications grow.
+- **Release with confidence.** [XHealth](https://cdelivery.dev/docs/guides/release-safety/xhealth/) checks business workflows; [Guardian](https://cdelivery.dev/docs/guides/release-safety/) validates candidate releases before they receive user traffic and blocks promotion on failed checks. Guardian requires XHealth and applications without local data volumes.
+- **Logs and metrics.** Enable and configure [Insight](https://cdelivery.dev/docs/guides/observability/) to collect and query server and application metrics, application logs, and gateway access records, using local disk or object storage.
+- **HTTPS and load balancing.** [Pingress](https://cdelivery.dev/docs/guides/networking/) routes requests, balances traffic across instances, and manages HTTPS certificates automatically, with support for multiple gateways.
+- **AI operations.** Configure a model provider for [AI diagnostics and proactive duty checks](https://cdelivery.dev/docs/guides/automation/), with actions limited by the active role. Connect your own tools through [MCP and REST](https://cdelivery.dev/docs/guides/automation/api-mcp/).
+- **Configuration and scheduled jobs.** [XConfig](https://cdelivery.dev/docs/guides/apps/xconfig/) distributes configuration files to applications without local data volumes; [XJob](https://cdelivery.dev/docs/guides/automation/xjob/) runs commands on a schedule or on demand in fresh containers.
 
 ## Get started
 
-Run the installation command on your server:
+Prepare your server using the [installation guide](https://cdelivery.dev/docs/getting-started/installation/), then run:
 
 ```sh
 curl -fsSL https://cdelivery.dev/install.sh | sh
 ```
 
-Open `http://SERVER_IP:9000`, create your first administrator account, and sign in. Allow access to port `9000` in your server's firewall or security group.
+On first installation, choose a stable communication address that your other servers can reach; `127.0.0.1` is for a single server only.
 
-On first installation, always choose the server communication address from a numbered list. Private IPv4 addresses appear first; `127.0.0.1` is always available for a single server. To skip the menu and specify the address:
+Open `http://SERVER_IP:9000`, create your first administrator account, and sign in. Make port `9000` reachable from your management network.
 
-```sh
-curl -fsSL https://cdelivery.dev/install.sh | sh -s -- --advertise-addr 192.168.1.10
-```
+The guide also covers address options and macOS setup. Next, [deploy your first application](https://cdelivery.dev/docs/getting-started/first-app/).
 
-Use a stable address that your other servers can reach. Existing installations retain their current communication address. On macOS, start OrbStack or Docker Desktop first, run the same installation command, then open `http://localhost:9000`.
+## Documentation
 
-Follow the [installation guide](https://cdelivery.dev/docs/getting-started/installation/), then [deploy your first application](https://cdelivery.dev/docs/getting-started/first-app/).
+Read the [documentation](https://cdelivery.dev/docs/) for installation, application management, networking, observability, and automation. Guides include setup steps, verification, limitations, and troubleshooting.
 
-## Operate and release with confidence
+[Platform management](https://cdelivery.dev/docs/administration/) covers servers, accounts, permissions, upgrades, and recovery. For external tools, see [API and MCP access](https://cdelivery.dev/docs/guides/automation/api-mcp/).
 
-**XHealth** runs scheduled checks against critical business workflows, such as user login, so you can verify that your application works beyond simply responding to a request.
+The interface and documentation support English, Simplified Chinese, Traditional Chinese, Japanese, Brazilian Portuguese, Spanish, French, and German.
 
-Enable **Guardian** to validate a candidate version in an isolated environment before release. The validation instance receives no user traffic, and failed checks block the release. The same validation can cover application configuration changes.
+## Performance
 
-Guardian requires XHealth and is available for applications without local data volumes. Learn more about [health checks](https://cdelivery.dev/docs/guides/release-safety/xhealth/) and [release validation](https://cdelivery.dev/docs/guides/release-safety/).
+### Starting memory
 
-## Built-in observability
-
-**Insight** collects server and application metrics, application logs, and access records for requests routed through Pingress. Choose local disk or object storage such as S3, enable collection, and investigate your applications without integrating an SDK.
-
-Search logs by source and time range, inspect resource usage, and correlate issues with operation events. Collection, storage, and querying are part of the platform, with support for multiple instances and high availability.
-
-## HTTPS and load balancing
-
-**Pingress** is CDelivery's reverse proxy gateway, built on Cloudflare's Pingora. It routes requests to your applications, balances traffic across instances, and manages HTTPS certificates automatically.
-
-Run a single gateway or multiple instances for high availability, with automatic certificate management in either setup.
-
-## AI diagnostics and proactive monitoring
-
-The built-in **AI assistant** uses runtime metrics, application logs, access records, and operation events to help diagnose issues and carry out operations within the user's permissions. Connect your model provider and messaging channel, or use your preferred AI tools through **MCP** and the **REST API**.
-
-Enable **AI duty** for proactive checks driven by change events and a schedule. Configure its role and notification policy to control how it investigates problems, acts, and notifies you.
-
-## Configuration and routine automation
-
-**XConfig** distributes configuration files to application instances without an SDK or a separate configuration service. Upload a file, choose its path inside the container, and update it through CDelivery. With Guardian enabled, new configurations pass release validation before going live. XConfig cannot be combined with local data volumes in the same application.
-
-**XJob** runs application commands on an interval or calendar schedule, with manual runs when needed. Each run uses a fresh container with the application's image, and its result is available in the dashboard.
-
-## Small footprint
-
-CDelivery keeps deployment management, the gateway, and observability lightweight, leaving more resources for your applications.
-
-The homepage reports the following starting memory usage under low load:
+Memory usage under low load:
 
 | Component | Role | Memory |
 | --- | --- | ---: |
@@ -72,18 +63,21 @@ The homepage reports the following starting memory usage under low load:
 | Pingress | Reverse proxy gateway | 30 MiB |
 | Observability | Data collection and storage | 150 MiB |
 
-Reported benchmarks include Insight throughput of **1,305.96 MB/s** with **5.96 GiB** peak memory on an M4 Mac, and Pingress peak throughput of **48,000 requests/s** on an AWS m7a.large. Actual resource usage and performance vary with workload and configuration.
+### Benchmarks
 
-## Explore the documentation
+| Component | Throughput | Peak memory | Test environment |
+| --- | ---: | ---: | --- |
+| Insight | 2,491 MB/s ingestion | 2.21 GiB | AWS c8gb.2xlarge, Graviton4, 8 cores, 16 GiB RAM, gp3 |
+| Pingress | 45,982 requests/s | 963 MiB | AWS c8gn.large, Graviton4, 2 cores, 4 GiB RAM |
 
-- [Deploying and running applications](https://cdelivery.dev/docs/guides/apps/)
-- [Configuration files](https://cdelivery.dev/docs/guides/apps/xconfig/) and [data persistence](https://cdelivery.dev/docs/guides/apps/persistence/)
-- [Domains and HTTPS](https://cdelivery.dev/docs/guides/networking/)
-- [Logs and metrics](https://cdelivery.dev/docs/guides/observability/)
-- [AI operations assistant](https://cdelivery.dev/docs/guides/automation/) and [API and MCP access](https://cdelivery.dev/docs/guides/automation/api-mcp/)
-- [Scheduled tasks](https://cdelivery.dev/docs/guides/automation/xjob/)
-- [Accounts, permissions, and platform management](https://cdelivery.dev/docs/administration/)
+Insight figures come from the [October 17, 2026 measurement record](website/src/data/insight-benchmark.json). Actual resource usage and throughput vary with workload and configuration.
 
-The interface and documentation support English, Simplified Chinese, Traditional Chinese, Japanese, Brazilian Portuguese, Spanish, French, and German.
+## Contributing and security
 
-If CDelivery is useful to you, [give it a star on GitHub](https://github.com/cdelivery-dev/cdelivery).
+See [CONTRIBUTING.md](CONTRIBUTING.md) to contribute and [SECURITY.md](SECURITY.md) to report vulnerabilities privately.
+
+## License
+
+Copyright 2026 The CDelivery Authors. First-party source code, documentation, scripts, and tests are licensed under [Apache License 2.0](LICENSE); see [NOTICE](NOTICE).
+
+Third-party components retain their own copyrights and licenses. See [license notices](licenses/README.md) for their distribution locations, generation instructions, and supplements.

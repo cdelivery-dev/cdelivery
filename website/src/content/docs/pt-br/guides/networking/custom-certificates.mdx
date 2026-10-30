@@ -1,0 +1,26 @@
+---
+title: "Certificados próprios"
+description: "Carregue cadeia e chave privada PEM quando a emissão é administrada externamente."
+sidebar:
+  order: 24
+---
+
+Carregue cadeia e chave privada PEM quando a emissão é administrada externamente.
+
+## Instalar
+
+Admin fornece cadeia completa e chave correspondente. O certificado precisa cobrir o hostname e estar válido.
+
+Selecione domínio, envie arquivos, salve e confirme HTTPS na rota. No cliente, confira nome, emissor, cadeia e vencimento para cada entrada, incluindo IPv6.
+
+Não compartilhe a chave em logs. Upload correto não prova que DNS ou proxy aponta ao servidor pretendido.
+
+## Renovar
+
+Certificados próprios não participam da renovação ACME. Acompanhe vencimento, substitua antes da expiração e confira o certificado realmente servido.
+
+## Diagnosticar
+
+Separe falhas de endereço e TLS. Confira domínio, datas, cadeia e par chave/certificado. Um proxy anterior pode apresentar outro certificado.
+
+Para automatizar, consulte [certificados automáticos](/docs/pt-br/guides/networking/automatic-certificates/) e os requisitos de validação.

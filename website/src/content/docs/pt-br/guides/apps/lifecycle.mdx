@@ -1,0 +1,26 @@
+---
+title: "Atualizar e reiniciar aplicações"
+description: "Atualizar altera a configuração desejada; reiniciar substitui tarefas sem inventar uma mudança."
+sidebar:
+  order: 18
+---
+
+Atualizar altera a configuração desejada; reiniciar substitui tarefas sem inventar uma mudança.
+
+## Atualizar
+
+Edite o necessário e salve. Imagem, ambiente, recursos, rede e arquivos podem substituir tarefas. Confira [estratégia](/docs/pt-br/guides/release-safety/update-strategy/) e [Guardian](/docs/pt-br/guides/release-safety/).
+
+Salvar valores iguais não reinicia. Mudanças externas de tag também não iniciam implantação automaticamente.
+
+## Reiniciar
+
+O reinício segue a estratégia de atualização. StopFirst com todas em paralelo pode interromper todas as réplicas. Não há garantia automática de continuidade.
+
+A ação não apaga volume corretamente montado nem corrige comando inválido. Se falhar novamente, leia logs e trate a causa.
+
+## Verificar
+
+Confira imagem, réplicas, logs, eventos e requisição real; em aplicações com estado, teste dados. A solicitação pode terminar antes das tarefas, portanto não repita mudanças enquanto progridem.
+
+[Reverter](/docs/pt-br/guides/release-safety/rollback/) exige configuração anterior e não desfaz migrações. [Excluir](/docs/pt-br/guides/apps/delete/) é separado e preserva volumes.

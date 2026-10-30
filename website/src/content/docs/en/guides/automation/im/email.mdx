@@ -1,0 +1,30 @@
+---
+title: "Email integration"
+description: "Configure SMTP notifications and IMAP conversations with trusted sender authentication."
+sidebar:
+  order: 45
+---
+
+SMTP is sufficient for notifications. Email conversations also require IMAP and a configured [model](/docs/guides/automation/models/). Use a dedicated platform mailbox.
+
+## Sending
+
+As an Admin, enter the platform email address, SMTP host, port, and password. The address is also the login username. Port 465 uses implicit TLS; other ports use the encrypted upgrade supported by the server.
+
+Some providers require an application password. Google's requirements include two-step verification and can be restricted by organization policy; see its [app-password guide](https://support.google.com/accounts/answer/185833).
+
+Enable personal email notifications and confirm your account's recipient address.
+
+## Receiving
+
+Configure the IMAP host, port (normally 993 with implicit TLS), password, and `authserv_id`. The latter must match the trusted receiving server's Authentication-Results identifier, not an arbitrary sender domain.
+
+Inbound mail must come from an existing user's account email and have trusted DKIM and DMARC passes. Matching the From field alone is insufficient. CDelivery reads INBOX and starts at its current end when initializing a new receive cursor; send a new message after configuration rather than testing with old mail.
+
+## Verify and troubleshoot
+
+Send a new plain-text, read-only question from your account email and verify the reply. If notifications work but conversations fail, check IMAP, the model, sender identity, and trusted authentication results.
+
+For failed saving or delivery, check TLS, ports, credentials, outbound connectivity, spam filtering, and personal subscriptions. Changing the mailbox address, host, or port requires corresponding credentials; saved passwords are not revealed.
+
+See [notification settings](/docs/guides/automation/im/notifications/) for recipient rules.

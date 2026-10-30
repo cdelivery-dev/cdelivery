@@ -1,0 +1,26 @@
+---
+title: "Discord 接続"
+description: "Gateway への送信接続を使い、公開 callback は不要です。"
+sidebar:
+  order: 48
+---
+
+Gateway への送信接続を使い、公開 callback は不要です。
+
+## 設定
+
+開発者ポータルでアプリと bot を作り、bot token を取得します。チャンネル閲覧と送信権限、必要ならスレッド送信も付けてインストールし、Admin が token を保存します。
+
+クライアントの Developer Mode で本人の User ID をコピーして紐付けます。Client Secret、Application ID、サーバーやチャンネル ID は本人識別ではありません。[公式手順](https://docs.discord.com/developers/quick-start/getting-started)を参照します。
+
+個別メッセージと明示メンションを扱い、任意メッセージ向けの特権 Message Content intent を前提にしません。
+
+## 確認
+
+[モデル](/docs/ja/guides/automation/models/)設定後、個別またはメンションで読み取り質問を試し、アカウントと役割を確認します。
+
+## 調査
+
+インストール、token、権限、個別制限、Gateway、紐付けを確認します。オンラインでも全チャンネルに送信できるとは限りません。
+
+他人の ID は操作権限を渡し得ます。通知のみ不足する場合は[購読](/docs/ja/guides/automation/im/notifications/)を確認します。

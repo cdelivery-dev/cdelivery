@@ -1,0 +1,28 @@
+---
+title: "Gruppen verwalten"
+description: "Gruppen organisieren Anwendungen und ihr Netzwerk, ohne Kontosichtbarkeit zu trennen."
+sidebar:
+  order: 56
+---
+
+Gruppen organisieren Anwendungen und ihr Netzwerk, ohne Kontosichtbarkeit zu trennen.
+
+## Erstellen
+
+Admin setzt eindeutigen Namen mit 1–16 Kleinbuchstaben/Ziffern/Bindestrichen, ohne Randbindestrich/reservierten Namen. Beschreibung maximal 256 Zeichen.
+
+Gruppe bei Anwendungserstellung wählen. App-Namen bleiben global eindeutig. Konsole benennt Gruppen nicht um und verschiebt bestehende Apps nicht.
+
+[Interne Kommunikation](/docs/de/guides/networking/connectivity/) testen.
+
+## Beschreibung
+
+Dokumentiert Zweck/Verantwortung ohne Rechte oder Planung zu ändern. Netzwerk kann trotz fehlgeschlagener Beschreibung bereits existieren; aktualisieren und ergänzen.
+
+Ausgelassenes Patch-Feld behält Wert; ausdrücklich leeren entfernt ihn.
+
+## Entfernen
+
+Anwendungen und Netzwerkverweise zuerst auflösen. Asynchrones Aufgabenende kann Gruppe kurz belegt halten.
+
+Geschäftsvolumes bleiben. Server/Name unter [Volumes](/docs/de/administration/nodes/volumes/) notieren. Verbindungsfehler: Gruppe, Port, Listener, Servernetz.

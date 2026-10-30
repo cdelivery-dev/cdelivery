@@ -1,0 +1,26 @@
+---
+title: "プラットフォームのドメインとアクセス"
+description: "Admin が設定の CDelivery 画面でコンソールのドメインを指定します。"
+sidebar:
+  order: 61
+---
+
+Admin が設定の CDelivery 画面でコンソールのドメインを指定します。
+
+## 設定
+
+Pingress を有効化し、有効な A/AAAA、80/443、前段プロキシを確認します。プロトコル・ポート・パスなしのホスト名と HTTPS を指定して保存します。
+
+新しいタブでログイン、ページ、API を確認します。HTTPS は[自動証明書](/docs/ja/guides/networking/automatic-certificates/)または[独自証明書](/docs/ja/guides/networking/custom-certificates/)が必要で、選択だけでは DNS は整いません。
+
+## 切替
+
+検証まで元の接続を維持します。Cookie はホスト別なので再ログインが必要な場合があります。MCP とスクリプトの URL も更新します。
+
+ドメインを空にするとルートを外し、外部 DNS は消しません。設定しても 9000 は閉じないため、必要ならネットワークで制限します。
+
+## 調査
+
+名前解決、TLS の名前とチェーン、主サービスを確認します。元ポートが動けばそこから修正します。
+
+業務ドメインは[アプリルート](/docs/ja/guides/networking/routing/)で管理し、管理用ホスト名と競合させないでください。

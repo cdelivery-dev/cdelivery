@@ -1,0 +1,24 @@
+---
+title: "Operações com IA"
+description: "A IA consulta informações e executa ferramentas respeitando a autorização da plataforma."
+sidebar:
+  order: 41
+---
+
+A IA consulta informações e executa ferramentas respeitando a autorização da plataforma.
+
+## Fluxos
+
+Conversas precisam de [modelo](/docs/pt-br/guides/automation/models/), [canal](/docs/pt-br/guides/automation/im/) e identidade pessoal. [Plantão](/docs/pt-br/guides/automation/duty/) adiciona eventos e rondas. Cliente externo usa [MCP](/docs/pt-br/guides/automation/api-mcp/). Alertas comuns não precisam de modelo.
+
+Admin configura modelo e plantão. Conversa usa papel atual do usuário; plantão usa papel próprio, Reader por padrão, sem escopo pessoal.
+
+## Validar
+
+Vincule sua identidade e comece com pergunta de leitura. Confirme conta e implantação antes de permitir escrita. Papéis de escrita permitem ações desatendidas dentro dos limites; notificação não é aprovação prévia universal.
+
+## Dados e falhas
+
+Provedor externo recebe contexto necessário de conversa e operações. Escolha configuração adequada aos dados enviados.
+
+Separe falhas de mensagem, conexão do modelo e ferramentas. Modelo listado não garante suporte adequado. Confira resultado da ferramenta e estado real, além do texto gerado.

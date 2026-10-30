@@ -1,0 +1,40 @@
+---
+title: "飞书接入"
+description: "配置飞书应用机器人、长连接事件订阅和用户身份绑定。"
+sidebar:
+  order: 50
+---
+
+飞书渠道使用自建应用机器人的 App ID、App Secret，以及长连接事件订阅。管理者负责平台渠道配置，每位用户在个人账户中填写自己的身份。
+
+## 配置机器人
+
+1. 在飞书开放平台创建自建应用，开启机器人能力。
+2. 授予发送消息、接收用户单聊消息的权限；需要群聊时再授予接收群聊 @ 消息的权限。
+3. 在事件订阅中选择长连接模式，添加 `im.message.receive_v1` 接收消息事件。
+4. 发布应用，把使用者加入可用范围；新增权限后完成相应审批和发布。
+5. 以 Admin 在 CDelivery 的 **飞书** 渠道填写 App ID 与 App Secret，保存配置。
+
+这里需要应用机器人，不能使用只有 Webhook 的群机器人。长连接由 CDelivery 主动连接飞书，不需要配置公网事件回调 URL。参阅[飞书事件订阅文档](https://open.feishu.cn/document/server-docs/event-subscription-guide/event-subscription-configure-/request-url-configuration-case)。海外 Lark 应用请使用 [Lark 渠道](/docs/zh-cn/guides/automation/im/lark/)。
+
+## 获取并绑定 open_id
+
+使用当前应用在官方 API 调试工具中查询自己的用户 ID，选择返回 `open_id`，例如[通过邮箱或手机号获取用户 ID](https://open.feishu.cn/document/server-docs/contact-v3/user/batch_get_id)。查询所需的通讯录授权和数据范围需覆盖本人。
+
+在 CDelivery 个人账户中填写该 open_id，然后按需开启飞书通知。绑定不使用手机号、邮箱、user_id、union_id 或群 ID。open_id 属于特定应用，更换应用后需要重新获取。
+
+请只填写自己的身份。若填写他人 ID，对方可能接收当前账户的通知，并以该账户权限发起操作。
+
+## 验证与排障
+
+先与机器人单聊，询问应用状态；群聊需明确 @ 机器人。模型未配置时不能完成 AI 对话，但通知渠道与模型配置相互独立。
+
+| 现象 | 检查 |
+| --- | --- |
+| 找不到机器人 | 应用是否发布、本人是否在可用范围 |
+| 能发送但收不到回复 | 接收消息权限、事件订阅、长连接网络、模型 |
+| 收到消息却无法识别账户 | 是否使用当前应用下本人的 open_id |
+| 个人资料无法显示 | 通讯录权限和用户可见范围 |
+| 更换凭证后失效 | App ID/Secret 是否成对、绑定是否属于新应用 |
+
+个人资料读取需要 `contact:contact.base:readonly` 和 `contact:user.base:readonly`。确认后可继续检查[通知设置](/docs/zh-cn/guides/automation/im/notifications/)。

@@ -1,0 +1,166 @@
+{%- macro editable(rows, node, default_target) -%}
+<div x-data="mountsData({{ rows }}, () => {{ node }})" data-target="{{ default_target }}" @focus.window="if (isOpen) loadOptions()">
+  <small class="block">{{ tt!("ui.app.mounts.hint.volume") }}</small>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">{{ tt!("ui.app.mounts.volume.label") }}</th>
+          <th scope="col">{{ tt!("ui.app.mounts.table.header.target") }}</th>
+          <th scope="col">{{ tt!("ui.app.mounts.table.header.readOnly") }}</th>
+          <th scope="col" aria-label='{{ tt!("ui.common.actions") }}'></th>
+        </tr>
+      </thead>
+      <tbody>
+        <template x-if="rows.length === 0">
+          <tr><td colspan="4" class="muted">{{ tt!("ui.app.mounts.empty") }}</td></tr>
+        </template>
+        <template x-for="(row, index) in rows" :key="index">
+          <tr>
+            <td translate="no" x-text="row.volume"></td>
+            <th scope="row" translate="no" x-text="row.target"></th>
+            <td data-yes='{{ tt!("ui.app.mounts.readOnly.yes") }}' data-no='{{ tt!("ui.app.mounts.readOnly.no") }}' x-text="row.read_only ? $el.dataset.yes : $el.dataset.no"></td>
+            <td><button type="button" class="row-action" @click="openMount(index)">{{ tt!("ui.common.edit") }}</button></td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </div>
+  <div class="end"><button class="row-action" type="button" @click="openMount()" :disabled="!nodeId">+ {{ tt!("ui.common.add") }}</button></div>
+
+  <dialog
+    x-ref="mountModal"
+    aria-labelledby="mount-dialog-title"
+    @click.self="const rect = $el.getBoundingClientRect(); if ($event.clientX < rect.left || $event.clientX > rect.right || $event.clientY < rect.top || $event.clientY > rect.bottom) $el.close()"
+    @close="isOpen = false"
+    @keydown.enter="if ($event.target.matches('input[type=text], input[type=checkbox], select')) { $event.preventDefault(); saveMount(); }"
+  >
+    <h2 id="mount-dialog-title" data-add='{{ tt!("ui.app.mounts.modal.title.add") }}' data-edit='{{ tt!("ui.app.mounts.modal.title.edit") }}' x-text="editingMountIndex === -1 ? $el.dataset.add : $el.dataset.edit"></h2>
+    <div class="field">
+      <label for="mount-volume">{{ tt!("ui.app.mounts.volume.label") }}:</label>
+      <select id="mount-volume" class="text" x-model="tempMount.volume" :disabled="!isOpen" required>
+        <option value="" disabled>{{ tt!("ui.volume.select") }}</option>
+        <template x-for="volume in volumeOptions" :key="volume">
+          <option :value="volume" x-text="volume" :selected="volume === tempMount.volume"></option>
+        </template>
+      </select>
+      <small class="block muted" x-cloak x-show="status === 'loading'">{{ tt!("ui.app.mounts.loading") }}</small>
+      <p x-cloak x-show="status === 'empty'">
+        {{ tt!("ui.volume.empty") }}
+        <a :href="`/nodes/${encodeURIComponent(nodeId)}/volumes`" target="_blank" rel="noopener">{{ tt!("ui.common.create") }}</a>
+      </p>
+      <p role="alert" x-cloak x-show="status === 'failed'">
+        {{ tt!("ui.app.mounts.failed") }}
+        <a :href="`/nodes/${encodeURIComponent(nodeId)}/volumes`" target="_blank" rel="noopener">{{ tt!("ui.app.mounts.view") }}</a>
+      </p>
+    </div>
+    <div class="field">
+      <label for="mount-target">{{ tt!("ui.app.mounts.table.header.target") }}:</label>
+      <input id="mount-target" class="text" type="text" x-model="tempMount.target" minlength="2" maxlength="255" pattern="^\/.+" placeholder='{{ tt!("ui.app.mounts.target.placeholder") }}' title='{{ tt!("ui.app.mounts.path.validation") }}' spellcheck="false" :disabled="!isOpen" required />
+    </div>
+    <label><input type="checkbox" x-model="tempMount.read_only" :disabled="!isOpen" /> {{ tt!("ui.app.mounts.table.header.readOnly") }}</label>
+    <div class="actions">
+      <input class="button danger" type="button" value='{{ tt!("ui.common.delete") }}' x-show="editingMountIndex !== -1" @click="rows.splice(editingMountIndex, 1); $refs.mountModal.close()" />
+      <input class="button secondary" type="button" value='{{ tt!("ui.common.cancel") }}' @click="$refs.mountModal.close()" />
+      <input class="button" type="button" value='{{ tt!("ui.common.confirm") }}' @click="saveMount()" />
+    </div>
+  </dialog>
+</div>
+{%- endmacro -%}
+
+{%- macro data() -%}
+<script>
+document.addEventListener("alpine:init", () => {
+  const reserved = [{{ cdelivery_wire::name::AGENT_VOLUME|json|safe }}, {{ cdelivery_wire::name::INSIGHT_VOLUME|json|safe }}];
+  Alpine.data("mountsData", (rows, node) => ({
+    rows,
+    volumes: [],
+    requestId: 0,
+    status: "idle",
+    editingMountIndex: -1,
+    tempMount: { volume: "", target: "", read_only: false },
+    isOpen: false,
+    get nodeId() {
+      return node();
+    },
+    get volumeOptions() {
+      const value = this.tempMount.volume;
+      return value && !reserved.includes(value) && !this.volumes.includes(value)
+        ? [...this.volumes, value]
+        : this.volumes;
+    },
+    init() {
+      this.$watch("nodeId", () => {
+        this.rows.splice(0);
+        this.$refs.mountModal?.close();
+        this.volumes = [];
+        this.status = "idle";
+        ++this.requestId;
+      });
+    },
+    openMount(index = -1) {
+      this.editingMountIndex = index;
+      this.tempMount = index === -1
+        ? { volume: "", target: this.$root.dataset.target, read_only: false }
+        : { ...this.rows[index] };
+      this.isOpen = true;
+      this.loadOptions();
+      this.$nextTick(() => this.$refs.mountModal.showModal());
+    },
+    saveMount() {
+      if (![...this.$refs.mountModal.querySelectorAll("input:not([type='button']), select")].every(control => control.reportValidity())) return;
+      if (this.editingMountIndex === -1) {
+        this.rows.push({ ...this.tempMount });
+      } else {
+        this.rows[this.editingMountIndex] = { ...this.tempMount };
+      }
+      this.isOpen = false;
+      this.$refs.mountModal.close();
+    },
+    async loadOptions() {
+      const requestId = ++this.requestId;
+      const id = this.nodeId;
+      this.volumes = [];
+      this.status = id ? "loading" : "idle";
+      if (!id) return;
+      try {
+        const response = await fetch(`/api/nodes/${encodeURIComponent(id)}/volumes?sizes=false`);
+        if (!response.ok) throw new Error();
+        const report = await response.json();
+        if (requestId !== this.requestId) return;
+        this.volumes = report.volumes.map(volume => volume.name).filter(name => !reserved.includes(name));
+        this.status = this.volumes.length ? "ready" : "empty";
+      } catch (_) {
+        if (requestId === this.requestId) this.status = "failed";
+      }
+    },
+  }));
+});
+</script>
+{%- endmacro -%}
+
+{%- macro readonly(mounts) -%}
+{% if let Some(m) = mounts %}
+<small class="block">{{ tt!("ui.app.mounts.pinned", node = m.node_id) }}</small>
+<div class="table-scroll">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">{{ tt!("ui.app.mounts.volume.label") }}</th>
+        <th scope="col">{{ tt!("ui.app.mounts.table.header.target") }}</th>
+        <th scope="col">{{ tt!("ui.app.mounts.table.header.readOnly") }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for mount in m.mounts %}
+      <tr>
+        <td translate="no">{{ mount.volume }}</td>
+        <th scope="row" translate="no">{{ mount.target }}</th>
+        <td>{% if mount.read_only %}{{ tt!("ui.app.mounts.readOnly.yes") }}{% else %}{{ tt!("ui.app.mounts.readOnly.no") }}{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+{%- endmacro -%}

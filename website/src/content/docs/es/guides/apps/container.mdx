@@ -1,0 +1,30 @@
+---
+title: "Comando y variables de entorno"
+description: "Configura el proceso principal y sus variables sin confundir argumentos con ejecución de shell."
+sidebar:
+  order: 10
+---
+
+Configura el proceso principal y sus variables sin confundir argumentos con ejecución de shell.
+
+## Comando
+
+Conserva el comando predeterminado salvo que la imagen requiera otro. La entrada se divide en argumentos con comillas; expansión, tuberías y redirecciones necesitan una shell explícita:
+
+```sh
+sh -c 'exec ./server --port "$PORT"'
+```
+
+La imagen debe contener shell y ejecutable. Mantén el proceso en primer plano: si termina el comando principal, termina el contenedor.
+
+## Entorno
+
+Los nombres admiten 1–128 caracteres y no contienen `=`; cada valor admite hasta 4096. Usa las variables que realmente entiende el programa. `PORT=8080` no publica ese puerto ni obliga al proceso a escucharlo.
+
+Variables arbitrarias son configuración compartida y no se ocultan automáticamente. Para archivos mayores, considera [XConfig](/docs/es/guides/apps/xconfig/) cuando esté disponible.
+
+## Verificar
+
+Guarda, inspecciona tareas nuevas y registros. Guardar sin cambios no reinicia. Si faltan ejecutables, revisa rutas e imagen; si la expansión aparece literal, invoca una shell.
+
+El proceso debe escuchar en una interfaz accesible dentro del contenedor, no solamente loopback. Configura [red y puertos](/docs/es/guides/networking/connectivity/) por separado.

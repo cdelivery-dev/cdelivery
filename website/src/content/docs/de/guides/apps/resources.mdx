@@ -1,0 +1,26 @@
+---
+title: "Ressourcenreservierungen und Grenzen"
+description: "Reservierungen beeinflussen Platzierung, Grenzen den Verbrauch jedes Replikats."
+sidebar:
+  order: 11
+---
+
+Reservierungen beeinflussen Platzierung, Grenzen den Verbrauch jedes Replikats.
+
+## Werte
+
+CPU in Kernen: 0.5 ist ein halber Kern. Bereich 0.001–10000, Schritt 0.001. Speicher verwendet angezeigte Einheiten wie MiB/GiB. Reservierungen innerhalb entsprechender Grenzen halten.
+
+Reservierung bedeutet keine exklusive Hardware. Überschrittene Speichergrenzen können Prozesse beenden. Siehe [Docker-Ressourcen](https://docs.docker.com/engine/containers/resource_constraints/).
+
+## Kapazität
+
+Bedarf mit Replikaten multiplizieren und Überlappung bei StartFirst einplanen. Labels und Höchstzahl pro Server schränken weiter ein.
+
+CPU-Grenzen helfen automatischer Skalierung, zusätzliche Replikate auf demselben Server einzuschätzen.
+
+## Kontrolle
+
+Repräsentative Last messen, Aufgaben und Host-Spielraum vergleichen. Wartende Aufgaben können an Reservierungen scheitern. Speicherabbrüche erfordern mehr Limit oder weniger Verbrauch.
+
+Fehlende Werte sind nicht null. Siehe [Metriken](/docs/de/guides/observability/metrics/application/) und [Skalierung](/docs/de/guides/apps/scaling/).

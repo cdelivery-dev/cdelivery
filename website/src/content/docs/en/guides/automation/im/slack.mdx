@@ -1,0 +1,31 @@
+---
+title: "Slack integration"
+description: "Create a Slack app with Socket Mode, configure tokens and permissions, and bind your member ID."
+sidebar:
+  order: 46
+---
+
+Slack uses Socket Mode, so CDelivery does not need a public event callback endpoint. You need Slack app-management access and a CDelivery Admin account.
+
+## Create the app
+
+1. Create an app at [Slack apps](https://api.slack.com/apps).
+2. Grant bot scopes `chat:write`, `im:write`, and `im:history`.
+3. Enable Socket Mode and create an app-level token with `connections:write`.
+4. Subscribe to `message.im`; enable the App Home Messages tab and allow users to send messages.
+5. Install the app in the workspace and obtain its bot token.
+6. Save the `xoxb-` bot token and `xapp-` app token in CDelivery's Slack settings.
+
+For group mentions, add `app_mentions:read` and subscribe to `app_mention`. Optional profile lookup uses `users:read`. Reinstall or approve updated scopes when Slack requires it. See the [official Socket Mode guide](https://docs.slack.dev/tools/java-slack-sdk/guides/socket-mode/).
+
+## Bind and verify
+
+Copy your own Slack Member ID and enter it in your CDelivery account. Do not use a channel ID, app ID, bot ID, or display name. Enable Slack notifications separately.
+
+Open a direct message with the app and ask a read-only question. AI replies also require a [model](/docs/guides/automation/models/).
+
+## Troubleshoot
+
+Check that both tokens belong to the same installed app, Socket Mode is enabled, subscriptions and scopes are approved, and outbound connections work. If direct messages are unavailable, inspect App Home settings.
+
+A missing avatar can be a profile-scope issue independent of messaging. Recheck personal identity and subscriptions if one user receives nothing. Binding another member's ID exposes your account's capabilities to that identity.

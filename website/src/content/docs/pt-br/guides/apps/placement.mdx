@@ -1,0 +1,28 @@
+---
+title: "Seleção de servidores e posicionamento"
+description: "Restrinja máquinas elegíveis e quantidade de réplicas por servidor."
+sidebar:
+  order: 17
+---
+
+Restrinja máquinas elegíveis e quantidade de réplicas por servidor.
+
+## Configurar
+
+Admin aplica uma [etiqueta](/docs/pt-br/administration/nodes/labels/). Na aplicação, selecione-a, defina máximo por servidor, confira reservas e salve.
+
+Três réplicas com máximo um exigem três máquinas elegíveis. Cada uma precisa estar pronta, disponível para tarefas e com recursos suficientes.
+
+A etiqueta representa pertença, não consultas complexas. Aplicações com estado usam seleção fixa de servidor.
+
+## Alterar
+
+Mudar restrições pode substituir ou mover tarefas. StartFirst pode precisar de capacidade extra. Posicionamento não copia arquivos; etiqueta ou volume homônimo não torna dados disponíveis.
+
+Use [aplicação com estado](/docs/pt-br/guides/apps/persistence/stateful/) para dados locais.
+
+## Verificar
+
+Confira distribuição real, etiquetas, disponibilidade, reservas e limites. Leia erro da tarefa antes de repetir reinícios.
+
+Remover e reincorporar uma máquina pode mudar seu ID. Revise seleções fixas e etiquetas após [reincorporação](/docs/pt-br/administration/nodes/).

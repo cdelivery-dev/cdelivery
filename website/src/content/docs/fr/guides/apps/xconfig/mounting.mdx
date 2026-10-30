@@ -1,0 +1,26 @@
+---
+title: "Monter et modifier la configuration"
+description: "Associez le contenu à un chemin et vérifiez sa consommation par les nouvelles tâches."
+sidebar:
+  order: 13
+---
+
+Associez le contenu à un chemin et vérifiez sa consommation par les nouvelles tâches.
+
+## Procédure
+
+Chargez un fichier valide, choisissez un chemin absolu, enregistrez, puis inspectez tâches, journaux et une fonction affectée. Selon les paramètres, [Guardian](/docs/fr/guides/release-safety/) peut valider le changement.
+
+Le chemin d’un montage existant n’est pas directement modifiable : retirez-le puis ajoutez le nouveau. Vérifiez d’abord que l’image utilise cette destination.
+
+## Exemple
+
+Nginx à `/etc/nginx/conf.d/default.conf` exige une syntaxe compatible et des références valides. Télécharger confirme le stockage, pas l’usage en exécution.
+
+Avant suppression, assurez-vous que l’application démarre sans le fichier. En cas d’échec, lisez les erreurs de syntaxe et de chemin.
+
+## Conservation
+
+L’indication d’utilisation concerne l’application, pas une bibliothèque globale. Le contenu orphelin peut être nettoyé ; il ne constitue pas un historique de sauvegarde.
+
+Conservez la source dans votre propre système. Voir les [limites XConfig](/docs/fr/guides/apps/xconfig/).

@@ -1,0 +1,46 @@
+---
+title: "Verwaltungszugang wiederherstellen"
+description: "Hostadministratoren können Konten im laufenden Hauptcontainer retten."
+sidebar:
+  order: 63
+---
+
+Hostadministratoren können Konten im laufenden Hauptcontainer retten.
+
+Wenn ein Admin noch zugreifen kann, [Nutzerverwaltung](/docs/de/administration/accounts/users/) verwenden. CLI benötigt vorhandene Daten und Hauptschlüssel; verlorene Schlüssel werden nicht wiederhergestellt.
+
+## Container finden
+
+```sh
+docker ps --format '{{.ID}} {{.Names}} {{.Image}}'
+```
+
+CONTAINER_ID durch Hauptprogramm ersetzen, nicht Gateway/Sammler.
+
+## Bestehendes Konto
+
+```sh
+docker exec -it CONTAINER_ID /entrypoint rescue admin@example.com
+```
+
+Gibt temporäres Passwort aus und deaktiviert Zweifaktor. Keine Rollenbeförderung oder Schlüsselwiderruf. Danach Passwort ändern, Authenticator neu registrieren und Schlüssel prüfen.
+
+## Neuer Admin
+
+Für noch nicht vorhandene E-Mail:
+
+```sh
+docker exec -it CONTAINER_ID /entrypoint add-admin admin@example.com Alex Chen
+```
+
+Temporäres Passwort wird ausgegeben. Vorhandene E-Mail führt zu Konflikt; rescue verwenden.
+
+## API-Schlüssel
+
+```sh
+docker exec -it CONTAINER_ID /entrypoint create-api-key admin@example.com recovery Reader
+```
+
+Optional `--expires-at` mit zukünftigem RFC-3339-Zeitpunkt. Reader/Operator/Admin darf Nutzerrolle nicht übersteigen. Einmalige Ausgabe sichern, danach widerrufen.
+
+Bei fehlendem Nutzer/Initialisierung Container, Installation und Adresse prüfen. Nicht versehentlich neu installieren oder Zugangsdaten veröffentlichen.

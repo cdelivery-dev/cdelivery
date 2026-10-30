@@ -1,0 +1,35 @@
+---
+title: "Release validation with Guardian"
+description: "Validate a candidate before promoting application changes and handle failed validation explicitly."
+sidebar:
+  order: 29
+---
+
+Guardian adds candidate deployment and validation before a new configuration is promoted. It complements the application's update strategy and requires suitable checks.
+
+## Configure and release
+
+Prepare a meaningful [XHealth check](/docs/guides/release-safety/xhealth/), enable Guardian for a supported application, and review resources for the candidate as well as the current application.
+
+Relevant image, runtime, and configuration changes can trigger validation. Do not assume every metadata edit starts a release. Local-volume stateful applications do not support Guardian.
+
+After saving a change, inspect the release phase rather than treating form submission as successful promotion.
+
+## Phases and decisions
+
+| Phase | What to inspect |
+| --- | --- |
+| Deploying | Candidate scheduling, image pull, and startup |
+| Validating | Check progress and assertions |
+| Failed | Candidate or check failure details |
+| Promoting | Replacement of the live configuration |
+
+When the interface offers retry, skip, or cancel, choose according to the observed failure and current phase. Skipping accepts the change without successful validation; it does not turn a failed check into a passing one. Cancellation availability depends on the release state.
+
+## Diagnose and verify
+
+Use the separate Guardian application and Guardian check log sources to identify which container failed. Check target paths, image tools, environment, candidate capacity, and assertions.
+
+After promotion, verify live replicas and the actual business endpoint. Candidate validation cannot guarantee that every production dependency behaves identically. It also does not restore business data if a migration occurred.
+
+Review [update strategies](/docs/guides/release-safety/update-strategy/) and [rollback](/docs/guides/release-safety/rollback/) before relying on automatic recovery.

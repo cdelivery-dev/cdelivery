@@ -1,0 +1,28 @@
+---
+title: "Logs, métricas e eventos"
+description: "Combine evidências de execução, consumo e mudanças para diagnosticar incidentes."
+sidebar:
+  order: 31
+---
+
+Combine evidências de execução, consumo e mudanças para diagnosticar incidentes.
+
+## Fonte adequada
+
+| Pergunta | Guia |
+| --- | --- |
+| Por que o processo falhou? | [Logs de aplicação](/docs/pt-br/guides/observability/logs/application/) |
+| O que ocorreu com a requisição? | [Acesso HTTP](/docs/pt-br/guides/observability/logs/access/) |
+| Há pressão de recursos? | [Aplicação](/docs/pt-br/guides/observability/metrics/application/) e [servidor](/docs/pt-br/guides/observability/metrics/server/) |
+| O que mudou? | [Eventos](/docs/pt-br/guides/observability/events/) |
+| Falta histórico? | [Coleta/retenção](/docs/pt-br/guides/observability/settings/) |
+
+Admin habilita Insight, coletores e armazenamento. Logs dependem também do driver. Ativar coleta não importa automaticamente dados antigos.
+
+## Interpretar
+
+Selecione recurso, fonte e período; consultas históricas aceitam até 31 dias. Use janela estreita ao investigar.
+
+Vazio pode indicar falta de atividade, coleta desabilitada, atraso ou retenção vencida. Erro de consulta é diferente. Ausência não representa zero consumo.
+
+Após alterar configurações, gere atividade e confira timestamps novos. Correlacione logs, métricas e eventos antes de mudar a aplicação.

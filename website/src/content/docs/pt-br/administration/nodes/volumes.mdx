@@ -1,0 +1,26 @@
+---
+title: "Gerenciamento de volumes"
+description: "Volumes são locais; nomes iguais em máquinas diferentes não identificam os mesmos dados."
+sidebar:
+  order: 55
+---
+
+Volumes são locais; nomes iguais em máquinas diferentes não identificam os mesmos dados.
+
+## Criar
+
+Admin habilita cdelivery-agent para gestão. Abra volumes do servidor, crie nome válido e descrição opcional de até 256 caracteres. Monte numa [aplicação com estado](/docs/pt-br/guides/apps/persistence/stateful/) do mesmo servidor e teste persistência.
+
+Criação e descrição são etapas separadas. Se descrição falhar, atualize a lista antes de recriar.
+
+## Inspecionar
+
+Consultar tamanho percorre arquivos e pode demorar. Ausência de tamanho não significa vazio. Total/disponível pertence ao host; volumes reservados não são dados ordinários gerenciáveis.
+
+Descrição não prova desuso nem fornece backup.
+
+## Excluir e diagnosticar
+
+Confira referências e backup restaurável. Se ocupado, aguarde contêineres ou resolva uso. Desabilitar componente não apaga dados.
+
+Se lista falha, confira máquina e agente. Se volume falta, confira ID/nome; outro volume homônimo não recupera conteúdo. Replicação e backup consistente dependem do armazenamento. Veja [persistência](/docs/pt-br/guides/apps/persistence/).

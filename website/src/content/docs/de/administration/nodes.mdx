@@ -1,0 +1,26 @@
+---
+title: "Serververwaltung"
+description: "Identifiziere Maschinen anhand ID und Adresse; Hostnamen können mehrfach vorkommen."
+sidebar:
+  order: 53
+---
+
+Identifiziere Maschinen anhand ID und Adresse; Hostnamen können mehrfach vorkommen.
+
+## Beitreten
+
+Admin holt Worker-/Manager-Befehl, prüft [Voraussetzungen](/docs/de/getting-started/requirements/), führt ihn auf Zielmaschine aus und kontrolliert Ready, Rolle, Adresse, Ressourcen. Danach Labels setzen.
+
+Worker betreibt Aufgaben, Manager zusätzlich Verwaltung. Einladung 30 Minuten wiederverwendbar. Nach Neustart/Ablauf neu erzeugen; geänderte Ausstellerrechte können sie ungültig machen. Nicht veröffentlichen.
+
+## Zustände
+
+Ready/Down/Disconnected: Verbindung. Active nimmt Aufgaben an, Pause keine neuen, Drain bedeutet Räumen. Reachable betrifft Manager. Sammlerwarnung zeigt alte Daten, nicht zwingend Ausfall.
+
+Anzeige bietet nicht jede Zustandsänderung. [Metriken](/docs/de/guides/observability/metrics/server/) zeigen aktuelle Belastung.
+
+## Entfernen
+
+Keine automatische Migration, Sicherung oder Räumung. Feste Anwendungen, Volumes, Komponenten und Verwaltungsfähigkeit prüfen.
+
+Volumes bleiben; Offlinecontainerende ist unbestätigt. Erneuter Beitritt kann ID ändern. Auswahl/Labels kontrollieren. Fehler: IP, Einladung, Docker, Ports.

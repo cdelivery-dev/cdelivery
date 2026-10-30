@@ -1,0 +1,28 @@
+---
+title: "Modellkonfiguration"
+description: "Admin wählt Anbieter, Zugangsdaten und ein für Betriebswerkzeuge geeignetes Modell."
+sidebar:
+  order: 42
+---
+
+Admin wählt Anbieter, Zugangsdaten und ein für Betriebswerkzeuge geeignetes Modell.
+
+## Anbieter
+
+OpenAI, Anthropic, Gemini, DeepSeek, OpenRouter, Ollama und OpenAI-compatible.
+
+Integrierte gehostete Anbieter: vorgegebener Endpoint, Schlüssel nötig. Kompatibler Anbieter: Endpoint und Schlüssel nötig. Ollama: Endpoint nötig, Schlüsselfeld nicht erlaubt.
+
+Server muss die Adresse erreichen; Browserzugriff allein reicht nicht.
+
+## Einrichten
+
+Zugang eingeben, Modelle soweit unterstützt entdecken, auswählen und testen. Discovery benötigt Admin und beweist keine Werkzeugunterstützung.
+
+Ausgelassener Schlüssel bleibt nur bei identischem Anbieter/Endpoint erhalten. Er wird nicht im Klartext angezeigt. Neuer Bereich verlangt neuen passenden Zugang.
+
+Lesende Frage und Werkzeugresultat prüfen.
+
+## Diagnose
+
+Anbieter, URL, Modellname, Schlüssel, Kontingent, Netzwerk und Funktionen kontrollieren. Modellliste ist kein vollständiger Test. [Bereitschaftsdienst](/docs/de/guides/automation/duty/) separat konfigurieren.

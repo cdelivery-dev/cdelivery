@@ -1,0 +1,34 @@
+---
+title: "Collection and retention settings"
+description: "Enable Insight, choose storage and placement, and understand sampling, flushing, and retained history."
+sidebar:
+  order: 37
+---
+
+An Admin configures Insight and its node collectors. Choose storage before enabling the service; the storage identity and type cannot later be changed as an ordinary settings edit.
+
+## Storage and placement
+
+| Storage | Required planning |
+| --- | --- |
+| Local | Fixed server and its local data |
+| S3 | Bucket, region, credentials |
+| S3-compatible | Bucket, endpoint, credentials |
+| GCS | Storage location and service-account JSON |
+| Azure | Account/container access settings |
+
+After enabling, supported changes include credentials and applicable region settings, not a general storage migration. Local storage requires fixed-server placement. Plan backup and migration separately.
+
+## Timing and retention
+
+Console defaults are 30 days of retention, five-second samples, and a three-minute flush interval. Retention accepts 1–3650 days; sampling accepts 1–60 seconds. Filesystem collection has its own five-minute cadence.
+
+A fixed server can answer queries from buffered data. With distributed placement selected by label, newly collected data can require flushing and synchronization before it becomes queryable. Shorter sampling increases data volume; longer retention requires more storage.
+
+## Verify
+
+Enable the service and collectors, create new application activity, and confirm fresh logs, metrics, and events. Check each server's reporting state. Existing historical logs are not automatically imported.
+
+For gaps, inspect component health, network, storage credentials, selected range, flush delay, and retention. A failed query is not an empty successful result.
+
+Changing the application log driver is separate; see [application logs](/docs/guides/observability/logs/application/). Decreasing retention can remove history, so choose it according to operational needs.

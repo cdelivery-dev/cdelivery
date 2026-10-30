@@ -1,0 +1,27 @@
+---
+title: "Gerenciamento de aplicações"
+description: "A aplicação reúne imagem, execução, rede, recursos e armazenamento; o resultado precisa ser verificado em execução."
+sidebar:
+  order: 7
+---
+
+A aplicação reúne imagem, execução, rede, recursos e armazenamento; o resultado precisa ser verificado em execução.
+
+## Antes de criar
+
+Defina nome, grupo, persistência, comando, portas e capacidade. O console não renomeia nem move aplicações entre grupos. O modo com volume local é escolhido na criação.
+
+Reader consulta; Operator e Admin criam, alteram, reiniciam e removem. Grupos e recursos de servidores exigem Admin.
+
+## Guias
+
+- [Criação](/docs/pt-br/guides/apps/create/), [imagens](/docs/pt-br/guides/apps/images/) e [comandos](/docs/pt-br/guides/apps/container/).
+- [Recursos](/docs/pt-br/guides/apps/resources/), [XConfig](/docs/pt-br/guides/apps/xconfig/) e [persistência](/docs/pt-br/guides/apps/persistence/).
+- [Escala](/docs/pt-br/guides/apps/scaling/) e [posicionamento](/docs/pt-br/guides/apps/placement/).
+- [Atualização](/docs/pt-br/guides/apps/lifecycle/) e [exclusão](/docs/pt-br/guides/apps/delete/).
+
+## Padrões
+
+Formulário vazio: uma réplica, comando da imagem, logs do host, sem reservas ou etiqueta adicional. Atualização: todas em paralelo, StopFirst, observação de 60 segundos, tolerância zero e Rollback.
+
+Reveja [estratégia](/docs/pt-br/guides/release-safety/update-strategy/) para continuidade. Salvar sem alterações não reinicia. Variáveis e arquivos arbitrários não são ocultados automaticamente. Confira réplicas, logs e requisição; acrescente XHealth ou Guardian conforme necessário.

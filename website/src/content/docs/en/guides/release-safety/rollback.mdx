@@ -1,0 +1,32 @@
+---
+title: "Rollback and release failures"
+description: "Restore a previous application configuration and verify recovery without confusing it with data restoration."
+sidebar:
+  order: 30
+---
+
+Rollback restores the previous application configuration when one is available. It does not restore database contents, reverse migrations, recover deleted volumes, or downgrade the platform.
+
+## Decide and execute
+
+Inspect the failed change and determine whether the previous image can safely use the current data. For a data-format change, follow the application's backup and recovery procedure before restarting an older version.
+
+Use the application's rollback action, then inspect replacement tasks. An automatic rollback may also be triggered by the configured update failure action.
+
+Rollback replaces tasks in parallel and uses Continue for rollback failures, while retaining relevant order, monitor, and failure-ratio settings. This means a rollback request is not proof that all tasks recovered successfully.
+
+## Verify recovery
+
+1. Confirm the resulting application configuration and image.
+2. Check desired and running replicas.
+3. Read startup and application logs.
+4. Test a business request and any persistent data.
+5. Review XHealth results and release events.
+
+If no previous configuration exists, reconstruct a known-good configuration from your records. Recreating an application with the same name is not a history restore.
+
+## Further failures
+
+If old tasks also fail, inspect capacity, image availability, configuration compatibility, credentials, and storage. Repeating rollback cannot fix an unreachable registry or incompatible database.
+
+Guardian retry, skip, and cancel address its candidate workflow; see [Guardian](/docs/guides/release-safety/). Platform upgrades use a separate [maintenance procedure](/docs/administration/platform/upgrades/).

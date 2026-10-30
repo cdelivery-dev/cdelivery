@@ -1,0 +1,26 @@
+---
+title: "Daten dauerhaft speichern"
+description: "Die beschreibbare Containerschicht garantiert keinen Datenerhalt beim Aufgabenwechsel."
+sidebar:
+  order: 14
+---
+
+Die beschreibbare Containerschicht garantiert keinen Datenerhalt beim Aufgabenwechsel.
+
+## Auswahl
+
+Lesekonfiguration: [XConfig](/docs/de/guides/apps/xconfig/). Lokale Daten: Servervolume. Geteilte Daten: geeigneter Speicherdienst. Wiederherstellung: unabhängige, getestete Sicherung.
+
+Lokaler Modus wird bei Erstellung gewählt und bindet ein Replikat an einen Server. Er ist kein beliebig nachträglich aktivierbarer Schalter.
+
+## Einbinden und testen
+
+Richtigen Server/Volume und tatsächlichen Schreibpfad wählen. Falscher Mount kann leer bleiben, während die Anwendung anderswo schreibt.
+
+Testdaten schreiben, neu starten, Bestand prüfen. Zusätzlich Restore testen; Neustart ist kein Sicherungstest.
+
+## Grenzen
+
+Gleichnamige Volumes auf anderen Maschinen sind andere Daten. Labels kopieren nichts. Anwendung löschen erhält Volume; Volume löschen entfernt Daten. Image-Rollback macht Migrationen nicht rückgängig.
+
+Siehe [zustandsbehaftete Anwendungen](/docs/de/guides/apps/persistence/stateful/) und [Volumes](/docs/de/administration/nodes/volumes/).

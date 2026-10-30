@@ -1,0 +1,31 @@
+---
+title: "Coleta e retenção"
+description: "Admin configura Insight, coletores, armazenamento e duração do histórico."
+sidebar:
+  order: 37
+---
+
+Admin configura Insight, coletores, armazenamento e duração do histórico.
+
+## Armazenamento
+
+Escolha Local, S3, S3-compatible com endpoint, GCS com JSON de conta de serviço ou Azure. Prepare identidade e credenciais antes de habilitar.
+
+Depois, tipo e identidade não mudam como edição comum; credenciais e região aplicável podem ser atualizadas. Local exige servidor fixo. Migração e backup têm procedimentos próprios.
+
+## Frequência
+
+| Ajuste | Padrão | Faixa |
+| --- | --- | --- |
+| Retenção | 30 dias | 1–3650 dias |
+| Amostra | 5 segundos | 1–60 segundos |
+| Flush | 3 minutos | Conforme configuração |
+| Filesystem | 5 minutos | Cadência própria |
+
+Servidor fixo pode consultar buffer. Posicionamento distribuído por etiqueta pode esperar flush e sincronização. Mais frequência e retenção exigem armazenamento.
+
+## Verificar
+
+Gere atividade nova e confirme logs, métricas e eventos recentes por servidor. Coleta não importa passado automaticamente.
+
+Em lacunas, confira componentes, rede, credenciais, período e retenção. Reduzir retenção pode apagar histórico. O [driver de logs](/docs/pt-br/guides/observability/logs/application/) é configurado separadamente.

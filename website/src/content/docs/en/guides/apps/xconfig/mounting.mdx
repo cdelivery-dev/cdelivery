@@ -1,0 +1,32 @@
+---
+title: "Mount and update configuration files"
+description: "Replace XConfig content, change mount paths, and verify that new tasks consume the intended file."
+sidebar:
+  order: 13
+---
+
+A configuration mount associates uploaded content with one absolute file path inside the container. Check both the path and the consuming application's configuration.
+
+## Mount and replace
+
+1. Open the application's configuration file settings.
+2. Upload a nonempty file within the size limit.
+3. Select the absolute target file path.
+4. Save and inspect the resulting application tasks.
+5. Check logs and exercise behavior affected by the configuration.
+
+Replacing uploaded content creates a new configuration version for the application. Depending on release settings, the change may pass through [Guardian](/docs/guides/release-safety/) before promotion.
+
+The existing target path is not editable in place in the console. To change it, remove the old mount and add the new one. Ensure the image will read the new path before submitting.
+
+## Example and verification
+
+Mounting an Nginx server configuration at `/etc/nginx/conf.d/default.conf` only works if its syntax and referenced paths match the image. An upload returning success does not prove that Nginx can parse it.
+
+Verify the expected replica count, startup logs, and an endpoint whose behavior depends on the file. Reopening or downloading the file verifies stored content, not runtime consumption.
+
+## Removal and limits
+
+The file's in-use indication concerns its application; it is not a platform-wide configuration library. Old orphaned content can be collected, so do not use it as a backup history.
+
+Before removing a mount, determine whether the application can start without it. Store source configuration in your own controlled location and back up business data separately. See [XConfig](/docs/guides/apps/xconfig/) for size and visibility rules.

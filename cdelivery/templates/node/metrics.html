@@ -1,0 +1,29 @@
+{% extends "dashboard.html" %}
+
+{% import "metric_chart.html" as metric %}
+{% import "node/tabs.html" as tab %}
+{% import "time_range.html" as time_range %}
+
+{% block title %}{{ tt!("ui.node.tab.metrics") }} - {{ hostname }} | {{ super() }}{% endblock title %}
+
+{% block main %}
+{% let range = window.preset %}
+{% let start = window.range.0 %}
+{% let end = window.range.1 %}
+{{ tab::page_header(id, hostname, "metrics") }}
+
+{% match state %}
+{% when crate::ui::metrics::MetricsState::Disabled %}
+{% when crate::ui::metrics::MetricsState::Empty | crate::ui::metrics::MetricsState::Charts(_) %}
+<form
+  method="get"
+  action="/nodes/{{ id }}/metrics"
+  class="row query-bar"
+  x-data='CDelivery.timeRange({{ start|json }}, {{ end|json }}, {{ range|json }})'
+>
+  {{ time_range::fields(range) }}
+</form>
+{% endmatch %}
+
+{{ metric::content(state, start, end, "node", false) }}
+{% endblock main %}

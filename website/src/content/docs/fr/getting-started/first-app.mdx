@@ -1,0 +1,36 @@
+---
+title: "Déployer une première application"
+description: "Déployez Nginx sur un port publié et vérifiez une réponse HTTP réelle."
+sidebar:
+  order: 5
+---
+
+Déployez Nginx sur un port publié et vérifiez une réponse HTTP réelle.
+
+## Préparer
+
+Admin crée le groupe ; Operator ou Admin crée l’application. Autorisez TCP 8080 ou utilisez :
+
+```sh
+ssh -L 9000:127.0.0.1:9000 -L 8080:127.0.0.1:8080 your-user@server.example.com
+```
+
+## Déployer
+
+Créez le groupe `demo`, puis `hello-web` avec `nginx:stable-alpine`. Conservez commande par défaut et un réplica. Publiez le port interne **80** sur **8080/TCP**. Enregistrez et attendez l’exécution.
+
+Aucun domaine, volume ou commande personnalisée n’est nécessaire. L’[image officielle](https://hub.docker.com/_/nginx) lance déjà Nginx au premier plan.
+
+## Tester
+
+Ouvrez `http://SERVER_IP:8080`, ou localhost via tunnel :
+
+```sh
+curl -i http://localhost:8080
+```
+
+Attendez HTTP 200 et la page Nginx. Vérifiez aussi réplicas et journaux.
+
+Échec de pull : registre/architecture. Arrêt du processus : commande et journaux. Timeout : mappage, adresse, pare-feu et tunnel. Une route de domaine utiliserait le port interne 80.
+
+Pour nettoyer, supprimez application, attendez les conteneurs puis supprimez le groupe vide. Consultez la [console](/docs/fr/getting-started/console/).

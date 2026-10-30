@@ -1,0 +1,26 @@
+---
+title: "Domínios e rotas"
+description: "Pingress combina domínio e condições da requisição para encaminhar ao contêiner."
+sidebar:
+  order: 22
+---
+
+Pingress combina domínio e condições da requisição para encaminhar ao contêiner.
+
+## Criar
+
+Aponte A/AAAA para entradas Pingress, confira 80/443 e backend, adicione domínio, porta interna e HTTPS e teste uma requisição.
+
+Use hostname como `app.example.com`, sem protocolo, IP, curinga, porta ou caminho. O nome é normalizado para minúsculas e exige múltiplos rótulos.
+
+## Condições
+
+Prefixo de caminho, cabeçalho e cookie são combinados com AND. Cabeçalho/cookie podem verificar presença ou valor.
+
+`/api` corresponde a `/api` e `/api/users`, não a `/apix`. O prefixo não é removido nem reescrito. Condições mais específicas e prefixos longos influenciam prioridade; evite ambiguidades e não use ordem visual como controle.
+
+## Testar
+
+Faça uma requisição correspondente e outra que não deva corresponder. Inspecione [logs de acesso](/docs/pt-br/guides/observability/logs/access/).
+
+Erro de gateway pode indicar backend indisponível mesmo com DNS/TLS corretos. HTTPS requer certificado [automático](/docs/pt-br/guides/networking/automatic-certificates/) ou [próprio](/docs/pt-br/guides/networking/custom-certificates/).

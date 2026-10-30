@@ -1,0 +1,90 @@
+{% extends "dashboard.html" %}
+
+{% import "pingress/certificate.html" as certificate %}
+{% import "pingress/tabs.html" as chrome %}
+
+{% block title %}{{ entry.domain }} - {{ tt!("ui.pingress.certs.certificate") }} | {{ super() }}{% endblock title %}
+
+{% block main %}
+{{ chrome::header("certificates") }}
+
+<h2 translate="no">{{ entry.domain }}</h2>
+<dl>
+  <dt>{{ tt!("ui.pingress.certs.apps") }}</dt>
+  <dd>
+    {% if entry.apps.is_empty() %}<span class="muted">{{ tt!("ui.pingress.certs.orphan") }}</span>
+    {% else %}{% for app in entry.apps %}{{ app }}{% if !loop.last %}, {% endif %}{% endfor %}{% endif %}
+  </dd>
+  <dt>{{ tt!("ui.pingress.certs.certificate") }}</dt>
+  <dd>
+    {% let current_certificate = entry.certificate %}
+    {{ certificate::status(current_certificate) }}
+  </dd>
+  <dt>{{ tt!("ui.pingress.certs.expires") }}</dt>
+  <dd>{% if let Some(certificate) = entry.certificate %}<relative-time datetime="{{ certificate.not_after }}">{{ certificate.not_after }}</relative-time>{% else %}—{% endif %}</dd>
+</dl>
+
+{% if entry.apps.is_empty() %}<p><small>{{ tt!("ui.pingress.certs.orphanHelp") }}</small></p>{% endif %}
+{% if let Some(certificate) = entry.certificate %}
+  {% match certificate.source %}
+  {% when crate::operation::pingress::typ::CertSource::Manual %}<p><small>{{ tt!("ui.pingress.certs.manualHelp") }}</small></p>
+  {% when crate::operation::pingress::typ::CertSource::Acme %}<p><small>{{ tt!("ui.pingress.certs.acmeHelp") }}</small></p>
+  {% endmatch %}
+{% else %}<p><small>{{ tt!("ui.pingress.certs.missingHelp") }}</small></p>{% endif %}
+
+{% if can_edit && pingress_enabled %}
+<h2 class="mt-4">{{ tt!("ui.pingress.certs.uploadTitle") }}</h2>
+<form
+  method="post"
+  action="/pingress/certificates/{{ entry.domain }}"
+  enctype="multipart/form-data"
+  class="mt-2"
+  x-data="{ submitting: false }"
+  @submit="if (submitting) { $event.preventDefault(); return } submitting = true"
+>
+  <div class="fields">
+    <div class="field">
+      <label for="cert-chain">{{ tt!("ui.pingress.certs.chain") }}</label>
+      <input
+        id="cert-chain"
+        class="text"
+        type="file"
+        name="cert_chain_pem"
+        accept=".pem,.crt,.cer,.cert,application/x-pem-file"
+        required
+      />
+    </div>
+    <div class="field">
+      <label for="cert-key">{{ tt!("ui.pingress.certs.key") }}</label>
+      <input
+        id="cert-key"
+        class="text"
+        type="file"
+        name="private_key_pem"
+        accept=".pem,.key,application/x-pem-file"
+        required
+      />
+    </div>
+  </div>
+  <small class="block mt-2">{{ tt!("ui.pingress.certs.privateKey") }}</small>
+  <div class="actions"><input class="button" type="submit" value='{{ tt!("ui.common.upload") }}' :disabled="submitting" /></div>
+</form>
+{% else if can_edit %}
+<p><small>{{ tt!("ui.pingress.certs.uploadRequiresPingress") }}</small></p>
+{% endif %}
+
+{% if can_edit %}
+{% if let Some(certificate) = entry.certificate %}{% if matches!(certificate.source, crate::operation::pingress::typ::CertSource::Manual) %}
+<form
+  method="post"
+  action="/pingress/certificates/{{ entry.domain }}/remove"
+  x-data="{ submitting: false }"
+  data-confirm='{{ tt!("ui.pingress.certs.removeConfirm") }}'
+  @submit="if (submitting || !confirm($el.dataset.confirm)) { $event.preventDefault(); return } submitting = true"
+>
+  <input type="hidden" name="payload" value="{}" />
+  <div class="actions"><input type="submit" class="button danger" value='{{ tt!("ui.common.remove") }}' :disabled="submitting" /></div>
+</form>
+{% endif %}{% endif %}
+{% endif %}
+{% endblock main %}

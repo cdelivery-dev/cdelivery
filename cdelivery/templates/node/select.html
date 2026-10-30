@@ -1,0 +1,17 @@
+{%- macro node(id, model, title) -%}
+<select id="{{ id }}" class="text" x-model="{{ model }}" aria-label="{{ title }}" required>
+  <option value="" disabled>{{ title }}</option>
+  <template x-for="node in nodeOptions" :key="node.id">
+    <option :value="node.id" x-text="node.label"></option>
+  </template>
+</select>
+{%- endmacro -%}
+
+{%- macro label(id, title) -%}
+<select id="{{ id }}" class="text" x-model="placementValue" aria-label="{{ title }}" required>
+  <option value="" disabled>{{ title }}</option>
+  <template x-for="label in labelOptions" :key="label.name">
+    <option :value="label.name" x-text="label.label"></option>
+  </template>
+</select>
+{%- endmacro -%}

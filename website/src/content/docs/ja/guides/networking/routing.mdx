@@ -1,0 +1,26 @@
+---
+title: "ドメインとルーティング"
+description: "Pingress はドメインとリクエスト条件からアプリの宛先ポートを選びます。"
+sidebar:
+  order: 22
+---
+
+Pingress はドメインとリクエスト条件からアプリの宛先ポートを選びます。
+
+## 追加
+
+DNS の A/AAAA を入口に向け、80/443 とアプリを確認します。ホスト名、内部ポート、HTTPS を指定して保存し、実リクエストを試します。
+
+`app.example.com` の形式で、URL、IP、ワイルドカード、ポート、パスは含めません。小文字に正規化され、複数ラベルが必要です。
+
+## 条件
+
+パス接頭辞、ヘッダー、Cookie は AND で組み合わせます。ヘッダーと Cookie は存在または値を判定します。
+
+`/api` は `/api` と `/api/users` に一致し、`/apix` には一致しません。接頭辞は除去・書き換えされません。具体的な条件や長い接頭辞が優先度に関わるため、表示順に依存せず曖昧さを避けます。
+
+## 検証
+
+一致する要求としない要求を試し、[アクセスログ](/docs/ja/guides/observability/logs/access/)を確認します。DNS/TLS が正常でもバックエンドで失敗することがあります。
+
+HTTPS には[自動証明書](/docs/ja/guides/networking/automatic-certificates/)または[独自証明書](/docs/ja/guides/networking/custom-certificates/)が必要です。

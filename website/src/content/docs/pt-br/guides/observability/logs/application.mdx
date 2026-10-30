@@ -1,0 +1,26 @@
+---
+title: "Logs de aplicação"
+description: "Escolha o contêiner responsável pela saída e confira período e driver de logs."
+sidebar:
+  order: 32
+---
+
+Escolha o contêiner responsável pela saída e confira período e driver de logs.
+
+## Fontes
+
+App: processo de negócio. XHealth: verificação. XJob com nome: tarefa agendada. GuardianApp: candidato. GuardianCheck: validação.
+
+Um erro de verificação pode não aparecer no log App. Confira identidade da tarefa e timestamp.
+
+## Drivers e retenção
+
+FollowHost usa configuração do host. JSON-file oferece rotação: padrão de cinco arquivos de 10 MiB, permitindo 1–100 arquivos e até 1 GiB cada. Insight requer coleta habilitada.
+
+Trocar driver afeta tarefas novas, sem migrar logs antigos. Disponibilidade anterior depende do driver e retenção originais.
+
+## Diagnóstico
+
+Se vazio, confira fonte, período, vida da tarefa e stdout/stderr. Arquivos internos não aparecem automaticamente. Se a consulta falha, investigue coleta e armazenamento.
+
+Texto arbitrário pode conter credenciais sem ocultação automática. Correlacione [eventos](/docs/pt-br/guides/observability/events/) e veja [configurações](/docs/pt-br/guides/observability/settings/).

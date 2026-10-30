@@ -1,0 +1,32 @@
+---
+title: "Configuração de modelos"
+description: "Admin escolhe provedor, credenciais e modelo capaz de utilizar ferramentas operacionais."
+sidebar:
+  order: 42
+---
+
+Admin escolhe provedor, credenciais e modelo capaz de utilizar ferramentas operacionais.
+
+## Provedores
+
+OpenAI, Anthropic, Gemini, DeepSeek, OpenRouter, Ollama e OpenAI-compatible estão disponíveis.
+
+| Tipo | Endpoint | Chave |
+| --- | --- | --- |
+| Hospedado integrado | Definido pelo provedor | Obrigatória |
+| OpenAI-compatible | Obrigatório | Obrigatória |
+| Ollama | Obrigatório | Não aceita |
+
+Provedores integrados não aceitam endpoint personalizado. O servidor precisa alcançar o endereço; acesso apenas no navegador não basta.
+
+## Salvar e testar
+
+Informe credenciais, descubra modelos quando disponível e selecione um. Descoberta exige Admin e não comprova suporte a ferramentas.
+
+Chaves não são devolvidas. Omitir preserva somente quando provedor e endpoint mantêm escopo; trocar exige credencial apropriada.
+
+Faça pergunta de leitura por canal configurado e confira ferramentas.
+
+## Diagnosticar
+
+Revise tipo, endpoint, identificador, chave, cota, rede e capacidades. Listar modelos não é teste completo. Configure [plantão](/docs/pt-br/guides/automation/duty/) separadamente.

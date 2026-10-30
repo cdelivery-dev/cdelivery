@@ -1,0 +1,88 @@
+{% extends "account.html" %}
+
+{% import "account/nav.html" as nav %}
+
+{% block title %}{{ self.title() }} - {{ tt!("ui.account.nav.account") }} | {{ super() }}{% endblock title %}
+
+{% block account_navigation %}{{ nav::nav(self.slug()) }}{% endblock account_navigation %}
+
+{% block main %}
+<header>
+  <h1>{{ self.title() }}</h1>
+</header>
+
+{% if configured %}
+<h2 class="mt-4">{{ tt!("ui.account.im.binding.title") }}</h2>
+{% if let Some(id) = binding %}
+<div class="row identity">
+  {% if let Some(url) = avatar %}<img src="{{ url }}" alt="" width="48" height="48" loading="lazy" referrerpolicy="no-referrer" onerror="this.hidden=true" />{% endif %}
+  <div>
+    {% if let Some(display_name) = name %}<b class="block" translate="no">{{ display_name }}</b>{% endif %}
+    <span class="muted">{% if self.uses_open_id() %}{{ tt!("ui.account.im.openId") }}{% else if self.uses_member_id() %}{{ tt!("ui.account.im.memberId") }}{% else %}{{ tt!("ui.account.im.userId") }}{% endif %}</span>
+    <span class="block" translate="no">{{ id }}</span>
+  </div>
+</div>
+<form
+  method="post"
+  action="/account/{{ self.slug() }}/binding"
+  x-data="{ submitting: false }"
+  data-confirm='{{ tt!("ui.account.im.unbind.confirm") }}'
+  @submit="if (submitting || !confirm($el.dataset.confirm)) { $event.preventDefault(); return } $refs.payload.value = JSON.stringify({ id: null }); submitting = true"
+>
+  <input x-ref="payload" type="hidden" name="payload" />
+  <div class="actions">
+    <input type="submit" class="button danger" value='{{ tt!("ui.common.unbind") }}' :disabled="submitting" />
+  </div>
+</form>
+{% else %}
+<small>{% match platform %}
+  {% when crate::operation::typ::Im::Feishu | crate::operation::typ::Im::Lark %}{{ tt!("ui.account.im.openId.help") }}
+  {% when crate::operation::typ::Im::Slack %}{{ tt!("ui.account.im.memberId.help") }}
+  {% when crate::operation::typ::Im::Telegram | crate::operation::typ::Im::Discord %}{{ tt!("ui.account.im.userId.help") }}
+{% endmatch %}</small>
+<form
+  method="post"
+  action="/account/{{ self.slug() }}/binding"
+  autocomplete="off"
+  x-data="{ submitting: false }"
+  @submit="if (submitting) { $event.preventDefault(); return } $refs.payload.value = JSON.stringify({ id: $refs.id.value }); submitting = true"
+>
+  <input x-ref="payload" type="hidden" name="payload" />
+  <div class="fields">
+    <div class="field">
+      <label for="account-im-id">{% if self.uses_open_id() %}{{ tt!("ui.account.im.openId") }}{% else if self.uses_member_id() %}{{ tt!("ui.account.im.memberId") }}{% else %}{{ tt!("ui.account.im.userId") }}{% endif %}: </label>
+      {% match platform %}
+      {% when crate::operation::typ::Im::Feishu | crate::operation::typ::Im::Lark %}<input x-ref="id" id="account-im-id" class="text" type="text" placeholder='{{ tt!("ui.account.im.openId.placeholder") }}' pattern="^ou_[A-Za-z0-9]{1,64}$" maxlength="67" spellcheck="false" required />
+      {% when crate::operation::typ::Im::Slack %}<input x-ref="id" id="account-im-id" class="text" type="text" placeholder='{{ tt!("ui.account.im.memberId.placeholder") }}' pattern="^[UW][A-Za-z0-9]{1,63}$" minlength="2" maxlength="64" spellcheck="false" required />
+      {% when crate::operation::typ::Im::Telegram %}<input x-ref="id" id="account-im-id" class="text" type="text" inputmode="numeric" placeholder='{{ tt!("ui.account.im.userId.placeholder") }}' pattern="^[1-9][0-9]{0,15}$" maxlength="16" spellcheck="false" required />
+      {% when crate::operation::typ::Im::Discord %}<input x-ref="id" id="account-im-id" class="text" type="text" inputmode="numeric" placeholder='{{ tt!("ui.account.im.userId.placeholder") }}' pattern="^[1-9][0-9]{0,19}$" maxlength="20" spellcheck="false" required />
+      {% endmatch %}
+    </div>
+  </div>
+  <div class="actions">
+    <input class="button" type="submit" value='{{ tt!("ui.common.bind") }}' :disabled="submitting" />
+  </div>
+</form>
+{% endif %}
+
+<h2 class="mt-4">{{ tt!("ui.account.im.notifications.title") }}</h2>
+<form
+  method="post"
+  action="/account/{{ self.slug() }}/notifications"
+  x-data="{ submitting: false }"
+  @submit="if (submitting) { $event.preventDefault(); return } $refs.payload.value = JSON.stringify({ enabled: $refs.enabled.checked }); submitting = true"
+>
+  <input x-ref="payload" type="hidden" name="payload" />
+  <label class="choice">
+    <input x-ref="enabled" type="checkbox" aria-labelledby="account-im-notifications-label" aria-describedby="account-im-notifications-help"{% if enabled %} checked{% endif %} />
+    <span id="account-im-notifications-label">{{ tt!("ui.account.im.notifications") }}</span>
+    <small id="account-im-notifications-help">{{ tt!("ui.account.im.notifications.help") }}</small>
+  </label>
+  <div class="actions">
+    <input class="button" type="submit" value='{{ tt!("ui.common.save") }}' :disabled="submitting" />
+  </div>
+</form>
+{% else %}
+<p>{{ tt!("ui.account.channel.unavailable") }}</p>
+{% endif %}
+{% endblock main %}

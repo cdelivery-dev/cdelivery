@@ -1,0 +1,18 @@
+{
+  "date": "2026-10-17",
+  "sourceCommit": "05a5f6ed675df717d0e0c0b15f128a718d0538e4",
+  "benchmarkManifestSha256": "5c87753bdeb3c3dd549bbcac40a5c9fcfb35a954809ad0ffa30ea4f7fc9e74f4",
+  "instanceType": "c8gb.2xlarge",
+  "cpu": "Graviton4",
+  "cores": 8,
+  "memoryGiB": 16,
+  "storage": "gp3",
+  "indexes": 8,
+  "seed": 20261017,
+  "profile": "release-speed",
+  "run": {
+    "rawBytes": 42951632896,
+    "ingestNanoseconds": 17240881356,
+    "serverPeakRssBytes": 2369908736
+  }
+}

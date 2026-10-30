@@ -1,0 +1,303 @@
+{%- macro kv_row(label, id_prefix, key_ph, value_ph) -%}
+<fieldset>
+  <legend>{{ label }}</legend>
+  <div class="kv-pair">
+    <input
+      id="{{ id_prefix }}_key"
+      aria-label='{{ tt!("ui.app.published.rule.key") }}'
+      class="text"
+      type="text"
+      x-model="tempDomain.{{ id_prefix }}.key"
+      placeholder='{{ key_ph }}'
+      minlength="1"
+      maxlength="255"
+      spellcheck="false"
+      :disabled="!isOpen"
+    />
+    <span aria-hidden="true">=</span>
+    <input
+      id="{{ id_prefix }}_value"
+      aria-label='{{ tt!("ui.app.published.rule.value") }}'
+      class="text"
+      type="text"
+      x-model="tempDomain.{{ id_prefix }}.value"
+      placeholder='{{ value_ph }}'
+      maxlength="1024"
+      spellcheck="false"
+      :disabled="!isOpen"
+    />
+  </div>
+</fieldset>
+{%- endmacro -%}
+
+{%- macro editable() -%}
+<div x-data="publishedData">
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">{{ tt!("ui.app.published.table.header.endpoint") }}</th>
+          <th scope="col">{{ tt!("ui.app.published.table.header.target") }}</th>
+          <th scope="col" aria-label='{{ tt!("ui.common.actions") }}'></th>
+        </tr>
+      </thead>
+      <tbody>
+        <template x-if="domains.length === 0 && ports.length === 0">
+          <tr><td colspan="3" class="muted">{{ tt!("ui.app.published.empty") }}</td></tr>
+        </template>
+        <template x-for="(domain, index) in domains" :key="index">
+          <tr>
+            <th scope="row" translate="no">
+              <a :href="toUrl(domain)" target="_blank" rel="noopener noreferrer" x-text="toUrl(domain) + toOptions(domain)"></a>
+            </th>
+            <td x-text="domain.target"></td>
+            <td>
+              <button type="button" class="row-action" @click="editDomain(index)">{{ tt!("ui.common.edit") }}</button>
+            </td>
+          </tr>
+        </template>
+        <template x-for="(port, index) in ports" :key="index">
+          <tr>
+            <th scope="row" x-text="port.protocol.toUpperCase() + ': ' + port.published"></th>
+            <td x-text="port.target"></td>
+            <td>
+              <button type="button" class="row-action" @click="editPort(index)">{{ tt!("ui.common.edit") }}</button>
+            </td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </div>
+  <div class="end"><input class="row-action" type="button" @click="create()" value='+ {{ tt!("ui.common.add") }}' /></div>
+
+  <dialog
+    x-ref="publishedModal"
+    aria-labelledby="published-dialog-title"
+    aria-describedby="published-dialog-description"
+    @click.self="const rect = $el.getBoundingClientRect(); if ($event.clientX < rect.left || $event.clientX > rect.right || $event.clientY < rect.top || $event.clientY > rect.bottom) $el.close()"
+    @close="isOpen = false"
+    @keydown.enter="if ($event.target.matches('input[type=text], input[type=password], input[type=number]')) { $event.preventDefault(); save(); }"
+  >
+    <h2 id="published-dialog-title" data-add='{{ tt!("ui.app.published.modal.title.add") }}' data-edit='{{ tt!("ui.app.published.modal.title.edit") }}' x-text="tempIndex === -1 ? $el.dataset.add : $el.dataset.edit"></h2>
+    <small id="published-dialog-description" class="block mt-1">{{ tt!("ui.app.published.description") }}</small>
+    <div class="field" x-show="tempIndex === -1">
+      <label for="published_type">{{ tt!("ui.app.published.type.label") }}:</label>
+      <select id="published_type" x-model="publishedType" class="text" :disabled="!isOpen">
+        <option value="domain">{{ tt!("ui.app.published.type.domain") }}(HTTP/HTTPS)</option>
+        <option value="port">{{ tt!("ui.app.published.type.port") }}(TCP/UDP)</option>
+      </select>
+    </div>
+
+    <template x-if="publishedType === 'domain'">
+      <div class="stack">
+        <div class="field">
+          <label for="domain_target">{{ tt!("ui.app.published.target.label") }}:</label>
+          <input class="text"
+            id="domain_target"
+            type="number"
+            min="1"
+            max="65535"
+            x-model.number="tempDomain.target"
+            placeholder='{{ tt!("ui.app.published.target.placeholder") }}'
+            :disabled="!isOpen"
+            :required="isOpen"
+          />
+        </div>
+        <div class="field">
+          <label for="domain_name">{{ tt!("ui.app.published.domain.label") }}:</label>
+          <input class="text"
+            id="domain_name"
+            type="text"
+            minlength="2"
+            maxlength="255"
+            x-model="tempDomain.domain"
+            placeholder='{{ tt!("ui.app.published.domain.placeholder") }}'
+            pattern="[^.].*[.].*[^.]"
+            title='{{ tt!("ui.app.published.domain.validation") }}'
+            spellcheck="false"
+            :disabled="!isOpen"
+            :required="isOpen"
+          />
+          <label class="choice">
+            <input type="checkbox" x-model.boolean="tempDomain.https" :disabled="!isOpen" />
+            <span>{{ tt!("ui.app.published.https.label") }}</span>
+          </label>
+        </div>
+        <div class="field">
+          <label for="path_prefix">{{ tt!("ui.app.published.pathPrefix.label") }}:</label>
+          <input class="text"
+            id="path_prefix"
+            type="text"
+            x-model="tempDomain.path_prefix"
+            pattern="^/[^\s?#]*$"
+            placeholder='{{ tt!("ui.app.published.pathPrefix.placeholder") }}'
+            title='{{ tt!("ui.app.published.pathPrefix.validation") }}'
+            spellcheck="false"
+            :disabled="!isOpen"
+          />
+        </div>
+        {{ kv_row(tt!("ui.app.published.cookie.label"), "cookie", tt!("ui.app.published.cookie.key.placeholder"), tt!("ui.app.published.cookie.value.placeholder")) }}
+        {{ kv_row(tt!("ui.app.published.header.label"), "header", tt!("ui.app.published.header.key.placeholder"), tt!("ui.app.published.header.value.placeholder")) }}
+      </div>
+    </template>
+
+    <template x-if="publishedType === 'port'">
+      <div class="stack">
+        <div class="field">
+          <label for="port_target">{{ tt!("ui.app.published.target.label") }}:</label>
+          <input class="text"
+            id="port_target"
+            type="number"
+            min="1"
+            max="65535"
+            x-model.number="tempPort.target"
+            placeholder='{{ tt!("ui.app.published.target.placeholder") }}'
+            :disabled="!isOpen"
+            :required="isOpen"
+          />
+        </div>
+        <div class="field">
+          <label for="port_published">{{ tt!("ui.app.published.published.label") }}:</label>
+          <input class="text"
+            id="port_published"
+            type="number"
+            min="1"
+            max="65535"
+            x-model.number="tempPort.published"
+            placeholder='{{ tt!("ui.app.published.published.placeholder") }}'
+            :disabled="!isOpen"
+            :required="isOpen"
+          />
+        </div>
+        <div class="field">
+          <label for="port_protocol">{{ tt!("ui.app.published.protocol.label") }}:</label>
+          <select id="port_protocol" x-model="tempPort.protocol" class="text" :disabled="!isOpen">
+            <option value="Tcp">TCP</option>
+            <option value="Udp">UDP</option>
+          </select>
+        </div>
+      </div>
+    </template>
+    <div class="actions">
+      <input
+          type="button"
+          class="button danger"
+          value='{{ tt!("ui.common.delete") }}'
+          x-show="tempIndex !== -1"
+          @click="if(publishedType === 'domain') { domains.splice(tempIndex, 1); } else { ports.splice(tempIndex, 1); }; $refs.publishedModal.close();"
+        />
+      <input class="button secondary" type="button" value='{{ tt!("ui.common.cancel") }}' @click="$refs.publishedModal.close()" />
+      <input
+          class="button"
+          type="button"
+          value='{{ tt!("ui.common.confirm") }}'
+          @click="save()"
+        />
+    </div>
+  </dialog>
+</div>
+<script>
+document.addEventListener("alpine:init", () => {
+  Alpine.data("publishedData", () => ({
+    "publishedType": "domain",
+    "tempIndex": -1,
+    "tempDomain": { cookie: {}, header: {} },
+    "tempPort": {},
+    "isOpen": false,
+    toUrl({ domain, https, path_prefix }) {
+      return `http${https ? "s" : ""}://${domain}${path_prefix || ""}`;
+    },
+    toOptions({ cookie, header }) {
+      const cookieOption = cookie ? ` --cookie '${cookie.key}=${cookie.value ?? ""}'` : "";
+      const headerOption = header ? ` --header '${header.key}${header.value ? `: ${header.value}` : ";"}'` : "";
+      return cookieOption + headerOption;
+    },
+    editDomain(index) {
+      this.publishedType = "domain";
+      this.tempIndex = index;
+      this.tempDomain = JSON.parse(JSON.stringify(this.domains[index]));
+      if (!this.tempDomain.cookie) this.tempDomain.cookie = {};
+      if (!this.tempDomain.header) this.tempDomain.header = {};
+      this.isOpen = true;
+      this.$refs.publishedModal.showModal();
+    },
+    editPort(index) {
+      this.publishedType = "port";
+      this.tempIndex = index;
+      this.tempPort = JSON.parse(JSON.stringify(this.ports[index]));
+      this.isOpen = true;
+      this.$refs.publishedModal.showModal();
+    },
+    save() {
+      if (![...this.$refs.publishedModal.querySelectorAll("input:not([type='button']):not([type='submit']), select, textarea")].every(control => control.reportValidity())) return;
+
+      if (this.publishedType === "domain") {
+        const cleanRule = (rule) => {
+          if (!rule) return null;
+          const key = (rule.key || '').trim();
+          const value = (rule.value || '').trim();
+          if (key === '') return null;
+          return {
+            key: key,
+            value: value === '' ? null : value
+          };
+        };
+        let domainData = JSON.parse(JSON.stringify(this.tempDomain));
+
+        domainData.https = !!domainData.https;
+        domainData.path_prefix = domainData.path_prefix ? domainData.path_prefix : null;
+        domainData.cookie = cleanRule(domainData.cookie);
+        domainData.header = cleanRule(domainData.header);
+        if (this.tempIndex === -1) {
+          this.domains.push(domainData);
+        } else {
+          this.domains[this.tempIndex] = domainData;
+        }
+      } else {
+        if (this.tempIndex === -1) {
+          this.ports.push(this.tempPort);
+        } else {
+          this.ports[this.tempIndex] = this.tempPort;
+        }
+      }
+      this.isOpen = false;
+      this.$refs.publishedModal.close();
+    },
+    create() {
+      this.tempIndex = -1;
+      this.tempDomain = { https: false, cookie: {}, header: {} };
+      this.tempPort = { protocol: 'Tcp' };
+      this.isOpen = true;
+      this.$refs.publishedModal.showModal();
+    },
+  }));
+});
+</script>
+{%- endmacro -%}
+
+{%- macro url(domain) -%}
+http{% if domain.https %}s{% endif %}://{{ domain.domain }}{% if let Some(prefix) = domain.path_prefix %}{{ prefix }}{% endif %}
+{%- endmacro -%}
+
+{%- macro flags(domain) -%}
+{% if let Some(cookie) = domain.cookie %} --cookie '{{ cookie.key }}={% if let Some(value) = cookie.value %}{{ value }}{% endif %}'{% endif %}{% if let Some(header) = domain.header %} --header '{{ header.key }}{% if let Some(value) = header.value %}{% if value.is_empty() %};{% else %}: {{ value }}{% endif %}{% else %};{% endif %}'{% endif %}
+{%- endmacro -%}
+
+{%- macro readonly(domains, ports) -%}
+<div class="table-scroll">
+  <table>
+    <thead><tr><th scope="col">{{ tt!("ui.app.published.table.header.endpoint") }}</th><th scope="col">{{ tt!("ui.app.published.table.header.target") }}</th></tr></thead>
+    <tbody>
+      {% for domain in domains %}
+      <tr>
+        <th scope="row" translate="no"><a href="{{ url(domain) }}" target="_blank" rel="noopener noreferrer">{{ url(domain) }}{{ flags(domain) }}</a></th>
+        <td>{{ domain.target }}</td>
+      </tr>
+      {% endfor %}
+      {% for port in ports %}
+      <tr><th scope="row">{% match port.protocol %}{% when crate::operation::app::typ::network::PortProtocol::Tcp %}TCP{% when crate::operation::app::typ::network::PortProtocol::Udp %}UDP{% endmatch %}: {{ port.published }}</th><td>{{ port.target }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{%- endmacro -%}

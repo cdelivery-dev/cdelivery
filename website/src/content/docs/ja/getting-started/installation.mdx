@@ -1,0 +1,36 @@
+---
+title: "インストールと初期設定"
+description: "管理権限でインストーラーを実行し、コンソールへのアクセスを確認します。"
+sidebar:
+  order: 4
+---
+
+管理権限でインストーラーを実行し、コンソールへのアクセスを確認します。
+
+## インストール
+
+先に[事前準備](/docs/ja/getting-started/requirements/)を済ませます。
+
+```sh
+curl -fsSL https://cdelivery.dev/install.sh | sh
+```
+
+サーバー間通信のアドレスを指定する場合：
+
+```sh
+curl -fsSL https://cdelivery.dev/install.sh | sh -s -- --advertise-addr 10.0.0.10
+```
+
+このマシンに割り当てられ、他サーバーから到達できる IP に置き換えます。ドメインではなく、公開 IP とも限りません。macOS は Docker を先に起動します。IPv6 の問題は表示された診断に従い、非対話実行では手動選択を前提にしません。
+
+## 初回アクセス
+
+`http://SERVER_IP:9000`、macOS やトンネルでは localhost:9000 を開きます。氏名、メール、パスワードで最初の Admin を作成し、起動完了を待ちます。
+
+既存環境の再開では元のアカウントを使います。再実行はパスワードや既存通信アドレスをリセットしません。
+
+## 確認と調査
+
+ログイン、サーバーのアドレスと資源、グループ、設定を確認し、[最初のアプリ](/docs/ja/getting-started/first-app/)を起動します。
+
+ダウンロード失敗は DNS/HTTPS、Docker はサービス・バージョン・権限、ブラウザーのタイムアウトは IP・9000・ファイアウォール・トンネルを確認します。アカウントは[復旧手順](/docs/ja/administration/platform/recovery/)を参照し、診断を共有する前に秘密を除いてください。

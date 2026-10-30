@@ -1,0 +1,66 @@
+{% extends "protected.html" %}
+
+{% block header_account %}
+<a href="/account"><span class="wide">{{ dashboard.user_name }}</span><span class="narrow">{{ dashboard.initials }}</span></a>
+{% endblock header_account %}
+
+{% block navigation %}
+  <script>
+  function initSidebarGroup(apps) {
+    "use strict";
+
+    const button = apps.parentElement.querySelector(".group-toggle");
+    const key = `cdelivery:sidebar:group:v1:${button.dataset.group}`;
+    const setOpen = (open) => {
+      apps.hidden = !open;
+      button.setAttribute("aria-expanded", String(open));
+    };
+    let open = true;
+    try {
+      open = localStorage.getItem(key) !== "closed";
+    } catch {}
+    setOpen(open);
+    button.addEventListener("click", () => {
+      const open = apps.hidden;
+      setOpen(open);
+      try {
+        if (open) localStorage.removeItem(key);
+        else localStorage.setItem(key, "closed");
+      } catch {}
+    });
+    button.hidden = false;
+  }
+  </script>
+  <nav id="page-navigation" aria-label='{{ tt!("ui.nav.main") }}'>
+    <a href="/"{% match dashboard.location %}{% when crate::ui::dashboard::Location::Overview %} aria-current="page"{% else %}{% endmatch %}>{{ tt!("ui.nav.overview") }}</a>
+    <a class="mt-4" href="/insight"{% match dashboard.location %}{% when crate::ui::dashboard::Location::Insight %} aria-current="page"{% else %}{% endmatch %}>Insight</a>
+    <a href="/pingress"{% match dashboard.location %}{% when crate::ui::dashboard::Location::Pingress %} aria-current="page"{% else %}{% endmatch %}>Pingress</a>
+    <a href="/volume"{% match dashboard.location %}{% when crate::ui::dashboard::Location::Volume %} aria-current="page"{% else %}{% endmatch %}>{{ tt!("ui.volume.title") }}</a>
+    <a href="/nodes"{% match dashboard.location %}{% when crate::ui::dashboard::Location::Nodes %} aria-current="page"{% else %}{% endmatch %}>{{ tt!("ui.nav.nodes") }}</a>
+    <a class="mt-4" href="/groups"{% match dashboard.location %}{% when crate::ui::dashboard::Location::Groups %} aria-current="page"{% else %}{% endmatch %}>{{ tt!("ui.nav.groups") }}</a>
+    <ul id="group-list">
+      {% for group in dashboard.groups %}
+      <li>
+        <div class="group-row">
+          {% if !group.apps.is_empty() %}
+          <button class="group-toggle" type="button" hidden data-group="{{ group.name }}" aria-label='{{ tt!("ui.nav.groupApps", group = group.name) }}' aria-expanded="true" aria-controls="group-apps-{{ group.name }}">
+            <svg aria-hidden="true" viewBox="0 0 16 16"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.5" /></svg>
+          </button>
+          {% endif %}
+          <a class="group-name" translate="no" title="{{ group.name }}" href="/groups/{{ group.name }}"{% match dashboard.location %}{% when crate::ui::dashboard::Location::Group(current) %}{% if current.as_str() == group.name.as_str() %} aria-current="page"{% endif %}{% else %}{% endmatch %}>{{ group.name }}</a>
+          {% if dashboard.can_create_app %}<a class="group-create" href="/groups/{{ group.name }}/apps/.create"{% match dashboard.location %}{% when crate::ui::dashboard::Location::AppCreate(current) %}{% if current.as_str() == group.name.as_str() %} aria-current="page"{% endif %}{% else %}{% endmatch %} aria-label='{{ tt!("ui.app.createTitle", group = group.name) }}'>+</a>{% endif %}
+        </div>
+        {% if !group.apps.is_empty() %}<ul id="group-apps-{{ group.name }}">
+          <script>initSidebarGroup(document.currentScript.parentElement);</script>
+          {% for app in group.apps %}
+          <li><a translate="no" title="{{ app }}" href="/apps/{{ app }}"{% match dashboard.location %}{% when crate::ui::dashboard::Location::App(current) %}{% if current.as_str() == app.as_str() %} aria-current="page"{% endif %}{% else %}{% endmatch %}>{{ app }}</a></li>
+          {% endfor %}
+        </ul>{% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+    {% if dashboard.can_manage_settings %}<a class="mt-4" href="/settings/agent/model">{{ tt!("ui.settings.agent.title") }}</a>{% endif %}
+    <a{% if !dashboard.can_manage_settings %} class="mt-4"{% endif %} href="/account/apikeys">{{ tt!("ui.nav.mcp") }}</a>
+    {% if dashboard.can_manage_settings %}<a class="mt-4" href="/settings/cdelivery">{{ tt!("ui.nav.settings") }}</a>{% endif %}
+  </nav>
+{% endblock navigation %}

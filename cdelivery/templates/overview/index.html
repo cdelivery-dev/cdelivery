@@ -1,0 +1,121 @@
+{% extends "dashboard.html" %}
+
+{% import "metric_chart.html" as metric %}
+{% import "time_range.html" as time_range %}
+
+{% macro dimension(chart, key, unit, title, stacked, filesystem) %}
+{% call metric::section(key, title, true) %}
+  {% match chart %}
+  {% when Some(item) %}
+  <div
+    class="metric-chart"
+    role="img"
+    aria-label="{{ title }}"
+    data-unit="{{ unit }}"
+    data-series="{{ item.series_labels }}"
+    data-metric="{{ item.data }}"
+    data-stacked="{{ stacked }}"
+    data-series-kinds="{{ item.series_kinds }}"
+    {% if filesystem %}
+    data-filesystems="true"
+    data-detail-unit="bytes"
+    data-detail-label='{{ tt!("ui.node.metrics.filesystem.used") }}'
+    data-total-label='{{ tt!("ui.node.metrics.filesystem.total") }}'
+    {% endif %}
+  ></div>
+  {% when None %}
+  <p class="muted">{{ tt!("ui.metrics.empty") }}</p>
+  {% endmatch %}
+{% endcall %}
+{% endmacro %}
+
+{% macro instance_status(instances) %}
+{% if instances.ready %}
+<dd>{{ instances.running }}/{{ instances.desired }} {{ tt!("ui.overview.state.running") }}</dd>
+{% else %}
+<dd class="abnormal">{{ instances.running }}/{{ instances.desired }} {{ tt!("ui.overview.state.abnormal") }}</dd>
+{% endif %}
+{% endmacro %}
+
+{% block title %}{{ tt!("ui.overview.title") }} | {{ super() }}{% endblock title %}
+
+{% block main %}
+<header>
+  <h1>{{ tt!("ui.overview.title") }}</h1>
+</header>
+
+<dl class="stats">
+    <div>
+      <dt>{{ tt!("ui.overview.nodes.label") }}</dt>
+      {% let ready = overview.nodes_ready %}
+      {% let total = overview.nodes_total %}
+      <dd>{{ tt!("ui.overview.nodes.ready", ready = ready, total = total) }}</dd>
+    </div>
+    <div>
+      <dt>{{ tt!("ui.overview.replicas") }}</dt>
+      {% let running = overview.replicas_running %}
+      {% let desired = overview.replicas_desired %}
+      {% if running >= desired %}
+      <dd>{{ running }}/{{ desired }} {{ tt!("ui.overview.state.running") }}</dd>
+      {% else %}
+      <dd class="abnormal">{{ running }}/{{ desired }} {{ tt!("ui.overview.state.abnormal") }}</dd>
+      {% endif %}
+    </div>
+    <div>
+      <dt>{{ tt!("ui.overview.pingress.label") }}</dt>
+      {% match overview.pingress %}
+      {% when Some(instances) %}
+      {{ instance_status(instances) }}
+      {% when None %}
+      <dd class="muted">{{ tt!("ui.overview.state.disabled") }}</dd>
+      {% endmatch %}
+    </div>
+    <div>
+      <dt>{{ tt!("ui.overview.insight.server.label") }}</dt>
+      {% match overview.insight_status %}
+      {% when crate::operation::insight::typ::InsightStatus::Disabled %}
+      <dd class="muted">{{ tt!("ui.overview.state.disabled") }}</dd>
+      {% else %}
+      {% match overview.insight_server %}
+      {% when Some(instances) %}
+      {{ instance_status(instances) }}
+      {% when None %}
+      <dd class="abnormal">{{ tt!("ui.overview.state.missing") }}</dd>
+      {% endmatch %}
+      {% endmatch %}
+    </div>
+</dl>
+
+{% match metrics %}
+{% when crate::ui::overview::MetricsView::Disabled %}
+<p class="muted mt-4">{{ tt!("ui.insight.query.disabled") }} <a href="/insight">{{ tt!("ui.insight.query.open") }}</a></p>
+{% when crate::ui::overview::MetricsView::Unavailable(error) %}
+<p class="abnormal mt-4">{{ tt!("ui.conditions.metricsUnavailable") }}</p>
+<pre class="diagnostic">{{ error }}</pre>
+{% when crate::ui::overview::MetricsView::Ready(panels) %}
+{% let start = window.range.0 %}
+{% let end = window.range.1 %}
+{% let preset = window.preset %}
+<form
+  method="get"
+  action="/"
+  class="row query-bar mt-4"
+  x-data='CDelivery.timeRange({{ start|json }}, {{ end|json }}, {{ preset|json }})'
+>
+  {{ time_range::fields(preset) }}
+</form>
+{% call metric::root(start, end, "overview") %}
+  {% for panel in panels %}
+  {% if panel.chart.is_some() || panel.key == "cpu_usage" || panel.key == "memory_working_set" %}
+  {% let chart = panel.chart %}
+  {% let key = panel.key %}
+  {% let unit = panel.unit %}
+  {% let title = panel.title %}
+  {% let stacked = panel.stacked %}
+  {% let filesystem = panel.key == "utilization" %}
+  {{ dimension(chart, key, unit, title, stacked, filesystem) }}
+  {% endif %}
+  {% endfor %}
+{% endcall %}
+{% endmatch %}
+{% endblock main %}

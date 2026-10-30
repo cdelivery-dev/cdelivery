@@ -1,0 +1,63 @@
+---
+title: "網路常見問題"
+description: "排查 IPv6、用戶端位址、DNS、路由與憑證問題。"
+sidebar:
+  order: 25
+---
+
+以下 IPv6 檢查適用於執行 Pingress 的 Linux 伺服器。
+
+## 為什麼 Pingress 記錄的是閘道位址？
+
+僅支援 IPv4 的 `docker_gwbridge` 可能轉換 IPv6 連線，隱藏原始用戶端位址，即使主機支援 IPv6 也是如此。前置 CDN 或其他代理也會改變直接連線的對端：Pingress 記錄該對端的位址，並用它填寫 `X-Real-IP` 和 `X-Forwarded-For`。
+
+## 安裝程式會自動啟用 IPv6 嗎？
+
+首次安裝或加入時，腳本會偵測主機的 IPv6，並嘗試準備雙堆疊網橋。出現選擇提示時，選 **1** 繼續僅使用 IPv4，選 **2** 結束並解決問題；預設會結束，沒有互動終端時也是如此。
+
+`--no-ipv6` 會略過網橋準備，不會停用既有雙堆疊網橋的 IPv6。macOS 的網路由 Docker 執行環境管理。
+
+## 如何檢查是否正常？
+
+在執行 Pingress 的伺服器上執行：
+
+```sh
+ip -6 address show scope global
+ip -6 route show default
+docker network inspect docker_gwbridge --format '{{.EnableIPv6}}'
+```
+
+最後一條應輸出 `true`，它僅確認設定，不代表連線正常。需要公開存取時，網域的 AAAA 記錄應指向可透過 IPv6 存取 Pingress 的位址。
+
+從另一台支援 IPv6 的機器測試兩種協定，將範例網域替換為實際網域：
+
+```sh
+curl -4 --noproxy '*' -I https://app.example.com
+curl -6 --noproxy '*' -I https://app.example.com
+```
+
+核對 Pingress 的 `client_ip`，或應用程式收到的轉送標頭，是否為發起連線的用戶端位址。應用程式本身連線的對端是 Pingress，不是原始用戶端。
+
+## 安裝後如何再啟用 IPv6？
+
+先讓主機具備可用的 IPv6。網橋已輸出 `true` 時，檢查連線與 DNS 即可。尚未加入叢集的伺服器，執行[安裝命令](/docs/zh-tw/getting-started/installation/)或伺服器清單提供的加入命令，不加上 `--no-ipv6`。
+
+**重新執行既有安裝不會升級網橋。** 已在執行且網橋僅支援 IPv4 的伺服器需要安排維護：
+
+1. 備份本機資料，記錄節點 ID、角色、完整節點標籤、網橋設定，以及綁定該節點的應用程式、Pingress 或 Insight。
+2. 停止或遷移其工作負載。管理節點離開前，須維持過半數管理節點正常運作，並讓 CDelivery 控制台在其他節點正常執行，再將待維護節點降級。唯一的管理節點不可直接離開，應先完成安全接管或制定備份還原計畫。具體操作請參閱 [Docker 節點維護說明](https://docs.docker.com/engine/swarm/manage-nodes/)。
+3. 節點離開且網橋沒有容器參照後，從正常執行的控制台取得**原角色的新加入命令**，不加上 `--no-ipv6`；腳本會在加入前準備預設網橋。自訂網橋需保留原有子網路與選項，另行[準備雙堆疊網橋](https://docs.docker.com/engine/swarm/networking/#customize-the-docker_gwbridge)。邀請有效期限為 30 分鐘，CDelivery 重新啟動或遷移後也會失效。
+4. 重新加入會產生新的節點 ID。還原完整標籤（包括資料卷說明），修復服務對舊 ID 的綁定。使用本機資料卷的應用程式與使用本機儲存的 Insight，不能只在介面中更換節點，需要管理員維護部署約束。資料仍留在原主機上。
+5. 還原服務，依需要調整 DNS，重新驗證上述 IPv4、IPv6 存取與用戶端位址。
+
+也可以加入另一台支援 IPv6 的伺服器，將 Pingress 部署到該伺服器，再將 DNS 指向它。
+
+## IPv6 路由或防火牆異常怎麼辦？
+
+啟用轉送後，`accept_ra=1` 的介面可能停止接收路由器通告（RA），導致預設路由消失。透過介面所屬的網路管理器持久設定 RA：ifupdown 使用 `accept_ra 2`，ifupdown-ng 使用 `ipv6-accept-ra 2`。網路管理器自行處理 RA 的介面，不要盲目覆寫其 `accept_ra=0`。重新啟動介面或主機後，再次檢查路由。
+
+保持 Docker 的 IPv6 防火牆管理啟用（`ip6tables` 不可為 `false`），並在主機防火牆與雲端安全群組中放行 Pingress 的 HTTP/HTTPS 連接埠。網橋輸出 `true` 並不能證明這些規則或外部存取正常。
+
+## 其他存取問題
+
+DNS 或路由問題先依[網域與路由](/docs/zh-tw/guides/networking/routing/)逐段檢查；憑證缺失、到期或簽發失敗見[自動憑證與續期](/docs/zh-tw/guides/networking/automatic-certificates/)。使用[存取日誌](/docs/zh-tw/guides/observability/logs/access/)確認請求是否到達入口、是否符合應用程式規則，以及上游是否成功回應。

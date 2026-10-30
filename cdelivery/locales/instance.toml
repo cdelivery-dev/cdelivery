@@ -1,0 +1,51 @@
+_version = 2
+
+[instance.NotReplicated]
+en = "service %{service} requires replicated mode"
+zh-CN = "服务 %{service} 须使用 replicated 模式"
+zh-TW = "服務 %{service} 須使用 replicated 模式"
+ja = "サービス %{service} は replicated モードにする必要があります。"
+pt-BR = "o serviço %{service} exige o modo replicado"
+es = "el servicio %{service} requiere el modo replicated"
+fr = "Le service %{service} nécessite le mode replicated"
+de = "Dienst %{service} benötigt den Modus replicated"
+
+[instance.NotSingleton]
+en = "service %{service} requires 1 replica, found %{replicas}; run: docker service scale %{service}=1"
+zh-CN = "服务 %{service} 须运行 1 个副本，当前为 %{replicas}；执行：docker service scale %{service}=1"
+zh-TW = "服務 %{service} 須執行 1 個副本，目前為 %{replicas}；請執行：docker service scale %{service}=1"
+ja = "サービス %{service} のレプリカは1個にする必要があります。現在は %{replicas} 個です。実行してください：docker service scale %{service}=1"
+pt-BR = "o serviço %{service} exige 1 réplica, mas tem %{replicas}; execute: docker service scale %{service}=1"
+es = "el servicio %{service} requiere 1 réplica, pero tiene %{replicas}; ejecutar: docker service scale %{service}=1"
+fr = "Le service %{service} nécessite 1 réplique, contre %{replicas} actuellement ; exécuter : docker service scale %{service}=1"
+de = "Dienst %{service} benötigt genau 1 Replikat, vorhanden: %{replicas}; ausführen: docker service scale %{service}=1"
+
+[instance.NetworkMissing]
+en = "network %{network} not found; create an overlay network and attach the platform service before setup"
+zh-CN = "网络 %{network} 不存在；初始化前须创建 overlay 网络并连接平台服务"
+zh-TW = "網路 %{network} 不存在；進行初始設定前須建立 overlay 網路並連接平台服務"
+ja = "ネットワーク %{network} が見つかりません。初期設定の前に overlay ネットワークを作成し、プラットフォームのサービスを接続してください。"
+pt-BR = "rede %{network} não encontrada; crie uma rede overlay e conecte o serviço da plataforma antes da configuração inicial"
+es = "no se encontró la red %{network}; crear una red overlay y conectar el servicio de la plataforma antes de la configuración inicial"
+fr = "Réseau %{network} introuvable ; créer un réseau overlay et y connecter le service de la plateforme avant la configuration initiale"
+de = "Netzwerk %{network} nicht gefunden; vor der Einrichtung ein Overlay-Netzwerk erstellen und den Plattformdienst damit verbinden"
+
+[instance.NetworkNotOverlay]
+en = "network %{network} requires the overlay driver; recreate it"
+zh-CN = "网络 %{network} 须使用 overlay 驱动，请重新创建"
+zh-TW = "網路 %{network} 須使用 overlay 驅動程式，請重新建立"
+ja = "ネットワーク %{network} には overlay ドライバーが必要です。作成し直してください。"
+pt-BR = "a rede %{network} exige o driver overlay; recrie-a"
+es = "la red %{network} requiere el controlador overlay; volver a crearla"
+fr = "Le réseau %{network} nécessite le pilote overlay ; le recréer"
+de = "Netzwerk %{network} benötigt den Treiber overlay; Netzwerk neu erstellen"
+
+[instance.NotAttached]
+en = "service %{service} is not attached to network %{network}; run: docker service update --network-add %{network} %{service}"
+zh-CN = "服务 %{service} 未连接网络 %{network}；执行：docker service update --network-add %{network} %{service}"
+zh-TW = "服務 %{service} 未連接網路 %{network}；請執行：docker service update --network-add %{network} %{service}"
+ja = "サービス %{service} がネットワーク %{network} に接続されていません。実行してください：docker service update --network-add %{network} %{service}"
+pt-BR = "o serviço %{service} não está conectado à rede %{network}; execute: docker service update --network-add %{network} %{service}"
+es = "el servicio %{service} no está conectado a la red %{network}; ejecutar: docker service update --network-add %{network} %{service}"
+fr = "Le service %{service} n’est pas connecté au réseau %{network} ; exécuter : docker service update --network-add %{network} %{service}"
+de = "Dienst %{service} ist nicht mit Netzwerk %{network} verbunden; ausführen: docker service update --network-add %{network} %{service}"

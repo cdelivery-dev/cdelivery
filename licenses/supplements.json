@@ -1,0 +1,144 @@
+[
+  {
+    "packages": [
+      "asn1-rs-impl@0.2.0"
+    ],
+    "source": "https://raw.githubusercontent.com/rusticata/asn1-rs/a20e5f7319c896737ad0f2557037817b91ad854f/LICENSE-MIT",
+    "file": "asn1-rs-impl-0.2.0.txt"
+  },
+  {
+    "packages": [
+      "garde@0.23.0",
+      "garde_derive@0.23.0"
+    ],
+    "source": "https://raw.githubusercontent.com/jprochazk/garde/64dc05aa9cabb58219c0779acc9b95d8b0a4906a/LICENSE-MIT",
+    "file": "garde-0.23.0.txt"
+  },
+  {
+    "packages": [
+      "rust-i18n-macro@4.2.4",
+      "rust-i18n-support@4.2.4"
+    ],
+    "source": "https://raw.githubusercontent.com/longbridge/rust-i18n/5f3ea5ba03395f2f2908e3587e01788cfdfd3555/LICENSE",
+    "file": "rust-i18n-macro-4.2.4.txt"
+  },
+  {
+    "packages": [
+      "twilight-gateway@0.17.1",
+      "twilight-http@0.17.1",
+      "twilight-http-ratelimiting@0.17.1",
+      "twilight-model@0.17.1"
+    ],
+    "source": "https://raw.githubusercontent.com/twilight-rs/twilight/b4ce13b727e7731b917576ad977300ab6926bb6b/LICENSE.md",
+    "file": "twilight-gateway-0.17.1.txt"
+  },
+  {
+    "packages": [
+      "twilight-gateway-queue@0.17.0",
+      "twilight-validate@0.17.0"
+    ],
+    "source": "https://raw.githubusercontent.com/twilight-rs/twilight/007889d01731d75a0dadcee106795de21235acb4/LICENSE.md",
+    "file": "twilight-gateway-0.17.1.txt"
+  },
+  {
+    "packages": [
+      "encodify@1.0.2"
+    ],
+    "source": "https://raw.githubusercontent.com/stalwartlabs/encodify/a9837bdcfdaa035e2d735d8280429c7942886e72/LICENSES/Apache-2.0.txt",
+    "file": "stalwart-apache-2.0.txt",
+    "notice": "SPDX-FileCopyrightText: 2026 Stalwart Labs LLC <hello@stalw.art> (from src/lib.rs in the same commit)"
+  },
+  {
+    "packages": [
+      "hashify@0.2.9"
+    ],
+    "source": "https://raw.githubusercontent.com/stalwartlabs/hashify/74bd8a251dff8a514039e035a6437eabf1b9fd57/LICENSES/Apache-2.0.txt",
+    "file": "stalwart-apache-2.0.txt",
+    "notice": "SPDX-FileCopyrightText: 2025 Stalwart Labs LLC <hello@stalw.art> (from src/lib.rs in the same commit)"
+  },
+  {
+    "packages": [
+      "hashify@0.3.1"
+    ],
+    "source": "https://raw.githubusercontent.com/stalwartlabs/hashify/f5bfeea9fceb9e839d27bd910357fc911d394ef6/LICENSES/Apache-2.0.txt",
+    "file": "stalwart-apache-2.0.txt",
+    "notice": "SPDX-FileCopyrightText: 2025 Stalwart Labs LLC <hello@stalw.art> (from src/lib.rs in the same commit)"
+  },
+  {
+    "packages": [
+      "mail-auth@0.12.1"
+    ],
+    "source": "https://raw.githubusercontent.com/stalwartlabs/mail-auth/73602fe6af3cc2dde5841fa970fdc4f8bc4d7806/LICENSES/Apache-2.0.txt",
+    "file": "stalwart-apache-2.0.txt",
+    "notice": "SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art> (from src/lib.rs in the same commit)"
+  },
+  {
+    "packages": [
+      "mail-builder@0.4.4"
+    ],
+    "source": "https://raw.githubusercontent.com/stalwartlabs/mail-builder/2ec9d02fae7c5b7821228a760da2041763dce446/LICENSES/Apache-2.0.txt",
+    "file": "stalwart-apache-2.0.txt",
+    "notice": "SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art> (from src/lib.rs in the same commit)"
+  },
+  {
+    "packages": [
+      "mail-builder@0.5.0"
+    ],
+    "source": "https://raw.githubusercontent.com/stalwartlabs/mail-builder/1f667e2d81b3621184d798120267a144aad4124a/LICENSES/Apache-2.0.txt",
+    "file": "stalwart-apache-2.0.txt",
+    "notice": "SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art> (from src/lib.rs in the same commit)"
+  },
+  {
+    "packages": [
+      "mail-send@0.6.2"
+    ],
+    "source": "https://raw.githubusercontent.com/stalwartlabs/mail-send/5256793258f2ee11ce4bdc033ce4a01d1307b50b/LICENSES/Apache-2.0.txt",
+    "file": "stalwart-apache-2.0.txt",
+    "notice": "SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art> (from src/lib.rs in the same commit)"
+  },
+  {
+    "packages": [
+      "smtp-proto@0.2.5"
+    ],
+    "source": "https://raw.githubusercontent.com/stalwartlabs/smtp-proto/f9c4edfbda406615ed70bfb073f7eb1e5a157197/LICENSES/Apache-2.0.txt",
+    "file": "stalwart-apache-2.0.txt",
+    "notice": "SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art> (from src/lib.rs in the same commit)"
+  },
+  {
+    "packages": [
+      "alloc-stdlib@0.2.4"
+    ],
+    "source": "https://github.com/dropbox/rust-alloc-no-stdlib/blob/ae42d22078b98549e987d2f03d12df7b984fde47/LICENSE",
+    "file": "alloc-stdlib-0.2.4.txt"
+  },
+  {
+    "packages": [
+      "flatbuffers@25.12.19"
+    ],
+    "source": "https://github.com/google/flatbuffers/blob/7e163021e59cca4f8e1e35a7c828b5c6b7915953/LICENSE",
+    "file": "../LICENSE"
+  },
+  {
+    "packages": [
+      "qrcodegen@1.8.0"
+    ],
+    "source": "https://github.com/nayuki/QR-Code-generator/blob/720f62bddb7226106071d4728c292cb1df519ceb/rust/src/lib.rs",
+    "file": "qrcodegen-1.8.0.txt"
+  },
+  {
+    "packages": [
+      "qrcodegen-image@1.5.2"
+    ],
+    "source": "https://github.com/constantoine/qrcodegen-image/blob/ae3cbf487245a4c47bf183a246c45409992ca0a9/Cargo.toml",
+    "file": "mit-terms.txt",
+    "notice": "Upstream Cargo.toml declares license = \"MIT\" and authors = [\"Cleo Rebert <cleo.rebert@gmail.com>\"]. The published source and repository provide no separate license file or copyright notice. The license terms below are reproduced from the MIT license terms, without adding an unprovided copyright notice; they are not presented as an upstream license file."
+  },
+  {
+    "packages": [
+      "stop-token@0.7.0"
+    ],
+    "source": "https://github.com/async-rs/stop-token/blob/33a32c175f5d5141e6447381f126622406f295ac/Cargo.toml",
+    "file": "../LICENSE",
+    "notice": "Upstream Cargo.toml declares license = \"MIT OR Apache-2.0\" and authors = [\"Aleksey Kladov <aleksey.kladov@gmail.com>\",\"Yoshua Wuyts <yoshuawuyts@gmail.com>\"]. The published source and repository provide no separate license file or copyright notice. The license terms below are reproduced from the Apache License 2.0; they are not presented as an upstream license file."
+  }
+]

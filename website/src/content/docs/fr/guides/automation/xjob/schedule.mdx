@@ -1,0 +1,14 @@
+---
+title: "Intervalles et délai XJob"
+description: "Configurez l’attente après chaque exécution et un délai d’exécution indépendant."
+sidebar:
+  order: 39
+---
+
+Les deux valeurs sont obligatoires, chacune de 1 à 1440 minutes. L’API accepte des entiers en `Minutes` (1–1440) ou `Hours` (1–24), par exemple `{"unit":"Minutes","value":30}`. Le délai peut dépasser l’intervalle.
+
+La première exécution attend l’intervalle depuis la création de la configuration ; les suivantes, depuis la fin de l’exécution, réussie ou échouée. Une exécution active n’a pas de prochaine date. Le lancement manuel ignore l’attente mais est refusé pendant une exécution active.
+
+Le délai commence à la création de la tâche d’exécution, préparation et téléchargement de l’image compris. Le contrôleur vérifie toutes les 30 secondes et demande l’arrêt après dépassement. Démarrage, vérifications, arrêt et indisponibilité du contrôleur peuvent retarder l’arrêt : ce n’est pas une échéance stricte. Une modification s’applique à l’exécution actuelle sans changer son début ; prolonger le délai n’annule pas un arrêt déjà demandé.
+
+La configuration reste dans le service et l’état provient de l’observation des tâches. Sans enregistrement actuel, le contrôleur attend si nécessaire la fenêtre existante de 90 secondes, puis estime la prochaine date avec la mise à jour du service plus l’intervalle. Cela ne garantit pas un intervalle complet après la fin réelle. Les exécutions manquées ne s’accumulent pas. Vérifiez les effets avant de répéter une demande manuelle au résultat incertain.

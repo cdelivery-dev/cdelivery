@@ -1,0 +1,13 @@
+{% extends "protected.html" %}
+
+{% block header_account %}
+<a href="/account"><span class="wide">{{ account.user_name }}</span><span class="narrow">{{ account.initials }}</span></a>
+{% endblock header_account %}
+
+{% block navigation %}
+<nav id="page-navigation" aria-label='{{ tt!("ui.settings.navigation") }}'>
+  <ul id="nav-index">
+    {% block settings_navigation %}{% endblock settings_navigation %}
+  </ul>
+</nav>
+{% endblock navigation %}

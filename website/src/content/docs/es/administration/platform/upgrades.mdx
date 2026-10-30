@@ -1,0 +1,28 @@
+---
+title: "Actualizaciones y versiones"
+description: "El programa principal y Pingress, Insight, Insight Agent y gestión de volúmenes tienen versiones independientes."
+sidebar:
+  order: 62
+---
+
+El programa principal y Pingress, Insight, Insight Agent y gestión de volúmenes tienen versiones independientes.
+
+## Preparar
+
+Admin revisa versión actual, disponible y notas. Comprueba descarga y arquitectura, reserva tiempo y realiza copias de negocio. Registrar la versión no es una copia.
+
+El catálogo ofrece la última versión de cada componente y la operación exige esa versión. No hay selector general de versiones históricas ni botón universal de downgrade.
+
+## Actualizar
+
+Selecciona versión en Ajustes → CDelivery, confirma y espera reinicio. Reabre y verifica versión, servidores, aplicaciones, eventos y conexiones API/MCP.
+
+Actualiza componentes por separado. Verifica HTTPS tras Pingress, muestras nuevas tras Insight/recolectores y lectura de volúmenes tras cdelivery-agent. Tras reinicio, obtén nuevas credenciales de incorporación.
+
+Una desconexión breve de consola no prueba caída del negocio.
+
+## Diagnosticar
+
+Metadatos inaccesibles no significan versión actualizada. Revisa red hacia publicaciones. Para descarga fallida, comprueba arquitectura, imagen y tareas.
+
+La [reversión de aplicación](/docs/es/guides/release-safety/rollback/) no restaura plataforma ni datos. Para login, usa [recuperación](/docs/es/administration/platform/recovery/).

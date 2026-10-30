@@ -1,0 +1,105 @@
+{% import "app/xconfig.html" as xconfig %}
+{% import "app/mounts.html" as mounts %}
+{% import "node/select.html" as select %}
+
+{%- macro mode_select() -%}
+<select id="files-mode" class="text" x-model="$$filesMode" aria-label='{{ tt!("ui.app.files.mode.label") }}'>
+  <option value="xconfig">{{ tt!("ui.app.files.mode.xconfig") }}</option>
+  <option value="mounts">{{ tt!("ui.app.files.mode.mounts") }}</option>
+</select>
+{%- endmacro -%}
+
+{%- macro editable(app_name, mode, mount_node_label, default_mount_target) -%}
+{% if mode == "create" %}
+<div x-data="filesCreateData">
+  {% match crate::locale::current() %}
+  {% when crate::locale::Locale::ZhCn %}
+  <p class="table-label">将{{ mode_select() }}<template x-if="mounts"><span>保存在{{ select::node("mounts-node", "mounts.node_id", tt!("ui.app.mounts.node.select")) }}的数据卷中。应用固定在该服务器，运行一个副本</span></template><template x-if="!mounts"><span>挂载进容器</span></template>：</p>
+  {% when crate::locale::Locale::ZhTw %}
+  <p class="table-label">將{{ mode_select() }}<template x-if="mounts"><span>儲存在{{ select::node("mounts-node", "mounts.node_id", tt!("ui.app.mounts.node.select")) }}的資料卷中。應用程式固定在該伺服器，執行一個副本</span></template><template x-if="!mounts"><span>掛載至容器</span></template>：</p>
+  {% when crate::locale::Locale::Ja %}
+  <p class="table-label">{{ mode_select() }}を<template x-if="mounts"><span>{{ select::node("mounts-node", "mounts.node_id", tt!("ui.app.mounts.node.select")) }}のボリュームに保存する。アプリをこのサーバーに固定し、1個のレプリカを実行する</span></template><template x-if="!mounts"><span>コンテナにマウントする</span></template>。</p>
+  {% when crate::locale::Locale::PtBr %}
+  <p class="table-label"><template x-if="mounts"><span>Armazenar </span></template><template x-if="!mounts"><span>Montar </span></template>{{ mode_select() }}<template x-if="mounts"><span> em volumes no servidor {{ select::node("mounts-node", "mounts.node_id", tt!("ui.app.mounts.node.select")) }}. A aplicação fica nesse servidor, com uma única réplica</span></template><template x-if="!mounts"><span> no contêiner</span></template>:</p>
+  {% when crate::locale::Locale::Es %}
+  <p class="table-label"><template x-if="mounts"><span>Guardar </span></template><template x-if="!mounts"><span>Montar </span></template>{{ mode_select() }}<template x-if="mounts"><span> en volúmenes del servidor {{ select::node("mounts-node", "mounts.node_id", tt!("ui.app.mounts.node.select")) }}. La aplicación se ejecuta en ese servidor con una sola réplica</span></template><template x-if="!mounts"><span> en el contenedor</span></template>:</p>
+  {% when crate::locale::Locale::Fr %}
+  <p class="table-label"><template x-if="mounts"><span>Stocker </span></template><template x-if="!mounts"><span>Monter </span></template>{{ mode_select() }}<template x-if="mounts"><span> dans les volumes du serveur {{ select::node("mounts-node", "mounts.node_id", tt!("ui.app.mounts.node.select")) }}. L’application s’exécute uniquement sur ce serveur, avec une seule réplique</span></template><template x-if="!mounts"><span> dans le conteneur</span></template> :</p>
+  {% when crate::locale::Locale::De %}
+  <p class="table-label">{{ mode_select() }}<template x-if="mounts"><span> in Volumes auf Server {{ select::node("mounts-node", "mounts.node_id", tt!("ui.app.mounts.node.select")) }} speichern. Die App läuft ausschließlich auf diesem Server mit einem Replikat</span></template><template x-if="!mounts"><span> in den Container einbinden</span></template>:</p>
+  {% when crate::locale::Locale::En %}
+  <p class="table-label"><template x-if="mounts"><span>Store </span></template><template x-if="!mounts"><span>Mount </span></template>{{ mode_select() }}<template x-if="mounts"><span> in volumes on node {{ select::node("mounts-node", "mounts.node_id", tt!("ui.app.mounts.node.select")) }}. The app runs one replica on that node</span></template><template x-if="!mounts"><span> into the container</span></template>:</p>
+  {% endmatch %}
+  <div x-show="mounts === null">{{ xconfig::editable(app_name) }}</div>
+  <template x-if="mounts">
+    {{ mounts::editable("mounts.mounts", "mounts?.node_id || ''", default_mount_target) }}
+  </template>
+</div>
+{{ mounts::data() }}
+<script>
+document.addEventListener("alpine:init", () => {
+  Alpine.data("filesCreateData", () => ({
+    get $$filesMode() {
+      return this.mounts ? "mounts" : "xconfig";
+    },
+    set $$filesMode(val) {
+      if (val === "mounts") {
+        this.mounts = { node_id: "", mounts: [] };
+        this.xconfigs = [];
+        this.replicas = { Fixed: 1 };
+        this.placement = null;
+      } else {
+        this.mounts = null;
+      }
+    },
+    get nodeOptions() {
+      return CDelivery.placementOptions(this.nodes, "NodeId", "", "").nodeOptions;
+    },
+  }));
+});
+</script>
+{% else %}
+{% if mount_node_label == "" %}
+{% match crate::locale::current() %}
+{% when crate::locale::Locale::ZhCn %}
+<p class="table-label">将配置文件挂载进容器：</p>
+{% when crate::locale::Locale::ZhTw %}
+<p class="table-label">將設定檔掛載至容器：</p>
+{% when crate::locale::Locale::Ja %}
+<p class="table-label">設定ファイルをコンテナにマウントする。</p>
+{% when crate::locale::Locale::PtBr %}
+<p class="table-label">Montar arquivos de configuração no contêiner:</p>
+{% when crate::locale::Locale::Es %}
+<p class="table-label">Montar archivos de configuración en el contenedor:</p>
+{% when crate::locale::Locale::Fr %}
+<p class="table-label">Monter les fichiers de configuration dans le conteneur :</p>
+{% when crate::locale::Locale::De %}
+<p class="table-label">Konfigurationsdateien in den Container einbinden:</p>
+{% when crate::locale::Locale::En %}
+<p class="table-label">Mount configuration files into the container:</p>
+{% endmatch %}
+{{ xconfig::editable(app_name) }}
+{% else %}
+{% match crate::locale::current() %}
+{% when crate::locale::Locale::ZhCn %}
+<p class="table-label">数据保存在 <b translate="no">{{ mount_node_label }}</b> 的数据卷中。应用固定在该服务器，运行一个副本：</p>
+{% when crate::locale::Locale::ZhTw %}
+<p class="table-label">資料儲存在 <b translate="no">{{ mount_node_label }}</b> 的資料卷中。應用程式固定在該伺服器，執行一個副本：</p>
+{% when crate::locale::Locale::Ja %}
+<p class="table-label">データを<b translate="no">{{ mount_node_label }}</b>のボリュームに保存する。アプリをこのサーバーに固定し、1個のレプリカを実行する。</p>
+{% when crate::locale::Locale::PtBr %}
+<p class="table-label">Os dados ficam em volumes no servidor <b translate="no">{{ mount_node_label }}</b>. A aplicação fica nesse servidor, com uma única réplica:</p>
+{% when crate::locale::Locale::Es %}
+<p class="table-label">Los datos se guardan en volúmenes del servidor <b translate="no">{{ mount_node_label }}</b>. La aplicación se ejecuta en ese servidor con una sola réplica:</p>
+{% when crate::locale::Locale::Fr %}
+<p class="table-label">Les données sont stockées dans les volumes du serveur <b translate="no">{{ mount_node_label }}</b>. L’application s’exécute uniquement sur ce serveur, avec une seule réplique :</p>
+{% when crate::locale::Locale::De %}
+<p class="table-label">Die Daten liegen in Volumes auf Server <span translate="no">{{ mount_node_label }}</span>. Die App läuft ausschließlich auf diesem Server mit einem Replikat:</p>
+{% when crate::locale::Locale::En %}
+<p class="table-label">Data is stored in volumes on node <b translate="no">{{ mount_node_label }}</b>. The app runs one replica on that node:</p>
+{% endmatch %}
+{{ mounts::editable("mounts", "mountNodeId", default_mount_target) }}
+{{ mounts::data() }}
+{% endif %}
+{% endif %}
+{%- endmacro -%}

@@ -1,0 +1,30 @@
+---
+title: "Certificados propios"
+description: "Carga cadena y clave PEM cuando la emisión se administra fuera de CDelivery."
+sidebar:
+  order: 24
+---
+
+Carga cadena y clave PEM cuando la emisión se administra fuera de CDelivery.
+
+## Preparar y cargar
+
+Admin debe proporcionar cadena de certificados y clave privada coincidente. El certificado debe cubrir el dominio, estar vigente y aportar la cadena necesaria para clientes.
+
+1. Selecciona el dominio en certificados.
+2. Carga cadena y clave.
+3. Guarda y confirma HTTPS en la ruta.
+4. Prueba desde un cliente e inspecciona nombre, emisor, cadena y vencimiento.
+5. Comprueba cada dirección de entrada, incluida IPv6.
+
+No compartas claves privadas en registros o incidencias. Una carga correcta no demuestra que DNS lleve al servidor previsto.
+
+## Renovar
+
+Los certificados propios no participan en renovación ACME. Controla caducidad, carga el reemplazo antes de vencer y verifica el certificado realmente servido.
+
+## Diagnosticar
+
+Distingue fallos de dirección de fallos TLS. Revisa nombre, vigencia, cadena completa y correspondencia de clave. Un proxy anterior puede servir otro certificado.
+
+Para automatizar emisión, consulta [certificados automáticos](/docs/es/guides/networking/automatic-certificates/) y sus requisitos de validación.

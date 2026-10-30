@@ -1,0 +1,117 @@
+{%- macro label_select() -%}
+<select class="text" x-model="$$placementLabel" aria-label='{{ tt!("ui.app.placement.target.label") }}'>
+  <option value="">{{ tt!("ui.app.placement.any") }}</option>
+  <template x-for="label in labels" :key="label.name">
+    <option :value="label.name" x-text="`${label.name} (${label.count})`" :selected="placement && placement.label === label.name"></option>
+  </template>
+</select>
+{%- endmacro -%}
+
+{%- macro max_replicas_type_select() -%}
+<select class="text" x-model="$$maxReplicasPerNodeType" aria-label='{{ tt!("ui.app.placement.replicas.mode.label") }}'>
+  <option value="limited">{{ tt!("ui.app.placement.replicas_type.limited") }}</option>
+  <option value="unlimited">{{ tt!("ui.app.placement.replicas_type.unlimited") }}</option>
+</select>
+{%- endmacro -%}
+
+{%- macro max_replicas_input() -%}
+<input class="text inline-number" type="number" min="1" x-model.number="$$maxReplicasPerNode" aria-label='{{ tt!("ui.app.placement.replicas.max.label") }}' required />
+{%- endmacro -%}
+
+{%- macro editable() -%}
+<template x-if="mounts === null">
+<p x-data="placementData">
+  {% match crate::locale::current() %}
+  {% when crate::locale::Locale::ZhCn %}
+  容器<span x-text="$$hasLabel ? '只能' : '可以'"></span>运行在<span x-show="$$hasLabel">带有</span>{{ label_select() }}<span x-show="$$hasLabel">标签的服务器</span>上。
+  <span x-text="$$maxReplicasPerNodeType === 'limited' ? '每台服务器' : '副本在服务器间'"></span>{{ max_replicas_type_select() }}<template x-if="$$maxReplicasPerNodeType === 'limited'"><span>{{ max_replicas_input() }}个副本</span></template>。
+  {% when crate::locale::Locale::ZhTw %}
+  容器<span x-text="$$hasLabel ? '只能' : '可以'"></span>在<span x-show="$$hasLabel">具有</span>{{ label_select() }}<span x-show="$$hasLabel">標籤的伺服器</span>上執行。
+  <span x-text="$$maxReplicasPerNodeType === 'limited' ? '每台伺服器' : '副本在伺服器間'"></span>{{ max_replicas_type_select() }}<template x-if="$$maxReplicasPerNodeType === 'limited'"><span>{{ max_replicas_input() }}個副本</span></template>。
+  {% when crate::locale::Locale::Ja %}
+  コンテナは{{ label_select() }}<span x-show="$$hasLabel">ラベルのあるサーバーでのみ</span><span x-show="!$$hasLabel">で</span>実行する。
+  <span x-text="$$maxReplicasPerNodeType === 'limited' ? 'サーバー1台あたり' : 'レプリカをサーバー間で'"></span>{{ max_replicas_type_select() }}<template x-if="$$maxReplicasPerNodeType === 'limited'"><span>{{ max_replicas_input() }}個のレプリカを配置</span></template>。
+  {% when crate::locale::Locale::PtBr %}
+  O contêiner <span x-text="$$hasLabel ? 'só pode ser executado em servidores com o rótulo' : 'pode ser executado em'"></span> {{ label_select() }}.
+  <span x-text="$$maxReplicasPerNodeType === 'limited' ? 'Executar' : 'Distribuir as réplicas'"></span> {{ max_replicas_type_select() }} <template x-if="$$maxReplicasPerNodeType === 'limited'"><span>{{ max_replicas_input() }} <span data-one="réplica" data-other="réplicas" x-text="CDelivery.quantity($$maxReplicasPerNode, $el.dataset)">réplicas</span> por servidor</span></template><template x-if="$$maxReplicasPerNodeType === 'unlimited'"><span>entre os servidores</span></template>.
+  {% when crate::locale::Locale::Es %}
+  El contenedor <span x-text="$$hasLabel ? 'solo puede ejecutarse en servidores con la etiqueta' : 'puede ejecutarse en'"></span> {{ label_select() }}.
+  <span x-text="$$maxReplicasPerNodeType === 'limited' ? 'Ejecutar' : 'Distribuir las réplicas'"></span> {{ max_replicas_type_select() }} <template x-if="$$maxReplicasPerNodeType === 'limited'"><span>{{ max_replicas_input() }} <span data-one="réplica" data-other="réplicas" x-text="CDelivery.quantity($$maxReplicasPerNode, $el.dataset)">réplicas</span> por servidor</span></template><template x-if="$$maxReplicasPerNodeType === 'unlimited'"><span>entre los servidores</span></template>.
+  {% when crate::locale::Locale::Fr %}
+  Le conteneur <span x-text="$$hasLabel ? 'peut uniquement s’exécuter sur les serveurs portant l’étiquette' : 'peut s’exécuter sur'"></span> {{ label_select() }}.
+  <span x-text="$$maxReplicasPerNodeType === 'limited' ? 'Exécuter' : 'Répartir les répliques'"></span> {{ max_replicas_type_select() }} <template x-if="$$maxReplicasPerNodeType === 'limited'"><span>{{ max_replicas_input() }} <span data-one="réplique" data-other="répliques" x-text="CDelivery.quantity($$maxReplicasPerNode, $el.dataset)">répliques</span> par serveur</span></template><template x-if="$$maxReplicasPerNodeType === 'unlimited'"><span>entre les serveurs</span></template>.
+  {% when crate::locale::Locale::De %}
+  Container dürfen <span x-show="$$hasLabel">nur </span>auf <span x-show="$$hasLabel">Servern mit Label </span>{{ label_select() }} laufen.
+  <span x-text="$$maxReplicasPerNodeType === 'limited' ? 'Pro Server' : 'Replikate'"></span> {{ max_replicas_type_select() }} <template x-if="$$maxReplicasPerNodeType === 'limited'"><span>{{ max_replicas_input() }} <span data-one="Replikat" data-other="Replikate" x-text="CDelivery.quantity($$maxReplicasPerNode, $el.dataset)">Replikate</span> ausführen</span></template><template x-if="$$maxReplicasPerNodeType === 'unlimited'"><span>auf die Server verteilen</span></template>.
+  {% when crate::locale::Locale::En %}
+  The container <span x-text="$$hasLabel ? 'must' : 'can'"></span> run on <span x-show="$$hasLabel">servers labeled </span>{{ label_select() }}.
+  <span x-text="$$maxReplicasPerNodeType === 'limited' ? 'Run' : 'Distribute replicas'"></span> {{ max_replicas_type_select() }} <template x-if="$$maxReplicasPerNodeType === 'limited'"><span>{{ max_replicas_input() }} <span data-one="replica" data-other="replicas" x-text="CDelivery.quantity($$maxReplicasPerNode, $el.dataset)">replicas</span> per server</span></template><template x-if="$$maxReplicasPerNodeType === 'unlimited'"><span>across servers</span></template>.
+  {% endmatch %}
+</p>
+</template>
+<script>
+document.addEventListener("alpine:init", () => {
+  Alpine.data("placementData", () => ({
+    init() {
+      const counts = new Map();
+      for (const node of this.nodes) {
+        for (const label of node.labels ?? []) {
+          counts.set(label, (counts.get(label) ?? 0) + 1);
+        }
+      }
+      const current = this.placement?.label;
+      if (current && !counts.has(current)) counts.set(current, 0);
+      this.labels = [...counts.entries()]
+        .sort((a, b) => a[0].localeCompare(b[0]))
+        .map(([name, count]) => ({ name, count }));
+    },
+    get $$hasLabel() {
+      return !!(this.placement && this.placement.label);
+    },
+    get $$placementLabel() {
+      return this.placement && this.placement.label ? this.placement.label : "";
+    },
+    set $$placementLabel(val) {
+      const next = (val ?? "").trim();
+      if (next === "") {
+        if (this.placement) {
+          this.placement.label = null;
+          if (this.placement.max_replicas_per_node == null) this.placement = null;
+        }
+      } else {
+        if (!this.placement) {
+          this.placement = { label: next, max_replicas_per_node: null };
+        } else {
+          this.placement.label = next;
+        }
+      }
+    },
+    get $$maxReplicasPerNodeType() {
+      return this.placement?.max_replicas_per_node != null ? "limited" : "unlimited";
+    },
+    set $$maxReplicasPerNodeType(val) {
+      if (val === "limited") {
+        if (!this.placement) {
+          this.placement = { label: null, max_replicas_per_node: 1 };
+        } else if (this.placement.max_replicas_per_node == null) {
+          this.placement.max_replicas_per_node = 1;
+        }
+      } else if (this.placement) {
+        this.placement.max_replicas_per_node = null;
+        if (!this.placement.label) this.placement = null;
+      }
+    },
+    get $$maxReplicasPerNode() {
+      return this.placement?.max_replicas_per_node ?? null;
+    },
+    set $$maxReplicasPerNode(val) {
+      if (!this.placement) {
+        this.placement = { label: null, max_replicas_per_node: val };
+      } else {
+        this.placement.max_replicas_per_node = val;
+      }
+    },
+  }));
+});
+</script>
+{%- endmacro -%}

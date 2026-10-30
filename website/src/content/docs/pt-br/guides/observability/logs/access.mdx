@@ -1,0 +1,24 @@
+---
+title: "Logs de acesso HTTP"
+description: "Logs do Pingress descrevem requisições pelo gateway, não acesso direto a portas publicadas."
+sidebar:
+  order: 33
+---
+
+Logs do Pingress descrevem requisições pelo gateway, não acesso direto a portas publicadas.
+
+## Inspecionar
+
+Selecione aplicação/domínio e período. Confira resultado, servidor, porta destino, bytes, primeiro byte e erro.
+
+Ausência: DNS, proxy, filtro e coleta. Falha TLS: certificado/entrada. Backend: tarefas, interface e porta. Rota incorreta: domínio, prefixo, cabeçalho/cookie. Lentidão: dependência, processamento, transferência e rede.
+
+O endereço cliente pode representar o peer direto ou proxy. Não deduza identidade original sem entender o caminho.
+
+## Verificar
+
+Após mudar [rota](/docs/pt-br/guides/networking/routing/), faça uma requisição nova correspondente e outra que não deva corresponder. Compare destino e resultado.
+
+Correlacione horário com [logs da aplicação](/docs/pt-br/guides/observability/logs/application/) e métricas. Processo ativo não garante requisições saudáveis.
+
+Se falta histórico, confira Insight, armazenamento, coletores e [retenção](/docs/pt-br/guides/observability/settings/).

@@ -1,0 +1,31 @@
+---
+title: "Papéis e permissões"
+description: "Reader, Operator e Admin concedem capacidades crescentes em toda a plataforma."
+sidebar:
+  order: 57
+---
+
+Reader, Operator e Admin concedem capacidades crescentes em toda a plataforma.
+
+## Matriz
+
+| Capacidade | Reader | Operator | Admin |
+| --- | --- | --- | --- |
+| Ler informações compartilhadas | Sim | Sim | Sim |
+| Gerenciar própria conta/chaves | Sim | Sim | Sim |
+| Aplicações, XHealth, XJob, Guardian | Não | Sim | Sim |
+| Servidores, grupos, volumes, configurações | Não | Não | Sim |
+| Usuários e credenciais de entrada | Não | Não | Sim |
+| Descoberta sensível de modelos | Não | Não | Sim |
+
+Só segredos reconhecidos são ocultados. Logs, arquivos e ambiente arbitrários podem ser compartilhados; Reader também precisa ser confiável.
+
+## Permissão efetiva
+
+Sessão usa papel atual. Chave usa o menor entre papel atual e teto da chave. Rebaixar conta limita chaves; promovê-la não aumenta seus tetos.
+
+Console, REST, MCP e ferramentas IA compartilham regras. Mensagens usam conta vinculada; plantão tem papel próprio e nenhum escopo pessoal.
+
+## Verificar
+
+Reader observa, Operator opera aplicações, Admin administra. Teste com a conta real. Admin não pode excluir/rebaixar a si mesmo. Senha invalida sessões, não chaves. Veja [usuários](/docs/pt-br/administration/accounts/users/).

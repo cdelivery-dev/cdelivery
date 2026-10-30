@@ -1,0 +1,32 @@
+---
+title: "Fichiers de configuration XConfig"
+description: "XConfig fournit un fichier de configuration ; utilisez un volume pour les données modifiables."
+sidebar:
+  order: 12
+---
+
+XConfig fournit un fichier de configuration ; utilisez un volume pour les données modifiables.
+
+## Charger
+
+Choisissez une application compatible, un fichier non vide de 1,023,999 octets maximum et un chemin absolu de 2–255 caractères, sans `/` final.
+
+Exemple Nginx :
+
+```text
+/etc/nginx/conf.d/default.conf
+```
+
+Vérifiez que l’image lit cette destination et accepte la syntaxe. Le chargement ne valide pas le langage du fichier.
+
+## Accès et remplacement
+
+Les utilisateurs autorisés à lire peuvent télécharger le contenu. Les secrets arbitraires ne sont pas automatiquement masqués.
+
+Remplacer crée une nouvelle configuration et actualise la référence ; ce n’est pas une édition de fichier inscriptible dans le conteneur. Le mode volume local ne prend pas XConfig en charge.
+
+## Contrôler
+
+Vérifiez tâches, journaux et comportement dépendant du fichier. Un fichier stocké peut être ignoré si le chemin est incorrect.
+
+Voir [montage et mise à jour](/docs/fr/guides/apps/xconfig/mounting/) et [persistance](/docs/fr/guides/apps/persistence/).

@@ -1,0 +1,26 @@
+---
+title: "Comunicação e portas publicadas"
+description: "Aplicações no mesmo grupo se conectam por nome e porta interna."
+sidebar:
+  order: 21
+---
+
+Aplicações no mesmo grupo se conectam por nome e porta interna.
+
+## Interna
+
+Use, por exemplo, `database:5432`. Dentro do contêiner, localhost é o próprio contêiner. O processo destino deve escutar numa interface acessível, normalmente `0.0.0.0`.
+
+Não presuma resolução entre grupos diferentes. Grupo fornece rede, não isolamento de permissões.
+
+## Publicação
+
+Escolha TCP/UDP e associe porta interna a uma pública livre. Nginx pode usar 80 → 8080/TCP. Salve, confira tarefas e teste `http://SERVER_IP:8080`.
+
+Verifique firewall e regras de nuvem. Túnel SSH precisa encaminhar a porta da aplicação além de 9000. Mapeamento não cria listener nem transforma TCP em HTTP.
+
+## Diagnóstico
+
+Confira processo, interface, porta, grupo e comunicação entre máquinas. Para público, confira protocolo, endereço, porta e firewall.
+
+[Rotas de domínio](/docs/pt-br/guides/networking/routing/) usam porta interna sem exigir publicação direta. Veja [FAQ](/docs/pt-br/guides/networking/faq/) para IPv6 e rede do host.

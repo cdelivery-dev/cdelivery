@@ -1,0 +1,24 @@
+---
+title: "HTTP-Zugriffslogs"
+description: "Pingress protokolliert Gatewayanfragen, nicht direkte Verbindungen zu veröffentlichten Ports."
+sidebar:
+  order: 33
+---
+
+Pingress protokolliert Gatewayanfragen, nicht direkte Verbindungen zu veröffentlichten Ports.
+
+## Untersuchen
+
+Domain/Anwendung und Zeitraum wählen. Ergebnis, Eingangsserver, Zielport, Bytes, Zeit bis erstes Byte und Fehler lesen.
+
+Keine Anfrage: DNS, Proxy, Filter, Erfassung. TLS: Zertifikat/Eingang. Backend: Aufgaben, Listener, Port. Falsche Route: Domain, Präfix, Header/Cookie. Langsam: Verarbeitung, Abhängigkeit, Übertragung, Netzwerk.
+
+Clientadresse kann Proxy oder direkten Peer zeigen; daraus ohne Netzkontext keine ursprüngliche Identität ableiten.
+
+## Testen
+
+Nach [Routingänderung](/docs/de/guides/networking/routing/) passende und ausgeschlossene Anfrage senden, Ziel/Ergebnis vergleichen.
+
+Zeitpunkt mit [App-Logs](/docs/de/guides/observability/logs/application/) und Metriken verbinden. Laufender Prozess garantiert keine erfolgreiche Anfrage.
+
+Fehlende Historie: Insight, Sammler, Speicher und [Aufbewahrung](/docs/de/guides/observability/settings/).

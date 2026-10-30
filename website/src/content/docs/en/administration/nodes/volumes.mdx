@@ -1,0 +1,32 @@
+---
+title: "Volume management"
+description: "Enable the volume component and manage persistent data on a particular server."
+sidebar:
+  order: 55
+---
+
+A volume belongs to one server. Identically named volumes on different machines are different data. Application deletion retains volumes; volume deletion removes their data.
+
+## Enable and create
+
+1. As an Admin, enable volume management, provided by the separate cdelivery-agent image.
+2. Open the target server's volumes.
+3. Create a volume with a valid platform name and an optional description of up to 256 characters.
+4. Select that same server when creating a [stateful application](/docs/guides/apps/persistence/stateful/).
+5. Mount the volume at the image's data directory and verify data survives replacement.
+
+Volume creation and description saving are separate steps. If saving the description fails, refresh to see whether the volume already exists before trying again.
+
+## Inspect capacity
+
+Size queries traverse data and can take longer for large volumes. A missing size is not proof that a volume is empty. Server total and available space describe the host filesystem, not just the selected volume.
+
+Reserved platform volumes are not managed as ordinary business volumes. A description helps identify ownership but does not prove that the volume is unused or backed up.
+
+## Delete and troubleshoot
+
+Verify references and a usable backup before deleting. If a container still uses the volume, wait for its exit or resolve the reference. Disabling the management component does not delete business volumes.
+
+If listing fails, check server connectivity and the component. For a missing volume, verify server ID and name; creating a same-named volume elsewhere is not recovery.
+
+Replication and consistent backups remain the responsibility of the storage solution. See [persistence](/docs/guides/apps/persistence/).

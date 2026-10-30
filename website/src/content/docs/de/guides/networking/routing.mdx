@@ -1,0 +1,26 @@
+---
+title: "Domains und Routen"
+description: "Pingress kombiniert Domain und Anfragebedingungen zur Auswahl eines Anwendungsports."
+sidebar:
+  order: 22
+---
+
+Pingress kombiniert Domain und Anfragebedingungen zur Auswahl eines Anwendungsports.
+
+## Erstellen
+
+A/AAAA auf Pingress setzen, 80/443 und Backend prüfen, Hostname, Containerport und HTTPS wählen, speichern und testen.
+
+Hostname wie `app.example.com`, ohne URL, IP, Wildcard, Port oder Pfad. Normalisierung auf Kleinbuchstaben; mehrere Labels erforderlich.
+
+## Bedingungen
+
+Pfadpräfix, Header und Cookie werden mit AND verknüpft. Header/Cookie können Anwesenheit oder Wert prüfen.
+
+`/api` trifft `/api` und `/api/users`, nicht `/apix`. Präfix wird nicht entfernt oder umgeschrieben. Spezifischere Bedingungen und längere Präfixe beeinflussen Priorität; nicht auf Formularreihenfolge verlassen.
+
+## Test
+
+Passende und ausgeschlossene Anfrage senden, [Zugriffslogs](/docs/de/guides/observability/logs/access/) prüfen.
+
+Gatewayfehler können trotz gültigem DNS/TLS vom Backend kommen. HTTPS benötigt [automatisches](/docs/de/guides/networking/automatic-certificates/) oder [eigenes Zertifikat](/docs/de/guides/networking/custom-certificates/).

@@ -1,0 +1,26 @@
+---
+title: "Réplicas et adaptation automatique"
+description: "Les réplicas augmentent la capacité sans répliquer les données locales."
+sidebar:
+  order: 16
+---
+
+Les réplicas augmentent la capacité sans répliquer les données locales.
+
+## Fixe
+
+Définissez la quantité, enregistrez et comparez souhaité/réel. Chaque tâche doit satisfaire [placement](/docs/fr/guides/apps/placement/) et ressources. Une application avec état reste à un réplica.
+
+## Automatique
+
+Minimum/maximum : 1–65536. Évaluation environ toutes les 30 secondes, fenêtre d’au moins 60 secondes adaptée à la collecte.
+
+Au-dessus de 70% de façon durable, expansion vers une cible de 60%. Réduction seulement sous 50% pendant au moins cinq minutes. Un pic ne provoque pas forcément une action immédiate.
+
+Il faut des mesures récentes pour tous les réplicas et de la capacité. Absence ne signifie pas inactivité. Les limites CPU aident à évaluer plusieurs réplicas sur un serveur ; sans elles, les décisions sont plus prudentes.
+
+## Diagnostic
+
+Appliquez une charge représentative. Vérifiez plage, fraîcheur, capacité, étiquettes, réservations et maximum par machine. Une hausse souhaitée peut rester en attente.
+
+Voir [métriques](/docs/fr/guides/observability/metrics/application/) et [ressources](/docs/fr/guides/apps/resources/).

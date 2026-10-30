@@ -1,0 +1,34 @@
+---
+title: "Automatic certificates and renewal"
+description: "Prepare DNS and HTTP validation, enable ACME, and diagnose certificate issuance and renewal."
+sidebar:
+  order: 23
+---
+
+Automatic HTTPS uses ACME to issue and renew certificates. An Admin configures this capability; application routes still need correct domains and HTTPS settings.
+
+## Prepare and enable
+
+Point each domain at a reachable Pingress entry server and allow ports 80 and 443. With the default HTTP-01 method, the validation request must reach Pingress on port 80.
+
+Check its health endpoint:
+
+```sh
+curl -i http://app.example.com/.well-known/acme-challenge/healthz
+```
+
+Expect HTTP 200 without relying on redirects. Fix DNS, IPv6 records, proxies, and firewall rules before requesting a certificate.
+
+Enable ACME in the certificate settings. The default authority is Let's Encrypt; staging and Pebble are testing options, not publicly trusted production certificates. The API also supports dns-persist-01 where the selected authority supports it; this is not a generic DNS-provider integration form. See [ACME challenge types](https://letsencrypt.org/docs/challenge-types/).
+
+## Issuance and renewal
+
+Issuance is checked approximately every five minutes and renewal approximately every eight hours. Renewal timing follows the authority's renewal information when available or the certificate's validity window. It does not necessarily happen immediately after saving.
+
+Automatic renewal requires continued validation access. Manually uploaded certificates are not automatically renewed.
+
+## Verify and troubleshoot
+
+Inspect the certificate's domain, issuer, and expiry from a real client. Test both IPv4 and IPv6 if DNS publishes both. A stale AAAA record can break validation even when IPv4 works.
+
+For failures, check the exact domain, challenge endpoint, authority environment, network, and reported error. Avoid repeated requests before fixing the cause. Use [custom certificates](/docs/guides/networking/custom-certificates/) when you manage issuance yourself.

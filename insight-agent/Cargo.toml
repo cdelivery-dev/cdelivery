@@ -1,0 +1,35 @@
+[package]
+name = "insight-agent"
+version = "0.1.0"
+edition = "2024"
+publish = false
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+
+[dependencies]
+arrow = { workspace = true }
+bytes = { workspace = true }
+docker = { workspace = true }
+futures-util = { workspace = true, features = ["sink"] }
+insight-schema = { workspace = true }
+insight-wire = { workspace = true }
+jiff = { workspace = true }
+logging = { workspace = true }
+macros = { workspace = true }
+pingress-wire = { workspace = true }
+rmpv = { workspace = true }
+rustix = { workspace = true }
+scc = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true }
+tokio-util = { workspace = true }
+tracing = { workspace = true }
+
+[features]
+tokio-console = ["logging/tokio-console"]
+
+[lints]
+workspace = true

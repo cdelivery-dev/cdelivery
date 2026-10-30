@@ -1,0 +1,31 @@
+---
+title: "Discord integration"
+description: "Configure a Discord bot and Gateway access, then bind your own Discord user ID."
+sidebar:
+  order: 48
+---
+
+Discord receives messages over the Gateway connection. CDelivery needs outbound network access, not a public event callback URL.
+
+## Create and install
+
+1. Create an application and bot in the Discord developer portal.
+2. Obtain the bot token, not the client secret or application ID.
+3. Install the bot in the intended server with permission to view channels and send messages; include sending in threads if you use them.
+4. Save its token in CDelivery's Discord settings as an Admin.
+5. Enable Developer Mode in your Discord client and copy your own User ID.
+6. Bind that ID in your CDelivery account and select notification preferences.
+
+See the [Discord getting-started guide](https://docs.discord.com/developers/quick-start/getting-started). The current integration handles direct messages and explicit mentions without depending on the privileged Message Content intent for arbitrary server messages.
+
+## Verify
+
+Configure a [model](/docs/guides/automation/models/), then send the bot a read-only direct message or explicitly mention it in an allowed channel. Confirm that the result corresponds to your account's current role.
+
+A display name, server ID, channel ID, and application ID are not personal user IDs. Binding another person's ID exposes your account's notifications and operations to that identity.
+
+## Troubleshoot
+
+Check bot installation, token validity, channel permissions, direct-message restrictions, Gateway connectivity, and personal binding. A bot appearing online does not prove it can send in every channel.
+
+Inspect model configuration separately if message receipt works but AI responses fail. See [notification troubleshooting](/docs/guides/automation/im/notifications/) for subscriptions and role filtering.

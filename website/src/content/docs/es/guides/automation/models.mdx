@@ -1,0 +1,34 @@
+---
+title: "Configuración del modelo"
+description: "Admin selecciona proveedor, credenciales y un modelo adecuado para usar herramientas de plataforma."
+sidebar:
+  order: 42
+---
+
+Admin selecciona proveedor, credenciales y un modelo adecuado para usar herramientas de plataforma.
+
+## Opciones
+
+Se admiten OpenAI, Anthropic, Gemini, DeepSeek, OpenRouter, Ollama y servicios OpenAI-compatible.
+
+| Tipo | Endpoint | Clave |
+| --- | --- | --- |
+| Proveedor alojado integrado | Predeterminado; no admite otro | Obligatoria |
+| OpenAI-compatible | Obligatorio | Obligatoria |
+| Ollama | Obligatorio | No admitida |
+
+El servidor CDelivery debe poder alcanzar la dirección. Una URL accesible solo desde tu navegador no basta.
+
+## Guardar y probar
+
+Introduce credenciales, descubre modelos cuando esté disponible y selecciona uno. Descubrimiento requiere Admin y no garantiza que cada modelo listado soporte herramientas.
+
+Las claves no se devuelven. Omitir una conserva la anterior solo si proveedor y endpoint mantienen su ámbito; cambiarlo requiere credenciales nuevas.
+
+Guarda y pregunta algo de lectura por un canal configurado. Comprueba respuesta y herramientas.
+
+## Diagnóstico
+
+Revisa proveedor, endpoint, modelo, clave, cuota, red y soporte de herramientas. Obtener una lista no es una prueba completa.
+
+Configura [guardia](/docs/es/guides/automation/duty/) por separado y revisa [canales](/docs/es/guides/automation/im/) para problemas de entrega.

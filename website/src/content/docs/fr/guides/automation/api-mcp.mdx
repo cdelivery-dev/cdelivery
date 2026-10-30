@@ -1,0 +1,37 @@
+---
+title: "Accès API et MCP"
+description: "REST et MCP partagent opérations et autorisation ; les chemins sont ceux de votre instance."
+sidebar:
+  order: 60
+---
+
+REST et MCP partagent opérations et autorisation ; les chemins sont ceux de votre instance.
+
+## Clé
+
+Compte → MCP/API keys : nom de 1–64 octets UTF-8, plafond de rôle et expiration future facultative. Copiez immédiatement, une seule présentation.
+
+Une clé par outil facilite la révocation. Son rôle ne dépasse pas celui effectif à la création et reste limité par le compte actuel. Mot de passe changé : clé conservée. Compte supprimé : clé invalidée.
+
+## REST
+
+Définissez URL et clé localement :
+
+```sh
+curl --fail-with-body "$CDELIVERY_URL/api/me" \
+  -H "Authorization: Bearer $CDELIVERY_API_KEY"
+```
+
+Attendez votre profil. `/scalar` documente le schéma installé.
+
+Patch : absent conserve ; `null` efface uniquement les champs compatibles ; patch vide valide. Enums sensibles à la casse : Reader/Operator/Admin.
+
+## MCP
+
+Client HTTP distant : `/mcp` et `Authorization: Bearer YOUR_API_KEY`. Listez les outils puis testez en lecture. L’approbation client n’annule pas les droits plateforme.
+
+## Erreurs
+
+401 : secret invalide/expiré/révoqué ou utilisateur indisponible. 403 : droits. 422 : champs/prérequis. Connexion : URL, TLS, proxy.
+
+Après révocation, vérifiez le rejet. Voir [rôles](/docs/fr/administration/accounts/roles/).

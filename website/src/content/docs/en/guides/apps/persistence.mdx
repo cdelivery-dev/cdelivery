@@ -1,0 +1,33 @@
+---
+title: "Data persistence"
+description: "Choose storage for mutable data and distinguish volumes from configuration and application rollback."
+sidebar:
+  order: 14
+---
+
+A container's writable layer is not a durable place for business data. Replacement tasks may start with a new filesystem. Use local volumes when the application must retain data on its selected server.
+
+## Choose storage before creation
+
+| Data | Suitable approach |
+| --- | --- |
+| Read-only application configuration | [XConfig](/docs/guides/apps/xconfig/) where supported |
+| Database or other mutable files | A volume on a selected server |
+| Data shared across servers | A storage service designed for that workload |
+| Recovery copy | A separately managed and tested backup |
+
+Local-volume mode is selected when creating the application. It runs one replica on a fixed server and cannot be enabled by simply toggling an existing ordinary application.
+
+## Mount and verify
+
+Create or select the volume on the target server, then mount it at the path the image actually writes. A volume mounted at the wrong path can remain empty while the application writes elsewhere.
+
+Write test data, restart the application, and confirm the data is still available. Also test your application's backup and restore procedure; a restart test is not a recovery test.
+
+## Limits and cleanup
+
+Volumes are local. The same name on another server identifies different data, and a placement label does not replicate it. Scaling and redeployment do not provide a database backup.
+
+Deleting an application preserves volumes. Deleting a volume removes its data and requires a separate decision. Image rollback does not reverse database migrations or restore old files.
+
+Continue with [stateful applications](/docs/guides/apps/persistence/stateful/) and [volume management](/docs/administration/nodes/volumes/).

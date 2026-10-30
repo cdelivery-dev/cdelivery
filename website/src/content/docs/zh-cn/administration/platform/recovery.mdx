@@ -1,0 +1,48 @@
+---
+title: "恢复管理访问"
+description: "在宿主机通过管理 CLI 重置密码、增加管理员或签发 API 密钥。"
+sidebar:
+  order: 63
+---
+
+仍有 Admin 能登录时，优先在[用户管理](/docs/zh-cn/administration/accounts/users/)重置账户。完全失去管理访问时，可由拥有宿主机管理权限的人员在正在运行的主程序容器内执行救援命令。
+
+这些命令依赖现有平台数据和主密钥，不能通过运行一个没有挂载平台配置的临时容器替代。恢复登录也不能修复丢失的主密钥或业务卷。
+
+## 找到主程序容器
+
+在运行 CDelivery 主程序的服务器执行：
+
+```sh
+docker ps --format '{{.ID}} {{.Names}} {{.Image}}'
+```
+
+核对输出中的主程序容器，将下面的 `CONTAINER_ID` 替换为对应 ID。不要选 Pingress、Insight 或采集器容器。
+
+## 重置现有账户
+
+```sh
+docker exec -it CONTAINER_ID /entrypoint rescue admin@example.com
+```
+
+命令输出新的临时密码，同时关闭该账户的两步验证。它不会把普通用户提升为 Admin，也不会撤销 API 密钥。登录后修改密码、重新启用两步验证，并检查已有密钥。
+
+## 增加管理员
+
+目标邮箱尚不存在时，可以创建一个新的 Admin：
+
+```sh
+docker exec -it CONTAINER_ID /entrypoint add-admin admin@example.com Alex Chen
+```
+
+命令输出临时密码。使用现有邮箱会发生冲突，应改用救援命令处理原账户。核对人员与邮箱后交付密码，恢复完成后清理不再需要的临时管理账户。
+
+## 签发 API 密钥
+
+```sh
+docker exec -it CONTAINER_ID /entrypoint create-api-key admin@example.com recovery Reader
+```
+
+可追加 `--expires-at` 和未来的 RFC 3339 时间。角色仅接受 `Reader`、`Operator`、`Admin`，且不得超过目标用户角色。密钥只在本次输出中提供；完成恢复后撤销临时密钥。
+
+若提示未初始化或找不到用户，核对容器、部署和邮箱，不要通过重装覆盖现有数据。输出包含密码或密钥，不要复制到公开日志。

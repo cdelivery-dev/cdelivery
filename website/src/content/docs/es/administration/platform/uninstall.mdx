@@ -1,0 +1,35 @@
+---
+title: "Desinstalación y limpieza"
+description: "La desinstalación elimina recursos administrativos, aplicaciones, cuentas y credenciales, pero conserva volúmenes y descripciones."
+sidebar:
+  order: 64
+---
+
+La desinstalación elimina recursos administrativos, aplicaciones, cuentas y credenciales, pero conserva volúmenes y descripciones.
+
+## Vista previa
+
+Ejecuta en servidor de gestión con Docker CLI y jq, usando socket Unix local. Registra ajustes, imágenes y correspondencia servidor/volumen; haz copias y detén creación de recursos.
+
+```sh
+curl -fsSLo /tmp/cdelivery-uninstall.sh https://cdelivery.dev/uninstall.sh
+sh /tmp/cdelivery-uninstall.sh
+```
+
+Sin argumentos solo enumera recursos y etiquetas seleccionados. Comprueba endpoint y lista.
+
+## Eliminar
+
+```sh
+sh /tmp/cdelivery-uninstall.sh --yes
+```
+
+Primero detiene el programa principal y luego elimina recursos gestionados. No desinstala Docker ni elimina volúmenes, DNS externo, almacenamiento de objetos o cuentas de proveedores.
+
+## Verificar
+
+Comprueba recursos retirados y volúmenes conservados. Contenedores salen de forma asíncrona; los offline requieren comprobación al reconectar.
+
+Si falla un paso, corrige conexión, referencias o permisos y repite `--yes`. No reinstales ni recrees nombres durante limpieza.
+
+Borrar datos conservados exige decisión separada. Una nueva instalación crea datos administrativos nuevos; restaurar aplicaciones requiere configuración registrada y recuperación del almacenamiento.

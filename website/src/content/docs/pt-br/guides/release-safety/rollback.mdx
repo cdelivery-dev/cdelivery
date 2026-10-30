@@ -1,0 +1,26 @@
+---
+title: "Reversão e falhas de implantação"
+description: "Rollback restaura configuração anterior, não dados nem versões da plataforma."
+sidebar:
+  order: 30
+---
+
+Rollback restaura configuração anterior, não dados nem versões da plataforma.
+
+## Decidir e executar
+
+Verifique se a imagem anterior aceita os dados atuais. Migrações podem exigir restauração própria antes de iniciar a versão antiga.
+
+Use reversão quando houver configuração anterior; a estratégia também pode acioná-la automaticamente. A reversão substitui tarefas em paralelo e usa Continue diante de suas falhas, preservando ajustes relevantes de ordem, monitoramento e proporção.
+
+## Verificar
+
+Confira configuração/imagem, réplicas, logs, requisição, dados, XHealth e eventos. Solicitação concluída não comprova recuperação completa.
+
+Sem configuração anterior, reconstrua uma conhecida a partir dos seus registros. Recriar nome não recupera histórico.
+
+## Persistência da falha
+
+Confira capacidade, registro, credenciais, armazenamento e compatibilidade. Repetir rollback não corrige uma dependência inacessível.
+
+Ações do [Guardian](/docs/pt-br/guides/release-safety/) tratam o candidato. [Atualização da plataforma](/docs/pt-br/administration/platform/upgrades/) é outro fluxo.

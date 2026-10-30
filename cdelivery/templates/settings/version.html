@@ -1,0 +1,80 @@
+{% extends "settings.html" %}
+
+{% import "settings/nav.html" as nav %}
+
+{% block title %}{{ tt!("ui.settings.cdelivery.title") }} | {{ super() }}{% endblock title %}
+
+{% block settings_navigation %}{{ nav::nav("cdelivery") }}{% endblock settings_navigation %}
+
+{% block main %}
+<header>
+  <h1>{{ tt!("ui.settings.cdelivery.title") }}</h1>
+</header>
+{% let current_version = current.version %}
+<h2>{{ tt!("ui.settings.version.title") }}</h2>
+<dl>
+  <dt>{{ tt!("ui.settings.version.current") }}</dt>
+  <dd translate="no">{{ current_version }}</dd>
+</dl>
+{% if let Some(version) = target_version %}
+  <form
+    method="post"
+    action="/settings/cdelivery"
+    data-confirm='{{ tt!("ui.settings.version.confirm", version = version) }}'
+    x-data="{ submitting: false, version: '' }"
+    @submit="if (submitting || !confirm($el.dataset.confirm)) { $event.preventDefault(); return } $refs.payload.value = JSON.stringify({ version: $refs.version.value }); submitting = true"
+  >
+    <input x-ref="payload" type="hidden" name="payload" />
+    <div class="fields">
+      <div class="field">
+        <label for="version-release">{{ tt!("ui.settings.version.version") }}: </label>
+        <select x-ref="version" id="version-release" class="text" x-model="version" required :disabled="submitting">
+          <option value="" selected>{{ current_version }}</option>
+          <option value="{{ version }}">{{ version }}</option>
+        </select>
+      </div>
+    </div>
+    <div class="actions">
+      <input class="button" type="submit" value='{{ tt!("ui.common.update") }}' :disabled="submitting || !version" />
+    </div>
+  </form>
+{% else if latest_unavailable %}
+<p>{{ tt!("ui.settings.version.unavailable") }}</p>
+{% else %}
+<p>{{ tt!("ui.settings.version.upToDate", version = current_version) }}</p>
+{% endif %}
+
+<h2 id="cdelivery-domain-heading">{{ tt!("ui.app.published.domain.label") }}</h2>
+{% if pingress_enabled %}
+<p><small>{{ tt!("ui.settings.cdelivery.domain.help") }}</small></p>
+{% else %}
+<p>{{ tt!("ui.settings.cdelivery.domain.requiresPingress") }} <a href="/pingress">{{ tt!("ui.settings.cdelivery.domain.goToPingress") }}</a></p>
+{% endif %}
+<form
+  method="post"
+  action="/settings/cdelivery"
+  x-data="{ submitting: false }"
+  @submit="if (submitting) { $event.preventDefault(); return } const domain = $refs.domain.value; $refs.payload.value = JSON.stringify({ domain: domain ? { domain, https: $refs.https.checked } : null }); submitting = true"
+>
+  <input x-ref="payload" type="hidden" name="payload" />
+  <fieldset aria-labelledby="cdelivery-domain-heading"{% if !pingress_enabled %} disabled{% endif %}>
+    <div class="fields">
+      <div class="field">
+        <label for="cdelivery-domain">{{ tt!("ui.app.published.domain.label") }}:</label>
+        <input x-ref="domain" id="cdelivery-domain" class="text" type="text" minlength="2" maxlength="255"
+          value="{% match current.domain %}{% when Some(domain) %}{{ domain.domain }}{% when None %}{% endmatch %}"
+          placeholder='{{ tt!("ui.app.published.domain.placeholder") }}' pattern="[^.].*[.].*[^.]"
+          title='{{ tt!("ui.app.published.domain.validation") }}' spellcheck="false" :disabled="submitting" />
+        <label class="choice">
+          <input x-ref="https" type="checkbox"{% match current.domain %}{% when Some(domain) %}{% if domain.https %} checked{% endif %}{% when None %}{% endmatch %} :disabled="submitting" />
+          <span>{{ tt!("ui.app.published.https.label") }}</span>
+        </label>
+      </div>
+    </div>
+    <div class="actions">
+      <input class="button" type="submit" value='{{ tt!("ui.common.save") }}' :disabled="submitting" />
+    </div>
+  </fieldset>
+</form>
+
+{% endblock main %}

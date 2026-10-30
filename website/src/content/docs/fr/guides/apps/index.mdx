@@ -1,0 +1,24 @@
+---
+title: "Gestion des applications"
+description: "Une application réunit image, exécution, réseau, ressources et stockage ; vérifiez toujours le résultat réel."
+sidebar:
+  order: 7
+---
+
+Une application réunit image, exécution, réseau, ressources et stockage ; vérifiez toujours le résultat réel.
+
+## Avant création
+
+Choisissez nom, groupe, persistance, commande, ports et capacité. La console ne renomme pas les applications et ne les déplace pas entre groupes. Le mode volume local se choisit à la création.
+
+Reader consulte ; Operator/Admin créent, modifient, redémarrent et suppriment. Groupes et serveurs nécessitent Admin.
+
+## Parcours
+
+Consultez [création](/docs/fr/guides/apps/create/), [images](/docs/fr/guides/apps/images/), [commande](/docs/fr/guides/apps/container/), [ressources](/docs/fr/guides/apps/resources/), [XConfig](/docs/fr/guides/apps/xconfig/), [persistance](/docs/fr/guides/apps/persistence/), [capacité](/docs/fr/guides/apps/scaling/), [placement](/docs/fr/guides/apps/placement/), [cycle de vie](/docs/fr/guides/apps/lifecycle/) et [suppression](/docs/fr/guides/apps/delete/).
+
+## Valeurs initiales
+
+Un réplica, commande de l’image, journaux du serveur, sans réservation ni étiquette supplémentaire. Mise à jour : tous en parallèle, StopFirst, surveillance 60 secondes, tolérance zéro, Rollback.
+
+Revoyez la [stratégie](/docs/fr/guides/release-safety/update-strategy/) pour la disponibilité. Enregistrer sans changement ne redémarre pas. Variables et fichiers arbitraires ne sont pas automatiquement masqués. Contrôlez réplicas, journaux et requête réelle.

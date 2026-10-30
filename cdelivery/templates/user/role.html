@@ -1,0 +1,35 @@
+{%- macro label(role) -%}
+{%- match role -%}
+{%- when crate::operation::typ::Role::Reader -%}{{ tt!("ui.account.role.reader") }}
+{%- when crate::operation::typ::Role::Operator -%}{{ tt!("ui.account.role.operator") }}
+{%- when crate::operation::typ::Role::Admin -%}{{ tt!("ui.account.role.admin") }}
+{%- endmatch -%}
+{%- endmacro label -%}
+
+{%- macro options(role, input_name, form_id) -%}
+<label class="choice choice-option">
+  <input type="radio" name="{{ input_name }}" value="Reader" form="{{ form_id }}" aria-labelledby="{{ input_name }}-reader-label" aria-describedby="{{ input_name }}-reader-help"{% match role %}{% when crate::operation::typ::Role::Reader %} checked{% else %}{% endmatch %} x-model="role" :disabled="submitting" />
+  <b id="{{ input_name }}-reader-label">{{ tt!("ui.account.role.reader") }}</b>
+  <small id="{{ input_name }}-reader-help">{{ tt!("ui.account.role.reader.help") }}</small>
+</label>
+<label class="choice choice-option">
+  <input type="radio" name="{{ input_name }}" value="Operator" form="{{ form_id }}" aria-labelledby="{{ input_name }}-operator-label" aria-describedby="{{ input_name }}-operator-help"{% match role %}{% when crate::operation::typ::Role::Operator %} checked{% else %}{% endmatch %} x-model="role" :disabled="submitting" />
+  <b id="{{ input_name }}-operator-label">{{ tt!("ui.account.role.operator") }}</b>
+  <small id="{{ input_name }}-operator-help">{{ tt!("ui.account.role.operator.help") }}</small>
+</label>
+<label class="choice choice-option">
+  <input type="radio" name="{{ input_name }}" value="Admin" form="{{ form_id }}" aria-labelledby="{{ input_name }}-admin-label" aria-describedby="{{ input_name }}-admin-help"{% match role %}{% when crate::operation::typ::Role::Admin %} checked{% else %}{% endmatch %} x-model="role" :disabled="submitting" />
+  <b id="{{ input_name }}-admin-label">{{ tt!("ui.account.role.admin") }}</b>
+  <small id="{{ input_name }}-admin-help">{{ tt!("ui.account.role.admin.help") }}</small>
+</label>
+{%- endmacro options -%}
+
+{%- macro radiogroup(role) -%}
+<fieldset class="choice-group" aria-describedby="user-role-help">
+  <legend id="user-role">{{ tt!("ui.user.role") }}</legend>
+  <small id="user-role-help">{{ tt!("ui.user.role.help") }}</small>
+  <div class="choice-options">
+    {{ options(role, "role", "user-role-options") }}
+  </div>
+</fieldset>
+{%- endmacro radiogroup -%}

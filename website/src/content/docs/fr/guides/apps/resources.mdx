@@ -1,0 +1,26 @@
+---
+title: "Réservations et limites"
+description: "Les réservations conditionnent le placement ; les limites plafonnent chaque réplica."
+sidebar:
+  order: 11
+---
+
+Les réservations conditionnent le placement ; les limites plafonnent chaque réplica.
+
+## Configurer
+
+CPU est exprimé en cœurs : 0.5 représente un demi-cœur. Plage 0.001–10000, pas 0.001. Mémoire : unités affichées, notamment MiB/GiB. Gardez les réservations dans leurs limites correspondantes.
+
+Une réservation ne dédie pas le matériel. Dépasser le plafond mémoire peut tuer le processus. Voir [contraintes Docker](https://docs.docker.com/engine/containers/resource_constraints/).
+
+## Capacité
+
+Multipliez par le nombre de réplicas et prévoyez le chevauchement StartFirst. Étiquettes et maximum par serveur réduisent aussi les destinations possibles.
+
+Une limite CPU aide l’adaptation automatique à évaluer plusieurs réplicas sur une même machine.
+
+## Vérifier
+
+Mesurez une charge représentative. Comparez tâches réelles, consommation et marge du serveur. Une attente peut indiquer réservation impossible ; des arrêts mémoire nécessitent correction du programme ou du plafond.
+
+Absence de métriques ne signifie pas zéro. Consultez [métriques](/docs/fr/guides/observability/metrics/application/) et [mise à l’échelle](/docs/fr/guides/apps/scaling/).

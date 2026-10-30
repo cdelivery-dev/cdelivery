@@ -1,0 +1,60 @@
+---
+title: "CDelivery 文档"
+description: "从安装和首次部署开始，逐步学习应用运维、网络、观测、自动化和平台管理。"
+sidebar:
+  order: 1
+---
+
+import { Card, CardGrid } from '@prosefly/astro-components';
+
+CDelivery 帮助你部署应用、管理服务器，并通过检查、日志、指标和自动化处理日常运维。文档按任务分层组织，功能概览下提供配置、验证、限制和排障说明。
+
+## 快速开始
+
+第一次使用时，按以下顺序完成一条可验证的部署流程：
+
+1. [认识 CDelivery](/docs/zh-cn/getting-started/introduction/)：理解平台组成与主要对象。
+2. [安装要求](/docs/zh-cn/getting-started/requirements/)：准备服务器、网络与访问条件。
+3. [安装](/docs/zh-cn/getting-started/installation/)：启动平台并创建管理员。
+4. [部署第一个应用](/docs/zh-cn/getting-started/first-app/)：发布示例并验证访问。
+5. [认识控制台](/docs/zh-cn/getting-started/console/)：找到应用、服务器、设置与账户。
+
+## 使用指南
+
+<CardGrid>
+
+<Card title="应用管理" href="/docs/zh-cn/guides/apps/">
+  创建、运行配置、配置文件与数据、扩缩容、调度和生命周期
+</Card>
+
+<Card title="域名与 HTTPS" href="/docs/zh-cn/guides/networking/">
+  应用通信、端口、路由、自动证书、自定义证书和网络排障
+</Card>
+
+<Card title="健康检查与发布" href="/docs/zh-cn/guides/release-safety/xhealth/">
+  XHealth、更新策略、Guardian 验证、回滚与失败处理
+</Card>
+
+<Card title="日志、指标与事件" href="/docs/zh-cn/guides/observability/">
+  应用与访问日志、应用与服务器指标、事件、采集和保留
+</Card>
+
+<Card title="定时任务" href="/docs/zh-cn/guides/automation/xjob/">
+  XJob 创建、调度规则、执行结果与排障
+</Card>
+
+<Card title="AI 运维" href="/docs/zh-cn/guides/automation/">
+  模型接入、对话与自动值班
+</Card>
+
+<Card title="消息与通知" href="/docs/zh-cn/guides/automation/im/">
+  邮件、Slack、Telegram、Discord、Lark、飞书及通知设置
+</Card>
+
+</CardGrid>
+
+## 平台管理
+
+[平台管理](/docs/zh-cn/administration/)按服务器与分组、账户与权限、平台维护继续展开。需要连接外部工具时，查看其中的 [API 与 MCP](/docs/zh-cn/guides/automation/api-mcp/)。
+
+文档中的实例地址、域名、邮箱、密码和密钥示例需要替换为自己的值。操作后按照对应页面验证实际结果；涉及数据的更新或清理，还应验证备份和业务恢复。

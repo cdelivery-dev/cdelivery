@@ -1,0 +1,52 @@
+---
+title: "消息與通知概覽"
+description: "區分平台渠道設定、個人身份綁定、通知偏好和 AI 對話條件。"
+sidebar:
+  order: 44
+---
+
+消息渠道用於接收維運通知，也可以作為 AI 對話入口。完成接入需要分別處理平台設定、個人綁定和通知偏好。
+
+## 三層設定
+
+| 設定 | 誰來操作 | 作用 |
+| --- | --- | --- |
+| 平台渠道 | Admin | 設定 Bot、應用程式或郵件服務憑據 |
+| 個人綁定 | 當前帳戶本人 | 把自己的渠道身份關聯到 CDelivery |
+| 通知偏好 | 當前帳戶本人 | 選擇是否通過該渠道接收通知 |
+
+管理員設定成功不代表所有使用者已經完成綁定。綁定成功也不代表通知開關已打開。
+
+## 選擇渠道
+
+- [郵件](/docs/zh-tw/guides/automation/im/email/)：SMTP 發送通知，符合條件的 IMAP 接收用於對話。
+- [Slack](/docs/zh-tw/guides/automation/im/slack/)：使用 Bot Token 和 App Token，通過 Socket Mode 接收消息。
+- [Telegram](/docs/zh-tw/guides/automation/im/telegram/)：使用專用 Bot Token，通過長輪詢接收消息。
+- [Discord](/docs/zh-tw/guides/automation/im/discord/)：使用 Bot Token，通過 Gateway 接收消息。
+- [Lark](/docs/zh-tw/guides/automation/im/lark/)與[飛書](/docs/zh-tw/guides/automation/im/feishu/)：分別使用各自平台的應用程式憑據和長連接。
+
+這些接入方式不需要為 Bot 額外部署公網消息回調服務，但 CDelivery 仍需能夠存取相應平台的 API 和長連接端點。
+
+## 綁定正確的身份
+
+個人帳戶填寫平台的不可變使用者 ID，例如 Slack Member ID、Telegram 數字使用者 ID、Discord User ID 或應用程式範圍內的 Lark/飛書 `open_id`。
+
+不要填寫暱稱、Bot 自己的 ID、群 ID 或別人的使用者 ID。系統按平台回傳的發送者 ID 匹配帳戶；填寫錯誤可能將該帳戶的權限和資料暴露給對應身份，需要你自行核對。
+
+更換 Lark 或飛書應用程式後，原來應用程式範圍內的 `open_id` 也需要重新確認。
+
+## 驗證順序
+
+1. 管理員儲存平台渠道設定。
+2. 使用者在自己的帳戶中綁定身份。
+3. 開啟需要的通知偏好。
+4. 如需對話，先完成[模型設定](/docs/zh-tw/guides/automation/models/)。
+5. 從自己的渠道身份向 Bot 發送唯讀問題，核對回復和使用的權限。
+
+普通平台告警不需要 AI 模型或自動值班。對話失敗與通知失敗應分別排查，詳見[通知設定與排障](/docs/zh-tw/guides/automation/im/notifications/)。
+
+## 憑據維護
+
+儲存後的秘密字段不會回顯。未改變憑據作用域時可按界面提示保留；更換應用程式或帳戶時重新設定匹配的秘密。
+
+清除平台渠道會影響使用該渠道的使用者，不會因為個人綁定仍在就繼續保持連接。修改前通知相關使用者，並在更新後重新驗證。

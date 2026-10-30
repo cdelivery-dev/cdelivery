@@ -1,0 +1,65 @@
+{% extends "dashboard.html" %}
+
+{% import "app/form.html" as form_macro %}
+
+{% block title %}{% if let Some(current) = template %}{{ tt!("ui.app.template.createPageTitle", template = current.title) }}{% else %}{{ tt!("ui.app.createPageTitle") }}{% endif %} - {{ self.group }} | {{ super() }}{% endblock title %}
+
+{% block main %}
+<header>
+  <h1>{{ tt!("ui.app.createTitle", group = self.group) }}</h1>
+  <nav class="tab-list" aria-label='{{ tt!("ui.app.template.navigation") }}'>
+    <a href="/groups/{{ group }}/apps/.create"{% if template.is_none() %} aria-current="page"{% endif %}>{{ tt!("ui.app.template.tab.scratch") }}</a>
+    <a href="/groups/{{ group }}/apps/.template/{{ crate::ui::app::template::DEFAULT.id }}"{% if template.is_some() %} aria-current="page"{% endif %}>{{ tt!("ui.app.template.tab.template") }}</a>
+  </nav>
+  {% if let Some(current) = template %}
+  <nav class="tab-list" aria-label='{{ tt!("ui.app.template.list") }}'>
+    {% for database in crate::ui::app::template::DATABASES %}
+    <a translate="no" href="/groups/{{ group }}/apps/.template/{{ database.id }}"{% if database.id == current.id %} aria-current="page"{% endif %}>{{ database.title }}</a>
+    {% endfor %}
+  </nav>
+  {% endif %}
+</header>
+<script id="app-form-init" type="application/json">{{ form|json|safe }}</script>
+<script id="app-node-init" type="application/json">{{ nodes|json|safe }}</script>
+<form method="post" action="/apps" autocomplete="off" class="mt-2" x-data="appForm" @submit="prepare($event)">
+  <input x-ref="payload" type="hidden" name="payload" />
+  {% if let Some(current) = template %}
+  {% let default_mount_target = current.data_dir %}
+  {{ form_macro::sections("", "create", "", default_mount_target) }}
+  {% else %}
+  {{ form_macro::sections("", "create", "", "") }}
+  {% endif %}
+  <div class="actions"><input class="button" type="submit" value='{{ tt!("ui.common.create") }}' :disabled="submitting || (mounts && mounts.mounts.length === 0)" /></div>
+</form>
+<script>
+document.addEventListener("alpine:init", () => {
+  Alpine.data("appForm", () => {
+    const initial = JSON.parse(document.getElementById("app-form-init").textContent);
+    const data = {
+      request: initial.request,
+      desiredReplicas: null,
+      commandLine: initial.command_line,
+      nodes: JSON.parse(document.getElementById("app-node-init").textContent).nodes,
+      authDirty: false,
+      xconfigsDirty: false,
+      submitting: false,
+      prepare(event) {
+        if (CDelivery.guard(this, event)) return;
+        if (this.request.xconfigs.some(x => !x.data)) {
+          event.preventDefault();
+          alert({{ tt!("ui.app.xconfig.file.invalid")|json|safe }});
+          return;
+        }
+        const request = JSON.parse(JSON.stringify(this.request));
+        if (request.container_options) request.container_options.command = [];
+        request.xconfigs = request.xconfigs.map(x => ({ target: x.target, data_base64: x.data }));
+        this.$refs.payload.value = JSON.stringify({ request, command_line: this.commandLine });
+        this.submitting = true;
+      },
+    };
+    CDelivery.expose(data, "request", ["description", "image", "image_auth", "replicas", "ports", "domains", "xconfigs", "mounts", "container_options", "resources", "placement", "log_driver", "restart_policy", "update_config"]);
+    return data;
+  });
+});
+</script>
+{% endblock main %}

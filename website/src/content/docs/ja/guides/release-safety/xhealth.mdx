@@ -1,0 +1,37 @@
+---
+title: "XHealth の設定"
+description: "XHealth は業務コンテナーとは別のタスクでアプリを検証します。"
+sidebar:
+  order: 26
+---
+
+XHealth は業務コンテナーとは別のタスクでアプリを検証します。
+
+## 今すぐ実行
+
+Operator/Admin は XHealth ページの **今すぐ実行**、本文なしの `POST /api/apps/{name}/xhealth/run`、または `app` を指定した MCP/Agent ツール `xhealth_run` で実行できます。有効なチェックが保存済みの設定で現在のアプリを検証します。開始待ち・実行中の再要求は `409` となり、次の間隔は新しい実行の開始時から計算されます。Guardian の候補チェックは独立しています。
+
+API は要求の受理時に `202` と `{"ok":true}` を返し、結果を待ちません。ページの再読み込み、`xhealth_get`、XHealth ログで現在の状態を確認してください。タイムアウトや応答の消失は送信失敗を意味しません。再実行を判断する前に状態を確認してください。要求の重複排除は行わず、完了後の再要求は新しい実行になります。
+
+## Hurl
+
+Operator/Admin が対象ポートと最低 1 分の間隔を設定します。
+
+```hurl
+GET {{target_url}}/health
+HTTP 200
+```
+
+実行は `hurl --test /xhealth.hurl`、対象変数は `HURL_VARIABLE_TARGET_URL` です。ドメインを選んでも内部 HTTP を確認するため、公開 DNS や TLS は検証しません。[Hurl](https://hurl.dev/docs/request.html)を参照してください。
+
+## 独自コマンド
+
+アプリのイメージと関連設定を別コンテナーで使います。実行中アプリへの exec ではありません。`TARGET_HOST` と `TARGET_PORT` が渡り、展開には明示的なシェルが必要です。
+
+終了コード 0 が成功です。ツールの存在、意味のある検証、制限内の終了を確認します。
+
+## 確認
+
+実行して状態とログを読み、制御したテストで異常応答が失敗になることを確認します。選択先の内部ポートを曖昧にしないでください。
+
+[状態](/docs/ja/guides/release-safety/xhealth/status/)と [Guardian](/docs/ja/guides/release-safety/) へ進みます。

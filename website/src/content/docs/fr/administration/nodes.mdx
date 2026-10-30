@@ -1,0 +1,26 @@
+---
+title: "Gestion des serveurs"
+description: "Identifiez chaque machine par ID et adresse ; les noms d’hôte peuvent être identiques."
+sidebar:
+  order: 53
+---
+
+Identifiez chaque machine par ID et adresse ; les noms d’hôte peuvent être identiques.
+
+## Ajouter
+
+Admin récupère la commande Worker ou Manager. Vérifiez [prérequis](/docs/fr/getting-started/requirements/), exécutez sur la cible puis contrôlez Ready, rôle, adresse et ressources. Ajoutez ensuite les étiquettes.
+
+Worker héberge les tâches ; Manager participe aussi à la gestion. L’invitation est réutilisable pendant 30 minutes. Renouvelez après redémarrage/expiration ; les droits de l’émetteur peuvent l’invalider. Ne la publiez pas.
+
+## États
+
+Ready/Down/Disconnected : connexion. Active accepte les tâches, Pause refuse les nouvelles, Drain indique évacuation. Reachable concerne Manager. Alerte collecteur signifie données anciennes, pas nécessairement serveur arrêté.
+
+L’affichage ne fournit pas toutes les transitions. Voir [métriques](/docs/fr/guides/observability/metrics/server/).
+
+## Retirer
+
+La suppression ne migre, ne sauvegarde et n’évacue pas automatiquement. Vérifiez applications fixes, volumes, composants et disponibilité de gestion.
+
+Volumes conservés ; arrêt hors ligne non confirmé. Réintégrer peut changer l’ID : revoyez sélections et étiquettes. Échec d’ajout : IP, invitation, Docker et ports.

@@ -1,0 +1,441 @@
+{% extends "dashboard.html" %}
+
+{% import "node/select.html" as select %}
+{% import "insight/tabs.html" as tab %}
+
+{%- macro placement_type_select() -%}
+<select
+  id="insight-placement-type"
+  class="text"
+  x-model="placementType"
+  @change="placementValue = ''"
+  aria-label='{{ tt!("ui.insight.placement.type") }}'
+  required
+>
+  <option value="NodeId">{{ tt!("ui.insight.placement.node") }}</option>
+  <option value="Label" :disabled="storageType === 'Local' || (labelOptions.length === 0 && placementType !== 'Label')">{{ tt!("ui.insight.placement.label") }}</option>
+</select>
+{%- endmacro -%}
+
+{%- macro flush_interval_control() -%}
+<input id="insight-flush-interval" class="text inline-number" type="number" min="1" max="1000000" step="1" x-model.number="flushInterval.value" aria-describedby="insight-flush-help" required />
+<select id="insight-flush-interval-unit" class="text" x-model="flushInterval.unit" aria-label='{{ tt!("ui.insight.flush.unit.label") }}' aria-describedby="insight-flush-help" required>
+  <option value="Seconds" data-one='{{ tt!("ui.insight.flush.unit.secondsOne") }}' data-other='{{ tt!("ui.insight.flush.unit.seconds") }}' x-text="CDelivery.quantity(flushInterval.value, $el.dataset)">{{ tt!("ui.insight.flush.unit.seconds") }}</option>
+  <option value="Minutes" data-one='{{ tt!("ui.insight.flush.unit.minutesOne") }}' data-other='{{ tt!("ui.insight.flush.unit.minutes") }}' x-text="CDelivery.quantity(flushInterval.value, $el.dataset)">{{ tt!("ui.insight.flush.unit.minutes") }}</option>
+  <option value="Hours" data-one='{{ tt!("ui.insight.flush.unit.hoursOne") }}' data-other='{{ tt!("ui.insight.flush.unit.hours") }}' x-text="CDelivery.quantity(flushInterval.value, $el.dataset)">{{ tt!("ui.insight.flush.unit.hours") }}</option>
+</select>
+{%- endmacro -%}
+
+{%- macro retention_input() -%}
+<input id="insight-retention" class="text inline-number" type="number" min="1" max="3650" x-model.number="retentionDays" required />
+{%- endmacro -%}
+
+{%- macro sample_interval_input() -%}
+<input id="insight-sample-interval" class="text inline-number" type="number" min="1" max="60" x-model.number="sampleIntervalSecs" required />
+{%- endmacro -%}
+
+{%- macro storage_type_select() -%}
+<select id="insight-storage-type" class="text" x-model="storageType" @change="selectStorageType($event.target.value)" required>
+  <option value="Local">{{ tt!("ui.insight.storage.local") }}</option>
+  <option value="S3">{{ tt!("ui.insight.storage.s3") }}</option>
+  <option value="S3Compatible">{{ tt!("ui.insight.storage.s3Compatible") }}</option>
+  <option value="Gcs">{{ tt!("ui.insight.storage.gcs") }}</option>
+  <option value="Azure">{{ tt!("ui.insight.storage.azure") }}</option>
+</select>
+{%- endmacro -%}
+
+{% block title %}Insight | {{ super() }}{% endblock title %}
+
+{% block main %}
+{{ tab::header("spec") }}
+{% let deployed = insight.server.is_some() || insight.agent.is_some() %}
+
+{% if form.is_none() %}
+<h2>{{ tt!("ui.insight.status.label") }}</h2>
+{% endif %}
+{% match insight.status %}
+{% when crate::operation::insight::typ::InsightStatus::Enabled %}
+{% if form.is_none() %}
+<p>{{ tt!("ui.insight.status.enabled") }}</p>
+{% endif %}
+{% when crate::operation::insight::typ::InsightStatus::Disabled %}
+{% if form.is_none() %}
+<p class="muted">{{ tt!("ui.insight.status.disabled") }}</p>
+{% endif %}
+{% when crate::operation::insight::typ::InsightStatus::Degraded %}
+{% if insight.server.is_some() %}
+<p><strong>{{ tt!("ui.insight.status.serverOnly") }}</strong></p>
+{% else %}
+<p><strong>{{ tt!("ui.insight.status.agentOnly") }}</strong></p>
+{% endif %}
+{% endmatch %}
+
+{% if form.is_none() && deployed %}
+<dl>
+  {% if let Some(server) = insight.server %}
+  <dt>{{ tt!("ui.insight.version.server") }}</dt>
+  <dd>{{ server.version }}</dd>
+  {% endif %}
+  {% if let Some(agent) = insight.agent %}
+  <dt>{{ tt!("ui.insight.version.agent") }}</dt>
+  <dd>{{ agent.version }}</dd>
+  {% endif %}
+  {% if let Some(server) = insight.server %}
+  <dt>{{ tt!("ui.insight.section.placement") }}</dt>
+  <dd>{% match server.placement %}{% when crate::operation::node::typ::NodeSelector::NodeId(id) %}{{ tt!("ui.insight.placement.node") }}: {{ id }}{% when crate::operation::node::typ::NodeSelector::Label(label) %}{{ tt!("ui.insight.placement.label") }}: {{ label }}{% endmatch %}</dd>
+  <dt>{{ tt!("ui.insight.section.storage") }}</dt>
+  <dd>{% match server.storage %}{% when crate::operation::insight::typ::StorageConfig::Local %}{{ tt!("ui.insight.storage.local") }}{% when crate::operation::insight::typ::StorageConfig::S3 { .. } %}{{ tt!("ui.insight.storage.s3") }}{% when crate::operation::insight::typ::StorageConfig::S3Compatible { .. } %}{{ tt!("ui.insight.storage.s3Compatible") }}{% when crate::operation::insight::typ::StorageConfig::Gcs { .. } %}{{ tt!("ui.insight.storage.gcs") }}{% when crate::operation::insight::typ::StorageConfig::Azure { .. } %}{{ tt!("ui.insight.storage.azure") }}{% endmatch %}</dd>
+  <dt>{{ tt!("ui.insight.section.dataRetention") }}</dt>
+  <dd>{{ crate::locale::current().quantity(u64::from(*server.retention_days), tt!("ui.insight.retention.summaryOne", days = server.retention_days), tt!("ui.insight.retention.summary", days = server.retention_days)) }}</dd>
+  <dt>{{ tt!("ui.insight.section.flush") }}</dt>
+  <dd>{% match server.flush_interval %}{% when crate::operation::typ::Duration::Seconds(value) %}{{ crate::locale::current().quantity(**value, tt!("ui.insight.flush.summary.secondsOne", value = value), tt!("ui.insight.flush.summary.seconds", value = value)) }}{% when crate::operation::typ::Duration::Minutes(value) %}{{ crate::locale::current().quantity(**value, tt!("ui.insight.flush.summary.minutesOne", value = value), tt!("ui.insight.flush.summary.minutes", value = value)) }}{% when crate::operation::typ::Duration::Hours(value) %}{{ crate::locale::current().quantity(**value, tt!("ui.insight.flush.summary.hoursOne", value = value), tt!("ui.insight.flush.summary.hours", value = value)) }}{% endmatch %}</dd>
+  {% endif %}
+  {% if let Some(agent) = insight.agent %}
+  <dt>{{ tt!("ui.insight.section.sampling") }}</dt>
+  <dd>{{ tt!("ui.insight.sampling.summary", secs = agent.sample_interval_secs) }}</dd>
+  {% endif %}
+</dl>
+{% endif %}
+
+{% if let Some(data) = form %}
+{% let server_required = insight.server.is_none() %}
+{% let agent_required = insight.agent.is_none() %}
+{% let server_configurable = insight.server.is_some() || data.server_target_version.is_some() %}
+{% let agent_configurable = insight.agent.is_some() || data.agent_target_version.is_some() %}
+{% let configurable = server_configurable && agent_configurable %}
+<script id="insight-current" type="application/json">{{ insight|json|safe }}</script>
+<script id="insight-nodes" type="application/json">{{ data.nodes|json|safe }}</script>
+
+<div class="mt-3" x-data="insightSpec">
+<form
+  method="post"
+  action="/insight/configure"
+  autocomplete="off"
+  @submit="prepare($event)"
+>
+  <input x-ref="payload" type="hidden" name="payload" />
+  <div class="stack section-stack">
+    <div>
+      <div class="fields">
+        <div class="field">
+          <label for="insight-server-version">{{ tt!("ui.insight.version.server") }}</label>
+          <select id="insight-server-version" class="text" x-ref="serverVersion" {% if server_required %}required{% endif %} {% if !server_configurable %}disabled{% endif %}>
+            {% if let Some(server) = insight.server %}<option value="">{{ server.version }}</option>{% endif %}
+            {% if let Some(version) = data.server_target_version %}<option value="{{ version }}">{{ version }}</option>{% else if server_required %}<option value="">{{ tt!("ui.insight.version.unavailable") }}</option>{% endif %}
+          </select>
+        </div>
+        <div class="field">
+          <label for="insight-agent-version">{{ tt!("ui.insight.version.agent") }}</label>
+          <select id="insight-agent-version" class="text" x-ref="agentVersion" {% if agent_required %}required{% endif %} {% if !agent_configurable %}disabled{% endif %}>
+            {% if let Some(agent) = insight.agent %}<option value="">{{ agent.version }}</option>{% endif %}
+            {% if let Some(version) = data.agent_target_version %}<option value="{{ version }}">{{ version }}</option>{% else if agent_required %}<option value="">{{ tt!("ui.insight.version.unavailable") }}</option>{% endif %}
+          </select>
+        </div>
+      </div>
+      {% if !configurable %}<small class="mt-2">{{ tt!("ui.insight.version.requiredUnavailable") }}</small>{% endif %}
+    </div>
+    <fieldset>
+      <legend>{{ tt!("ui.insight.section.placement") }}</legend>
+      <p>
+        {% match crate::locale::current() %}
+        {% when crate::locale::Locale::ZhCn %}
+        将 Insight Server 部署到{{ placement_type_select() }}<template x-if="placementType === 'NodeId'"><span> {{ select::node("insight-node", "placementValue", tt!("ui.insight.placement.selectNode")) }}。</span></template><template x-if="placementType === 'Label'"><span> {{ select::label("insight-label", tt!("ui.insight.placement.selectLabel")) }} 的服务器。</span></template>
+        {% when crate::locale::Locale::ZhTw %}
+        將 Insight Server 部署至{{ placement_type_select() }}<template x-if="placementType === 'NodeId'"><span> {{ select::node("insight-node", "placementValue", tt!("ui.insight.placement.selectNode")) }}。</span></template><template x-if="placementType === 'Label'"><span> {{ select::label("insight-label", tt!("ui.insight.placement.selectLabel")) }} 的伺服器。</span></template>
+        {% when crate::locale::Locale::De %}
+        Für Insight Server <span data-node="den" data-label="alle" x-text="placementType === 'NodeId' ? $el.dataset.node : $el.dataset.label">den</span> {{ placement_type_select() }}<template x-if="placementType === 'NodeId'"><span> {{ select::node("insight-node", "placementValue", tt!("ui.insight.placement.selectNode")) }}</span></template><template x-if="placementType === 'Label'"><span> {{ select::label("insight-label", tt!("ui.insight.placement.selectLabel")) }}</span></template> verwenden.
+        {% when crate::locale::Locale::En %}
+        Run Insight Server on {{ placement_type_select() }}<template x-if="placementType === 'NodeId'"><span> {{ select::node("insight-node", "placementValue", tt!("ui.insight.placement.selectNode")) }}.</span></template><template x-if="placementType === 'Label'"><span> {{ select::label("insight-label", tt!("ui.insight.placement.selectLabel")) }}.</span></template>
+        {% when crate::locale::Locale::Ja %}
+        {{ placement_type_select() }}<template x-if="placementType === 'NodeId'"><span> {{ select::node("insight-node", "placementValue", tt!("ui.insight.placement.selectNode")) }}に Insight Server をデプロイする。</span></template><template x-if="placementType === 'Label'"><span> {{ select::label("insight-label", tt!("ui.insight.placement.selectLabel")) }}の付いたサーバーに Insight Server をデプロイする。</span></template>
+        {% when crate::locale::Locale::PtBr %}
+      Executar o Insight Server <span data-node="no" data-label="nos" x-text="placementType === 'NodeId' ? $el.dataset.node : $el.dataset.label"></span> {{ placement_type_select() }}<template x-if="placementType === 'NodeId'"><span> {{ select::node("insight-node", "placementValue", tt!("ui.insight.placement.selectNode")) }}.</span></template><template x-if="placementType === 'Label'"><span> {{ select::label("insight-label", tt!("ui.insight.placement.selectLabel")) }}.</span></template>
+      {% when crate::locale::Locale::Es %}
+      Ejecutar Insight Server en <span data-node="el" data-label="los" x-text="placementType === 'NodeId' ? $el.dataset.node : $el.dataset.label">el</span> {{ placement_type_select() }}<template x-if="placementType === 'NodeId'"><span> {{ select::node("insight-node", "placementValue", tt!("ui.insight.placement.selectNode")) }}.</span></template><template x-if="placementType === 'Label'"><span> {{ select::label("insight-label", tt!("ui.insight.placement.selectLabel")) }}.</span></template>
+      {% when crate::locale::Locale::Fr %}
+      Déployer Insight Server sur <span data-node="le" data-label="les" x-text="placementType === 'NodeId' ? $el.dataset.node : $el.dataset.label">le</span> {{ placement_type_select() }}<template x-if="placementType === 'NodeId'"><span> {{ select::node("insight-node", "placementValue", tt!("ui.insight.placement.selectNode")) }}.</span></template><template x-if="placementType === 'Label'"><span> {{ select::label("insight-label", tt!("ui.insight.placement.selectLabel")) }}.</span></template>
+      {% endmatch %}
+      </p>
+      <small>{{ tt!("ui.insight.placement.help") }}</small>
+    </fieldset>
+    <section>
+      <h2>{{ tt!("ui.insight.section.dataRetention") }}</h2>
+      <p>
+      {% match crate::locale::current() %}
+      {% when crate::locale::Locale::ZhCn %}
+      <label for="insight-retention">日志与指标保留</label>{{ retention_input() }}天，超期自动清理。
+      {% when crate::locale::Locale::ZhTw %}
+      <label for="insight-retention">日誌與指標保留</label>{{ retention_input() }}天，到期後自動清除。
+      {% when crate::locale::Locale::De %}
+      <label for="insight-retention">Logs und Metriken</label> {{ retention_input() }} <span data-one="Tag" data-other="Tage" x-text="CDelivery.quantity(retentionDays, $el.dataset)">Tage</span> aufbewahren und anschließend automatisch löschen.
+      {% when crate::locale::Locale::En %}
+      <label for="insight-retention">Keep logs and metrics for</label> {{ retention_input() }} <span data-one="day" data-other="days" x-text="CDelivery.quantity(retentionDays, $el.dataset)">days</span>, then delete them automatically.
+      {% when crate::locale::Locale::Ja %}
+      <label for="insight-retention">ログとメトリクスを</label>{{ retention_input() }}日間保存し、期限を過ぎたデータは自動で削除する。
+      {% when crate::locale::Locale::PtBr %}
+      <label for="insight-retention">Manter logs e métricas por</label> {{ retention_input() }} <span data-one="dia" data-other="dias" x-text="CDelivery.quantity(retentionDays, $el.dataset)">dias</span> e excluir automaticamente os dados mais antigos.
+      {% when crate::locale::Locale::Es %}
+      <label for="insight-retention">Conservar registros y métricas durante</label> {{ retention_input() }} <span data-one="día" data-other="días" x-text="CDelivery.quantity(retentionDays, $el.dataset)">días</span> y eliminar automáticamente los datos más antiguos.
+      {% when crate::locale::Locale::Fr %}
+      <label for="insight-retention">Conserver les journaux et les métriques pendant</label> {{ retention_input() }} <span data-one="jour" data-other="jours" x-text="CDelivery.quantity(retentionDays, $el.dataset)">jours</span>, puis les supprimer automatiquement.
+      {% endmatch %}
+      </p>
+    </section>
+    <section>
+      <h2>{{ tt!("ui.insight.section.sampling") }}</h2>
+      <p>
+      {% match crate::locale::current() %}
+      {% when crate::locale::Locale::ZhCn %}
+      <label for="insight-sample-interval">每</label>{{ sample_interval_input() }}秒采集一次指标。
+      {% when crate::locale::Locale::ZhTw %}
+      <label for="insight-sample-interval">每</label>{{ sample_interval_input() }}秒收集一次指標。
+      {% when crate::locale::Locale::De %}
+      <label for="insight-sample-interval">Metriken alle</label> {{ sample_interval_input() }} Sekunden erfassen.
+      {% when crate::locale::Locale::En %}
+      <label for="insight-sample-interval">Collect metrics every</label> {{ sample_interval_input() }} seconds.
+      {% when crate::locale::Locale::Ja %}
+      <label for="insight-sample-interval">メトリクスを</label>{{ sample_interval_input() }}秒ごとに収集する。
+      {% when crate::locale::Locale::PtBr %}
+      <label for="insight-sample-interval">Coletar métricas a cada</label> {{ sample_interval_input() }} segundos.
+      {% when crate::locale::Locale::Es %}
+      <label for="insight-sample-interval">Recopilar métricas cada</label> {{ sample_interval_input() }} segundos.
+      {% when crate::locale::Locale::Fr %}
+      <label for="insight-sample-interval">Collecter les métriques toutes les</label> {{ sample_interval_input() }} secondes.
+      {% endmatch %}
+      </p>
+      <small>{{ tt!("ui.insight.sampling.help") }}</small>
+    </section>
+    <fieldset>
+      <legend>{{ tt!("ui.insight.section.flush") }}</legend>
+      <p>
+      {% match crate::locale::current() %}
+      {% when crate::locale::Locale::ZhCn %}
+      <label for="insight-flush-interval">缓冲数据会在</label>{{ flush_interval_control() }}内落盘。
+      {% when crate::locale::Locale::ZhTw %}
+      <label for="insight-flush-interval">暫存資料會在</label>{{ flush_interval_control() }}內寫入儲存空間。
+      {% when crate::locale::Locale::De %}
+      <label for="insight-flush-interval">Gepufferte Daten spätestens nach</label> {{ flush_interval_control() }} speichern.
+      {% when crate::locale::Locale::En %}
+      <label for="insight-flush-interval">Buffered data is flushed to storage within</label> {{ flush_interval_control() }}.
+      {% when crate::locale::Locale::Ja %}
+      <label for="insight-flush-interval">バッファ内のデータの書き込み間隔を</label>{{ flush_interval_control() }}にする。
+      {% when crate::locale::Locale::PtBr %}
+      <label for="insight-flush-interval">Gravar os dados em buffer no armazenamento em até</label> {{ flush_interval_control() }}.
+      {% when crate::locale::Locale::Es %}
+      <label for="insight-flush-interval">Guardar los datos del búfer en un máximo de</label> {{ flush_interval_control() }}.
+      {% when crate::locale::Locale::Fr %}
+      <label for="insight-flush-interval">Écrire les données en attente dans un délai maximal de</label> {{ flush_interval_control() }}.
+      {% endmatch %}
+      </p>
+      <small id="insight-flush-help">{{ tt!("ui.insight.flush.help") }}</small>
+    </fieldset>
+    <fieldset>
+      <legend>{{ tt!("ui.insight.section.storage") }}</legend>
+      <p>
+      {% match crate::locale::current() %}
+      {% when crate::locale::Locale::ZhCn %}
+      <label for="insight-storage-type">将数据存储到</label>
+      {{ storage_type_select() }}。
+      {% when crate::locale::Locale::ZhTw %}
+      <label for="insight-storage-type">將資料儲存至</label>
+      {{ storage_type_select() }}。
+      {% when crate::locale::Locale::De %}
+      <label for="insight-storage-type">Als Datenspeicher dient</label> <span x-cloak x-show="storageType === 'Local' || storageType === 'S3Compatible'">ein </span>{{ storage_type_select() }}.
+      {% when crate::locale::Locale::En %}
+      <label for="insight-storage-type">Store data in</label>
+      {{ storage_type_select() }}.
+      {% when crate::locale::Locale::Ja %}
+      <label for="insight-storage-type">データを</label>{{ storage_type_select() }}に保存する。
+      {% when crate::locale::Locale::PtBr %}
+      <label for="insight-storage-type">Armazenar os dados usando</label> {{ storage_type_select() }}.
+      {% when crate::locale::Locale::Es %}
+      <label for="insight-storage-type">Guardar los datos en</label> <span x-cloak x-show="storageType === 'Local'">un </span>{{ storage_type_select() }}.
+      {% when crate::locale::Locale::Fr %}
+      <label for="insight-storage-type">Stocker les données sur</label> <span x-cloak x-show="storageType === 'Local' || storageType === 'S3Compatible'">un </span>{{ storage_type_select() }}.
+      {% endmatch %}
+      </p>
+      <small x-cloak x-show="storageType === 'Local'">{{ tt!("ui.insight.storage.localHelp") }}</small>
+      <div class="fields mt-2" x-cloak x-show="storageType !== 'Local'">
+        <div class="field" x-show="storageType === 'S3Compatible'">
+          <label for="insight-storage-endpoint">{{ tt!("ui.insight.storage.endpoint.label") }}</label>
+          <input id="insight-storage-endpoint" class="text" type="text" x-model="endpoint" :disabled="storageType !== 'S3Compatible'" :required="storageType === 'S3Compatible'" placeholder="https://s3.example.com" spellcheck="false" />
+        </div>
+        <div class="field" x-show="storageType === 'S3' || storageType === 'S3Compatible'">
+          <label for="insight-storage-region">{{ tt!("ui.insight.storage.region.label") }}</label>
+          <input id="insight-storage-region" class="text" type="text" x-model="region" :disabled="storageType !== 'S3' && storageType !== 'S3Compatible'" :required="storageType === 'S3' || storageType === 'S3Compatible'" spellcheck="false" />
+        </div>
+        <div class="field" x-show="storageType === 'S3' || storageType === 'S3Compatible'">
+          <label for="insight-storage-s3-bucket">{{ tt!("ui.insight.storage.bucket.label") }}</label>
+          <input id="insight-storage-s3-bucket" class="text" type="text" x-model="bucketName" :disabled="storageType !== 'S3' && storageType !== 'S3Compatible'" :required="storageType === 'S3' || storageType === 'S3Compatible'" spellcheck="false" />
+        </div>
+        <div class="field" x-show="storageType === 'S3' || storageType === 'S3Compatible'">
+          <label for="insight-storage-access-key">{{ tt!("ui.insight.storage.accessKeyId.label") }}</label>
+          <input id="insight-storage-access-key" class="text" type="text" x-model="accessKeyId" :disabled="storageType !== 'S3' && storageType !== 'S3Compatible'" :required="storageType === 'S3' || storageType === 'S3Compatible'" spellcheck="false" />
+        </div>
+        <div class="field" x-show="storageType === 'S3' || storageType === 'S3Compatible'">
+          <label for="insight-storage-secret-key">{{ tt!("ui.insight.storage.secretAccessKey.label") }}</label>
+          <input id="insight-storage-secret-key" class="text" type="password" autocomplete="new-password" x-model="secretAccessKey" :disabled="storageType !== 'S3' && storageType !== 'S3Compatible'" :required="(storageType === 'S3' || storageType === 'S3Compatible') && secretRequired" :placeholder="secretRequired ? '' : secretPlaceholder" />
+        </div>
+        <div class="field" x-show="storageType === 'Gcs'">
+          <label for="insight-storage-gcs-bucket">{{ tt!("ui.insight.storage.bucket.label") }}</label>
+          <input id="insight-storage-gcs-bucket" class="text" type="text" x-model="bucketName" :disabled="storageType !== 'Gcs'" :required="storageType === 'Gcs'" spellcheck="false" />
+        </div>
+        <div class="field" x-show="storageType === 'Gcs'">
+          <label for="insight-storage-gcs-credentials">{{ tt!("ui.insight.storage.credentials.label") }}</label>
+          <textarea id="insight-storage-gcs-credentials" class="text" rows="5" x-model="credentials" :disabled="storageType !== 'Gcs'" :required="storageType === 'Gcs' && secretRequired" :placeholder="secretRequired ? '' : secretPlaceholder" spellcheck="false"></textarea>
+        </div>
+        <div class="field" x-show="storageType === 'Azure'">
+          <label for="insight-storage-container">{{ tt!("ui.insight.storage.containerName.label") }}</label>
+          <input id="insight-storage-container" class="text" type="text" x-model="containerName" :disabled="storageType !== 'Azure'" :required="storageType === 'Azure'" spellcheck="false" />
+        </div>
+        <div class="field" x-show="storageType === 'Azure'">
+          <label for="insight-storage-account">{{ tt!("ui.insight.storage.accountName.label") }}</label>
+          <input id="insight-storage-account" class="text" type="text" x-model="accountName" :disabled="storageType !== 'Azure'" :required="storageType === 'Azure'" spellcheck="false" />
+        </div>
+        <div class="field" x-show="storageType === 'Azure'">
+          <label for="insight-storage-account-key">{{ tt!("ui.insight.storage.accountKey.label") }}</label>
+          <input id="insight-storage-account-key" class="text" type="password" autocomplete="new-password" x-model="accountKey" :disabled="storageType !== 'Azure'" :required="storageType === 'Azure' && secretRequired" :placeholder="secretRequired ? '' : secretPlaceholder" />
+        </div>
+      </div>
+    </fieldset>
+  </div>
+  <div class="actions">
+    {% if deployed %}<input type="submit" form="insight-disable-form" class="button danger" value='{{ tt!("ui.common.disable") }}' :disabled="submitting" />{% endif %}
+    <input class="button" type="submit" value='{% if deployed %}{{ tt!("ui.common.update") }}{% else %}{{ tt!("ui.common.enable") }}{% endif %}' {% if configurable %}:disabled="submitting"{% else %}disabled{% endif %} />
+  </div>
+</form>
+
+{% if deployed %}
+<form
+  id="insight-disable-form"
+  method="post"
+  action="/insight/disable"
+  data-confirm='{{ tt!("ui.insight.disable.confirm") }}'
+  @submit="if (submitting || !confirm($el.dataset.confirm)) { $event.preventDefault(); return } submitting = true"
+>
+  <input type="hidden" name="payload" value="{}" />
+</form>
+{% endif %}
+</div>
+
+<script>
+document.addEventListener("alpine:init", () => {
+  Alpine.data("insightSpec", () => {
+    const insight = JSON.parse(document.getElementById("insight-current").textContent);
+    const nodes = JSON.parse(document.getElementById("insight-nodes").textContent).nodes;
+    const server = insight.server;
+    const currentStorage = server?.storage ?? "Local";
+    const currentStorageType = currentStorage === "Local" ? "Local" : Object.keys(currentStorage)[0];
+    const currentConfig = currentStorage === "Local" ? {} : currentStorage[currentStorageType];
+    const currentPlacement = server?.placement ?? null;
+    const flushInterval = server?.flush_interval ?? { unit: "Minutes", value: 3 };
+    const unavailable = {{ tt!("ui.insight.placement.missing")|json|safe }};
+    const secretPlaceholder = {{ tt!("ui.insight.storage.secretUnchanged")|json|safe }};
+    const storedPlacementType = currentPlacement?.Label !== undefined ? "Label" : "NodeId";
+    const initialPlacementType = currentStorageType === "Local" ? "NodeId" : storedPlacementType;
+    const stored = initialPlacementType === "NodeId" ? currentPlacement?.NodeId : currentPlacement?.Label;
+    const { nodeOptions, labelOptions } = CDelivery.placementOptions(nodes, initialPlacementType, stored, unavailable);
+    const initialPlacementValue = (initialPlacementType === "NodeId" ? stored ?? nodeOptions[0]?.id : stored) ?? "";
+    const currentValues = {
+      endpoint: currentConfig.endpoint ?? "",
+      region: currentConfig.region ?? "",
+      bucketName: currentConfig.bucket_name ?? "",
+      accessKeyId: currentConfig.access_key_id ?? "",
+      containerName: currentConfig.container_name ?? "",
+      accountName: currentConfig.account_name ?? "",
+    };
+    const baseline = {
+      retention: server?.retention_days ?? null,
+      sample: insight.agent?.sample_interval_secs ?? null,
+      flush: server?.flush_interval ? JSON.stringify(server.flush_interval) : null,
+      placement: currentPlacement ? JSON.stringify(currentPlacement) : null,
+    };
+    return {
+      storageType: currentStorageType,
+      placementType: initialPlacementType,
+      placementValue: initialPlacementValue,
+      retentionDays: server?.retention_days ?? 30,
+      sampleIntervalSecs: insight.agent?.sample_interval_secs ?? 5,
+      flushInterval,
+      endpoint: currentValues.endpoint,
+      region: currentValues.region,
+      bucketName: currentValues.bucketName,
+      accessKeyId: currentValues.accessKeyId,
+      containerName: currentValues.containerName,
+      accountName: currentValues.accountName,
+      secretAccessKey: "",
+      credentials: "",
+      accountKey: "",
+      nodeOptions,
+      labelOptions,
+      secretPlaceholder,
+      submitting: false,
+
+      selectStorageType(type) {
+        this.storageType = type;
+        if (type === "Local" && this.placementType !== "NodeId") {
+          this.placementType = "NodeId";
+          this.placementValue = "";
+        }
+      },
+
+      get secretRequired() {
+        return !server || this.storageType !== currentStorageType;
+      },
+
+      storage() {
+        if (this.storageType === "Local") return "Local";
+        if (this.storageType === "S3") return { S3: {
+          region: this.region,
+          bucket_name: this.bucketName,
+          access_key_id: this.accessKeyId,
+          secret_access_key: this.secretAccessKey,
+        } };
+        if (this.storageType === "S3Compatible") return { S3Compatible: {
+          endpoint: this.endpoint,
+          region: this.region,
+          bucket_name: this.bucketName,
+          access_key_id: this.accessKeyId,
+          secret_access_key: this.secretAccessKey,
+        } };
+        if (this.storageType === "Gcs") return { Gcs: {
+          bucket_name: this.bucketName,
+          credentials: this.credentials,
+        } };
+        return { Azure: {
+          container_name: this.containerName,
+          account_name: this.accountName,
+          account_key: this.accountKey,
+        } };
+      },
+
+      storageUnchanged() {
+        return Boolean(server) && this.storageType === currentStorageType
+          && !this.secretAccessKey && !this.credentials && !this.accountKey
+          && this.endpoint === currentValues.endpoint && this.region === currentValues.region
+          && this.bucketName === currentValues.bucketName && this.accessKeyId === currentValues.accessKeyId
+          && this.containerName === currentValues.containerName && this.accountName === currentValues.accountName;
+      },
+
+      prepare(event) {
+        if (CDelivery.guard(this, event)) return;
+        const body = {};
+        if (!this.storageUnchanged()) body.storage = this.storage();
+        if (this.retentionDays !== baseline.retention) body.retention_days = this.retentionDays;
+        if (this.sampleIntervalSecs !== baseline.sample) body.sample_interval_secs = this.sampleIntervalSecs;
+        if (JSON.stringify(this.flushInterval) !== baseline.flush) body.flush_interval = this.flushInterval;
+        const placement = { [this.placementType]: this.placementValue };
+        if (JSON.stringify(placement) !== baseline.placement) body.placement = placement;
+        const serverVersion = this.$refs.serverVersion.value;
+        if (serverVersion) body.server_version = serverVersion;
+        const agentVersion = this.$refs.agentVersion.value;
+        if (agentVersion) body.agent_version = agentVersion;
+        this.$refs.payload.value = JSON.stringify(body);
+        this.submitting = true;
+      },
+    };
+  });
+});
+</script>
+{% endif %}
+{% endblock main %}

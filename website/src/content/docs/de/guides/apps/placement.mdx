@@ -1,0 +1,28 @@
+---
+title: "Serverauswahl und Platzierung"
+description: "Lege geeignete Server und die maximale Replikatanzahl pro Maschine fest."
+sidebar:
+  order: 17
+---
+
+Lege geeignete Server und die maximale Replikatanzahl pro Maschine fest.
+
+## Einstellen
+
+Admin vergibt [Label](/docs/de/administration/nodes/labels/). In der Anwendung auswählen, Servermaximum setzen, Reservierungen prüfen und speichern.
+
+Drei Replikate bei Maximum eins benötigen drei bereite, planbare und ausreichend ausgestattete Maschinen. Labels sind Mitgliedschaften, keine komplexen Abfragen.
+
+Zustandsbehaftete Anwendungen wählen einen festen Server.
+
+## Änderungen
+
+Constraints können Aufgaben ersetzen oder verschieben. StartFirst braucht möglicherweise zusätzliche Kapazität.
+
+Platzierung kopiert weder Dateien noch Volumes. Gleicher Name oder Label macht Daten nicht verfügbar. Siehe [lokale Daten](/docs/de/guides/apps/persistence/stateful/).
+
+## Diagnose
+
+Verteilung, Labels, Verfügbarkeit, Reservierungen und Limits prüfen. Aufgabenfehler lesen, bevor Neustarts wiederholt werden.
+
+Nach Entfernen und Beitritt kann die ID wechseln; feste Auswahl und Labels bei [Serververwaltung](/docs/de/administration/nodes/) kontrollieren.

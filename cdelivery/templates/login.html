@@ -1,0 +1,91 @@
+{% extends "public.html" %}
+
+{% block title %}{{ tt!("ui.login.title") }} | {{ super() }}{% endblock title %}
+
+{% block head %}
+<script>
+  try {
+    localStorage.clear();
+  } catch {
+    console.warn("Local storage cleanup failed");
+  }
+</script>
+{% endblock head %}
+
+{% block main %}
+<form
+  id="login_form"
+  method="post"
+  action="/login"
+  x-data
+  @submit="
+      $refs.payload.value = JSON.stringify({
+        email: $refs.email.value,
+        password_sha256: sha256($refs.password.value),
+        totp_code: $refs.totpCode.value || null
+      })
+  "
+>
+  <input x-ref="payload" type="hidden" name="payload" />
+  <header>
+    <h1>CDelivery</h1>
+  </header>
+  <noscript><p>{{ tt!("ui.javascript.required") }}</p></noscript>
+  {% if !fields.is_empty() %}
+  <ul role="alert">
+    {% for (path, message) in fields.iter() %}
+    <li><code>{{ path }}</code> {{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  <fieldset>
+    <legend>{{ tt!("ui.login.form.legend") }}</legend>
+    <div class="field">
+      <label for="email">{{ tt!("ui.form.user.email.label") }}:</label>
+      <input
+        x-ref="email"
+        id="email"
+        class="text"
+        type="email"
+        value="{{ email }}"
+        placeholder='{{ tt!("ui.form.user.email.placeholder") }}'
+        autocomplete="email"
+        maxlength="254"
+        spellcheck="false"
+        required
+      />
+    </div>
+    <div class="field">
+      <label for="password">{{ tt!("ui.form.user.password.label") }}:</label>
+      <input
+        x-ref="password"
+        id="password"
+        class="text"
+        type="password"
+        autocomplete="current-password"
+        minlength="8"
+        required
+      />
+    </div>
+    <div class="field">
+      <label for="totp-code">{{ tt!("ui.login.form.totp") }}:</label>
+      <input
+        x-ref="totpCode"
+        id="totp-code"
+        class="text"
+        type="text"
+        inputmode="numeric"
+        autocomplete="one-time-code"
+        maxlength="6"
+        pattern="[0-9]{6}"
+      />
+    </div>
+    <div class="mt-3 end">
+      <input class="button" type="submit" value='{{ tt!("ui.login.form.button") }}' />
+    </div>
+  </fieldset>
+  <small class="public-agreement">
+    {{ tt!("ui.login.agreement", terms_url = "#", privacy_url = "#") | safe }}
+  </small>
+</form>
+{% endblock main %}

@@ -1,0 +1,37 @@
+---
+title: "Configurar XHealth"
+description: "XHealth ejecuta comprobaciones en tareas independientes de los contenedores de negocio."
+sidebar:
+  order: 26
+---
+
+XHealth ejecuta comprobaciones en tareas independientes de los contenedores de negocio.
+
+## Ejecutar ahora
+
+Operator o Admin puede seleccionar **Ejecutar ahora**, llamar a `POST /api/apps/{name}/xhealth/run` sin cuerpo o usar la herramienta MCP/Agent `xhealth_run` con `app`. La comprobación debe estar activada y usa la configuración guardada sobre la aplicación actual. Las solicitudes durante la espera o ejecución devuelven `409`; el siguiente intervalo se cuenta desde el inicio de la nueva ejecución. Las comprobaciones de candidatos de Guardian son independientes.
+
+La API devuelve `202` con `{"ok":true}` al aceptar la solicitud, sin esperar el resultado. Actualiza la página, usa `xhealth_get` o consulta los logs de XHealth. Un timeout o una respuesta perdida no implica que el envío haya fallado: consulta el estado antes de decidir si vuelves a ejecutar. No hay deduplicación; otra solicitud después de finalizar inicia una nueva ejecución.
+
+## Hurl
+
+Operator o Admin selecciona puerto e intervalo mínimo de un minuto y carga una prueba:
+
+```hurl
+GET {{target_url}}/health
+HTTP 200
+```
+
+Se ejecuta `hurl --test /xhealth.hurl` con `HURL_VARIABLE_TARGET_URL`. Incluso al seleccionar un dominio, el destino usa HTTP interno; no verifica DNS público ni certificado TLS. Consulta [Hurl](https://hurl.dev/docs/request.html).
+
+## Comandos propios
+
+La comprobación usa imagen y configuración pertinente de la aplicación en otro contenedor, no una sesión exec. Recibe `TARGET_HOST` y `TARGET_PORT`; utiliza shell explícita para expansión.
+
+El código cero significa éxito. Comprueba que la imagen contenga el ejecutable y que termine dentro del tiempo permitido. Un comando sin aserción útil puede dar falsa confianza.
+
+## Verificar
+
+Ejecuta la prueba, lee estado y registros, y verifica en una prueba controlada que una respuesta inválida falle. Asegúrate de que ruta o puerto seleccionado identifique un destino interno inequívoco.
+
+Consulta [estados](/docs/es/guides/release-safety/xhealth/status/) y [Guardian](/docs/es/guides/release-safety/).

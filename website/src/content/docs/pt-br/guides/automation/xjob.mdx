@@ -1,0 +1,24 @@
+---
+title: "Criar tarefas XJob"
+description: "XJob executa comandos agendados em contêineres independentes usando imagem e ambiente pertinentes da aplicação."
+sidebar:
+  order: 38
+---
+
+XJob executa comandos agendados em contêineres independentes usando imagem e ambiente pertinentes da aplicação.
+
+## Criar
+
+Operator/Admin abre XJob, escolhe nome, comando presente na imagem, intervalo após o término e timeout de execução. Salve e confira uma execução.
+
+Limite: 16 tarefas por aplicação e intervalo e timeout obrigatórios, cada um entre 1 e 1440 minutos. Expansão e pipes exigem shell explícita.
+
+Não é exec no contêiner de negócio. Arquivos temporários e dados graváveis desse processo não estão automaticamente disponíveis; confira fontes reais.
+
+## Projetar e verificar
+
+Comandos com efeitos externos devem tratar repetição. O agendador não fornece transação para escritas e chamadas externas.
+
+Código zero deve refletir sucesso do negócio. Confira efeito realizado e logs XJob do nome correto.
+
+Veja [horários](/docs/pt-br/guides/automation/xjob/schedule/) e [resultados](/docs/pt-br/guides/automation/xjob/results/) para intervalos, falhas e novas tentativas.

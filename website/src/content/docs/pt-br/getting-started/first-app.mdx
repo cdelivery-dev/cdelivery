@@ -1,0 +1,40 @@
+---
+title: "Publicar a primeira aplicação"
+description: "Publique Nginx por uma porta e confirme uma resposta HTTP real."
+sidebar:
+  order: 5
+---
+
+Publique Nginx por uma porta e confirme uma resposta HTTP real.
+
+## Preparar
+
+Admin cria o grupo; Operator ou Admin cria a aplicação. Libere TCP 8080 ou encaminhe:
+
+```sh
+ssh -L 9000:127.0.0.1:9000 -L 8080:127.0.0.1:8080 your-user@server.example.com
+```
+
+## Publicar
+
+1. Crie o grupo `demo`.
+2. Crie `hello-web`, imagem `nginx:stable-alpine`.
+3. Mantenha comando padrão e uma réplica fixa.
+4. Publique porta interna **80** como **8080/TCP**.
+5. Salve e aguarde a réplica executar.
+
+Não é preciso domínio, volume ou comando personalizado. A [imagem oficial](https://hub.docker.com/_/nginx) já inicia o processo em primeiro plano.
+
+## Conferir
+
+Visite `http://SERVER_IP:8080`, ou localhost pelo túnel:
+
+```sh
+curl -i http://localhost:8080
+```
+
+Espere HTTP 200 e a página Nginx. Confira também tarefas e logs.
+
+Se não baixa, verifique registro e arquitetura. Se encerra, restaure comando padrão e leia logs. Se não conecta, confira mapeamento, IP, firewall e túnel. Uma rota de domínio usaria a porta interna 80.
+
+Para limpar, remova aplicação, aguarde contêineres e exclua o grupo vazio. Continue pelo [console](/docs/pt-br/getting-started/console/).

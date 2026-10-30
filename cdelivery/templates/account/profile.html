@@ -1,0 +1,45 @@
+{% extends "account.html" %}
+
+{% import "account/nav.html" as nav %}
+{% import "user/role.html" as role %}
+
+{% block title %}{{ tt!("ui.account.profile.title") }} - {{ tt!("ui.account.nav.account") }} | {{ super() }}{% endblock title %}
+
+{% block account_navigation %}{{ nav::nav("profile") }}{% endblock account_navigation %}
+
+{% block main %}
+<header>
+  <h1>{{ tt!("ui.account.profile.title") }}</h1>
+</header>
+
+<dl>
+  <dt>{{ tt!("ui.account.profile.id") }}</dt>
+  <dd>{{ user.id }}</dd>
+  <dt>{{ tt!("ui.form.user.email.label") }}</dt>
+  <dd>{{ user.email }}</dd>
+  <dt>{{ tt!("ui.account.profile.role") }}</dt>
+  <dd>{% let user_role = user.role %}{{ role::label(user_role) }}</dd>
+</dl>
+
+<form
+  method="post"
+  action="/account"
+  x-data="{ submitting: false }"
+  @submit="if (submitting) { $event.preventDefault(); return } $refs.payload.value = JSON.stringify({ first_name: $refs.firstName.value, last_name: $refs.lastName.value }); submitting = true"
+>
+  <input x-ref="payload" type="hidden" name="payload" />
+  <div class="fields">
+    <div class="field">
+      <label for="account-first-name">{{ tt!("ui.form.user.firstName.label") }}: </label>
+      <input x-ref="firstName" id="account-first-name" class="text" type="text" value="{{ user.first_name }}" autocomplete="given-name" minlength="1" maxlength="64" required />
+    </div>
+    <div class="field">
+      <label for="account-last-name">{{ tt!("ui.form.user.lastName.label") }}: </label>
+      <input x-ref="lastName" id="account-last-name" class="text" type="text" value="{{ user.last_name }}" autocomplete="family-name" minlength="1" maxlength="64" required />
+    </div>
+  </div>
+  <div class="actions">
+    <input class="button" type="submit" value='{{ tt!("ui.common.save") }}' :disabled="submitting" />
+  </div>
+</form>
+{% endblock main %}

@@ -1,0 +1,29 @@
+---
+title: "Dominios y rutas"
+description: "Pingress combina dominio y condiciones de petición para elegir un puerto de aplicación."
+sidebar:
+  order: 22
+---
+
+Pingress combina dominio y condiciones de petición para elegir un puerto de aplicación.
+
+## Añadir ruta
+
+1. Habilita Pingress y dirige A/AAAA a sus entradas.
+2. Comprueba 80/443 y el proceso de destino.
+3. Añade dominio, puerto interno y opción HTTPS.
+4. Guarda y realiza una petición coincidente.
+
+Usa un nombre como `app.example.com`, sin protocolo, IP, comodín, puerto ni ruta. Se normaliza a minúsculas y requiere varias etiquetas.
+
+## Condiciones
+
+Puedes añadir prefijo de ruta, cabecera o cookie. Las condiciones de una misma ruta se combinan con AND; cabecera/cookie pueden comprobar presencia o valor.
+
+`/api` coincide con `/api` y `/api/users`, no con `/apix`. El prefijo no se elimina ni reescribe. Condiciones más específicas y prefijos largos influyen en prioridad; evita ambigüedades y no dependas del orden visual.
+
+## Verificar
+
+Prueba solicitudes que deban coincidir y otras que no. Consulta [registros de acceso](/docs/es/guides/observability/logs/access/). Un error de gateway puede proceder del backend aunque DNS y TLS funcionen.
+
+HTTPS requiere [certificado automático](/docs/es/guides/networking/automatic-certificates/) o [propio](/docs/es/guides/networking/custom-certificates/).

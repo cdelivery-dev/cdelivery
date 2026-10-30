@@ -1,0 +1,32 @@
+---
+title: "Estrategias de actualización"
+description: "Controla sustitución de réplicas, orden, observación y respuesta a fallos."
+sidebar:
+  order: 28
+---
+
+Controla sustitución de réplicas, orden, observación y respuesta a fallos.
+
+## Valores predeterminados
+
+| Ajuste | Valor |
+| --- | --- |
+| Paralelismo | Todas las réplicas |
+| Orden | StopFirst |
+| Observación | 60 segundos |
+| Proporción de fallo | 0 |
+| Acción | Rollback |
+
+StopFirst en paralelo puede interrumpir todas las réplicas. StartFirst necesita capacidad adicional y compatibilidad con instancias superpuestas; no hace seguro ejecutar dos bases de datos sobre los mismos archivos.
+
+## Elegir y verificar
+
+Revisa réplicas, reservas, límites por servidor, duración de arranque y compatibilidad entre versiones. Ajusta lote u orden según esas condiciones.
+
+Realiza un cambio y observa tareas, registros y petición real. Sobrevivir a la ventana de observación no equivale a superar una aserción de negocio.
+
+## Fallos
+
+La reversión recupera configuración anterior cuando existe. Su ejecución es paralela y continúa ante fallos de reversión: comprueba el resultado.
+
+Usa [XHealth](/docs/es/guides/release-safety/xhealth/) para aserciones y [Guardian](/docs/es/guides/release-safety/) para validar candidatos. Consulta [reversión](/docs/es/guides/release-safety/rollback/) para límites de datos.

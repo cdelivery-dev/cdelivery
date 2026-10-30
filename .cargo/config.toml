@@ -1,0 +1,6 @@
+[build]
+rustflags = ["-C", "target-cpu=native"]
+
+[alias]
+xtask = "run --locked --release --package xtask --"
+insight-perf = "bench -p insight --profile release-speed --features benchmark"

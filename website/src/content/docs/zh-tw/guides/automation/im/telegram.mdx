@@ -1,0 +1,55 @@
+---
+title: "接入 Telegram"
+description: "建立專用 Telegram Bot、取得數字使用者 ID，並設定長輪詢和個人通知。"
+sidebar:
+  order: 47
+---
+
+Telegram 使用 BotFather 建立的 Bot Token。CDelivery 通過長輪詢接收消息，並會移除該 Bot 已有的 Webhook，因此應使用專用 Bot，避免與其他程序共用接收通道。
+
+## 建立 Bot
+
+1. 在 Telegram 打開官方 `@BotFather`。
+2. 使用 `/newbot`，按提示設定名稱和 Bot 使用者名。
+3. 儲存 BotFather 回傳的 Token。
+4. 打開新 Bot 的私信，點擊開始併發送一條消息。
+
+建立步驟見 [Telegram 官方教程](https://core.telegram.org/bots/tutorial)。Token 是控制 Bot 的憑據，不能把它當作個人使用者 ID。
+
+## 取得自己的數字使用者 ID
+
+綁定需要發送者的數字 `id`，不是 `@username`。可以在接入 CDelivery 之前，按官方 [getUpdates 接口](https://core.telegram.org/bots/api#getupdates)讀取剛發給專用 Bot 的消息，並查看 `message.from.id`。
+
+例如回傳結構中的：
+
+```json
+{
+  "message": {
+    "from": { "id": 123456789 },
+    "text": "hello"
+  }
+}
+```
+
+這裡用於綁定的是示例位置的 `123456789`；實際應填寫你自己的值。不要誤用群聊的 `chat.id`。CDelivery 接管長輪詢後，不要再執行另一個消費者競爭讀取同一 Bot 的消息。
+
+## 設定與綁定
+
+1. 管理員打開 **設定 → 渠道 → Telegram**，填寫 Bot Token 並儲存。
+2. 使用者打開自己的 **帳戶 → Telegram**，填寫數字使用者 ID。
+3. 儲存綁定，並按需要開啟通知。
+4. 已設定 AI 模型時，向 Bot 私信一個唯讀問題驗證。
+
+Bot 通常需要使用者先主動開始對話才能向該使用者發送私信。收不到通知時應先確認你已在 Telegram 中打開並啟動它。
+
+## 群聊行為
+
+Privacy Mode 開啟時，當前支援私信、`/cdelivery@BotUsername` 指令以及群內對 Bot 的回復。將 `BotUsername` 替換為實際使用者名。當前不支援話題。
+
+無需為了普通私信或這些明確交互關閉 Privacy Mode。不要假定 Bot 能讀取群內所有消息。
+
+## 排障
+
+已有 Webhook 與長輪詢不能同時用於接收更新，見 [Telegram Bot FAQ](https://core.telegram.org/bots/faq)。如果消息被其他程序消費，應停止共享消費者並使用專用 Token。
+
+連接失敗時檢查伺服器到 Telegram API 的網路、Token 是否有效及是否被輪換。身份未識別時核對發送者數字 ID；能收到消息但沒有 AI 回復時，再檢查模型設定和帳戶權限。

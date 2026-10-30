@@ -1,0 +1,26 @@
+---
+title: "Connexions et ports publiés"
+description: "Les applications d’un groupe se joignent par nom et port interne."
+sidebar:
+  order: 21
+---
+
+Les applications d’un groupe se joignent par nom et port interne.
+
+## Réseau interne
+
+Utilisez par exemple `database:5432`. Dans un conteneur, localhost désigne ce conteneur. Le processus doit écouter sur une interface accessible, généralement `0.0.0.0`.
+
+Ne supposez pas une résolution commune entre groupes. Leur réseau ne constitue pas une séparation des droits.
+
+## Publier
+
+Choisissez TCP/UDP et associez port interne et port public libre : Nginx 80 → 8080/TCP. Enregistrez, vérifiez les tâches puis `http://SERVER_IP:8080`.
+
+Contrôlez pare-feu et règles cloud. Le tunnel doit transférer ce port en plus de 9000. Un mappage ne crée pas de listener et ne transforme pas TCP en HTTP.
+
+## Diagnostic
+
+Contrôlez processus, interface, port, groupe et réseau entre serveurs ; pour le public, ajoutez protocole, adresse et pare-feu.
+
+Les [routes de domaine](/docs/fr/guides/networking/routing/) utilisent le port interne sans publication directe. Voir [FAQ](/docs/fr/guides/networking/faq/) pour IPv6.

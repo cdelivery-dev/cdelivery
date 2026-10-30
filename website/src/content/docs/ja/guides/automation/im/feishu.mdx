@@ -1,0 +1,28 @@
+---
+title: "Feishu 接続"
+description: "Feishu のアプリ bot と長時間接続でイベントを受信します。"
+sidebar:
+  order: 50
+---
+
+Feishu のアプリ bot と長時間接続でイベントを受信します。
+
+## 作成と公開
+
+自社アプリを作り、bot、送信、個別メッセージ受信、必要ならグループメンションを許可します。長時間接続と `im.message.receive_v1` を選びます。
+
+公開し、利用者を範囲に追加して権限変更を承認します。Admin が Feishu チャネルに App ID/Secret を保存します。Webhook だけのグループ bot は使えません。
+
+Lark の認証は[別チャネル](/docs/ja/guides/automation/im/lark/)です。[公式イベント設定](https://open.feishu.cn/document/server-docs/event-subscription-guide/event-subscription-configure-/request-url-configuration-case)を参照してください。
+
+## 本人 ID
+
+公式 API ツールの[メール・電話からの検索](https://open.feishu.cn/document/server-docs/contact-v3/user/batch_get_id)などで、このアプリに対する本人の `open_id` を取得します。必要な連絡先権限と対象範囲を許可します。
+
+user_id、union_id、chat、bot ID は使いません。アプリ変更では open_id も変わり得ます。本人 ID と購読を設定し、他人へ自分の権限を渡さないよう確認します。
+
+## 検証
+
+モデル設定後、個別で読み取り質問、グループでは明示メンションを試します。公開、利用範囲、イベント、通信、紐付けを調査します。
+
+プロフィールは `contact:contact.base:readonly`、`contact:user.base:readonly` と対象可視範囲が必要です。プロフィールと配信障害は分けて確認します。

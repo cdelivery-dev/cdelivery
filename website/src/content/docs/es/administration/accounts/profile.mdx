@@ -1,0 +1,31 @@
+---
+title: "Cuenta y seguridad de acceso"
+description: "Todos los roles gestionan su propia cuenta; correo y rol los modifica un administrador."
+sidebar:
+  order: 59
+---
+
+Todos los roles gestionan su propia cuenta; correo y rol los modifica un administrador.
+
+## Contraseña
+
+Introduce contraseña actual y nueva. Guardar invalida todas las sesiones, incluida la actual; vuelve a entrar. Las API keys siguen válidas y se revocan aparte.
+
+Si olvidaste contraseña, contacta con Admin. Si no hay acceso administrativo, consulta [recuperación](/docs/es/administration/platform/recovery/).
+
+## Doble factor
+
+1. Escanea QR o introduce secreto en autenticador.
+2. Envía contraseña actual y código de seis dígitos.
+3. Confirma estado habilitado.
+4. Prueba un nuevo inicio de sesión.
+
+Escanear sin enviar no activa nada. QR y secreto son credenciales. Para códigos inválidos, comprueba hora, cuenta y vencimiento.
+
+Deshabilitar requiere contraseña y código actual. Si pierdes autenticador, solicita reset administrativo o recuperación del host; no presupongas códigos de respaldo.
+
+## Preferencias
+
+Elige idioma entre ocho opciones y tema claro, oscuro o sistema. Vincula tu ID personal de [mensajería](/docs/es/guides/automation/im/) y activa suscripciones aparte.
+
+Las [API keys](/docs/es/guides/automation/api-mcp/) se muestran completas una sola vez; úsalas para herramientas en lugar de cookies persistentes.

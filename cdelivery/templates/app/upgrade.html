@@ -1,0 +1,102 @@
+{%- macro parallelism_select() -%}
+<select id="parallelism-select" class="text" x-model="$$parallelismType" aria-label='{{ tt!("ui.app.updateStrategy.parallelism.mode.label") }}'>
+  <option value="all">{{ tt!("ui.app.updateStrategy.parallelism.all") }}</option>
+  <option value="custom">{{ tt!("ui.app.updateStrategy.parallelism.custom") }}</option>
+</select>
+{%- endmacro -%}
+
+{%- macro parallelism_input() -%}
+<input id="parallelism-input" class="text inline-number" type="number" min="1" max="100" x-model.number="update_config.parallelism" aria-label='{{ tt!("ui.app.updateStrategy.parallelism.value.label") }}' required />
+{%- endmacro -%}
+
+{%- macro order_select() -%}
+<select id="order-select" class="text" x-model="update_config.order" aria-label='{{ tt!("ui.app.updateStrategy.order.label") }}'>
+  <option value="StartFirst">{{ tt!("ui.app.updateStrategy.order.start_first") }}</option>
+  <option value="StopFirst">{{ tt!("ui.app.updateStrategy.order.stop_first") }}</option>
+</select>
+{%- endmacro -%}
+
+{%- macro monitor_input() -%}
+<input id="monitor-input" class="text inline-number" type="number" min="1" x-model.number="update_config.monitor.value" aria-label='{{ tt!("ui.app.updateStrategy.monitor.value.label") }}' required /><select id="monitor-unit-select" class="text" x-model="update_config.monitor.unit" aria-label='{{ tt!("ui.app.updateStrategy.monitor.unit.label") }}'>
+  <option value="Seconds" data-one='{{ tt!("ui.app.duration.secondsOne") }}' data-other='{{ tt!("ui.app.duration.seconds") }}' x-text="CDelivery.quantity(update_config.monitor.value, $el.dataset)">{{ tt!("ui.app.duration.seconds") }}</option>
+  <option value="Minutes" data-one='{{ tt!("ui.app.duration.minutesOne") }}' data-other='{{ tt!("ui.app.duration.minutes") }}' x-text="CDelivery.quantity(update_config.monitor.value, $el.dataset)">{{ tt!("ui.app.duration.minutes") }}</option>
+  <option value="Hours" data-one='{{ tt!("ui.app.duration.hoursOne") }}' data-other='{{ tt!("ui.app.duration.hours") }}' x-text="CDelivery.quantity(update_config.monitor.value, $el.dataset)">{{ tt!("ui.app.duration.hours") }}</option>
+</select>
+{%- endmacro -%}
+
+{%- macro failure_percent_input() -%}
+<input
+  id="failure-percent-input"
+  class="text inline-number"
+  type="number"
+  min="0"
+  max="100"
+  x-model.number="update_config.max_failure_percent"
+  aria-label='{{ tt!("ui.app.updateStrategy.failurePercent.label") }}'
+  required
+/>
+{%- endmacro -%}
+
+{%- macro failure_action_select() -%}
+<select id="failure-action-select" class="text" x-model="update_config.failure_action" aria-label='{{ tt!("ui.app.updateStrategy.failureAction.label") }}'>
+  <option value="Rollback">{{ tt!("ui.app.updateStrategy.action.rollback") }}</option>
+  <option value="Pause">{{ tt!("ui.app.updateStrategy.action.pause") }}</option>
+  <option value="Continue">{{ tt!("ui.app.updateStrategy.action.continue") }}</option>
+</select>
+{%- endmacro -%}
+
+{%- macro editable() -%}
+<li x-data="updateConfigData">
+  {% match crate::locale::current() %}
+  {% when crate::locale::Locale::ZhCn %}
+  应用升级时，允许一次同时更新{{ parallelism_select() }}<template x-if="$$parallelismType === 'custom'"><span>{{ parallelism_input() }}个</span></template>容器，按照先{{ order_select() }}容器的顺序进行。每个更新后的容器启动后观察{{ monitor_input() }}，最多允许 {{ failure_percent_input() }}% 的容器失败，超过时{{ failure_action_select() }}。观察窗口不是批次间的等待时间。
+  {% when crate::locale::Locale::ZhTw %}
+  應用程式更新時，每次同時更新{{ parallelism_select() }}<template x-if="$$parallelismType === 'custom'"><span>{{ parallelism_input() }}個</span></template>容器，先{{ order_select() }}容器。每個更新後的容器啟動後觀察{{ monitor_input() }}，最多允許 {{ failure_percent_input() }}% 的容器失敗，超過時{{ failure_action_select() }}。觀察視窗不是批次間的等待時間。
+  {% when crate::locale::Locale::Ja %}
+  更新時は、コンテナを{{ parallelism_select() }}<template x-if="$$parallelismType === 'custom'"><span>{{ parallelism_input() }}個</span></template>同時に更新する。{{ order_select() }}を先に行う。更新した各コンテナの起動後、{{ monitor_input() }}の間に発生する失敗を監視し、失敗率が{{ failure_percent_input() }}% を超えた場合は更新を{{ failure_action_select() }}する。監視期間はバッチ間の待機時間ではない。
+  {% when crate::locale::Locale::PtBr %}
+  Durante a atualização, atualizar {{ parallelism_select() }}<template x-if="$$parallelismType === 'custom'"><span> {{ parallelism_input() }}</span></template> <span data-one="contêiner" data-other="contêineres" x-text="CDelivery.quantity(update_config.parallelism, $el.dataset)">contêineres</span> de cada vez. Primeiro, {{ order_select() }}. Monitorar falhas por {{ monitor_input() }} após a inicialização de cada contêiner atualizado. Se a taxa de falhas ultrapassar {{ failure_percent_input() }}%, {{ failure_action_select() }}. Esse período não é uma espera entre lotes.
+  {% when crate::locale::Locale::Es %}
+  Actualizar {{ parallelism_select() }}<template x-if="$$parallelismType === 'custom'"><span> {{ parallelism_input() }}</span></template> <span data-one="contenedor" data-other="contenedores" x-text="CDelivery.quantity(update_config.parallelism, $el.dataset)">contenedores</span> a la vez. Primero, {{ order_select() }}. Supervisar fallos durante {{ monitor_input() }} desde el inicio de cada contenedor actualizado. Si el porcentaje de fallos supera {{ failure_percent_input() }} %, {{ failure_action_select() }}. Este período no es una espera entre lotes.
+  {% when crate::locale::Locale::Fr %}
+  Mettre à jour {{ parallelism_select() }}<template x-if="$$parallelismType === 'custom'"><span> {{ parallelism_input() }}</span></template> <span data-one="conteneur" data-other="conteneurs" x-text="CDelivery.quantity(update_config.parallelism, $el.dataset)">conteneurs</span> à la fois. Commencer par {{ order_select() }}. Surveiller les échecs pendant {{ monitor_input() }} après le démarrage de chaque conteneur mis à jour. Si le taux d’échec dépasse {{ failure_percent_input() }} %, {{ failure_action_select() }}. Cette période n’est pas un délai entre les lots.
+  {% when crate::locale::Locale::De %}
+  Jeweils {{ parallelism_select() }}<template x-if="$$parallelismType === 'custom'"><span> {{ parallelism_input() }}</span></template> Container aktualisieren. Zuerst {{ order_select() }}. Nach dem Start jedes aktualisierten Containers {{ monitor_input() }} lang auf Fehler überwachen. Wenn die Fehlerrate {{ failure_percent_input() }} % übersteigt, das Update {{ failure_action_select() }}. Dieser Zeitraum ist keine Wartezeit zwischen den Gruppen.
+  {% when crate::locale::Locale::En %}
+  During upgrades, update {{ parallelism_select() }}<template x-if="$$parallelismType === 'custom'"><span> {{ parallelism_input() }} </span></template> <span data-one="container" data-other="containers" x-text="CDelivery.quantity(update_config.parallelism, $el.dataset)">containers</span> at a time, {{ order_select() }} containers first. Monitor failures for {{ monitor_input() }} after each updated container starts, allowing up to {{ failure_percent_input() }}% of containers to fail; above that limit, {{ failure_action_select() }}. This window is not a delay between batches.
+  {% endmatch %}
+</li>
+<script>
+document.addEventListener("alpine:init", () => {
+  Alpine.data("updateConfigData", () => ({
+    get $$parallelismType() {
+      return this.update_config.parallelism ? "custom" : "all";
+    },
+    set $$parallelismType(val) {
+      if (val === "custom") {
+        if (!this.update_config.parallelism) {
+          this.update_config.parallelism = 1;
+        }
+      } else {
+        this.update_config.parallelism = null;
+      }
+    },
+  }));
+});
+</script>
+{%- endmacro -%}
+
+{%- macro order(value) -%}
+{%- match value -%}
+{%- when crate::operation::app::typ::deployment::UpdateOrder::StartFirst -%}{{ tt!("ui.app.updateStrategy.order.start_first") }}
+{%- when crate::operation::app::typ::deployment::UpdateOrder::StopFirst -%}{{ tt!("ui.app.updateStrategy.order.stop_first") }}
+{%- endmatch -%}
+{%- endmacro -%}
+
+{%- macro action(value) -%}
+{%- match value -%}
+{%- when crate::operation::app::typ::deployment::UpdateFailureAction::Rollback -%}{{ tt!("ui.app.updateStrategy.action.rollback") }}
+{%- when crate::operation::app::typ::deployment::UpdateFailureAction::Pause -%}{{ tt!("ui.app.updateStrategy.action.pause") }}
+{%- when crate::operation::app::typ::deployment::UpdateFailureAction::Continue -%}{{ tt!("ui.app.updateStrategy.action.continue") }}
+{%- endmatch -%}
+{%- endmacro -%}

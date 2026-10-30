@@ -1,0 +1,28 @@
+---
+title: "Updates und Versionen"
+description: "Hauptprogramm, Pingress, Insight, Insight Agent und Volumeverwaltung haben getrennte Versionen."
+sidebar:
+  order: 62
+---
+
+Hauptprogramm, Pingress, Insight, Insight Agent und Volumeverwaltung haben getrennte Versionen.
+
+## Vorbereitung
+
+Admin prüft aktuelle/verfügbare Version und Hinweise. Registry, Architektur und Zeitfenster kontrollieren. Geschäftsdaten sichern; Versionsnotiz ist keine Sicherung.
+
+Katalog liefert neueste Version, die Update-Anfrage verlangt. Keine allgemeine historische Auswahl oder universelle Downgradefunktion.
+
+## Update
+
+Version unter Einstellungen → CDelivery wählen, bestätigen, Neustart abwarten. Danach Version, Server, Apps, Ereignisse und API/MCP prüfen.
+
+Komponenten einzeln aktualisieren. Pingress: HTTPS; Insight/Sammler: neue Messwerte; Agent: Volumeliste. Nach Neustart neue Beitrittsnachweise holen.
+
+Kurze Konsolenunterbrechung beweist keinen App-Ausfall.
+
+## Diagnose
+
+Unerreichbare Versionsmetadaten bedeuten nicht aktuell. Veröffentlichungsnetz prüfen. Pullfehler: Image/Architektur/Aufgaben.
+
+[App-Rollback](/docs/de/guides/release-safety/rollback/) restauriert weder Plattform noch Daten. Anmeldehilfe unter [Wiederherstellung](/docs/de/administration/platform/recovery/).

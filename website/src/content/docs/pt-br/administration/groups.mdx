@@ -1,0 +1,28 @@
+---
+title: "Gerenciamento de grupos"
+description: "Grupos organizam aplicações e rede comum, sem separar visibilidade de contas."
+sidebar:
+  order: 56
+---
+
+Grupos organizam aplicações e rede comum, sem separar visibilidade de contas.
+
+## Criar
+
+Admin informa nome único de 1–16 minúsculas, dígitos ou hífens, sem hífen inicial/final ou nome reservado. Descrição opcional: até 256 caracteres.
+
+Selecione grupo ao criar aplicação. Nomes de aplicação continuam únicos na plataforma. Console não renomeia grupos nem move aplicações existentes.
+
+Confira [comunicação interna](/docs/pt-br/guides/networking/connectivity/).
+
+## Descrição
+
+Registra propósito/responsável sem alterar acesso ou agendamento. Se rede foi criada mas descrição falhou, grupo pode já existir: atualize e complete.
+
+Omitir descrição no patch conserva; limpar explicitamente remove.
+
+## Excluir
+
+Resolva aplicações e referências de rede. Saída assíncrona de tarefas pode manter grupo ocupado temporariamente.
+
+Volumes de negócio permanecem. Registre servidor e nome em [volumes](/docs/pt-br/administration/nodes/volumes/). Para comunicação falha, revise grupo, porta, interface e rede.

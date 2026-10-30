@@ -1,0 +1,26 @@
+---
+title: "Réplicas e escala automática"
+description: "Réplicas acrescentam capacidade, mas não replicam dados locais nem resolvem dependências saturadas."
+sidebar:
+  order: 16
+---
+
+Réplicas acrescentam capacidade, mas não replicam dados locais nem resolvem dependências saturadas.
+
+## Quantidade fixa
+
+Defina quantidade, salve e compare desejado e real. Cada tarefa precisa satisfazer [posicionamento](/docs/pt-br/guides/apps/placement/) e recursos. Aplicações com estado ficam em uma réplica.
+
+## Automática
+
+Defina mínimo/máximo entre 1 e 65536. O controlador avalia aproximadamente a cada 30 segundos, com janela de pelo menos 60 segundos ajustada à coleta.
+
+Uso sustentado acima de 70% expande em direção a 60%. Redução exige abaixo de 50% durante pelo menos cinco minutos. Um pico isolado não causa alteração imediata.
+
+São necessárias amostras recentes de todas as réplicas e capacidade utilizável. Ausência não significa ociosidade. Limites CPU ajudam a avaliar réplicas adicionais no mesmo servidor; sem eles a decisão é mais conservadora.
+
+## Diagnóstico
+
+Aplique carga e observe métricas e tarefas. Se nada muda, confira faixa, amostras, capacidade, etiquetas, reservas e máximo por máquina. Mais réplicas desejadas podem continuar pendentes.
+
+Veja [métricas](/docs/pt-br/guides/observability/metrics/application/) e [recursos](/docs/pt-br/guides/apps/resources/).

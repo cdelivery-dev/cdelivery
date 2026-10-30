@@ -1,0 +1,29 @@
+---
+title: "Domains und HTTPS"
+description: "Unterscheide internes Netzwerk, veröffentlichte Ports und HTTP/HTTPS-Routing über Pingress."
+sidebar:
+  order: 20
+---
+
+Unterscheide internes Netzwerk, veröffentlichte Ports und HTTP/HTTPS-Routing über Pingress.
+
+## Auswahl
+
+| Bedarf | Konfiguration |
+| --- | --- |
+| Kommunikation innerhalb Gruppe | Name und interner Port |
+| Direktes TCP/UDP | Portfreigabe |
+| HTTP-Domain | Route zum Containerport |
+| HTTPS | Route plus gültiges Zertifikat |
+
+Eine Domainroute benötigt keinen zusätzlich veröffentlichten Port.
+
+## Einrichten
+
+Prozess, Listener und Replikate prüfen. Admin aktiviert Pingress; DNS auf erreichbare Eingänge setzen, 80/443 öffnen, dann Route und Zertifikat konfigurieren. Operator darf Anwendungsrouten verwalten.
+
+## Prüfen
+
+DNS, TCP, TLS und Antwort getrennt testen. Zertifikatserteilung beweist keinen funktionierenden Backendprozess.
+
+Siehe [Verbindungen](/docs/de/guides/networking/connectivity/), [Routen](/docs/de/guides/networking/routing/), [ACME](/docs/de/guides/networking/automatic-certificates/), [eigene Zertifikate](/docs/de/guides/networking/custom-certificates/) und [FAQ](/docs/de/guides/networking/faq/). Die [Konsolendomain](/docs/de/administration/platform/access/) hat eigene Einstellungen.

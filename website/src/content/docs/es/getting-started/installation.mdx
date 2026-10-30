@@ -1,0 +1,38 @@
+---
+title: "Instalación y configuración inicial"
+description: "Ejecuta el instalador con permisos administrativos y verifica el acceso a la plataforma."
+sidebar:
+  order: 4
+---
+
+Ejecuta el instalador con permisos administrativos y verifica el acceso a la plataforma.
+
+## Instalar
+
+Completa primero los [requisitos](/docs/es/getting-started/requirements/).
+
+```sh
+curl -fsSL https://cdelivery.dev/install.sh | sh
+```
+
+Para seleccionar la dirección de comunicación entre servidores:
+
+```sh
+curl -fsSL https://cdelivery.dev/install.sh | sh -s -- --advertise-addr 10.0.0.10
+```
+
+Sustituye la IP por una dirección de esta máquina accesible desde las demás. No es un dominio ni necesariamente la IP pública del navegador. En macOS inicia Docker previamente. Ante problemas IPv6, sigue el diagnóstico del instalador; una ejecución desatendida no puede depender de una elección interactiva.
+
+## Primer acceso
+
+Abre `http://SERVER_IP:9000`, o localhost:9000 en macOS y mediante túnel. Introduce nombre, correo y contraseña para crear el primer Admin. Espera a que termine el arranque antes de iniciar sesión.
+
+Una instalación reanudada conserva la cuenta. Repetir el instalador no restablece contraseñas ni cambia una dirección de comunicación existente.
+
+## Verificar y resolver
+
+Comprueba inicio de sesión, servidor con dirección correcta, grupos y ajustes; después despliega la [primera aplicación](/docs/es/getting-started/first-app/).
+
+Si falla la descarga, revisa DNS y HTTPS saliente. Si falla Docker, revisa servicio, versión y permisos. Si el navegador no conecta, comprueba puerto 9000, IP, cortafuegos y túnel. Para cuentas existentes, consulta [recuperación](/docs/es/administration/platform/recovery/).
+
+Elimina credenciales de cualquier diagnóstico compartido.

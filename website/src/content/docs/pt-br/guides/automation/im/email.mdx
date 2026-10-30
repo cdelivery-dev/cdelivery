@@ -1,0 +1,28 @@
+---
+title: "Integração de e-mail"
+description: "SMTP envia notificações; conversar exige IMAP e modelo adicionalmente."
+sidebar:
+  order: 45
+---
+
+SMTP envia notificações; conversar exige IMAP e modelo adicionalmente.
+
+## Enviar
+
+Admin configura endereço da plataforma, host, porta e senha SMTP. O endereço também é usuário de login. Porta 465 usa TLS implícito; outras usam upgrade criptografado compatível.
+
+O provedor pode exigir senha de aplicativo; consulte [Google](https://support.google.com/accounts/answer/185833) para seus requisitos. Ative assinatura pessoal e confira destinatário.
+
+## Receber
+
+Configure host IMAP, porta normalmente 993 com TLS implícito, senha e `authserv_id` do servidor receptor confiável.
+
+Remetente deve corresponder a usuário existente e ter DKIM e DMARC aprovados no Authentication-Results confiável. From correto não basta. Não invente authserv_id usando domínio do remetente.
+
+A leitura usa INBOX e começa no fim ao inicializar cursor. Envie mensagem nova após configurar.
+
+## Testar
+
+Envie pergunta de leitura do e-mail da sua conta. Se apenas envio funciona, revise IMAP, [modelo](/docs/pt-br/guides/automation/models/), identidade e autenticação.
+
+Confira TLS, rede, credenciais, spam e assinatura. Trocar endereço/host/porta requer credenciais correspondentes; senhas salvas não são exibidas.

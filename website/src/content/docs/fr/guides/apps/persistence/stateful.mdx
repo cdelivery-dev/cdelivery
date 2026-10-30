@@ -1,0 +1,28 @@
+---
+title: "Applications avec état"
+description: "Le mode volume local impose un serveur fixe et un réplica, choisis à la création."
+sidebar:
+  order: 15
+---
+
+Le mode volume local impose un serveur fixe et un réplica, choisis à la création.
+
+## Créer
+
+Vérifiez espace, volume, image/modèle, variables et identifiants. Montez le répertoire correct, démarrez et testez une écriture.
+
+Ce mode n’utilise ni placement dynamique, ni adaptation automatique, ni XConfig, ni Guardian. Le modèle PostgreSQL actuel définit `PGDATA=/var/lib/postgresql/data` ; examinez ensemble image, variable et montage. Les autres images peuvent différer.
+
+Les mots de passe générés restent des données de configuration ; toutes les variables ne sont pas masquées.
+
+## Mettre à jour
+
+Le remplacement peut interrompre l’unique réplica. Revoyez [stratégie](/docs/fr/guides/release-safety/update-strategy/) et consignes du fournisseur. N’exécutez pas des versions incompatibles sur le même répertoire.
+
+Sauvegardez de façon cohérente avant migration. [Rollback](/docs/fr/guides/release-safety/rollback/) ne restaure pas les données.
+
+## Récupérer
+
+Un autre serveur avec volume homonyme ne récupère rien. Migrez/restaurez puis vérifiez le contenu.
+
+La suppression de l’application conserve le volume ; notez serveur et nom avant nettoyage.

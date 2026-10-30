@@ -1,0 +1,43 @@
+---
+title: "API and MCP access"
+description: "Create a scoped API key, verify REST and MCP, and understand patch and error behavior."
+sidebar:
+  order: 60
+---
+
+REST and MCP share the platform's operation catalog and authorization. All paths below belong to your deployed instance, not the public website.
+
+## Create a key
+
+Open **Account → MCP / API keys**, give the key a recognizable name, select a role ceiling, and optionally choose a future expiry. Names accept 1–64 UTF-8 bytes. Store the full key immediately: it is shown only once.
+
+Use separate keys for different tools. A key cannot exceed your effective role when created, and its runtime permissions remain limited by your account's current role. Password changes do not revoke keys; deleting the user invalidates them.
+
+## Verify REST
+
+Set the instance URL and key in your local environment, then make a read-only request:
+
+```sh
+curl --fail-with-body "$CDELIVERY_URL/api/me" \
+  -H "Authorization: Bearer $CDELIVERY_API_KEY"
+```
+
+Expect your account information. The instance's `/scalar` page documents its actual version's API schema.
+
+Updates generally use patch semantics: omitted fields stay unchanged; explicitly clearable fields accept `null`, while other fields reject it. Empty patches are valid. Enum tokens are case-sensitive, such as `Reader`, `Operator`, and `Admin`.
+
+## Connect MCP
+
+Use the instance's `/mcp` URL in a client supporting remote HTTP MCP, with:
+
+```text
+Authorization: Bearer YOUR_API_KEY
+```
+
+Follow the client's configuration format. List tools and perform a read-only call before allowing writes. Client tool approval does not override platform authorization.
+
+## Diagnose and revoke
+
+401 indicates missing or invalid credentials, expiry, revocation, or an unavailable user. 403 indicates insufficient effective permissions. 422 indicates invalid fields or unmet input requirements. For connection failures, check URL, TLS, proxy, and path.
+
+After revoking a key, verify that it no longer authenticates. See [roles](/docs/administration/accounts/roles/).

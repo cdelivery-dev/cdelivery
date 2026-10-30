@@ -1,0 +1,31 @@
+---
+title: "Persistencia de datos"
+description: "El sistema escribible de un contenedor no garantiza conservar datos cuando se reemplaza la tarea."
+sidebar:
+  order: 14
+---
+
+El sistema escribible de un contenedor no garantiza conservar datos cuando se reemplaza la tarea.
+
+## Elegir almacenamiento
+
+| Necesidad | Solución |
+| --- | --- |
+| Configuración de lectura | [XConfig](/docs/es/guides/apps/xconfig/) |
+| Datos modificables locales | Volumen en un servidor concreto |
+| Datos compartidos entre máquinas | Servicio de almacenamiento apropiado |
+| Recuperación | Copia independiente y probada |
+
+El modo de volúmenes se elige al crear. Ejecuta una réplica en servidor fijo; no se activa simplemente sobre una aplicación ordinaria existente.
+
+## Montar y comprobar
+
+Crea o selecciona el volumen en el servidor correcto y monta el directorio donde la imagen escribe realmente. Un montaje en otra ruta puede quedar vacío mientras los datos se escriben fuera.
+
+Escribe datos de prueba, reinicia y comprueba su permanencia. Prueba también una restauración: reiniciar no equivale a recuperar desde una copia.
+
+## Límites
+
+Un volumen con el mismo nombre en otra máquina contiene otros datos. Las etiquetas no replican almacenamiento. Eliminar una aplicación conserva volúmenes; eliminarlos es una operación separada. Revertir una imagen no deshace migraciones.
+
+Continúa con [aplicaciones con estado](/docs/es/guides/apps/persistence/stateful/) y [volúmenes](/docs/es/administration/nodes/volumes/).

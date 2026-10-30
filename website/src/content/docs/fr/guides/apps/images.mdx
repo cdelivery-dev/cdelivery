@@ -1,0 +1,26 @@
+---
+title: "Images et registres"
+description: "Choisissez une référence, une version et des identifiants de téléchargement adaptés au registre."
+sidebar:
+  order: 9
+---
+
+Choisissez une référence, une version et des identifiants de téléchargement adaptés au registre.
+
+## Référence
+
+Utilisez dépôt et tag, comme `nginx:stable-alpine`, sans `https://` ni URL de page. Les références digest `@sha256:` ne sont pas acceptées par le champ actuel. Vérifiez architecture et exigences de version.
+
+Modifier un tag dans le registre ne déclenche pas automatiquement un déploiement. Enregistrer des valeurs identiques non plus ; utilisez [redémarrer](/docs/fr/guides/apps/lifecycle/) si nécessaire.
+
+## Registre privé
+
+Le formulaire exige un mot de passe lorsqu’un utilisateur est renseigné. Annulez une édition inutile pour garder les identifiants ou fournissez la paire lors d’un changement.
+
+L’API conserve un secret omis seulement si son périmètre reste identique. Changer de registre nécessite des identifiants adaptés. Le secret enregistré n’est pas retourné.
+
+## Diagnostic
+
+Vérifiez tag absent, droits de pull, DNS/TLS, architecture, puis commande et montages si le processus démarre puis s’arrête. Un pull réussi ne prouve pas un service fonctionnel.
+
+Testez version, journaux et requête. Pour une base, [revenir en arrière](/docs/fr/guides/release-safety/rollback/) ne restaure pas les données.

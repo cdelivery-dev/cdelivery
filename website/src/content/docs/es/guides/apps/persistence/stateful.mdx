@@ -1,0 +1,31 @@
+---
+title: "Aplicaciones con estado"
+description: "El modo con datos locales fija una réplica a un servidor y se selecciona durante la creación."
+sidebar:
+  order: 15
+---
+
+El modo con datos locales fija una réplica a un servidor y se selecciona durante la creación.
+
+## Crear
+
+1. Elige servidor y comprueba espacio.
+2. Crea o identifica su volumen.
+3. Selecciona imagen o plantilla.
+4. Revisa variables y credenciales.
+5. Monta el directorio de datos correcto.
+6. Arranca y escribe datos de prueba.
+
+Este modo no utiliza ubicación dinámica, escalado automático, XConfig ni Guardian. La plantilla actual de PostgreSQL declara `PGDATA=/var/lib/postgresql/data`; revisa conjuntamente imagen, variable y montaje. Otras imágenes pueden exigir rutas diferentes.
+
+Las credenciales de plantilla son configuración de aplicación; no supongas que todas las variables están ocultas.
+
+## Actualizar
+
+Una réplica puede quedar indisponible al sustituirse. Revisa [estrategia](/docs/es/guides/release-safety/update-strategy/) y requisitos del proveedor. No ejecutes versiones incompatibles contra el mismo directorio.
+
+Haz una copia consistente antes de cambiar formatos. La [reversión](/docs/es/guides/release-safety/rollback/) recupera configuración, no datos.
+
+## Recuperar
+
+Un servidor distinto con un volumen homónimo no recupera información. Migra o restaura los datos y verifica la nueva instalación. Al eliminar la aplicación se conserva el volumen; registra servidor y nombre antes de limpiar.

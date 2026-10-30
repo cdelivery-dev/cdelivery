@@ -1,0 +1,32 @@
+---
+title: "Certificats automatiques et renouvellement"
+description: "ACME émet et renouvelle lorsque DNS et validation atteignent Pingress."
+sidebar:
+  order: 23
+---
+
+ACME émet et renouvelle lorsque DNS et validation atteignent Pingress.
+
+## Préparer
+
+Configurez DNS et 80/443. HTTP-01 utilise 80 :
+
+```sh
+curl -i http://app.example.com/.well-known/acme-challenge/healthz
+```
+
+Attendez 200 sans dépendre d’une redirection. Corrigez AAAA, proxy et pare-feu.
+
+Admin active ACME. Let's Encrypt est l’autorité par défaut ; staging et Pebble sont des environnements de test. L’API propose dns-persist-01 si l’autorité le prend en charge, pas une intégration DNS générique. Voir [validations ACME](https://letsencrypt.org/docs/challenge-types/).
+
+## Délais
+
+Émission vérifiée environ toutes les cinq minutes ; renouvellement toutes les huit heures. La fenêtre suit l’information de l’autorité ou la validité ; elle n’est pas forcément immédiate après sauvegarde.
+
+Conservez l’accès de validation. Les certificats manuels ne sont pas renouvelés automatiquement.
+
+## Contrôler
+
+Vérifiez domaine, émetteur et expiration en IPv4/IPv6 si publiés. Une AAAA erronée peut échouer malgré IPv4.
+
+Corrigez la cause avant de répéter. Voir [certificats propres](/docs/fr/guides/networking/custom-certificates/).

@@ -1,0 +1,26 @@
+---
+title: "Gestión de servidores"
+description: "Identifica máquinas por ID y dirección; el nombre del host puede repetirse."
+sidebar:
+  order: 53
+---
+
+Identifica máquinas por ID y dirección; el nombre del host puede repetirse.
+
+## Incorporar
+
+Admin obtiene comando Worker o Manager en servidores. Revisa [requisitos](/docs/es/getting-started/requirements/) y ejecútalo en la máquina destino. Confirma Ready, rol, dirección y recursos; después añade etiquetas.
+
+Worker ejecuta cargas; Manager participa también en gestión. Credenciales de incorporación duran 30 minutos y pueden reutilizarse. Tras reinicio o caducidad, obtén nuevas; cambios de permisos del emisor pueden invalidarlas. No las publiques.
+
+## Estados
+
+Ready/Down/Disconnected describen conexión. Active acepta tareas; Pause no acepta nuevas; Drain indica vaciado. Reachable/Unreachable corresponde a gestión de Manager. Una alerta de recolector trata de muestras, no necesariamente caída del servidor.
+
+Mostrar estados no significa ofrecer todas sus transiciones. Consulta [métricas](/docs/es/guides/observability/metrics/server/) para capacidad disponible.
+
+## Eliminar
+
+La acción no migra aplicaciones, copia datos ni vacía automáticamente. Revisa aplicaciones fijas, volúmenes, componentes y continuidad de gestión.
+
+No borra volúmenes ni confirma salida de contenedores offline. Reincorporar puede cambiar ID; revisa ubicación fija y etiquetas. Para fallos de unión, comprueba IP, credencial, Docker y puertos entre servidores.

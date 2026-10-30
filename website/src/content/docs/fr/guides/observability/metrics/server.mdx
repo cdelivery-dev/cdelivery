@@ -1,0 +1,26 @@
+---
+title: "Métriques serveur"
+description: "Examinez CPU, mémoire, réseau et systèmes de fichiers pour diagnostiquer la pression du serveur."
+sidebar:
+  order: 35
+---
+
+Examinez CPU, mémoire, réseau et systèmes de fichiers pour diagnostiquer la pression du serveur.
+
+## Couverture
+
+La collecte vise interfaces physiques et systèmes de fichiers locaux inscriptibles sur périphériques bloc, pas tous les périphériques virtuels ni chaque volume.
+
+Échantillonnage ordinaire : cinq secondes par défaut. Systèmes de fichiers : cinq minutes. Les courbes n’évoluent donc pas toutes au même rythme.
+
+## Diagnostic
+
+Comparez CPU avec applications, mémoire avec limites et arrêts, disque avec journaux et données, réseau avec requêtes.
+
+Pour rapports manquants, vérifiez serveur, collecteur, réseau et Insight. Une alerte de collecte ne prouve pas une machine arrêtée.
+
+## Contrôle
+
+Vérifiez timestamps et unités. Après libération d’espace, attendez un nouvel échantillon disque. Absence ne signifie pas utilisation nulle.
+
+Espace du serveur et taille d’un volume diffèrent. Voir [volumes](/docs/fr/administration/nodes/volumes/), [applications](/docs/fr/guides/observability/metrics/application/) et [collecte](/docs/fr/guides/observability/settings/).

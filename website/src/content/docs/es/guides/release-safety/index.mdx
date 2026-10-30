@@ -1,0 +1,31 @@
+---
+title: "Validación con Guardian"
+description: "Guardian despliega y comprueba un candidato antes de promover cambios compatibles de la aplicación."
+sidebar:
+  order: 29
+---
+
+Guardian despliega y comprueba un candidato antes de promover cambios compatibles de la aplicación.
+
+## Preparar
+
+Configura una [comprobación XHealth](/docs/es/guides/release-safety/xhealth/) significativa, habilita Guardian y reserva capacidad para candidato y aplicación actual.
+
+Cambios relevantes de imagen, ejecución o archivos pueden iniciar validación; no todos los cambios de metadatos lo hacen. Las aplicaciones con volúmenes locales no admiten Guardian.
+
+## Fases
+
+| Fase | Revisar |
+| --- | --- |
+| Deploying | Ubicación, descarga, arranque |
+| Validating | Progreso y aserciones |
+| Failed | Error del candidato o prueba |
+| Promoting | Sustitución de configuración activa |
+
+Cuando se ofrezcan reintentar, omitir o cancelar, decide según la fase y el fallo. Omitir acepta el riesgo sin validación satisfactoria; no convierte la prueba en correcta. Cancelar depende del estado.
+
+## Verificar
+
+Separa registros GuardianApp y GuardianCheck. Revisa puerto, herramientas, variables, capacidad y aserciones. Tras promover, comprueba réplicas activas y endpoint real.
+
+La validación no restaura datos ni garantiza todas las dependencias de producción. Revisa [estrategia](/docs/es/guides/release-safety/update-strategy/) y [reversión](/docs/es/guides/release-safety/rollback/).

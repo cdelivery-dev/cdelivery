@@ -1,0 +1,23 @@
+[package]
+name = "insight-wire"
+version = "0.1.0"
+edition = "2024"
+publish = false
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+
+[dependencies]
+cipher = { workspace = true }
+jiff = { workspace = true }
+serde = { workspace = true }
+serde_with = { workspace = true, features = ["json"] }
+strum = { workspace = true }
+utoipa = { workspace = true, optional = true }
+uuid = { workspace = true }
+
+[features]
+openapi = ["dep:utoipa"]
+
+[lints]
+workspace = true

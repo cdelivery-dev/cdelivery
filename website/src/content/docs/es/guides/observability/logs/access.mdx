@@ -1,0 +1,30 @@
+---
+title: "Registros de acceso HTTP"
+description: "Los registros de Pingress muestran peticiones que atraviesan el gateway, no conexiones directas a puertos publicados."
+sidebar:
+  order: 33
+---
+
+Los registros de Pingress muestran peticiones que atraviesan el gateway, no conexiones directas a puertos publicados.
+
+## Inspeccionar
+
+Selecciona dominio, aplicación y periodo. Revisa resultado, servidor de entrada, puerto de destino, bytes, primer byte y detalles de error.
+
+| Síntoma | Revisar |
+| --- | --- |
+| Sin petición | DNS, proxy, periodo y recogida |
+| Fallo TLS | Certificado y entrada |
+| Error de backend | Tareas, interfaz y puerto interno |
+| Ruta inesperada | Dominio, prefijo, cabecera y cookie |
+| Lentitud | Aplicación, dependencia, tamaño y red |
+
+La IP del cliente puede reflejar el peer directo o proxy. No deduzcas identidad original sin conocer el recorrido.
+
+## Verificar rutas
+
+Después de cambiar una [ruta](/docs/es/guides/networking/routing/), genera una petición nueva con condiciones correctas y otra que no deba coincidir.
+
+Correlaciona timestamp con [registros de aplicación](/docs/es/guides/observability/logs/application/) y métricas. Un proceso activo puede tener errores de acceso.
+
+Si falta historial, comprueba Insight, almacenamiento, recolectores y [retención](/docs/es/guides/observability/settings/).

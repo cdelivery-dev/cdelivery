@@ -1,0 +1,26 @@
+---
+title: "Métricas de servidor"
+description: "Inspecciona CPU, memoria, red y sistemas de archivos para identificar presión del host."
+sidebar:
+  order: 35
+---
+
+Inspecciona CPU, memoria, red y sistemas de archivos para identificar presión del host.
+
+## Alcance y frecuencia
+
+La recogida cubre interfaces físicas y sistemas de archivos locales escribibles sobre dispositivos de bloque, no todos los dispositivos virtuales ni cada volumen individual.
+
+Las muestras ordinarias tienen un valor predeterminado de cinco segundos. Los sistemas de archivos se muestrean cada cinco minutos.
+
+## Diagnóstico
+
+Compara CPU con réplicas y límites; memoria con fallos de procesos; espacio con registros retenidos y datos de negocio. Para tráfico, relaciona interfaces físicas y peticiones.
+
+Si faltan informes, revisa estado del servidor, recolector, red e Insight. Una advertencia del recolector no prueba que la máquina esté caída.
+
+## Verificar
+
+Comprueba timestamps y unidades antes de actuar. Tras liberar espacio, espera una muestra de filesystem nueva. Los datos ausentes no son cero consumo.
+
+El espacio disponible del host y el tamaño de un volumen responden a preguntas distintas. Consulta [volúmenes](/docs/es/administration/nodes/volumes/), [métricas de aplicación](/docs/es/guides/observability/metrics/application/) y [recogida](/docs/es/guides/observability/settings/).

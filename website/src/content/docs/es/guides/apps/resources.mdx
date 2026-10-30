@@ -1,0 +1,32 @@
+---
+title: "Reservas y límites de recursos"
+description: "Las reservas condicionan la ubicación; los límites restringen el consumo de cada réplica."
+sidebar:
+  order: 11
+---
+
+Las reservas condicionan la ubicación; los límites restringen el consumo de cada réplica.
+
+## Configurar
+
+CPU se expresa en núcleos: 0.5 equivale a medio núcleo. Se admiten 0.001–10000, con paso 0.001. Memoria usa las unidades indicadas, como MiB y GiB. Mantén reservas dentro de sus límites correspondientes.
+
+| Campo | Efecto |
+| --- | --- |
+| Reserva CPU/memoria | Capacidad necesaria para planificar |
+| Límite CPU | Techo de ejecución |
+| Límite memoria | Superarlo puede terminar el proceso |
+
+Una reserva no proporciona hardware dedicado. Consulta las [restricciones de Docker](https://docs.docker.com/engine/containers/resource_constraints/).
+
+## Capacidad
+
+Multiplica por réplicas y considera tareas superpuestas en actualizaciones StartFirst. Etiquetas y máximos por servidor también pueden impedir la ubicación.
+
+El escalado necesita muestras recientes y capacidad; un límite CPU ayuda a evaluar réplicas adicionales en una misma máquina.
+
+## Verificar
+
+Mide carga representativa y compara recursos, réplicas reales y margen del servidor. Tareas pendientes pueden indicar reservas imposibles. Reinicios por memoria requieren ajustar consumo o límite.
+
+Datos ausentes no significan consumo cero. Consulta [métricas](/docs/es/guides/observability/metrics/application/) y [escalado](/docs/es/guides/apps/scaling/) antes de ajustar capacidad.

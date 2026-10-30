@@ -1,0 +1,26 @@
+---
+title: "Konfiguration einbinden und aktualisieren"
+description: "Ordne Inhalte einem Pfad zu und prüfe ihre Nutzung durch neue Aufgaben."
+sidebar:
+  order: 13
+---
+
+Ordne Inhalte einem Pfad zu und prüfe ihre Nutzung durch neue Aufgaben.
+
+## Ablauf
+
+Gültige Datei hochladen, absoluten Dateipfad wählen, speichern, Aufgaben/Logs und betroffene Funktion prüfen. Je nach Einstellungen validiert [Guardian](/docs/de/guides/release-safety/) die Änderung.
+
+Bestehende Zielpfade sind nicht direkt editierbar: alten Mount entfernen und neuen hinzufügen. Vorher tatsächlichen Lesepfad der Anwendung prüfen.
+
+## Diagnose
+
+Nginx unter `/etc/nginx/conf.d/default.conf` benötigt passende Syntax und Referenzen. Download bestätigt Speicherung, nicht Laufzeitnutzung.
+
+Vor Entfernen sicherstellen, dass die Anwendung ohne Datei startet. Fehler in Syntax, Pfaden und Startlogs untersuchen.
+
+## Aufbewahrung
+
+Nutzungsanzeige bezieht sich auf die Anwendung, nicht einen globalen Katalog. Verwaiste Inhalte können bereinigt werden und sind keine Sicherungshistorie.
+
+Quelldateien selbst verwalten. Grenzen und Sichtbarkeit stehen bei [XConfig](/docs/de/guides/apps/xconfig/).

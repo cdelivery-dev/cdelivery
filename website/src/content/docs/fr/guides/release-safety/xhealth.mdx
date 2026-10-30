@@ -1,0 +1,37 @@
+---
+title: "Configurer XHealth"
+description: "XHealth exécute les contrôles dans des tâches distinctes des conteneurs métier."
+sidebar:
+  order: 26
+---
+
+XHealth exécute les contrôles dans des tâches distinctes des conteneurs métier.
+
+## Exécuter maintenant
+
+Operator/Admin peut sélectionner **Exécuter maintenant**, appeler `POST /api/apps/{name}/xhealth/run` sans corps ou utiliser l’outil MCP/Agent `xhealth_run` avec `app`. Le contrôle doit être activé et utilise la configuration enregistrée pour l’application actuelle. Une demande pendant l’attente ou l’exécution renvoie `409` ; le prochain intervalle part du début de la nouvelle exécution. Les contrôles des candidats Guardian restent indépendants.
+
+L’API renvoie `202` avec `{"ok":true}` dès l’acceptation, sans attendre le résultat. Actualisez la page, utilisez `xhealth_get` ou consultez les logs XHealth. Un délai dépassé ou une réponse perdue ne prouve pas l’échec de l’envoi : vérifiez l’état avant de relancer. Les demandes ne sont pas dédupliquées ; une nouvelle demande après la fin lance une autre exécution.
+
+## Hurl
+
+Operator/Admin choisit port et intervalle d’au moins une minute, puis charge :
+
+```hurl
+GET {{target_url}}/health
+HTTP 200
+```
+
+La commande est `hurl --test /xhealth.hurl`, avec `HURL_VARIABLE_TARGET_URL`. Même avec un domaine sélectionné, la cible utilise HTTP interne, sans vérifier DNS public ou TLS. Voir [Hurl](https://hurl.dev/docs/request.html).
+
+## Commande
+
+Le contrôle utilise image et configuration pertinentes dans un autre conteneur, pas exec dans l’application. Il reçoit `TARGET_HOST` et `TARGET_PORT` ; l’expansion exige un shell explicite.
+
+Code zéro signifie succès. Vérifiez outil présent, assertion utile et durée bornée.
+
+## Validation
+
+Exécutez, lisez état/journaux et vérifiez qu’une réponse incorrecte échoue dans un test contrôlé. Le port cible doit être non ambigu.
+
+Voir [états](/docs/fr/guides/release-safety/xhealth/status/) et [Guardian](/docs/fr/guides/release-safety/).

@@ -1,0 +1,26 @@
+---
+title: "Plattformdomain und Zugriff"
+description: "Admin richtet die Konsolendomain unter Einstellungen → CDelivery ein."
+sidebar:
+  order: 61
+---
+
+Admin richtet die Konsolendomain unter Einstellungen → CDelivery ein.
+
+## Konfigurieren
+
+Pingress aktivieren, gültige A/AAAA setzen, 80/443 und Proxies prüfen, Hostname ohne Protokoll/Port/Pfad eingeben, HTTPS wählen und speichern.
+
+In neuem Tab Anmeldung, Seiten und API testen. HTTPS braucht [automatisches](/docs/de/guides/networking/automatic-certificates/) oder [eigenes Zertifikat](/docs/de/guides/networking/custom-certificates/). Checkbox richtet kein DNS ein.
+
+## Wechseln
+
+Alte Verbindung bis erfolgreichem Test behalten. Cookies sind hostbezogen; erneute Anmeldung möglich. MCP-/Skriptadressen aktualisieren.
+
+Domain leeren entfernt Route, nicht externes DNS. Domain schließt Port 9000 nicht; bei Bedarf am Netzwerk beschränken.
+
+## Fehler
+
+Auflösung, TLS-Namen/Kette und Hauptdienst prüfen. Funktioniert ursprünglicher Port, darüber korrigieren.
+
+Geschäftsdomains unter [Anwendungsrouten](/docs/de/guides/networking/routing/) verwalten, Konflikte vermeiden.

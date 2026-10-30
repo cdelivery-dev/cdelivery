@@ -1,0 +1,26 @@
+---
+title: "Erfassung und Aufbewahrung"
+description: "Admin richtet Insight, Sammler, Speicher und Aufbewahrungsdauer ein."
+sidebar:
+  order: 37
+---
+
+Admin richtet Insight, Sammler, Speicher und Aufbewahrungsdauer ein.
+
+## Speicher
+
+Local, S3, S3-compatible mit Endpoint, GCS mit Dienstkonto-JSON oder Azure wählen. Identität und Zugang vorbereiten.
+
+Nach Aktivierung lassen sich Typ/Identität nicht wie normale Einstellungen migrieren; Zugangsdaten und passende Region können geändert werden. Local verlangt festen Server. Migration/Sicherung getrennt planen.
+
+## Zeiten
+
+Aufbewahrung: 30 Tage, Bereich 1–3650. Messung: fünf Sekunden, Bereich 1–60. Flush: drei Minuten. Dateisysteme: eigener Fünfminutentakt.
+
+Fester Server kann Puffer abfragen. Verteilte Labelplatzierung benötigt möglicherweise Flush/Synchronisierung. Häufigere Werte und längere Historie brauchen mehr Speicher.
+
+## Kontrolle
+
+Aktivität erzeugen und frische Logs/Metriken/Ereignisse pro Server prüfen. Vergangenheit wird nicht importiert.
+
+Bei Lücken Komponenten, Netzwerk, Zugang, Zeitraum und Ablauf prüfen. Kürzere Aufbewahrung kann Historie entfernen. [Logtreiber](/docs/de/guides/observability/logs/application/) separat einstellen.

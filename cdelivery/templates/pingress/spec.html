@@ -1,0 +1,164 @@
+{% extends "dashboard.html" %}
+
+{% import "node/select.html" as select %}
+{% import "pingress/tabs.html" as chrome %}
+
+{%- macro placement_type_select() -%}
+<select
+  id="pingress-placement-type"
+  class="text"
+  x-model="placementType"
+  @change="placementValue = ''"
+  aria-label='{{ tt!("ui.pingress.placement.type") }}'
+  required
+>
+  <option value="NodeId">{{ tt!("ui.pingress.placement.node") }}</option>
+  <option value="Label" :disabled="labelOptions.length === 0 && placementType !== 'Label'">{{ tt!("ui.pingress.placement.label") }}</option>
+</select>
+{%- endmacro -%}
+
+{% block title %}Pingress | {{ super() }}{% endblock title %}
+
+{% block main %}
+{{ chrome::header("spec") }}
+
+{% if admin.is_none() %}
+<h2>{{ tt!("ui.pingress.status.label") }}</h2>
+{% if let Some(current) = pingress %}
+<p>{{ tt!("ui.pingress.status.enabled") }}</p>
+<dl>
+  <dt>{{ tt!("ui.pingress.image.current") }}</dt>
+  <dd>{{ current.image }}</dd>
+  <dt>{{ tt!("ui.pingress.section.placement") }}</dt>
+  <dd>
+    {% match current.placement %}
+    {% when crate::operation::node::typ::NodeSelector::NodeId(id) %}{{ tt!("ui.pingress.placement.node") }}: {{ id }}
+    {% when crate::operation::node::typ::NodeSelector::Label(label) %}{{ tt!("ui.pingress.placement.label") }}: {{ label }}
+    {% endmatch %}
+  </dd>
+  <dt>{{ tt!("ui.pingress.instances.label") }}</dt>
+  <dd><span class="inline-meta"><span>{{ current.instances }}</span>{% if current.instances == 0 %} <strong>{{ tt!("ui.pingress.instances.none") }}</strong>{% endif %}</span></dd>
+</dl>
+{% else %}
+<p class="muted">{{ tt!("ui.pingress.status.disabled") }}</p>
+{% endif %}
+{% else %}
+{% if let Some(current) = pingress %}
+{% if current.instances == 0 %}<p><strong>{{ tt!("ui.pingress.instances.none") }}</strong></p>{% endif %}
+{% endif %}
+{% endif %}
+
+{% if let Some(data) = admin %}
+{% if pingress.is_some() || data.target_version.is_some() %}
+<script id="pingress-placement" type="application/json">{% if let Some(current) = pingress %}{{ current.placement|json|safe }}{% else %}null{% endif %}</script>
+<script id="pingress-nodes" type="application/json">{{ data.nodes|json|safe }}</script>
+
+<div class="mt-2" x-data="pingressSpec">
+<form
+  method="post"
+  action="{% if pingress.is_some() %}/pingress/update{% else %}/pingress/enable{% endif %}"
+  @submit="prepare($event)"
+>
+  <input x-ref="payload" type="hidden" name="payload" />
+  <div class="stack section-stack">
+    <div class="fields">
+      <div class="field">
+        <label for="pingress-version">{{ tt!("ui.pingress.version.label") }}</label>
+        <select x-ref="version" id="pingress-version" class="text" {% if pingress.is_none() %}required{% endif %}>
+          {% if let Some(version) = data.current_version %}
+          <option value="">{{ version }}</option>
+          {% endif %}
+          {% if let Some(version) = data.target_version %}
+          <option value="{{ version }}">{{ version }}</option>
+          {% endif %}
+        </select>
+        {% if data.latest_unavailable %}
+        <small>{{ tt!("ui.pingress.version.checkFailedEnabled") }}</small>
+        {% endif %}
+      </div>
+    </div>
+    <fieldset>
+      <legend>{{ tt!("ui.pingress.section.placement") }}</legend>
+      <p>
+        {% match crate::locale::current() %}
+        {% when crate::locale::Locale::ZhCn %}
+        将 Pingress 部署到{{ placement_type_select() }}<template x-if="placementType === 'NodeId'"><span> {{ select::node("pingress-node", "placementValue", tt!("ui.pingress.placement.selectNode")) }}。</span></template><template x-if="placementType === 'Label'"><span> {{ select::label("pingress-label", tt!("ui.pingress.placement.selectLabel")) }} 的服务器。</span></template>
+        {% when crate::locale::Locale::ZhTw %}
+        將 Pingress 部署至{{ placement_type_select() }}<template x-if="placementType === 'NodeId'"><span> {{ select::node("pingress-node", "placementValue", tt!("ui.pingress.placement.selectNode")) }}。</span></template><template x-if="placementType === 'Label'"><span> {{ select::label("pingress-label", tt!("ui.pingress.placement.selectLabel")) }} 的伺服器。</span></template>
+        {% when crate::locale::Locale::De %}
+        Für Pingress <span data-node="den" data-label="alle" x-text="placementType === 'NodeId' ? $el.dataset.node : $el.dataset.label">den</span> {{ placement_type_select() }}<template x-if="placementType === 'NodeId'"><span> {{ select::node("pingress-node", "placementValue", tt!("ui.pingress.placement.selectNode")) }}</span></template><template x-if="placementType === 'Label'"><span> {{ select::label("pingress-label", tt!("ui.pingress.placement.selectLabel")) }}</span></template> verwenden.
+        {% when crate::locale::Locale::En %}
+        Run Pingress on {{ placement_type_select() }}<template x-if="placementType === 'NodeId'"><span> {{ select::node("pingress-node", "placementValue", tt!("ui.pingress.placement.selectNode")) }}.</span></template><template x-if="placementType === 'Label'"><span> {{ select::label("pingress-label", tt!("ui.pingress.placement.selectLabel")) }}.</span></template>
+        {% when crate::locale::Locale::Ja %}
+        {{ placement_type_select() }}<template x-if="placementType === 'NodeId'"><span> {{ select::node("pingress-node", "placementValue", tt!("ui.pingress.placement.selectNode")) }}に Pingress をデプロイする。</span></template><template x-if="placementType === 'Label'"><span> {{ select::label("pingress-label", tt!("ui.pingress.placement.selectLabel")) }}の付いたサーバーに Pingress をデプロイする。</span></template>
+        {% when crate::locale::Locale::PtBr %}
+        Executar o Pingress <span data-node="no" data-label="nos" x-text="placementType === 'NodeId' ? $el.dataset.node : $el.dataset.label"></span> {{ placement_type_select() }}<template x-if="placementType === 'NodeId'"><span> {{ select::node("pingress-node", "placementValue", tt!("ui.pingress.placement.selectNode")) }}.</span></template><template x-if="placementType === 'Label'"><span> {{ select::label("pingress-label", tt!("ui.pingress.placement.selectLabel")) }}.</span></template>
+        {% when crate::locale::Locale::Es %}
+        Ejecutar Pingress en <span data-node="el" data-label="los" x-text="placementType === 'NodeId' ? $el.dataset.node : $el.dataset.label">el</span> {{ placement_type_select() }}<template x-if="placementType === 'NodeId'"><span> {{ select::node("pingress-node", "placementValue", tt!("ui.pingress.placement.selectNode")) }}.</span></template><template x-if="placementType === 'Label'"><span> {{ select::label("pingress-label", tt!("ui.pingress.placement.selectLabel")) }}.</span></template>
+        {% when crate::locale::Locale::Fr %}
+        Déployer Pingress sur <span data-node="le" data-label="les" x-text="placementType === 'NodeId' ? $el.dataset.node : $el.dataset.label">le</span> {{ placement_type_select() }}<template x-if="placementType === 'NodeId'"><span> {{ select::node("pingress-node", "placementValue", tt!("ui.pingress.placement.selectNode")) }}.</span></template><template x-if="placementType === 'Label'"><span> {{ select::label("pingress-label", tt!("ui.pingress.placement.selectLabel")) }}.</span></template>
+        {% endmatch %}
+      </p>
+      <small>{{ tt!("ui.pingress.placement.help") }}</small>
+    </fieldset>
+  </div>
+  <div class="actions">
+    {% if pingress.is_some() %}<input type="submit" form="pingress-disable-form" class="button danger" value='{{ tt!("ui.common.disable") }}' :disabled="submitting" />{% endif %}
+    <input class="button" type="submit" value='{% if pingress.is_some() %}{{ tt!("ui.common.update") }}{% else %}{{ tt!("ui.common.enable") }}{% endif %}' :disabled="submitting" />
+  </div>
+</form>
+
+<script>
+document.addEventListener("alpine:init", () => {
+  Alpine.data("pingressSpec", () => {
+    const placement = JSON.parse(document.getElementById("pingress-placement").textContent);
+    const nodes = JSON.parse(document.getElementById("pingress-nodes").textContent).nodes;
+    const updating = {% if pingress.is_some() %}true{% else %}false{% endif %};
+    const unavailable = {{ tt!("ui.pingress.placement.unavailable")|json|safe }};
+    const placementType = placement?.Label !== undefined ? "Label" : "NodeId";
+    const placementValue = placement?.NodeId ?? placement?.Label ?? "";
+    const { nodeOptions, labelOptions } = CDelivery.placementOptions(nodes, placementType, placementValue, unavailable);
+    const baselinePlacement = placement ? JSON.stringify(placement) : null;
+    return {
+      placementType,
+      placementValue,
+      nodeOptions,
+      labelOptions,
+      submitting: false,
+
+      prepare(event) {
+        if (CDelivery.guard(this, event)) return;
+        const body = {};
+        const placement = { [this.placementType]: this.placementValue };
+        if (JSON.stringify(placement) !== baselinePlacement) body.placement = placement;
+        const version = this.$refs.version.value;
+        if (updating) {
+          if (version) body.version = version;
+        } else {
+          body.version = version;
+        }
+        this.$refs.payload.value = JSON.stringify(body);
+        this.submitting = true;
+      },
+    };
+  });
+});
+</script>
+{% if pingress.is_some() %}
+<form
+  id="pingress-disable-form"
+  method="post"
+  action="/pingress/disable"
+  data-confirm='{{ tt!("ui.pingress.disable.confirm") }}'
+  @submit="if (submitting || !confirm($el.dataset.confirm)) { $event.preventDefault(); return } submitting = true"
+>
+  <input type="hidden" name="payload" value="{}" />
+</form>
+{% endif %}
+</div>
+{% else %}
+<p class="muted">{{ tt!("ui.pingress.status.disabled") }}</p>
+<p><small>{{ tt!("ui.pingress.version.checkFailedDisabled") }}</small></p>
+{% endif %}
+{% endif %}
+{% endblock main %}

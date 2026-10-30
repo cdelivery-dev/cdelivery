@@ -1,0 +1,35 @@
+---
+title: "XJob results and troubleshooting"
+description: "Inspect current and last execution, next-run time, logs, and command side effects."
+sidebar:
+  order: 40
+---
+
+The task view shows current or latest execution information and the next scheduled time. It is not an unlimited execution-history archive.
+
+The API field `last_run` is the latest observed task creation time, not its end. Missing task records do not prove success. Timeout stops are recorded as `XJobFailed` events; if the execution record has already disappeared, consult events and logs.
+
+## Inspect a result
+
+Check the task name, scheduled or manual trigger, state, timestamps, and result. Open application logs with the XJob source and the matching task name to inspect output.
+
+A waiting task has not yet completed. A running task has not yet reported success. A successful exit means the command returned zero, which must represent the intended business outcome.
+
+## Diagnose failures
+
+| Symptom | Check |
+| --- | --- |
+| Task does not start | Eligible servers, resources, image pulling |
+| Command not found | Image contents, path, explicit shell |
+| Cannot reach service | Group connectivity, host and port, credentials |
+| Runtime exceeded | Command timeout, blocked dependency, maximum runtime |
+| No expected output | Correct task log source, range, driver and retention |
+| Side effect repeated | Command's duplicate-handling behavior |
+
+The job runs in a separate container, so it cannot rely on transient files inside a business container. For persistence or external systems, verify the actual accessible data source.
+
+## Retry deliberately
+
+Inspect whether the previous command partially completed before retrying. A nonzero exit does not automatically undo database writes or external requests.
+
+After changing the command or [schedule](/docs/guides/automation/xjob/schedule/), verify a fresh execution and the next-run time. If you require a complete business history, record it in the business system rather than assuming the task's latest status provides it.

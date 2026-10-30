@@ -1,0 +1,28 @@
+---
+title: "Gerenciamento de usuários"
+description: "A inicialização cria o primeiro Admin; demais usuários recebem contas individuais pela administração."
+sidebar:
+  order: 58
+---
+
+A inicialização cria o primeiro Admin; demais usuários recebem contas individuais pela administração.
+
+## Criar e editar
+
+Informe nome, e-mail único, senha inicial e [papel](/docs/pt-br/administration/accounts/roles/). Entregue senha e peça troca e ativação de dois fatores.
+
+Admin pode mudar nome, e-mail e papel. E-mail identifica login e afeta notificações e mensagens recebidas; confirme propriedade correta.
+
+Cada usuário configura vínculos e assinaturas. Criar conta não faz isso automaticamente.
+
+## Recuperar
+
+Redefinir senha invalida todas as sessões, mas mantém API keys. Chave comprometida exige revogação separada.
+
+Redefinir dois fatores é outra ação; não ocorre automaticamente com senha. Confira identidade antes e solicite novo cadastro do autenticador.
+
+## Excluir
+
+Sessões e chaves deixam de autenticar. Aplicações compartilhadas e credenciais externas permanecem. Faça transferência de responsabilidades antes.
+
+Admin não pode excluir/rebaixar a si mesmo; outro Admin conduz a alteração. Sem acesso, use [recuperação](/docs/pt-br/administration/platform/recovery/). Erros de permissão exigem conferir papel atual e teto de chave.

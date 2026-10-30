@@ -1,0 +1,43 @@
+{% extends "dashboard.html" %}
+
+{% import "app/tabs.html" as tab %}
+{% import "app/resource.html" as resource %}
+
+{% block title %}XJob - {{ self.name }} | {{ super() }}{% endblock title %}
+
+{% block main %}
+{{ tab::page_header(name, description, "xjob", can_edit) }}
+
+<p class="muted">{{ tt!("ui.xjob.subtitle") }}</p>
+<div class="table-scroll">
+  <table>
+    <thead><tr><th scope="col">{{ tt!("ui.xjob.header.name") }}</th><th scope="col">{{ tt!("ui.xjob.header.interval") }}</th><th scope="col">{{ tt!("ui.xjob.header.lastRun") }}</th><th scope="col">{{ tt!("ui.xjob.header.nextRun") }}</th>{% if can_edit %}<th scope="col" aria-label='{{ tt!("ui.common.actions") }}'></th>{% endif %}</tr></thead>
+    <tbody>
+      {% if jobs.is_empty() %}<tr><td colspan="{% if can_edit %}5{% else %}4{% endif %}" class="muted">{{ tt!("ui.xjob.empty") }}</td></tr>{% endif %}
+      {% for job in jobs %}
+      <tr>
+        <th scope="row"><a translate="no" href="/apps/{{ name }}/xjobs/{{ job.name }}">{{ job.name }}</a></th>
+        <td>{% let interval = job.interval %}{{ resource::duration(interval) }}</td>
+        <td>
+          {% match job.status %}
+          {% when crate::operation::typ::RunState::Passed { finished_at } %}{{ tt!("ui.xjob.status.passed") }} <small><relative-time datetime="{{ finished_at }}">{{ finished_at }}</relative-time></small>
+          {% when crate::operation::typ::RunState::Failed { error, finished_at } %}{{ tt!("ui.xjob.status.failed") }} <small><relative-time datetime="{{ finished_at }}">{{ finished_at }}</relative-time></small><small class="block cell-wrap">{{ error }}</small>
+          {% when crate::operation::typ::RunState::Running { started_at } %}{{ tt!("ui.xjob.status.running") }} <small><relative-time datetime="{{ started_at }}">{{ started_at }}</relative-time></small>
+          {% when crate::operation::typ::RunState::Pending %}{{ tt!("ui.xjob.status.pending") }}
+          {% when crate::operation::typ::RunState::Settled %}{{ tt!("ui.xjob.status.settled") }}
+          {% endmatch %}
+        </td>
+        <td>{% if let Some(next) = job.next_run %}<relative-time datetime="{{ next }}">{{ next }}</relative-time>{% else %}<span class="muted">{{ tt!("ui.xjob.nextRun.pending") }}</span>{% endif %}</td>
+        {% if can_edit %}<td>
+          {% let active = job.is_active() %}
+          <form method="post" action="/apps/{{ name }}/xjobs/{{ job.name }}/run" x-data="{ submitting: false }" data-confirm='{{ tt!("ui.xjob.run.confirm") }}' @submit="if (submitting || {{ active }} || !confirm($el.dataset.confirm)) { $event.preventDefault(); return } $refs.payload.value = '{}'; submitting = true">
+            <input x-ref="payload" type="hidden" name="payload" /><input class="row-action" type="submit" value='{{ tt!("ui.xjob.run.label") }}' :disabled="submitting || {{ active }}" />
+          </form>
+        </td>{% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% if can_edit %}<div class="end"><a class="row-action" href="/apps/{{ name }}/xjobs/.create">+ {{ tt!("ui.xjob.createTitle") }}</a></div>{% endif %}
+{% endblock main %}

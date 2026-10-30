@@ -1,0 +1,239 @@
+{%- macro command_type_select() -%}
+<select id="command_type" x-model="commandType" class="text" aria-label='{{ tt!("ui.app.container.command.type.label") }}'>
+  <option value="default">{{ tt!("ui.app.container.command.default") }}</option>
+  <option value="custom">{{ tt!("ui.app.container.command.custom") }}</option>
+</select>
+{%- endmacro -%}
+
+{%- macro command_input() -%}
+<input
+  id="container_cmd"
+  class="text"
+  type="text"
+  minlength="1"
+  maxlength="4096"
+  x-model="$$container_cmd"
+  aria-label='{{ tt!("ui.app.container.command.custom.label") }}'
+  :required="commandType === 'custom'"
+  placeholder='{{ tt!("ui.app.container.command.placeholder") }}'
+  spellcheck="false"
+/>
+{%- endmacro -%}
+
+{%- macro editable() -%}
+<div x-data="containerOptionsData">
+  {% match crate::locale::current() %}
+  {% when crate::locale::Locale::ZhCn %}
+  <p class="table-label">
+    使用{{ command_type_select() }}启动命令<span x-show="commandType === 'custom'">{{ command_input() }}</span>。环境变量：
+  </p>
+  {% when crate::locale::Locale::ZhTw %}
+  <p class="table-label">
+    使用{{ command_type_select() }}啟動指令<span x-show="commandType === 'custom'">{{ command_input() }}</span>。環境變數：
+  </p>
+  {% when crate::locale::Locale::Ja %}
+  <p class="table-label">{{ command_type_select() }}の起動コマンド<span x-show="commandType === 'custom'">{{ command_input() }}</span>を使用する。環境変数：</p>
+  {% when crate::locale::Locale::PtBr %}
+  <p class="table-label">Usar o comando de inicialização {{ command_type_select() }}<span x-show="commandType === 'custom'"> {{ command_input() }}</span>. Variáveis de ambiente:</p>
+  {% when crate::locale::Locale::Es %}
+  <p class="table-label">Usar el comando de inicio {{ command_type_select() }}<span x-show="commandType === 'custom'"> {{ command_input() }}</span>. Variables de entorno:</p>
+  {% when crate::locale::Locale::Fr %}
+  <p class="table-label">Démarrer avec la commande {{ command_type_select() }}<span x-show="commandType === 'custom'"> {{ command_input() }}</span>. Variables d’environnement :</p>
+  {% when crate::locale::Locale::De %}
+  <p class="table-label">Als Startbefehl {{ command_type_select() }}<span x-show="commandType === 'custom'"> {{ command_input() }}</span> verwenden. Umgebungsvariablen:</p>
+  {% when crate::locale::Locale::En %}
+  <p class="table-label">
+    Run with {{ command_type_select() }} startup command<span x-show="commandType === 'custom'">{{ command_input() }}</span>. Environment variables:
+  </p>
+  {% endmatch %}
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">{{ tt!("ui.app.container.table.header.env.key") }}</th>
+          <th scope="col">{{ tt!("ui.app.container.table.header.env.value") }}</th>
+          <th scope="col" aria-label='{{ tt!("ui.common.actions") }}'></th>
+        </tr>
+      </thead>
+      <tbody>
+        <template x-for="(e, index) in $$container_envs" :key="index">
+          <tr>
+            <th scope="row" x-text="e.name"></th>
+            <td x-text="e.value"></td>
+            <td>
+              <button type="button" class="row-action" @click="openEnvDialog(index)">{{ tt!("ui.common.edit") }}</button>
+            </td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </div>
+  <div class="end"><input class="row-action" type="button" @click="openEnvDialog(-1)" value='+ {{ tt!("ui.common.add") }}' /></div>
+
+  <dialog
+    x-ref="envModal"
+    aria-labelledby="container-env-title"
+    @click.self="const rect = $el.getBoundingClientRect(); if ($event.clientX < rect.left || $event.clientX > rect.right || $event.clientY < rect.top || $event.clientY > rect.bottom) $el.close()"
+    @close="isOpen = false"
+    @keydown.enter="if ($event.target.matches('input[type=text], input[type=password], input[type=number]')) { $event.preventDefault(); saveEnv(); }"
+  >
+    <h2 id="container-env-title" data-title-add='{{ tt!("ui.app.container.env.modal.title.add") }}' data-title-edit='{{ tt!("ui.app.container.env.modal.title.edit") }}' x-text="editingEnvIndex === -1 ? $el.dataset.titleAdd : $el.dataset.titleEdit"></h2>
+    <div class="field">
+      <label for="env_key">{{ tt!("ui.app.container.env.key.label") }}:</label>
+      <input class="text"
+        id="env_key"
+        type="text"
+        x-model="tempEnv.name"
+        maxlength="128"
+        pattern="^[a-zA-Z_][a-zA-Z0-9_]*$"
+        title='{{ tt!("ui.app.container.env.key.validation") }}'
+        placeholder='{{ tt!("ui.app.container.env.key.placeholder") }}'
+        spellcheck="false"
+        :disabled="!isOpen"
+        :required="isOpen"
+      />
+    </div>
+    <div class="field">
+      <label for="env_value">{{ tt!("ui.app.container.env.value.label") }}:</label>
+      <input class="text"
+        id="env_value"
+        type="text"
+        x-model="tempEnv.value"
+        maxlength="4096"
+        placeholder='{{ tt!("ui.app.container.env.value.placeholder") }}'
+        spellcheck="false"
+        :disabled="!isOpen"
+      />
+    </div>
+    <div class="actions">
+      <input
+        type="button"
+        class="button danger"
+        value='{{ tt!("ui.common.delete") }}'
+        x-show="editingEnvIndex !== -1"
+        @click="removeEnv(editingEnvIndex)"
+        />
+      <input class="button secondary" type="button" value='{{ tt!("ui.common.cancel") }}' @click="$refs.envModal.close()" />
+      <input class="button" type="button" value='{{ tt!("ui.common.confirm") }}' @click="saveEnv()" />
+    </div>
+  </dialog>
+</div>
+<script>
+document.addEventListener("alpine:init", () => {
+  Alpine.data("containerOptionsData", () => ({
+    commandType: "default",
+    editingEnvIndex: -1,
+    tempEnv: { name: "", value: "" },
+    isOpen: false,
+    init() {
+      this.commandType = this.commandLine === "" ? "default" : "custom";
+      this.$watch('commandType', (val) => {
+        if (val === "default") {
+          this.commandLine = "";
+          this.normalize();
+        }
+      });
+    },
+    normalize() {
+      if (this.container_options && this.commandLine === "" && this.container_options.env.length === 0) {
+        this.container_options = null;
+      }
+    },
+    get $$container_cmd() {
+      return this.commandLine;
+    },
+    set $$container_cmd(val) {
+      this.commandLine = val;
+    },
+    get $$container_envs() {
+      return this.container_options ? this.container_options.env : [];
+    },
+    openEnvDialog(index = -1) {
+      this.editingEnvIndex = index;
+      if (index !== -1) {
+        this.tempEnv = { ...this.$$container_envs[index] };
+      } else {
+        this.tempEnv = { name: "", value: "" };
+      }
+      this.isOpen = true;
+      this.$refs.envModal.showModal();
+    },
+    saveEnv() {
+      if (![...this.$refs.envModal.querySelectorAll("input:not([type='button']):not([type='submit']), select, textarea")].every(control => control.reportValidity())) return;
+
+      if (!this.container_options) {
+        this.container_options = { command: [], env: [] };
+      }
+      const entry = { name: this.tempEnv.name, value: this.tempEnv.value ?? "" };
+      if (this.editingEnvIndex !== -1) {
+        this.container_options.env[this.editingEnvIndex] = entry;
+      } else {
+        this.container_options.env = this.container_options.env.filter(e => e.name !== entry.name);
+        this.container_options.env.push(entry);
+      }
+      this.isOpen = false;
+      this.$refs.envModal.close();
+    },
+    removeEnv(index) {
+      if (this.container_options) {
+        this.container_options.env.splice(index, 1);
+        this.normalize();
+      }
+      this.isOpen = false;
+      this.$refs.envModal.close();
+    },
+  }));
+});
+</script>
+{%- endmacro -%}
+
+{%- macro readonly(container_options, command_line) -%}
+{% match crate::locale::current() %}
+{% when crate::locale::Locale::ZhCn %}
+<p class="table-label">
+  使用{% if command_line.is_empty() %}{{ tt!("ui.app.container.command.default") }}启动命令{% else %}{{ tt!("ui.app.container.command.custom") }}启动命令<code translate="no">{{ command_line }}</code>{% endif %}运行。{%- if let Some(opts) = container_options %}{%- if !opts.env.is_empty() -%}环境变量：{% endif %}{%- endif %}
+</p>
+{% when crate::locale::Locale::ZhTw %}
+<p class="table-label">
+  使用{% if command_line.is_empty() %}{{ tt!("ui.app.container.command.default") }}啟動指令{% else %}{{ tt!("ui.app.container.command.custom") }}啟動指令<code translate="no">{{ command_line }}</code>{% endif %}執行。{%- if let Some(opts) = container_options %}{%- if !opts.env.is_empty() -%}環境變數：{% endif %}{%- endif %}
+</p>
+{% when crate::locale::Locale::Ja %}
+<p class="table-label">{% if command_line.is_empty() %}{{ tt!("ui.app.container.command.default") }}の起動コマンド{% else %}{{ tt!("ui.app.container.command.custom") }}の起動コマンド<code translate="no">{{ command_line }}</code>{% endif %}を使用する。{%- if let Some(opts) = container_options %}{%- if !opts.env.is_empty() -%}環境変数：{% endif %}{%- endif %}</p>
+{% when crate::locale::Locale::PtBr %}
+<p class="table-label">Usar o comando de inicialização {% if command_line.is_empty() %}{{ tt!("ui.app.container.command.default") }}{% else %}{{ tt!("ui.app.container.command.custom") }} <code translate="no">{{ command_line }}</code>{% endif %}.{%- if let Some(opts) = container_options %}{%- if !opts.env.is_empty() %} Variáveis de ambiente:{% endif %}{%- endif %}</p>
+{% when crate::locale::Locale::Es %}
+<p class="table-label">Usar el comando de inicio {% if command_line.is_empty() %}{{ tt!("ui.app.container.command.default") }}{% else %}{{ tt!("ui.app.container.command.custom") }} <code translate="no">{{ command_line }}</code>{% endif %}.{%- if let Some(opts) = container_options %}{%- if !opts.env.is_empty() %} Variables de entorno:{% endif %}{%- endif %}</p>
+{% when crate::locale::Locale::Fr %}
+<p class="table-label">Le conteneur démarre avec la commande {% if command_line.is_empty() %}{{ tt!("ui.app.container.command.default") }}{% else %}{{ tt!("ui.app.container.command.custom") }} <code translate="no">{{ command_line }}</code>{% endif %}.{%- if let Some(opts) = container_options %}{%- if !opts.env.is_empty() %} Variables d’environnement :{% endif %}{%- endif %}</p>
+{% when crate::locale::Locale::De %}
+<p class="table-label">Der Container verwendet {% if command_line.is_empty() %}{{ tt!("ui.app.container.command.default") }}{% else %}{{ tt!("ui.app.container.command.custom") }} <code translate="no">{{ command_line }}</code>{% endif %} als Startbefehl.{%- if let Some(opts) = container_options %}{%- if !opts.env.is_empty() %} Umgebungsvariablen:{% endif %}{%- endif %}</p>
+{% when crate::locale::Locale::En %}
+<p class="table-label">
+  Run with
+  {% if command_line.is_empty() %} {{ tt!("ui.app.container.command.default") }} startup command{% else %} <code translate="no">{{ command_line }}</code>{% endif %}
+  .{%- if let Some(opts) = container_options %}{%- if !opts.env.is_empty() -%} Environment variables:{% endif %}{%- endif %}
+</p>
+{% endmatch %}
+{% if let Some(opts) = container_options %}
+{% if !opts.env.is_empty() %}
+<div class="table-scroll">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">{{ tt!("ui.app.container.table.header.env.key") }}</th>
+        <th scope="col">{{ tt!("ui.app.container.table.header.env.value") }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for e in opts.env %}
+      <tr>
+        <th scope="row">{{ e.name }}</th>
+        <td>{{ e.value }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+{% endif %}
+{%- endmacro -%}

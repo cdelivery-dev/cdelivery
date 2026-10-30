@@ -1,0 +1,49 @@
+@font-face {
+  font-family: 'League Spartan';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('../assets/fonts/league-spartan-latin-variable.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  color-scheme: light;
+  --font-sans: "League Spartan", system-ui, sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --weight-body: 400;
+  --weight-heading: 500;
+  --weight-control: 500;
+  --weight-strong: 600;
+  --weight-nav: 400;
+  --body-leading: 1.625;
+  --color-text: #303030;
+  --color-control-hover: #202020;
+  --color-muted: #6f7379;
+  --color-border: #e8e9eb;
+  --color-surface: #f7f8fa;
+  --color-accent: #c58b68;
+  --color-accent-bar: #d1a286;
+  --shadow-panel: 0 4px 16px rgb(48 48 48 / .06), 0 1px 3px rgb(48 48 48 / .04);
+  --header-height: clamp(64px, calc(32px + 4vw), 80px);
+}
+
+:root:lang(zh), :root:lang(ja) {
+  --weight-heading: 400;
+  --weight-control: 400;
+  --weight-strong: 500;
+  --heading-leading: 1.3;
+  --body-leading: 1.75;
+}
+
+:root:lang(zh-CN) {
+  --font-sans: "League Spartan", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+
+:root:lang(zh-TW) {
+  --font-sans: "League Spartan", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+}
+
+:root:lang(ja) {
+  --font-sans: "League Spartan", "Hiragino Sans", "Yu Gothic", Meiryo, system-ui, sans-serif;
+}

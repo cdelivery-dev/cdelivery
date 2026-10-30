@@ -1,0 +1,31 @@
+---
+title: "Personal account and login security"
+description: "Manage your profile, password, two-factor authentication, preferences, and connections."
+sidebar:
+  order: 59
+---
+
+Every role can manage its own account. Names, language, theme, password, two-factor authentication, message bindings, and API keys are personal settings. Email and role changes require an administrator.
+
+## Password
+
+Enter your current and new passwords on the account password page. Saving invalidates all browser sessions, including the current one, so sign in again. API keys remain valid; revoke them separately to disconnect tools.
+
+If you forgot the current password, ask an Admin to reset it. If all management access is lost, follow [recovery](/docs/administration/platform/recovery/).
+
+## Two-factor authentication
+
+1. Open the two-factor page and scan the QR code or enter its secret in an authenticator.
+2. Enter your current password and the six-digit code.
+3. Submit and confirm that two-factor authentication is enabled.
+4. Verify a new login with the password and code.
+
+Scanning alone does not enable the feature. Treat the QR code and secret as credentials. For rejected codes, check device time, the selected account, and expiry.
+
+Disabling requires the current password and code. If the authenticator is lost, use an administrator reset or host recovery; do not assume backup recovery codes are provided.
+
+## Preferences and connections
+
+Choose among the eight interface languages and light, dark, or system theme. Bind your own immutable message-platform ID and enable notifications separately; see [messaging](/docs/guides/automation/im/).
+
+API keys appear in full only when created. Use them for integrations instead of treating a browser cookie as a permanent credential. See [API and MCP](/docs/guides/automation/api-mcp/).

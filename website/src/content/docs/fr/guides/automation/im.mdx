@@ -1,0 +1,31 @@
+---
+title: "Messages et notifications"
+description: "Admin connecte les canaux ; chaque utilisateur associe son identité et ses abonnements."
+sidebar:
+  order: 44
+---
+
+Admin connecte les canaux ; chaque utilisateur associe son identité et ses abonnements.
+
+## Canaux
+
+| Canal | Identifiants | Identité personnelle |
+| --- | --- | --- |
+| [E-mail](/docs/fr/guides/automation/im/email/) | SMTP, IMAP facultatif | E-mail du compte |
+| [Slack](/docs/fr/guides/automation/im/slack/) | Tokens bot/app | Member ID |
+| [Telegram](/docs/fr/guides/automation/im/telegram/) | Token bot | ID numérique |
+| [Discord](/docs/fr/guides/automation/im/discord/) | Token bot | User ID |
+| [Lark](/docs/fr/guides/automation/im/lark/) | App ID/Secret | open_id |
+| [Feishu](/docs/fr/guides/automation/im/feishu/) | App ID/Secret | open_id |
+
+Nom affiché, groupe et bot ne remplacent pas l’ID utilisateur.
+
+## Configurer et vérifier
+
+Suivez création, droits, publication et événements du canal. Enregistrez les secrets, votre propre ID et vos abonnements. Une conversation nécessite un [modèle](/docs/fr/guides/automation/models/) ; commencez en lecture.
+
+Un ID d’autrui peut lui exposer vos notifications et droits.
+
+## Dépanner
+
+Séparez secrets, réseau, événements, association, abonnement et modèle. Un avatar ne prouve ni livraison ni identité correcte. Voir [notifications](/docs/fr/guides/automation/im/notifications/).

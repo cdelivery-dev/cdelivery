@@ -1,0 +1,28 @@
+---
+title: "Replicas and automatic scaling"
+description: "Configure fixed or automatic replica counts and understand sampling, capacity, and scaling limits."
+sidebar:
+  order: 16
+---
+
+Replicas provide application capacity. They do not duplicate local business data. Stateful applications remain fixed to one replica on their selected server.
+
+## Fixed replicas
+
+Set the desired count in application settings, save, and compare desired and running tasks. Each replica needs resources and must satisfy [placement](/docs/guides/apps/placement/) constraints. More replicas do not guarantee more throughput if a database or another shared dependency is the bottleneck.
+
+## Automatic scaling
+
+Configure a minimum and maximum within the supported 1–65536 range. Scaling uses application observations rather than HTTP request count. The controller evaluates roughly every 30 seconds with a sampling window of at least 60 seconds, adjusted for collection intervals.
+
+Sustained utilization above 70% triggers expansion toward a 60% target. Reduction requires utilization below 50% for at least five minutes. These intervals mean a brief spike or one low sample does not immediately change replicas.
+
+The controller needs fresh observations from all running replicas and usable capacity information. Missing samples are not treated as idle capacity. CPU limits help assess additional replicas on the same server; without them, placement decisions are more conservative.
+
+## Verify and troubleshoot
+
+Enable collection, apply representative load, and watch metrics alongside actual replica changes. Ensure the maximum allows expansion and the minimum permits reduction.
+
+If no change occurs, check sample freshness, running task count, server capacity, labels, per-server caps, and resource reservations. A requested increase can still leave tasks pending when no eligible server exists.
+
+Review [application metrics](/docs/guides/observability/metrics/application/) and [resource limits](/docs/guides/apps/resources/) before changing thresholds or capacity assumptions.

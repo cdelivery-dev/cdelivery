@@ -1,0 +1,37 @@
+---
+title: "Configure XHealth checks"
+description: "Create Hurl or custom-command checks and understand what the check target actually tests."
+sidebar:
+  order: 26
+---
+
+XHealth runs an application's check in a separate task. Operators and Admins configure it; Readers can inspect shared results.
+
+## Run now
+
+Operators and Admins can select **Run now** on the XHealth page, call `POST /api/apps/{name}/xhealth/run` without a request body, or use the MCP/Agent tool `xhealth_run` with `app`. The check must already be enabled and uses the saved configuration against the current app. Pending or running checks reject another request with `409`; the next interval starts from the new round's start. Guardian candidate checks remain separate.
+
+The API returns `202` with `{"ok":true}` when the request is accepted, without waiting for the result. Refresh the page, use `xhealth_get`, or read the XHealth logs to follow the current check. A timeout or lost response does not prove that submission failed: inspect the state before deciding whether to run again. Requests are not deduplicated, and another request after completion starts another round.
+
+## Hurl checks
+
+Choose a target application port and an interval of at least one minute. Upload a Hurl file with assertions:
+
+```hurl
+GET {{target_url}}/health
+HTTP 200
+```
+
+The task runs `hurl --test /xhealth.hurl`. Its target variable is provided through `HURL_VARIABLE_TARGET_URL`. The URL uses internal HTTP to the application port, even when you selected a domain as the target. It does not test public DNS or the external TLS certificate. See [Hurl requests](https://hurl.dev/docs/request.html).
+
+## Custom commands
+
+A custom check uses the application's image and relevant environment/configuration in an independent container. It is not an exec session in a business container. The command receives `TARGET_HOST` and `TARGET_PORT`; invoke a shell explicitly if expansion is required.
+
+Exit code zero means success. Ensure the image contains the required executable and that the command finishes within its configured runtime. A successful command without a meaningful assertion is a weak health check.
+
+## Verify
+
+Run a check, inspect its status and logs, and deliberately verify that an invalid response fails in a controlled test. When a selected route or published port maps to an internal target, confirm that target is unambiguous.
+
+Read [check status](/docs/guides/release-safety/xhealth/status/) for failures and [Guardian](/docs/guides/release-safety/) to use validation during releases.

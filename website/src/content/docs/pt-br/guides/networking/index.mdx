@@ -1,0 +1,29 @@
+---
+title: "Domínios e HTTPS"
+description: "Separe comunicação interna, portas publicadas e rotas HTTP/HTTPS do Pingress."
+sidebar:
+  order: 20
+---
+
+Separe comunicação interna, portas publicadas e rotas HTTP/HTTPS do Pingress.
+
+## Escolher entrada
+
+| Necessidade | Configuração |
+| --- | --- |
+| Comunicação no grupo | Nome da aplicação e porta interna |
+| TCP/UDP direto | Mapeamento de porta |
+| HTTP com domínio | Rota para porta do contêiner |
+| HTTPS | Rota e certificado válido |
+
+Rota não exige publicar antes uma porta, e seu destino não é o número da porta pública.
+
+## Configurar
+
+Verifique processo, interface, porta e réplicas. Admin habilita Pingress; aponte DNS para entradas acessíveis e libere 80/443. Depois configure rota e certificado. Operator administra rotas de aplicações.
+
+## Guias e verificação
+
+Leia [conectividade](/docs/pt-br/guides/networking/connectivity/), [rotas](/docs/pt-br/guides/networking/routing/), [ACME](/docs/pt-br/guides/networking/automatic-certificates/), [certificados próprios](/docs/pt-br/guides/networking/custom-certificates/) e [FAQ](/docs/pt-br/guides/networking/faq/).
+
+Teste DNS, conexão, TLS e resposta separadamente. Um certificado emitido não garante backend funcional. O [domínio do console](/docs/pt-br/administration/platform/access/) possui configuração própria.

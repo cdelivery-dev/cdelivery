@@ -1,0 +1,26 @@
+---
+title: "Domaines et routage"
+description: "Pingress associe domaine et conditions de requête à un port d’application."
+sidebar:
+  order: 22
+---
+
+Pingress associe domaine et conditions de requête à un port d’application.
+
+## Ajouter
+
+Dirigez A/AAAA vers Pingress, vérifiez 80/443 et backend, ajoutez domaine, port interne et option HTTPS, puis testez.
+
+Utilisez `app.example.com`, sans URL, IP, wildcard, port ou chemin. Le nom est normalisé en minuscules avec plusieurs labels.
+
+## Conditions
+
+Préfixe, en-tête et cookie sont combinés avec AND. En-tête/cookie peuvent vérifier présence ou valeur.
+
+`/api` couvre `/api` et `/api/users`, pas `/apix`. Le préfixe n’est ni retiré ni réécrit. Conditions spécifiques et préfixes longs influencent la priorité ; évitez les ambiguïtés sans compter sur l’ordre du formulaire.
+
+## Tester
+
+Essayez une requête correspondante et une autre exclue. Consultez les [journaux d’accès](/docs/fr/guides/observability/logs/access/).
+
+Une erreur gateway peut venir du backend malgré DNS/TLS corrects. HTTPS exige un certificat [automatique](/docs/fr/guides/networking/automatic-certificates/) ou [personnalisé](/docs/fr/guides/networking/custom-certificates/).

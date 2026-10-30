@@ -1,0 +1,28 @@
+---
+title: "Integración con Telegram"
+description: "CDelivery recibe por long polling; dedica el bot a esta integración para evitar consumidores en conflicto."
+sidebar:
+  order: 47
+---
+
+CDelivery recibe por long polling; dedica el bot a esta integración para evitar consumidores en conflicto.
+
+## Preparar
+
+1. Crea bot con BotFather y guarda token.
+2. Antes de activar CDelivery, envía un mensaje y consulta [getUpdates](https://core.telegram.org/bots/api#getupdates).
+3. Copia tu `message.from.id`.
+4. Admin guarda token; tú vinculas el ID numérico.
+5. Abre chat privado, pulsa Start y activa notificaciones.
+
+No uses chat.id, usuario visible ni ID del bot. Al habilitar recepción se elimina el webhook existente; no mantengas otro consumidor de getUpdates. Consulta el [tutorial](https://core.telegram.org/bots/tutorial).
+
+## Conversar
+
+Configura [modelo](/docs/es/guides/automation/models/) y comienza en privado. Con privacidad, grupos admiten comandos explícitos como `/cdelivery@BotUsername` y respuestas pertinentes. Los temas de Telegram no se admiten. No necesitas desactivar privacidad para usar chats privados; consulta la [FAQ oficial](https://core.telegram.org/bots/faq).
+
+## Diagnóstico
+
+Revisa token, red, webhook y pollers competidores. Para un solo usuario, comprueba Start, ID de remitente y suscripción.
+
+No compartas token. Vincular un ID ajeno expone notificaciones y permisos de tu cuenta.

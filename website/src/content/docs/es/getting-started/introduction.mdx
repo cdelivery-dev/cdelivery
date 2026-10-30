@@ -1,0 +1,31 @@
+---
+title: "Introducción a CDelivery"
+description: "CDelivery permite desplegar imágenes de contenedor y mantener aplicaciones desde uno o varios servidores."
+sidebar:
+  order: 2
+---
+
+CDelivery permite desplegar imágenes de contenedor y mantener aplicaciones desde uno o varios servidores.
+
+## Objetos principales
+
+| Objeto | Función |
+| --- | --- |
+| Aplicación | Imagen, comando, red, recursos y almacenamiento |
+| Grupo | Organización y red común entre aplicaciones |
+| Servidor | Cómputo y almacenamiento local |
+| Cuenta | Acceso Reader, Operator o Admin |
+
+Los grupos no separan permisos de cuentas. Los nombres de aplicación son únicos en la plataforma. Los volúmenes pertenecen a un servidor; réplicas y reversiones no sustituyen copias de seguridad.
+
+## Capacidades
+
+Pingress proporciona dominios y HTTPS. XHealth ejecuta comprobaciones; Guardian valida candidatos antes de promover cambios. Insight recoge registros, métricas y eventos. XJob ejecuta comandos en contenedores independientes.
+
+La IA utiliza herramientas con permisos definidos. Las conversaciones usan el rol del usuario vinculado; la guardia automática usa su propio rol. Los canales permiten recibir notificaciones y conversar.
+
+Cada capacidad necesita configuración. Tener la consola instalada no implica disponer ya de certificados, recogida de datos o credenciales del modelo.
+
+## Comenzar
+
+Prepara los [requisitos](/docs/es/getting-started/requirements/), [instala](/docs/es/getting-started/installation/) y verifica la [primera aplicación](/docs/es/getting-started/first-app/). Operator administra aplicaciones; Admin gestiona grupos, servidores y ajustes.

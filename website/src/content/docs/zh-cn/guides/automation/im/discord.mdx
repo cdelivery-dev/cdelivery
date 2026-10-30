@@ -1,0 +1,51 @@
+---
+title: "接入 Discord"
+description: "创建 Discord Bot、配置消息权限并使用自己的数字 User ID 完成绑定。"
+sidebar:
+  order: 48
+---
+
+Discord 接入使用 Bot Token 和 Gateway 连接，支持私信及明确提及 Bot 的消息。需要能够创建和安装 Discord 应用，以及 CDelivery Admin 权限。
+
+## 创建与安装 Bot
+
+1. 在 [Discord Developer Portal](https://discord.com/developers/applications)创建应用。
+2. 打开 Bot 设置，取得或重置 Bot Token，并妥善保存。
+3. 使用应用提供的安装方式将 Bot 加入目标服务器。
+4. 为需要使用的频道授予 View Channels、Send Messages 和 Send Messages in Threads。
+5. 确认频道覆盖权限没有额外禁止 Bot 查看或发送消息。
+
+应用和 Bot 的创建流程见 [Discord 官方入门说明](https://docs.discord.com/developers/quick-start/getting-started)。CDelivery 使用自己的 Gateway 接入，不需要部署该教程中的示例 HTTP 服务或配置公网交互端点。
+
+## 配置 CDelivery
+
+管理员打开 **设置 → 渠道 → Discord**，填写 Bot Token 并保存。不要填写 Application ID、Public Key 或 OAuth Client Secret。
+
+当前接入不要求特权 Message Content Intent；平台使用私信和明确提及 Bot 的消息，不以读取所有频道消息为前提。相关例外见 [Discord Gateway 说明](https://github.com/discord/discord-api-docs/blob/main/developers/events/gateway.mdx)。
+
+## 绑定自己的 User ID
+
+1. 在 Discord 用户设置中启用 Developer Mode。
+2. 在自己的用户资料或头像菜单中复制 User ID。
+3. 打开 CDelivery 的 **账户 → Discord**，填写该数字 ID。
+4. 保存后按需要开启通知。
+
+不要填写昵称、服务器 ID、频道 ID 或 Bot 的用户 ID。个人绑定应对应你实际发消息的 Discord 账户。
+
+## 验证对话和通知
+
+完成模型配置后，先私信 Bot 一个只读问题。也可以在允许 Bot 访问的频道中明确提及它。
+
+如果需要通知，确认 Discord 隐私设置允许相应私信。能在频道中回复不一定代表可以向你的账户发送私信。
+
+## 常见问题
+
+| 现象 | 检查方向 |
+| --- | --- |
+| Bot 无法上线 | Token、服务器出站网络及 Gateway 连接 |
+| 无法看到或回复频道消息 | View Channels、发送权限及频道覆盖设置 |
+| 线程中发送失败 | Send Messages in Threads 及线程访问条件 |
+| 普通频道消息没有回复 | 是否明确提及 Bot，消息是否属于支持场景 |
+| 私信或通知失败 | 个人隐私设置、可达性及绑定的 User ID |
+
+Token 重置后需要更新 CDelivery 保存的值。不要为了排障无差别授予服务器管理员权限，应按实际缺少的频道权限修正。

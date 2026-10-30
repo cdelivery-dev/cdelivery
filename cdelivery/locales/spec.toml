@@ -1,0 +1,191 @@
+_version = 2
+
+[spec.BadRunner]
+en = "Unsupported runner state in service %{service}: %{detail}"
+zh-CN = "服务 %{service} 的执行器状态不受支持：%{detail}"
+zh-TW = "服務 %{service} 的執行器狀態不受支援：%{detail}"
+ja = "サービス %{service} の実行状態はサポートされていません：%{detail}"
+pt-BR = "Estado de execução não suportado no serviço %{service}: %{detail}"
+es = "Estado de ejecución no compatible en el servicio %{service}: %{detail}"
+fr = "État d’exécution non pris en charge pour le service %{service} : %{detail}"
+de = "Nicht unterstützter Ausführungszustand im Dienst %{service}: %{detail}"
+
+[spec.MissingLabel]
+en = "service %{service} lacks label %{label}"
+zh-CN = "服务 %{service} 缺少标签 %{label}"
+zh-TW = "服務 %{service} 缺少標籤 %{label}"
+ja = "サービス %{service} にラベル %{label} がありません。"
+pt-BR = "o serviço %{service} não tem o rótulo %{label}"
+es = "el servicio %{service} no tiene la etiqueta %{label}"
+fr = "L’étiquette %{label} manque au service %{service}"
+de = "Dem Dienst %{service} fehlt das Label %{label}"
+
+[spec.NotApp]
+en = "service %{service} is not a managed app"
+zh-CN = "服务 %{service} 不是托管应用"
+zh-TW = "服務 %{service} 不是受管理的應用程式"
+ja = "サービス %{service} は管理対象のアプリではありません。"
+pt-BR = "o serviço %{service} não é uma aplicação gerenciada"
+es = "el servicio %{service} no es una aplicación gestionada"
+fr = "Le service %{service} n’est pas une application gérée"
+de = "Dienst %{service} ist keine verwaltete App"
+
+[spec.NotReplicated]
+en = "service %{service} requires replicated mode"
+zh-CN = "服务 %{service} 须使用 replicated 模式"
+zh-TW = "服務 %{service} 須使用 replicated 模式"
+ja = "サービス %{service} は replicated モードにする必要があります。"
+pt-BR = "o serviço %{service} exige o modo replicado"
+es = "el servicio %{service} requiere el modo replicated"
+fr = "Le service %{service} nécessite le mode replicated"
+de = "Dienst %{service} benötigt den Modus replicated"
+
+[spec.BadName]
+en = "service %{service} has an invalid name"
+zh-CN = "服务 %{service} 的名称无效"
+zh-TW = "服務 %{service} 的名稱無效"
+ja = "サービス %{service} の名前が無効です。"
+pt-BR = "o serviço %{service} tem um nome inválido"
+es = "el servicio %{service} tiene un nombre no válido"
+fr = "Le nom du service %{service} est invalide"
+de = "Dienst %{service} hat einen ungültigen Namen"
+
+[spec.BadGroup]
+en = "service %{service} has an invalid group label"
+zh-CN = "服务 %{service} 的分组标签无效"
+zh-TW = "服務 %{service} 的分組標籤無效"
+ja = "サービス %{service} のグループラベルが無効です。"
+pt-BR = "o serviço %{service} tem um rótulo de grupo inválido"
+es = "el servicio %{service} tiene una etiqueta de grupo no válida"
+fr = "L’étiquette de groupe du service %{service} est invalide"
+de = "Dienst %{service} hat ein ungültiges Gruppenlabel"
+
+[spec.UnsupportedMount]
+en = "service %{service}: only bind and volume mounts are supported"
+zh-CN = "服务 %{service}：仅支持 bind 与 volume 挂载"
+zh-TW = "服務 %{service}：僅支援 bind 與 volume 掛載"
+ja = "サービス %{service}：bind と volume のマウントにのみ対応しています。"
+pt-BR = "serviço %{service}: apenas montagens bind e volume são permitidas"
+es = "servicio %{service}: solo se admiten montajes bind y volume"
+fr = "Service %{service} : seuls les montages bind et volume sont pris en charge"
+de = "Dienst %{service}: Nur Mounts vom Typ bind und volume werden unterstützt"
+
+[spec.NotPinned]
+en = "service %{service}: stateful storage requires a fixed node"
+zh-CN = "服务 %{service}：有状态存储须固定在一台服务器"
+zh-TW = "服務 %{service}：有狀態的儲存須固定在一台伺服器上"
+ja = "サービス %{service}：永続データを保存する場合は、サーバーを1台に固定してください。"
+pt-BR = "serviço %{service}: o armazenamento persistente exige um servidor fixo"
+es = "servicio %{service}: el almacenamiento con estado requiere un servidor fijo"
+fr = "Service %{service} : le stockage avec état nécessite un serveur fixe"
+de = "Dienst %{service}: Persistenter Speicher erfordert einen festgelegten Server"
+
+[spec.BadLogOption]
+en = "invalid json-file option %{option}"
+zh-CN = "json-file 的 %{option} 配置无效"
+zh-TW = "json-file 的 %{option} 設定無效"
+ja = "json-file のオプション %{option} が無効です。"
+pt-BR = "opção json-file inválida: %{option}"
+es = "opción %{option} de json-file no válida"
+fr = "L’option %{option} de json-file est invalide"
+de = "Ungültige Option %{option} für json-file"
+
+[spec.NoRestartPolicy]
+en = "service %{service} lacks a restart policy"
+zh-CN = "服务 %{service} 缺少重启策略"
+zh-TW = "服務 %{service} 缺少重新啟動原則"
+ja = "サービス %{service} に再起動ポリシーがありません。"
+pt-BR = "o serviço %{service} não tem uma política de reinício"
+es = "el servicio %{service} no tiene una política de reinicio"
+fr = "Le service %{service} n’a pas de stratégie de redémarrage"
+de = "Dem Dienst %{service} fehlt eine Neustartrichtlinie"
+
+[spec.BadUpdateConfig]
+en = "service %{service} has an invalid update configuration"
+zh-CN = "服务 %{service} 的更新配置无效"
+zh-TW = "服務 %{service} 的更新設定無效"
+ja = "サービス %{service} の更新設定が無効です。"
+pt-BR = "o serviço %{service} tem uma configuração de atualização inválida"
+es = "el servicio %{service} tiene una configuración de actualización no válida"
+fr = "La configuration de mise à jour du service %{service} est invalide"
+de = "Dienst %{service} hat eine ungültige Update-Konfiguration"
+
+[spec.BadPortProtocol]
+en = "service %{service}: only TCP/UDP ports are supported"
+zh-CN = "服务 %{service}：仅支持 TCP/UDP 端口"
+zh-TW = "服務 %{service}：僅支援 TCP/UDP 連接埠"
+ja = "サービス %{service}：TCP/UDP ポートにのみ対応しています。"
+pt-BR = "serviço %{service}: apenas portas TCP/UDP são permitidas"
+es = "servicio %{service}: solo se admiten puertos TCP/UDP"
+fr = "Service %{service} : seuls les ports TCP/UDP sont pris en charge"
+de = "Dienst %{service}: Nur TCP- und UDP-Ports werden unterstützt"
+
+[spec.BadLabel]
+en = "service %{service}: cannot parse label %{label}"
+zh-CN = "服务 %{service} 的标签 %{label} 无法解析"
+zh-TW = "服務 %{service} 的標籤 %{label} 無法解析"
+ja = "サービス %{service} のラベル %{label} を解析できません。"
+pt-BR = "serviço %{service}: não foi possível analisar o rótulo %{label}"
+es = "servicio %{service}: no se pudo interpretar la etiqueta %{label}"
+fr = "Service %{service} : impossible d’analyser l’étiquette %{label}"
+de = "Dienst %{service}: Label %{label} konnte nicht gelesen werden"
+
+[spec.UnknownLogDriver]
+en = "service %{service}: unsupported log driver %{driver}"
+zh-CN = "服务 %{service} 使用了不支持的日志驱动 %{driver}"
+zh-TW = "服務 %{service} 使用了不支援的日誌驅動程式 %{driver}"
+ja = "サービス %{service}：ログドライバー %{driver} には対応していません。"
+pt-BR = "serviço %{service}: driver de logs não suportado: %{driver}"
+es = "servicio %{service}: controlador de registros %{driver} no compatible"
+fr = "Service %{service} : pilote de journalisation %{driver} non pris en charge"
+de = "Dienst %{service}: Nicht unterstützter Log-Treiber %{driver}"
+
+[spec.MissingEnv]
+en = "service %{service} lacks environment variable %{env}"
+zh-CN = "服务 %{service} 缺少环境变量 %{env}"
+zh-TW = "服務 %{service} 缺少環境變數 %{env}"
+ja = "サービス %{service} に環境変数 %{env} がありません。"
+pt-BR = "o serviço %{service} não tem a variável de ambiente %{env}"
+es = "el servicio %{service} no tiene la variable de entorno %{env}"
+fr = "La variable d’environnement %{env} manque au service %{service}"
+de = "Dem Dienst %{service} fehlt die Umgebungsvariable %{env}"
+
+[spec.BadEnv]
+en = "service %{service}: cannot parse environment variable %{env}"
+zh-CN = "服务 %{service} 的环境变量 %{env} 无法解析"
+zh-TW = "服務 %{service} 的環境變數 %{env} 無法解析"
+ja = "サービス %{service} の環境変数 %{env} を解析できません。"
+pt-BR = "serviço %{service}: não foi possível analisar a variável de ambiente %{env}"
+es = "servicio %{service}: no se pudo interpretar la variable de entorno %{env}"
+fr = "Service %{service} : impossible d’analyser la variable d’environnement %{env}"
+de = "Dienst %{service}: Umgebungsvariable %{env} konnte nicht gelesen werden"
+
+[spec.BadPlacement]
+en = "service %{service} requires exactly one supported node or platform-label placement constraint"
+zh-CN = "服务 %{service} 须有且仅有一个受支持的服务器或平台标签部署约束"
+zh-TW = "服務 %{service} 須有且僅有一項受支援的伺服器或平台標籤部署限制"
+ja = "サービス %{service} には、対応するサーバーまたはプラットフォームラベルの配置制約を1つだけ指定してください。"
+pt-BR = "o serviço %{service} exige exatamente uma restrição de alocação suportada, por servidor ou por rótulo da plataforma"
+es = "el servicio %{service} requiere exactamente una restricción de despliegue compatible, por servidor o por etiqueta de la plataforma"
+fr = "Le service %{service} nécessite exactement une contrainte de placement prise en charge, par serveur ou par étiquette de la plateforme"
+de = "Dienst %{service} benötigt genau eine unterstützte Platzierungsbedingung für einen Server oder ein Plattformlabel"
+
+[spec.BadAcmeCertLabel]
+en = "ACME secret has an invalid certificate label %{label}"
+zh-CN = "ACME secret 的证书标签 %{label} 无效"
+zh-TW = "ACME secret 的憑證標籤 %{label} 無效"
+ja = "ACME シークレットの証明書ラベル %{label} が無効です。"
+pt-BR = "o segredo ACME tem um rótulo de certificado inválido: %{label}"
+es = "el secreto de ACME tiene una etiqueta de certificado no válida: %{label}"
+fr = "L’étiquette de certificat %{label} du secret ACME est invalide"
+de = "ACME-Secret hat ein ungültiges Zertifikatslabel %{label}"
+
+[spec.NotGlobal]
+en = "service %{service} requires global mode"
+zh-CN = "服务 %{service} 须使用 global 模式"
+zh-TW = "服務 %{service} 須使用 global 模式"
+ja = "サービス %{service} は global モードにする必要があります。"
+pt-BR = "o serviço %{service} exige o modo global"
+es = "el servicio %{service} requiere el modo global"
+fr = "Le service %{service} nécessite le mode global"
+de = "Dienst %{service} benötigt den Modus global"

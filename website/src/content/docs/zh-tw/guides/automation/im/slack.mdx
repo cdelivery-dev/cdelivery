@@ -1,0 +1,55 @@
+---
+title: "接入 Slack"
+description: "建立 Slack 應用程式、啟用 Socket Mode、設定權杖並綁定自己的 Member ID。"
+sidebar:
+  order: 46
+---
+
+Slack 接入需要工作區安裝應用程式的權限和 CDelivery Admin 權限。建議為 CDelivery 建立專用應用程式，分別管理 Bot Token 與 App Token。
+
+## 建立並設定應用程式
+
+1. 在 [Slack 應用程式管理](https://api.slack.com/apps)建立應用程式，選擇目標工作區。
+2. 在 OAuth 權限中添加發送消息所需的 `chat:write`、打開私信所需的 `im:write`，以及讀取私信事件的 `im:history`。
+3. 需要群內提及時添加 `app_mentions:read`；需要顯示姓名和頭像時添加 `users:read`。
+4. 在 Basic Information 建立帶 `connections:write` 的 App-Level Token，得到 `xapp-` 開頭的權杖。
+5. 啟用 Socket Mode，並啟用 Event Subscriptions，訂閱 `message.im`；需要群內提及時訂閱 `app_mention`。
+6. 在 App Home 允許使用者從 Messages 頁簽向應用程式發送消息。
+7. 安裝到工作區，取得 `xoxb-` 開頭的 Bot Token。修改權限後按 Slack 提示重新安裝。
+
+Socket Mode 的設定與權杖區別可參考 [Slack 官方說明](https://docs.slack.dev/tools/python-slack-sdk/socket-mode/)。使用 CDelivery 時不需要另寫該頁面中的示例程序。
+
+## 填入 CDelivery
+
+管理員打開 **設定 → 渠道 → Slack**：
+
+| 字段 | 填寫內容 |
+| --- | --- |
+| Bot Token | `xoxb-` 開頭的機器人權杖 |
+| App Token | `xapp-` 開頭、具有連接權限的應用程式權杖 |
+
+儲存設定。兩種權杖不能互換，也不能用個人使用者權杖替代 Bot Token。伺服器應允許存取 Slack API 及 WebSocket 連接。
+
+## 綁定自己的帳戶
+
+在 Slack 中打開自己的個人資料，通過更多操作複製 Member ID。然後在 CDelivery 的 **帳戶 → Slack** 填入該 ID，並儲存。
+
+需要接收維運通知時，再打開該渠道的通知開關。不要填寫顯示名稱、電子郵箱、頻道 ID 或 Bot 的 Member ID。
+
+## 驗證
+
+先確認已設定 AI 模型，再私信 Bot：“查看當前應用程式清單”。核對能否收到回復及權限是否符合你的 CDelivery 帳戶。
+
+群內使用時先把 Bot 加入對應頻道，並明確提及它；首次驗證優先使用私信，減少頻道權限與事件訂閱的干擾。
+
+## 常見問題
+
+| 現象 | 檢查項 |
+| --- | --- |
+| 無法建立連接 | App Token、`connections:write`、Socket Mode 和出站網路 |
+| 能連接但不收私信 | `message.im`、`im:history` 和 Messages 頁簽設定 |
+| 收到消息但無法回復 | Bot Token、`chat:write`、私信權限及安裝範圍 |
+| 姓名或頭像不顯示 | `users:read` |
+| Bot 不識別你 | 當前工作區的個人 Member ID 是否與綁定一致 |
+
+權杖輪換後更新對應字段，再重新驗證。舊權杖失效不會自動替你建立新的 Slack 憑據。

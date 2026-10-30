@@ -1,0 +1,28 @@
+{%- macro nav(active) -%}
+<li class="nav-section">{{ tt!("ui.account.nav.account") }}</li>
+<li><a href="/account"{% if active == "profile" %} aria-current="page"{% endif %}>{{ tt!("ui.account.profile.title") }}</a></li>
+<li><a href="/account/preferences"{% if active == "preferences" %} aria-current="page"{% endif %}>{{ tt!("ui.account.preferences.title") }}</a></li>
+<li class="nav-section">{{ tt!("ui.account.nav.notifications") }}</li>
+<li><a href="/account/email"{% if active == "email" %} aria-current="page"{% endif %}>{{ tt!("ui.channel.email.title") }}</a></li>
+<li><a href="/account/slack"{% if active == "slack" %} aria-current="page"{% endif %}>{{ tt!("ui.channel.slack.title") }}</a></li>
+<li><a href="/account/telegram"{% if active == "telegram" %} aria-current="page"{% endif %}>{{ tt!("ui.channel.telegram.title") }}</a></li>
+<li><a href="/account/discord"{% if active == "discord" %} aria-current="page"{% endif %}>{{ tt!("ui.channel.discord.title") }}</a></li>
+<li><a href="/account/lark"{% if active == "lark" %} aria-current="page"{% endif %}>{{ tt!("ui.channel.lark.title") }}</a></li>
+<li><a href="/account/feishu"{% if active == "feishu" %} aria-current="page"{% endif %}>{{ tt!("ui.channel.feishu.title") }}</a></li>
+<li class="nav-section">{{ tt!("ui.account.nav.security") }}</li>
+<li><a href="/account/password"{% if active == "password" %} aria-current="page"{% endif %}>{{ tt!("ui.account.password.title") }}</a></li>
+<li><a href="/account/two-factor"{% if active == "two-factor" %} aria-current="page"{% endif %}>{{ tt!("ui.account.twoFactor.title") }}</a></li>
+<li><a href="/account/apikeys"{% if active == "apikeys" %} aria-current="page"{% endif %}>{{ tt!("ui.account.apikeys.title") }}</a></li>
+<li class="mt-4">
+  <form
+    method="post"
+    action="/logout"
+    data-confirm='{{ tt!("ui.account.nav.signout.confirm") }}'
+    x-data="{ submitting: false }"
+    @submit="if (submitting || !confirm($el.dataset.confirm)) { $event.preventDefault(); return } $refs.payload.value = '{}'; submitting = true"
+  >
+    <input x-ref="payload" type="hidden" name="payload" />
+    <button type="submit" :disabled="submitting">{{ tt!("ui.account.nav.signout") }}</button>
+  </form>
+</li>
+{%- endmacro nav -%}

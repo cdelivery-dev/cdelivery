@@ -1,0 +1,37 @@
+---
+title: "API と MCP 接続"
+description: "REST と MCP は操作と認可を共有し、パスは自分のインスタンスに属します。"
+sidebar:
+  order: 60
+---
+
+REST と MCP は操作と認可を共有し、パスは自分のインスタンスに属します。
+
+## キー作成
+
+アカウントの MCP/API キーで、1–64 UTF-8 バイトの名前、役割上限、任意の将来期限を指定します。一度のみ表示されるため直ちに保存します。
+
+ツールごとに分けます。作成時の実効役割を超えず、常に現在ユーザー権限で制限されます。パスワード変更では残り、ユーザー削除で無効になります。
+
+## REST
+
+URL とキーをローカル環境に設定します。
+
+```sh
+curl --fail-with-body "$CDELIVERY_URL/api/me" \
+  -H "Authorization: Bearer $CDELIVERY_API_KEY"
+```
+
+本人情報が返ることを確認します。`/scalar` は実行版の schema を表示します。
+
+patch は省略で維持、対応項目のみ `null` で削除、空 patch も有効です。列挙値 Reader/Operator/Admin は大小文字を区別します。
+
+## MCP
+
+HTTP 対応クライアントに `/mcp` と `Authorization: Bearer YOUR_API_KEY` を設定します。ツール一覧と読み取りから試します。クライアント許可はプラットフォーム権限を上書きしません。
+
+## 調査
+
+401 は認証・期限・失効・ユーザー、403 は権限、422 は項目と前提条件を確認します。接続は URL、TLS、プロキシを調べます。
+
+失効後に古いキーが拒否されることを確認し、[役割](/docs/ja/administration/accounts/roles/)を参照します。

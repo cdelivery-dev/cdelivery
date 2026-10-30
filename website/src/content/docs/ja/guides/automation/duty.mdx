@@ -1,0 +1,28 @@
+---
+title: "自動当番"
+description: "イベント分析と定期巡回を、明示した役割で実行します。"
+sidebar:
+  order: 43
+---
+
+イベント分析と定期巡回を、明示した役割で実行します。
+
+## 設定
+
+[モデル](/docs/ja/guides/automation/models/)、役割、方針、間隔、通知言語、宛先を準備します。
+
+標準は Reader、NearCritical、30 分、英語。間隔は 15 分–24 時間です。イベント分析は次回巡回を待ちません。
+
+EarlyRisk、NearCritical、LimitOrFailure はリスクに対する行動方針で、全資源共通の固定数値ではありません。
+
+## 権限
+
+Reader は観測、Operator/Admin は権限内の無人変更が可能です。個人アカウントの操作範囲は持ちません。
+
+受信者は購読済みで、当番以上の役割が必要です。Operator 当番は Operator/Admin に通知し Reader には送りません。
+
+## 確認
+
+イベント、分析、操作、最終状態を確認します。通知不足はモデル、チャネル、購読、役割を調べます。
+
+無効化しても通常アラートは止まりません。通知は設定言語、会話は対話言語に従います。[通知の調査](/docs/ja/guides/automation/im/notifications/)を参照します。

@@ -1,0 +1,63 @@
+---
+title: "Preguntas frecuentes sobre redes"
+description: "Diagnostica problemas de IPv6, direcciones de clientes, DNS, rutas y certificados."
+sidebar:
+  order: 25
+---
+
+Estas comprobaciones de IPv6 se aplican a servidores Linux que ejecutan Pingress.
+
+## ¿Por qué Pingress registra la dirección de la puerta de enlace?
+
+Un `docker_gwbridge` que solo admite IPv4 puede traducir las conexiones IPv6 y ocultar la dirección original del cliente, aunque el host admita IPv6. Una CDN u otro proxy también cambia quién se conecta directamente: Pingress registra la dirección de ese equipo y la usa en `X-Real-IP` y `X-Forwarded-For`.
+
+## ¿El instalador activa IPv6 automáticamente?
+
+En una instalación nueva o al añadir un servidor, el script detecta IPv6 en el host e intenta preparar un puente de doble pila. Si pregunta cómo continuar, elige **1** para seguir solo con IPv4 o **2** para salir y resolver el problema; salir es la opción predeterminada, también cuando no hay una terminal.
+
+`--no-ipv6` omite la preparación del puente. No desactiva IPv6 en un puente de doble pila existente. En macOS, el entorno de ejecución de Docker gestiona la red.
+
+## ¿Cómo compruebo que funciona?
+
+En el servidor que ejecuta Pingress:
+
+```sh
+ip -6 address show scope global
+ip -6 route show default
+docker network inspect docker_gwbridge --format '{{.EnableIPv6}}'
+```
+
+El último comando debe mostrar `true`; eso confirma la configuración, no la conectividad. Para el acceso público, el registro AAAA del dominio debe apuntar a una dirección desde la que se pueda acceder a Pingress por IPv6.
+
+Desde otra máquina con IPv6, sustituye el dominio de ejemplo y prueba ambos protocolos:
+
+```sh
+curl -4 --noproxy '*' -I https://app.example.com
+curl -6 --noproxy '*' -I https://app.example.com
+```
+
+Compara el `client_ip` de Pingress, o las cabeceras de reenvío que recibe tu aplicación, con la dirección del cliente que inicia la conexión. El extremo remoto de la conexión de la aplicación es Pingress, no el cliente original.
+
+## ¿Cómo activo IPv6 después de la instalación?
+
+Primero configura IPv6 en el host y comprueba que funcione. Si el puente ya muestra `true`, revisa la conectividad y el DNS. Para un servidor que aún no se haya unido, ejecuta el [comando de instalación](/docs/es/getting-started/installation/) o el comando para unirse disponible en la lista de servidores, sin `--no-ipv6`.
+
+**Volver a ejecutar el instalador en una instalación existente no actualiza el puente.** Un servidor activo con un puente que solo admite IPv4 necesita mantenimiento:
+
+1. Haz una copia de seguridad de los datos locales y registra el ID del nodo, su rol, todas sus etiquetas, la configuración del puente y las aplicaciones, Pingress o Insight vinculados a ese nodo.
+2. Detén o traslada sus cargas de trabajo. Antes de que salga un nodo administrador, mantén una mayoría de administradores en buen estado y el panel de CDelivery funcionando en otro nodo; después, degrada el nodo que vas a mantener. Nunca retires directamente el único administrador: prepara primero un traspaso seguro o un plan de copia de seguridad y recuperación. Sigue las [instrucciones de Docker para el mantenimiento de nodos](https://docs.docker.com/engine/swarm/manage-nodes/).
+3. Cuando el nodo haya salido y ningún contenedor haga referencia al puente, obtén en el panel operativo un **nuevo comando para unirse con su rol original**. Ejecútalo sin `--no-ipv6`; el script prepara el puente predeterminado antes de unirse. Si el puente es personalizado, conserva su subred y sus opciones al [preparar un reemplazo de doble pila](https://docs.docker.com/engine/swarm/networking/#customize-the-docker_gwbridge). Las invitaciones caducan a los 30 minutos y también dejan de ser válidas cuando CDelivery se reinicia o se traslada.
+4. Al volver a unirse se genera un nuevo ID de nodo. Restaura todas las etiquetas, incluidas las descripciones de los volúmenes, y corrige los vínculos de los servicios al ID anterior. Las aplicaciones con volúmenes locales e Insight con almacenamiento local no pueden cambiar de nodo simplemente desde la interfaz: un administrador debe ajustar sus restricciones de despliegue. Los datos permanecen en el host original.
+5. Restablece los servicios, actualiza el DNS si es necesario y repite las comprobaciones de IPv4 e IPv6 anteriores.
+
+También puedes añadir otro servidor con IPv6, ejecutar Pingress allí y apuntar el DNS a ese servidor.
+
+## ¿Qué hago si fallan las rutas IPv6 o las reglas del cortafuegos?
+
+Activar el reenvío puede hacer que una interfaz con `accept_ra=1` deje de aceptar anuncios de router (RA) y pierda su ruta predeterminada. Configura la persistencia de RA mediante el gestor de red de la interfaz: ifupdown usa `accept_ra 2`; ifupdown-ng usa `ipv6-accept-ra 2`. No sobrescribas a ciegas `accept_ra=0` en interfaces cuyo gestor procesa RA por su cuenta. Vuelve a comprobar las rutas después de reiniciar la interfaz o el host.
+
+Mantén activada la gestión del cortafuegos IPv6 de Docker (`ip6tables` no debe ser `false`) y permite los puertos HTTP/HTTPS de Pingress en los cortafuegos del host y de la nube. Que el puente muestre `true` no verifica estas reglas ni el acceso desde el exterior.
+
+## Otros problemas de acceso
+
+Para errores de DNS o enrutamiento, sigue [Dominios y rutas](/docs/es/guides/networking/routing/). Para certificados ausentes, caducados o con errores de emisión, consulta [Certificados automáticos y renovación](/docs/es/guides/networking/automatic-certificates/). Usa los [registros de acceso](/docs/es/guides/observability/logs/access/) para comprobar si la solicitud llegó a la entrada, coincidió con una aplicación y obtuvo respuesta del servicio de destino.

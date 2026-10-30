@@ -1,0 +1,26 @@
+---
+title: "Mettre à jour et redémarrer"
+description: "Une mise à jour change la configuration ; un redémarrage remplace les tâches sans modifier celle-ci."
+sidebar:
+  order: 18
+---
+
+Une mise à jour change la configuration ; un redémarrage remplace les tâches sans modifier celle-ci.
+
+## Mise à jour
+
+Modifiez puis enregistrez. Image, environnement, ressources, réseau et fichiers peuvent remplacer les tâches. Examinez [stratégie](/docs/fr/guides/release-safety/update-strategy/) et [Guardian](/docs/fr/guides/release-safety/).
+
+Des valeurs identiques ne redémarrent pas ; un tag modifié extérieurement non plus.
+
+## Redémarrage
+
+Il suit la stratégie de mise à jour. StopFirst en parallèle peut interrompre toutes les instances ; la continuité n’est pas garantie.
+
+Il ne supprime pas un volume correctement monté et ne corrige pas une commande invalide. Si l’échec revient, cherchez sa cause dans les journaux.
+
+## Vérification
+
+Contrôlez image, réplicas, journaux, événements, requête et données. La demande peut finir avant le remplacement : évitez les actions répétées pendant sa progression.
+
+[Rollback](/docs/fr/guides/release-safety/rollback/) utilise une configuration antérieure sans annuler les migrations. La [suppression](/docs/fr/guides/apps/delete/) est distincte et conserve les volumes.

@@ -1,0 +1,32 @@
+---
+title: "Estratégias de atualização"
+description: "Defina paralelismo, ordem, observação e resposta a falhas na substituição de tarefas."
+sidebar:
+  order: 28
+---
+
+Defina paralelismo, ordem, observação e resposta a falhas na substituição de tarefas.
+
+## Padrões
+
+| Ajuste | Valor |
+| --- | --- |
+| Paralelismo | Todas |
+| Ordem | StopFirst |
+| Monitoramento | 60 segundos |
+| Proporção de falhas | 0 |
+| Ação | Rollback |
+
+StopFirst paralelo pode interromper todas as réplicas. StartFirst precisa de folga e suporte a instâncias simultâneas; não torna seguro dois bancos acessando os mesmos dados.
+
+## Escolher
+
+Considere réplicas, reservas, máximo por servidor, tempo de início e compatibilidade entre versões. Depois de mudar, acompanhe tarefas, logs e requisição real.
+
+Um processo sobreviver ao monitoramento não equivale a uma asserção de negócio.
+
+## Falhar
+
+Rollback usa configuração anterior quando disponível. A própria reversão é paralela e continua diante de falhas, então confira o resultado.
+
+Use [XHealth](/docs/pt-br/guides/release-safety/xhealth/) para asserções, [Guardian](/docs/pt-br/guides/release-safety/) para candidatos e [reversão](/docs/pt-br/guides/release-safety/rollback/) para limites de recuperação.

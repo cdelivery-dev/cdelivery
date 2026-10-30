@@ -1,0 +1,26 @@
+---
+title: "Anwendungslogs"
+description: "Wähle den erzeugenden Container, das passende Zeitfenster und die Aufgabenidentität."
+sidebar:
+  order: 32
+---
+
+Wähle den erzeugenden Container, das passende Zeitfenster und die Aufgabenidentität.
+
+## Quellen
+
+App: Geschäftsprozess. XHealth: Prüfung. XJob mit Name: Aufgabe. GuardianApp: Kandidat. GuardianCheck: Validierung.
+
+Prüfungsfehler müssen nicht im App-Log erscheinen.
+
+## Treiber
+
+FollowHost übernimmt Hostverhalten. JSON-file rotiert lokal: Standard fünf Dateien zu 10 MiB; 1–100 Dateien, jeweils bis 1 GiB. Insight benötigt Erfassung.
+
+Treiberwechsel betrifft neue Aufgaben ohne Übernahme alter Logs. Deren Verfügbarkeit folgt ursprünglichem Treiber und Aufbewahrung.
+
+## Diagnose
+
+Leer: Quelle, Zeitraum, Aufgabenlebensdauer und stdout/stderr kontrollieren. Interne Dateien erscheinen nicht automatisch. Abfragefehler: Erfassung und Speicher prüfen.
+
+Beliebiger Text kann unverdeckte Geheimnisse enthalten. [Ereignisse](/docs/de/guides/observability/events/) korrelieren und [Aufbewahrung](/docs/de/guides/observability/settings/) prüfen.

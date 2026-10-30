@@ -1,0 +1,26 @@
+---
+title: "Telegram 接続"
+description: "long polling を使うため、他の受信処理と競合しない専用 bot を用意します。"
+sidebar:
+  order: 47
+---
+
+long polling を使うため、他の受信処理と競合しない専用 bot を用意します。
+
+## 準備
+
+BotFather で作成します。CDelivery を有効にする前にメッセージを送り、[getUpdates](https://core.telegram.org/bots/api#getupdates) の `message.from.id` から本人 ID を確認します。
+
+Admin が token を保存し、ユーザーは数値 ID を紐付けて個別チャットで Start、通知購読を設定します。chat.id、username、bot ID は使用しません。
+
+受信有効化は既存 webhook を削除します。他の poller を動かし続けないでください。[公式チュートリアル](https://core.telegram.org/bots/tutorial)を参照します。
+
+## 会話
+
+[モデル](/docs/ja/guides/automation/models/)設定後、個別で試します。プライバシーモードのグループでは `/cdelivery@BotUsername` など明示コマンドや対象への返信を使います。トピックは非対応です。
+
+個別会話のためにプライバシーを無効化する必要はありません。[公式 FAQ](https://core.telegram.org/bots/faq)を参照してください。
+
+## 調査
+
+token、通信、webhook、競合 poller、Start、本人 ID、購読を確認します。token は共有せず、他人の ID に権限を渡さないよう確認します。

@@ -1,0 +1,28 @@
+---
+title: "Automatischer Bereitschaftsdienst"
+description: "Der Dienst analysiert Ereignisse und prüft regelmäßig mit einer ausdrücklich gewählten Rolle."
+sidebar:
+  order: 43
+---
+
+Der Dienst analysiert Ereignisse und prüft regelmäßig mit einer ausdrücklich gewählten Rolle.
+
+## Einrichten
+
+[Modell](/docs/de/guides/automation/models/), Rolle, Richtlinie, Intervall, Sprache und Empfänger vorbereiten.
+
+Standard: Reader, NearCritical, 30 Minuten, Englisch. Bereich 15 Minuten–24 Stunden. Ereignisanalyse wartet nicht auf den nächsten Rundgang.
+
+EarlyRisk, NearCritical und LimitOrFailure beschreiben Risikoverhalten, keinen universellen numerischen Schwellenwert.
+
+## Rechte
+
+Reader beobachtet; Operator/Admin können unbeaufsichtigt innerhalb ihrer Rechte schreiben. Kein persönlicher Kontobereich.
+
+Empfänger müssen abonniert sein und mindestens dieselbe Rolle haben. Operator-Dienst informiert Operator/Admin, nicht Reader.
+
+## Kontrolle
+
+Ereignisse, Analysen, Aktionen und Endzustand prüfen. Fehlende Nachricht: Modell, Kanal, Abonnement, Rolle.
+
+Dienst abschalten deaktiviert nicht normale Warnungen. Benachrichtigung folgt konfigurierter Sprache, Gespräch dem Dialog. Siehe [Benachrichtigungen](/docs/de/guides/automation/im/notifications/).
