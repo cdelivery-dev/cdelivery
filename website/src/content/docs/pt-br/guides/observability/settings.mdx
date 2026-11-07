@@ -1,0 +1,54 @@
+---
+title: "Coleta e retenção"
+description: "Admin configura Insight, coletores, armazenamento e duração do histórico."
+sidebar:
+  order: 37
+---
+
+Admin configura Insight, coletores, armazenamento e duração do histórico.
+
+## Ativar a coleta
+
+<Steps>
+
+1. Escolha as versões do serviço e dos coletores.
+2. Escolha o tipo de armazenamento e informe localização e credenciais.
+3. Configure o posicionamento do serviço.
+4. Defina retenção, amostragem e intervalo de flush.
+5. Salve e confira se o serviço e os coletores estão em execução.
+6. Abra as métricas de servidores e aplicações e verifique dados novos.
+
+</Steps>
+
+## Armazenamento e posicionamento
+
+Escolha Local, S3, S3-compatible com endpoint, GCS com JSON de conta de serviço ou Azure. Prepare identidade e credenciais antes de habilitar.
+
+Depois, tipo e identidade não mudam como edição comum; credenciais e região aplicável podem ser atualizadas. Local exige servidor fixo. Migração e backup têm procedimentos próprios.
+
+## Intervalos e retenção
+
+| Ajuste | Padrão | Faixa |
+| --- | --- | --- |
+| Retenção | 90 dias | 1–3650 dias |
+| Amostra | 5 segundos | 1–60 segundos |
+| Flush | 3 minutos | Conforme configuração |
+| Filesystem | 5 minutos | Cadência própria |
+
+Servidor fixo pode consultar buffer. Posicionamento distribuído por rótulo pode esperar flush e sincronização. Mais frequência e retenção exigem armazenamento.
+
+<Aside type="caution">
+Reduzir a retenção pode apagar o histórico. Aumentá-la depois não restaura os dados excluídos.
+</Aside>
+
+## Verificar e diagnosticar
+
+Selecione recurso, fonte e período; consultas históricas aceitam até 31 dias. Use janela estreita ao investigar.
+
+Vazio pode indicar falta de atividade, coleta desabilitada, atraso ou retenção vencida. Erro de consulta é diferente. Ausência não representa zero consumo.
+
+Gere atividade nova e confirme logs, métricas e eventos recentes por servidor. Coleta não importa passado automaticamente.
+
+Em lacunas, confira componentes, rede, credenciais, período e retenção. O [driver de logs](/docs/pt-br/guides/observability/logs/application/) é configurado separadamente.
+
+Correlacione logs, métricas e eventos antes de mudar a aplicação.

@@ -1,0 +1,26 @@
+---
+title: "Verbindungen und veröffentlichte Ports"
+description: "Anwendungen derselben Gruppe erreichen sich über Namen und Containerport."
+sidebar:
+  order: 21
+---
+
+Anwendungen derselben Gruppe erreichen sich über Namen und Containerport.
+
+## Intern
+
+Beispiel `database:5432`. localhost bezeichnet den eigenen Container. Zielprozess muss auf erreichbarer Schnittstelle lauschen, meist `0.0.0.0`.
+
+Gruppenübergreifende Namensauflösung nicht voraussetzen. Netzwerkgruppen trennen keine Kontorechte.
+
+## Veröffentlichen
+
+TCP/UDP wählen und internen Port einer freien öffentlichen Nummer zuweisen, etwa Nginx 80 → 8080/TCP. Speichern, Aufgaben prüfen, `http://SERVER_IP:8080` aufrufen.
+
+Host-/Cloud-Firewall prüfen. SSH muss den Anwendungsport zusätzlich zu 9000 weiterleiten. Portmapping erzeugt keinen Listener und wandelt TCP nicht in HTTP um.
+
+## Diagnose
+
+Prozess, Schnittstelle, Port, Gruppe und Servernetz prüfen; extern zusätzlich Protokoll, Adresse und Firewall.
+
+[Domainrouten](/docs/de/guides/networking/routing/) verwenden interne Ports ohne direkte Veröffentlichung. Siehe [FAQ](/docs/de/guides/networking/faq/) zu IPv6.

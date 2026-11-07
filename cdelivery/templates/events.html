@@ -1,0 +1,89 @@
+{% extends "dashboard.html" %}
+
+{% import "app/tabs.html" as app_tab %}
+{% import "insight/tabs.html" as insight_tab %}
+{% import "pingress/tabs.html" as pingress_tab %}
+{% import "conditions.html" as conditions_macro %}
+{% import "time_range.html" as time_range %}
+{% import "pager.html" as pager %}
+
+{% block title %}{{ tt!("ui.events.title") }} - {% match target %}{% when crate::ui::target::Target::App(spec) %}{{ spec.name }}{% when crate::ui::target::Target::Insight %}Insight{% when crate::ui::target::Target::Pingress %}Pingress{% endmatch %} | {{ super() }}{% endblock title %}
+
+{% block main %}
+{% declare context %}
+{% match target %}
+{% when crate::ui::target::Target::App(spec) %}
+{% let name = spec.name %}
+{% let context = name.as_str() %}
+{% let description = spec.description %}
+{{ app_tab::page_header(name, description, "events", can_edit) }}
+{% when crate::ui::target::Target::Insight %}
+{% let context = "" %}
+{{ insight_tab::header("events") }}
+{% when crate::ui::target::Target::Pingress %}
+{% let context = "" %}
+{{ pingress_tab::header("events") }}
+{% endmatch %}
+
+{% let conditions = self.conditions %}
+<div class="status-list">
+{{ conditions_macro::problems(conditions, context) }}
+</div>
+
+<h2 class="section-title">{{ tt!("ui.events.history") }}</h2>
+{% let range = window.preset %}
+{% let start = window.range.0 %}
+{% let end = window.range.1 %}
+<form
+  method="get"
+  action="{{ action }}"
+  class="row query-bar"
+  role="search"
+  x-data='CDelivery.timeRange({{ start|json }}, {{ end|json }}, {{ range|json }})'
+>
+  {{ time_range::fields(range) }}
+  <span class="sep" aria-hidden="true">|</span>
+  <select class="text" name="kind" @change="submit()" aria-label='{{ tt!("ui.events.kindLabel") }}'>
+    <option value="">{{ tt!("ui.events.allKinds") }}</option>
+    {% for option in Kind::VARIANTS %}
+    <option value="{{ option.as_str() }}"{% if kind == option.as_str() %} selected{% endif %}>{{ crate::ui::events::kind_title(option) }}</option>
+    {% endfor %}
+  </select>
+</form>
+
+{% match history %}
+{% when Err(error) %}
+<p class="abnormal">{{ tt!("ui.events.unavailable") }}</p>
+<pre class="diagnostic">{{ error }}</pre>
+{% when Ok(None) %}
+<p class="muted">{{ tt!("ui.events.disabled") }}</p>
+{% when Ok(Some(ready)) %}
+<div class="table-scroll">
+  <table class="logs" x-data>
+    <thead>
+      <tr>
+        <th class="log-ts" scope="col">{{ tt!("ui.logs.header.time") }}</th>
+        <th scope="col">{{ tt!("ui.events.kindLabel") }}</th>
+        <th scope="col">{{ tt!("ui.events.subject") }}</th>
+        <th scope="col">{{ tt!("ui.events.actor") }}</th>
+        <th scope="col">{{ tt!("ui.events.detail") }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if ready.records.is_empty() %}<tr><td class="muted log-empty" colspan="5">{{ tt!("ui.events.empty") }}</td></tr>{% endif %}
+      {% for record in ready.records %}
+      <tr>
+        <td class="log-ts"><time datetime="{{ record.timestamp }}" x-init="$el.textContent = CDelivery.formatInstant($el.dateTime)">{{ record.timestamp }}</time></td>
+        <td>{{ crate::ui::events::kind_title(record.kind) }}</td>
+        <td translate="no">{{ record.subject }}</td>
+        <td translate="no">{{ record.actor }}</td>
+        <td class="log-text" translate="no">{% if let Some(detail) = record.detail %}{{ detail }}{% else %}—{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% let (previous, next) = self.pages(ready.records.len()) %}
+{{ pager::links(previous, next) }}
+{% endmatch %}
+{% endblock main %}

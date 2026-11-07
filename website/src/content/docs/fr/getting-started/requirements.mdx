@@ -1,0 +1,37 @@
+---
+title: "Avant l’installation"
+description: "Préparez les adresses des serveurs, les ports réseau, l’accès à la console et le stockage des données."
+sidebar:
+  order: 2
+---
+
+Un serveur suffit pour commencer. Plusieurs serveurs ont besoin d’adresses stables leur permettant de communiquer entre eux.
+
+## Adresses de communication entre serveurs
+
+L’adresse annoncée doit être joignable par les autres serveurs ; elle peut différer de celle du navigateur. Loopback ne convient pas aux pairs distants.
+
+## Réseau et accès
+
+| Port | Usage | Portée |
+| --- | --- | --- |
+| TCP 9000 | Console/API | Administration |
+| TCP 80/443 | Pingress | Clients |
+| Ports publiés | Applications | Clients prévus |
+| TCP 2377 | Gestion | Entre serveurs |
+| TCP/UDP 7946 | Communication | Entre serveurs |
+| UDP 4789 | Trafic applicatif | Entre serveurs |
+
+Contrôlez pare-feu du système et règles cloud. Restreignez les ports internes aux machines participantes. Voir [Docker](https://docs.docker.com/engine/network/drivers/overlay/#requirements).
+
+Pour administrer un serveur distant, vous pouvez utiliser un tunnel SSH :
+
+```sh
+ssh -L 9000:127.0.0.1:9000 your-user@server.example.com
+```
+
+Gardez le tunnel ouvert ; 8080 nécessite un autre transfert.
+
+## Planification des données
+
+Choisissez stockage et sauvegarde avant une application avec état. Le domaine est facultatif. Consultez [IPv6](/docs/fr/guides/networking/faq/) puis [installez](/docs/fr/getting-started/installation/).

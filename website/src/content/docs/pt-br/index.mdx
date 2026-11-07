@@ -1,0 +1,61 @@
+---
+title: "Documentação do CDelivery"
+description: "Instale a plataforma, publique aplicações e gerencie rede, observabilidade, automação e manutenção."
+sidebar:
+  order: 1
+---
+
+CDelivery permite implantar imagens de contêiner e manter aplicações em um ou vários servidores.
+
+## Primeiros passos
+
+1. [Antes de instalar](/docs/pt-br/getting-started/requirements/): Prepare os endereços, a rede e o acesso ao console.
+2. [Instalar o CDelivery](/docs/pt-br/getting-started/installation/): Inicie a plataforma e crie uma conta de administrador.
+3. [Publicar a primeira aplicação](/docs/pt-br/getting-started/first-app/): Implante o Nginx e verifique o acesso.
+
+## Conceitos principais
+
+| Objeto | Função |
+| --- | --- |
+| Servidor | Fornece recursos de computação e armazenamento local. |
+| Grupo | Organiza aplicações e fornece uma rede compartilhada. |
+| Aplicação | Combina uma imagem de contêiner, configuração e os parâmetros de execução desejados. |
+| Réplica | Uma instância em execução de uma aplicação. |
+
+Os grupos não isolam permissões de contas; veja [funções e permissões](/docs/pt-br/administration/accounts/roles/). Para preservar dados, leia [persistência de dados](/docs/pt-br/guides/apps/persistence/). Réplicas e reversões de aplicações não substituem backups.
+
+## Operação de aplicações
+
+<CardGrid>
+
+<Card title="Aplicações" href="/docs/pt-br/guides/apps/" icon="ph:cube">
+  Criação, execução, configuração, dados, escala e ciclo de vida
+</Card>
+
+<Card title="Domínios e HTTPS" href="/docs/pt-br/guides/networking/" icon="ph:globe">
+  Comunicação, portas, rotas e certificados
+</Card>
+
+<Card title="Verificações de integridade e lançamentos" href="/docs/pt-br/guides/release-safety/" icon="ph:shield-check">
+  XHealth, estratégia, Guardian e reversão
+</Card>
+
+<Card title="Logs, métricas e eventos" href="/docs/pt-br/guides/observability/" icon="ph:chart-line">
+  Logs, métricas, eventos e retenção
+</Card>
+
+</CardGrid>
+
+## Plataforma e automação
+
+<CardGrid>
+
+<Card title="Automação" href="/docs/pt-br/guides/automation/" icon="ph:lightning">
+  Tarefas agendadas, notificações, assistente de IA e acesso API/MCP
+</Card>
+
+<Card title="Gerenciamento da plataforma" href="/docs/pt-br/administration/" icon="ph:gear">
+  Servidores, grupos, contas, acesso e manutenção da plataforma
+</Card>
+
+</CardGrid>

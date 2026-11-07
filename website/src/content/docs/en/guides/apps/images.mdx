@@ -1,0 +1,32 @@
+---
+title: "Images and registries"
+description: "Select image versions, configure private registry credentials, and diagnose image pulls."
+sidebar:
+  order: 9
+---
+
+An image defines the application's executable and filesystem. Specify a repository and tag, for example `nginx:stable-alpine`; do not include `https://` or a registry website URL. The current input does not accept digest references using `@sha256:`.
+
+## Select and update
+
+Use a version appropriate to your application and server architecture. Changing the image can change defaults, environment requirements, or data formats; consult the image publisher before a database upgrade.
+
+Set the reference in application settings, save, and inspect the resulting tasks and logs. A registry tag changing externally does not automatically trigger deployment. Saving unchanged settings is also a no-op; use [restart](/docs/guides/apps/lifecycle/) when intentionally replacing tasks.
+
+## Private registries
+
+Enter the registry username and pull credential in the image settings. The console requires a password when a username is entered. To leave existing credentials untouched, cancel an unnecessary edit; when changing them, provide the required pair.
+
+At the API boundary, an omitted secret can preserve the existing credential only while its scope remains unchanged. Switching registry scope requires suitable credentials for the new scope. Stored passwords are not returned as plaintext.
+
+## Troubleshoot
+
+| Symptom | Check |
+| --- | --- |
+| Repository or tag missing | Exact image spelling and published tag |
+| Unauthorized | Username, token permissions, registry scope |
+| Timeout or TLS failure | Server DNS, outbound network, registry certificate |
+| No compatible image | Host architecture and image manifest |
+| Image pulled but task exits | Command, environment, mounts, application logs |
+
+A successful registry login does not prove the image starts correctly. Verify the running version and a business request after each change. Rollback restores previous application configuration, not database contents; see [rollback](/docs/guides/release-safety/rollback/).

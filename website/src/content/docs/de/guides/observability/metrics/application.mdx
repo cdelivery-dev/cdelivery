@@ -1,0 +1,26 @@
+---
+title: "Anwendungsmetriken"
+description: "Vergleiche Ressourcenreihen mit Replikaten und Konfigurationsänderungen."
+sidebar:
+  order: 34
+---
+
+Vergleiche Ressourcenreihen mit Replikaten und Konfigurationsänderungen.
+
+## Lesen
+
+Erfassung aktivieren, bis 31 Tage wählen, Einheiten beachten. CPU-Kerne unterscheiden sich von Prozent relativ zum Limit.
+
+Aggregationen zeigen Minimum, Mittelwert und Maximum. Mittelwerte verbergen Spitzen; Maximum bedeutet keine Dauerlast. Große Zeitblöcke glätten kurze Ereignisse.
+
+## Verwenden
+
+Vor/nach Update, Neustart und Skalierung vergleichen. Gesamtverbrauch von Verbrauch je Replikat unterscheiden.
+
+Automatik benötigt aktuelle Daten aller Replikate. Teilweise oder alte Messwerte können Entscheidungen verhindern; fehlend bedeutet nicht untätig.
+
+## Lücken
+
+Identität, Zeitraum, Sammler, Speicher und Aufbewahrung prüfen. Keine Daten vor Aktivierung; Flush/Synchronisierung können aktuelle Werte verzögern.
+
+Kurze Prozesse liefern wenige Werte. [Logs](/docs/de/guides/observability/logs/application/) hinzunehmen, [Ressourcen](/docs/de/guides/apps/resources/) unter realer Last anpassen und [Server](/docs/de/guides/observability/metrics/server/) vergleichen.

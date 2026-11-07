@@ -1,0 +1,6 @@
+---
+import ErrorLayout from '../layouts/ErrorLayout.astro';
+import { translate } from '../i18n';
+const t = translate('en');
+---
+<ErrorLayout title={t('site.notFound.title')} heading={t('site.notFound.heading')} />

@@ -1,0 +1,41 @@
+---
+title: "Applications avec état"
+description: "Le mode volume local impose un serveur fixe et un réplica, choisis à la création."
+sidebar:
+  order: 15
+---
+
+Le mode volume local impose un serveur fixe et un réplica, choisis à la création.
+
+## Créer
+
+<Steps>
+
+1. Choisissez le serveur de stockage et vérifiez l’espace disponible.
+2. Créez ou sélectionnez son volume.
+3. Choisissez l’image ou le modèle de base de données.
+4. Vérifiez les variables et les identifiants.
+5. Montez le volume dans le répertoire de données de l’image.
+6. Démarrez l’application et testez une écriture.
+
+</Steps>
+
+Ce mode n’utilise ni placement dynamique, ni adaptation automatique, ni les téléversements XConfig ordinaires, ni Guardian. Le modèle PostgreSQL 18 monte `/var/lib/postgresql` et conserve le `PGDATA` par défaut de l’image. MariaDB 12 monte `/var/lib/mysql`. Après toute modification de l’image ou des variables d’environnement, vérifiez le répertoire de données et les règles d’initialisation.
+
+Les mots de passe générés restent des données de configuration ; toutes les variables ne sont pas masquées.
+
+## Mettre à jour
+
+<Aside type="caution">
+Le remplacement peut interrompre l’unique réplica. Revoyez [stratégie](/docs/fr/guides/release-safety/update-strategy/) et consignes du fournisseur. N’exécutez pas des versions incompatibles sur le même répertoire.
+</Aside>
+
+Sauvegardez de façon cohérente avant migration. [Rollback](/docs/fr/guides/release-safety/rollback/) ne restaure pas les données.
+
+## Récupérer
+
+Un autre serveur avec volume homonyme ne récupère rien. Migrez/restaurez puis vérifiez le contenu.
+
+La suppression de l’application conserve le volume ; notez serveur et nom avant nettoyage.
+
+[Secrets](/docs/fr/guides/apps/secrets/): Les fichiers sont montés en lecture seule avec le mode 0444. Les applications avec volumes locaux acceptent les secrets fichier, mais pas les téléversements XConfig ordinaires. XJob, XHealth, Hurl et Guardian héritent des associations ; les vérifications d’un candidat utilisent ses références. Une session exec ordinaire n’hérite pas automatiquement des variables injectées au démarrage.

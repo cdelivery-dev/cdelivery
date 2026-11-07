@@ -1,0 +1,13 @@
+# Host build artifacts — wrong arch, never belongs in a build context
+target
+website/
+tests/ui/
+
+# VCS + repo meta not needed to compile
+.git
+.gitignore
+.cargo
+
+# rustfmt backups, OS junk (mirror .gitignore)
+**/*.rs.bk
+.DS_Store

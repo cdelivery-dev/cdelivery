@@ -1,0 +1,70 @@
+---
+title: "Instalar o CDelivery"
+description: "Instale o CDelivery, crie o primeiro administrador e abra o painel."
+sidebar:
+  order: 3
+---
+
+## Antes de começar
+
+Execute o instalador com acesso administrativo e verifique o console antes de publicar aplicações.
+
+Conclua os [preparativos de instalação](/docs/pt-br/getting-started/requirements/).
+
+No macOS, inicie Docker primeiro. Em problemas IPv6, siga o diagnóstico; execução não interativa não pode depender de escolha manual.
+
+## Passos
+
+<Steps>
+
+<Step title="Executar o instalador">
+
+```sh
+curl -fsSL https://cdelivery.dev/install.sh | sh
+```
+
+Para definir o endereço usado entre servidores:
+
+```sh
+curl -fsSL https://cdelivery.dev/install.sh | sh -s -- --advertise-addr 10.0.0.10
+```
+
+Use um IP desta máquina acessível pelas demais, não um domínio. Ele pode diferir do endereço público.
+
+</Step>
+
+<Step title="Abrir o painel">
+
+Abra `http://SERVER_IP:9000`, ou `http://localhost:9000` no macOS ou por túnel.
+
+</Step>
+
+<Step title="Criar o primeiro administrador">
+
+Informe nome, e-mail e senha para criar o primeiro Admin. Você será conectado automaticamente e seguirá para a configuração da plataforma.
+
+Na configuração da plataforma, você pode configurar o domínio e ativar o Insight ou seguir direto para o painel. O Insight usa armazenamento local e retenção de 90 dias por padrão. Depois, gerencie esses recursos nas configurações da plataforma e na página do Insight.
+
+Uma instalação retomada mantém a conta anterior. Reexecutar não redefine senha nem muda um endereço existente.
+
+</Step>
+
+</Steps>
+
+## Resultado esperado
+
+- Você consegue entrar com a conta de administrador.
+- A lista de servidores mostra o endereço e os recursos esperados.
+- Você consegue abrir os grupos e as configurações da plataforma.
+
+## Próximo passo
+
+[Publicar a primeira aplicação](/docs/pt-br/getting-started/first-app/)
+
+## Solução de problemas
+
+Falha de download: DNS e HTTPS de saída. Falha Docker: serviço, versão e permissões. Timeout do navegador: IP, porta, firewall e túnel. Para conta existente, veja [recuperação](/docs/pt-br/administration/platform/recovery/).
+
+Se a tela de login aparecer após a configuração inicial, entre com a conta que acabou de criar.
+
+Remova credenciais antes de compartilhar diagnósticos.

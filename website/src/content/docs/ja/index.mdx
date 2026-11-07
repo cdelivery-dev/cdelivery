@@ -1,0 +1,61 @@
+---
+title: "CDelivery ドキュメント"
+description: "インストールからアプリの運用、ネットワーク、監視、自動化、プラットフォーム管理までを説明します。"
+sidebar:
+  order: 1
+---
+
+CDelivery はコンテナーイメージのデプロイと、1 台以上のサーバーでのアプリ運用を支援します。
+
+## 利用を始める
+
+1. [インストール前の準備](/docs/ja/getting-started/requirements/)：サーバーのアドレス、ネットワーク、アクセス方法を準備します。
+2. [CDelivery のインストール](/docs/ja/getting-started/installation/)：プラットフォームを起動し、管理者を作成します。
+3. [最初のアプリをデプロイ](/docs/ja/getting-started/first-app/)：Nginx をデプロイしてアクセスを確認します。
+
+## 基本概念
+
+| 対象 | 役割 |
+| --- | --- |
+| サーバー | 計算リソースとローカルストレージを提供します。 |
+| グループ | アプリを整理し、グループ内の通信ネットワークを提供します。 |
+| アプリ | コンテナーイメージ、設定、望ましい実行状態をまとめたものです。 |
+| レプリカ | アプリの実行中のインスタンスです。 |
+
+グループはアカウントの権限を分離しません。[ロールと権限](/docs/ja/administration/accounts/roles/)を参照してください。データを保持する場合は[データの永続化](/docs/ja/guides/apps/persistence/)を確認します。レプリカやアプリのロールバックはバックアップの代わりにはなりません。
+
+## アプリの運用
+
+<CardGrid>
+
+<Card title="アプリ管理" href="/docs/ja/guides/apps/" icon="ph:cube">
+  作成、実行設定、ファイル、データ、拡縮、配置、更新
+</Card>
+
+<Card title="ドメインと HTTPS" href="/docs/ja/guides/networking/" icon="ph:globe">
+  通信、ポート、ルーティング、証明書
+</Card>
+
+<Card title="ヘルスチェックとリリース" href="/docs/ja/guides/release-safety/" icon="ph:shield-check">
+  XHealth、更新方式、Guardian、ロールバック
+</Card>
+
+<Card title="ログ・メトリクス・イベント" href="/docs/ja/guides/observability/" icon="ph:chart-line">
+  調査、収集、保存期間
+</Card>
+
+</CardGrid>
+
+## プラットフォームと自動化
+
+<CardGrid>
+
+<Card title="自動化" href="/docs/ja/guides/automation/" icon="ph:lightning">
+  定期タスク、通知、AI アシスタント、API/MCP 接続
+</Card>
+
+<Card title="プラットフォーム管理" href="/docs/ja/administration/" icon="ph:gear">
+  サーバー、グループ、アカウント、アクセス、プラットフォーム保守
+</Card>
+
+</CardGrid>

@@ -1,0 +1,30 @@
+---
+title: "Automatischer Bereitschaftsdienst"
+description: "Der Dienst analysiert Ereignisse und prüft regelmäßig mit einer ausdrücklich gewählten Rolle."
+sidebar:
+  order: 45
+---
+
+Der Dienst analysiert Alarme und Wiederherstellungen und prüft regelmäßig mit einer ausdrücklich gewählten Rolle. Gewöhnliche Änderungen wie das Erstellen, Aktualisieren oder Neustarten einer Anwendung bleiben zur Diagnose im Ereignisverlauf und lösen keine KI-Analyse aus.
+
+## Einrichten
+
+[Modell](/docs/de/guides/automation/models/), Rolle, Richtlinie, Intervall, Sprache und Empfänger vorbereiten.
+
+Standard: Operator, NearCritical, 30 Minuten, Englisch. Bereich 15 Minuten–24 Stunden. Ereignisanalyse wartet nicht auf den nächsten Rundgang.
+
+EarlyRisk, NearCritical und LimitOrFailure beschreiben Risikoverhalten, keinen universellen numerischen Schwellenwert.
+
+## Rechte
+
+Reader beobachtet; Operator/Admin können unbeaufsichtigt innerhalb ihrer Rechte schreiben. Kein persönlicher Kontobereich.
+
+Abonnenten mit mindestens der Rolle des Bereitschaftsdienstes erhalten die KI-Analyse; alle anderen erhalten den ursprünglichen Alarm. Für Berichte über ausgeführte Aktionen gilt dieselbe Rollenbeschränkung.
+
+Der Dienst analysiert Alarme vor dem Versand. Liegt keine verwertbare Analyse vor, sendet er den ursprünglichen Alarm. Siehe [Benachrichtigungsregeln](/docs/de/guides/automation/im/notifications/).
+
+## Kontrolle
+
+Ereignisse, Analysen, Aktionen und Endzustand prüfen. Fehlende Nachricht: Modell, Kanal, Abonnement, Rolle.
+
+Dienst abschalten deaktiviert nicht normale Warnungen. Benachrichtigung folgt konfigurierter Sprache, Gespräch dem Dialog. Siehe [Benachrichtigungen](/docs/de/guides/automation/im/notifications/).

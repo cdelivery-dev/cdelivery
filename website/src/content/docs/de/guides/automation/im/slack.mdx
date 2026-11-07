@@ -1,0 +1,32 @@
+---
+title: "Slack-Anbindung"
+description: "Slack nutzt Socket Mode ohne öffentlichen Ereignis-Endpunkt."
+sidebar:
+  order: 46
+---
+
+Slack nutzt Socket Mode ohne öffentlichen Ereignis-Endpunkt.
+
+## App
+
+<Steps>
+
+1. Erstelle eine App auf [Slack](https://api.slack.com/apps).
+2. Erlaube `chat:write`, `im:write` und `im:history`.
+3. Aktiviere Socket Mode und erstelle ein App-Token mit `connections:write`.
+4. Abonniere `message.im` und erlaube Nachrichten in App Home.
+5. Installiere die App.
+
+</Steps>
+
+Admin speichert `xoxb-`-Bot- und `xapp-`-App-Token. Erwähnungen: `app_mentions:read` plus `app_mention`. Profil: `users:read`. Geänderte Rechte erneut genehmigen/installieren. Siehe [Socket Mode](https://docs.slack.dev/tools/java-slack-sdk/guides/socket-mode/).
+
+## Identität
+
+Eigene Member ID, keine Kanal-/App-/Bot-ID, im Konto eintragen. Neue Verknüpfungen erhalten standardmäßig Benachrichtigungen; du kannst sie ausschalten. Mit [Modell](/docs/de/guides/automation/models/) private lesende Frage testen.
+
+## Diagnose
+
+Zusammengehörige Tokens, Installation, Events, Rechte, App Home und Ausgangsnetz prüfen. Profilfehler kann von Zustellung unabhängig sein.
+
+Fremde ID gibt deine Möglichkeiten weiter; Zuordnung und Abonnement kontrollieren.

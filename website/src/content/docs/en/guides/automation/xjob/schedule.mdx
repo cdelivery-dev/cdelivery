@@ -1,0 +1,14 @@
+---
+title: "XJob intervals and timeouts"
+description: "Set the waiting interval after each run and an independent execution timeout."
+sidebar:
+  order: 39
+---
+
+Both values are required, each from 1 to 1440 minutes. The API accepts integer `Minutes` (1–1440) or `Hours` (1–24), for example `{"unit":"Minutes","value":30}`. The timeout may exceed the interval.
+
+The first run becomes due one interval after task configuration is created. Later runs become due one interval after the current run ends, whether successful or failed. An active run has no next-run time. Manual execution skips the waiting interval but cannot start while a run is active.
+
+The timeout starts when the execution task is created, including preparation and image pulling. The controller checks every 30 seconds and requests a stop after the limit. Startup, polling, shutdown and controller outages can delay enforcement; this is not a hard deadline. Changing the timeout affects the current run without resetting its start. Extending it does not undo an already requested stop.
+
+Configuration is retained in the service; runtime status comes from task observations. If the current task record is missing, the controller waits for the existing 90-second observation window when needed, then uses the service update time plus the interval as an approximation. This cannot guarantee a full interval after the actual end. Downtime does not create a backlog of missed runs. Verify task effects before retrying an ambiguous manual request.

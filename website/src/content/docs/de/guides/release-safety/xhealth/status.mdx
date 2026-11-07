@@ -1,0 +1,26 @@
+---
+title: "XHealth-Zustände und Fehlersuche"
+description: "Unterscheide Warten, Ausführung, Erfolg, Fehler und Ende ohne verwertbares Ergebnis."
+sidebar:
+  order: 27
+---
+
+Unterscheide Warten, Ausführung, Erfolg, Fehler und Ende ohne verwertbares Ergebnis.
+
+## Zustände
+
+Pending wartet; Running läuft; Passed erfolgreich; Failed fehlgeschlagen; Settled beendet ohne nutzbares Ergebnis.
+
+Settled ist kein Passed. Guardian bewertet fehlendes Ergebnis als Validierungsproblem.
+
+## Diagnose
+
+Warten: Server, Ressourcen, Image, Planung. Lange Ausführung: Timeout/blockierte Abhängigkeit. Fehler: XHealth-Logs, Assertion, Exitcode, Port, Pfad, Umgebung und Werkzeuge.
+
+Interner HTTP-Fehler belegt keinen Zertifikatsfehler. Interner Erfolg garantiert kein öffentliches DNS/TLS; separat testen.
+
+## Nach Änderung
+
+Neu ausführen und Definition/Zeitstempel kontrollieren, nicht alten grünen Status. Geschäftliche Bereitschaft statt bloßer Prozessexistenz prüfen.
+
+Zurück zur [Konfiguration](/docs/de/guides/release-safety/xhealth/) oder zu [Anwendungslogs](/docs/de/guides/observability/logs/application/).

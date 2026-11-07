@@ -1,0 +1,53 @@
+---
+title: "域名与 HTTPS"
+description: "选择内部通信、发布端口或域名入口，并按顺序配置 Pingress 和证书。"
+sidebar:
+  group:
+    label: "域名与 HTTPS"
+    icon: "ph:globe"
+  order: 20
+---
+
+应用网络可以分为三个层次：组内应用通信、直接发布端口、通过 Pingress 使用域名。先选择访问方式，再配置相应的服务器、防火墙和证书。
+
+## 选择入口
+
+| 访问需求 | 使用方式 | 示例 |
+| --- | --- | --- |
+| 同分组应用互相调用 | 应用名称与容器端口 | `http://backend:8080` |
+| 直接访问某个应用端口 | 发布端口 | `http://SERVER_IP:8080` |
+| 使用网站域名及 HTTPS | Pingress 与域名路由 | `https://app.example.com` |
+
+应用通过 Pingress 暴露容器端口时，不需要为了同一个入口再单独发布该端口。数据库等内部服务也不必为了组内通信暴露公网端口。
+
+## 按任务查找
+
+<CardGrid>
+
+<Card title="应用间通信与端口发布" href="/docs/zh-cn/guides/networking/connectivity/" icon="ph:plugs-connected">
+  配置组内服务地址和对外发布端口，区分容器端口、服务器端口与域名路由。
+</Card>
+
+<Card title="域名与路由" href="/docs/zh-cn/guides/networking/routing/" icon="ph:globe">
+  把域名映射到应用端口，并使用路径、请求头或 Cookie 条件分配请求。
+</Card>
+
+<Card title="自动证书与续期" href="/docs/zh-cn/guides/networking/automatic-certificates/" icon="ph:certificate">
+  启用自动证书、验证域名可达性，并检查签发、续期及失败状态。
+</Card>
+
+<Card title="自定义证书" href="/docs/zh-cn/guides/networking/custom-certificates/" icon="ph:key">
+  上传证书链与私钥、验证域名及有效期，并维护手动证书的替换和删除。
+</Card>
+
+<Card title="网络常见问题" href="/docs/zh-cn/guides/networking/faq/" icon="ph:question">
+  排查 IPv6、客户端地址、DNS、路由与证书问题。
+</Card>
+
+</CardGrid>
+
+## 排查访问失败
+
+沿着“客户端 → DNS → Pingress → 应用容器端口”逐段检查。应用副本运行但外部访问失败时，先区分是连接、TLS、路由还是业务响应问题。
+
+使用[访问日志](/docs/zh-cn/guides/observability/logs/access/)检查请求是否到达入口及匹配到哪个应用。IPv6、客户端地址和安装后网络调整见[常见问题](/docs/zh-cn/guides/networking/faq/)。

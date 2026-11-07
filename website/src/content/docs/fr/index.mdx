@@ -1,0 +1,61 @@
+---
+title: "Documentation CDelivery"
+description: "Installez la plateforme, déployez des applications et gérez réseau, observabilité, automatisation et maintenance."
+sidebar:
+  order: 1
+---
+
+CDelivery déploie des images de conteneur et facilite l’exploitation sur un ou plusieurs serveurs.
+
+## Premiers pas
+
+1. [Avant l’installation](/docs/fr/getting-started/requirements/) : Préparez les adresses, le réseau et l’accès à la console.
+2. [Installer CDelivery](/docs/fr/getting-started/installation/) : Démarrez la plateforme et créez un compte administrateur.
+3. [Déployer une première application](/docs/fr/getting-started/first-app/) : Déployez Nginx et vérifiez l’accès.
+
+## Notions essentielles
+
+| Objet | Fonction |
+| --- | --- |
+| Serveur | Fournit les ressources de calcul et le stockage local. |
+| Groupe | Organise les applications et fournit un réseau partagé. |
+| Application | Associe une image de conteneur, une configuration et les paramètres d’exécution souhaités. |
+| Réplique | Une instance en cours d’exécution d’une application. |
+
+Les groupes n’isolent pas les permissions des comptes ; consultez [les rôles et permissions](/docs/fr/administration/accounts/roles/). Pour conserver les données, lisez [la persistance des données](/docs/fr/guides/apps/persistence/). Les répliques et le retour arrière d’une application ne remplacent pas les sauvegardes.
+
+## Exploitation des applications
+
+<CardGrid>
+
+<Card title="Applications" href="/docs/fr/guides/apps/" icon="ph:cube">
+  Création, exécution, configuration, données, capacité et cycle de vie
+</Card>
+
+<Card title="Domaines et HTTPS" href="/docs/fr/guides/networking/" icon="ph:globe">
+  Connexions, ports, routage et certificats
+</Card>
+
+<Card title="Contrôles de santé et déploiements" href="/docs/fr/guides/release-safety/" icon="ph:shield-check">
+  XHealth, stratégies, Guardian et restauration
+</Card>
+
+<Card title="Journaux, métriques et événements" href="/docs/fr/guides/observability/" icon="ph:chart-line">
+  Journaux, métriques, événements et conservation
+</Card>
+
+</CardGrid>
+
+## Plateforme et automatisation
+
+<CardGrid>
+
+<Card title="Automatisation" href="/docs/fr/guides/automation/" icon="ph:lightning">
+  Tâches planifiées, notifications, assistant IA et accès API/MCP
+</Card>
+
+<Card title="Administration de la plateforme" href="/docs/fr/administration/" icon="ph:gear">
+  Serveurs, groupes, comptes, accès et maintenance de la plateforme
+</Card>
+
+</CardGrid>

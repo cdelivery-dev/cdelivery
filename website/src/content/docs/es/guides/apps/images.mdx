@@ -1,0 +1,32 @@
+---
+title: "Imágenes y registros"
+description: "Selecciona una referencia de imagen y credenciales de descarga adecuadas a su registro."
+sidebar:
+  order: 9
+---
+
+Selecciona una referencia de imagen y credenciales de descarga adecuadas a su registro.
+
+## Configurar
+
+Usa repositorio y etiqueta, por ejemplo `nginx:stable-alpine`, sin `https://` ni URL de página. El campo actual no admite referencias por digest `@sha256:`. Verifica arquitectura y requisitos de la versión.
+
+Cambiar una etiqueta en el registro no inicia automáticamente un despliegue. Guardar la misma configuración tampoco sustituye tareas; utiliza [reinicio](/docs/es/guides/apps/lifecycle/) cuando corresponda.
+
+## Registro privado
+
+Introduce usuario y contraseña o token de descarga. La consola exige contraseña si se indica usuario; cancela una edición innecesaria para conservar lo existente o proporciona el par requerido al cambiarlo.
+
+La API puede conservar un secreto omitido solamente si su ámbito no cambia. Cambiar de registro requiere credenciales apropiadas. Las contraseñas almacenadas no se devuelven en texto.
+
+## Diagnóstico
+
+| Error | Revisar |
+| --- | --- |
+| Imagen inexistente | Repositorio y etiqueta |
+| No autorizado | Usuario, token y permisos |
+| Tiempo de espera/TLS | DNS, red y certificado |
+| Arquitectura incompatible | Manifiesto y servidor |
+| Contenedor termina | Comando, variables y montajes |
+
+Tras descargar, comprueba versión, registros y una petición real. En bases de datos, revisa cambios de formato antes de actualizar; la [reversión](/docs/es/guides/release-safety/rollback/) no restaura datos.

@@ -1,0 +1,52 @@
+{% extends "dashboard.html" %}
+
+{% import "version.html" as versions %}
+
+{% block title %}{{ tt!("ui.volume.title") }} | {{ super() }}{% endblock title %}
+
+{% block main %}
+<header>
+  <h1>{{ tt!("ui.volume.title") }}</h1>
+</header>
+<p><small>{{ tt!("ui.volume.settingsHelp") }}</small></p>
+{% if current_version.is_none() %}
+<p>{{ tt!("ui.volume.disabled") }}</p>
+{% endif %}
+{% if current_version.is_some() || can_manage %}
+<div x-data="{ submitting: false, version: '' }" x-init="version = $refs.version.value">
+<form
+  id="volume-enable-form"
+  method="post"
+  action="/volume/enable"
+  @submit="if (submitting || !version) { $event.preventDefault(); return } $refs.payload.value = JSON.stringify({ version }); submitting = true"
+>
+  <input x-ref="payload" type="hidden" name="payload" />
+  <div class="fields">
+    {% call versions::field("volume-version", tt!("ui.version.label"), current_version, target_version, latest_unavailable, can_manage, "submitting") %}
+      x-ref="version" x-model="version"
+    {% endcall %}
+  </div>
+  {% if can_manage %}
+  <div class="actions mt-2">
+    {% if current_version.is_some() %}
+    <input type="submit" form="volume-disable-form" class="button danger" value='{{ tt!("ui.common.disable") }}' :disabled="submitting" />
+    {% endif %}
+    <input class="button" type="submit" value='{% if current_version.is_some() %}{{ tt!("ui.common.update") }}{% else %}{{ tt!("ui.common.enable") }}{% endif %}' :disabled="submitting || !version" />
+  </div>
+  {% endif %}
+</form>
+
+{% if can_manage && current_version.is_some() %}
+<form
+  id="volume-disable-form"
+  method="post"
+  action="/volume/disable"
+  data-confirm='{{ tt!("ui.volume.disableConfirm") }}'
+  @submit="if (submitting || !confirm($el.dataset.confirm)) { $event.preventDefault(); return } submitting = true"
+>
+  <input type="hidden" name="payload" value="{}" />
+</form>
+{% endif %}
+</div>
+{% endif %}
+{% endblock main %}

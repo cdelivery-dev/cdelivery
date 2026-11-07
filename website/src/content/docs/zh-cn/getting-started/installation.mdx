@@ -1,0 +1,79 @@
+---
+title: "安装部署"
+description: "安装 CDelivery，创建首个管理员并进入控制台。"
+sidebar:
+  order: 3
+---
+
+## 开始之前
+
+在准备好的服务器上执行安装。安装命令需要管理员权限，并会创建平台运行所需的资源；先完成[安装前准备](/docs/zh-cn/getting-started/requirements/)。
+
+Linux 上按安装器输出检查 Docker 和网络准备结果。macOS 上先启动 Docker 运行环境。遇到 IPv6 准备问题时，按提示选择继续使用 IPv4 或退出检查；非交互环境不要依赖人工选择。相关行为见[网络常见问题](/docs/zh-cn/guides/networking/faq/)。
+
+## 操作步骤
+
+<Steps>
+
+<Step title="执行安装">
+
+```sh
+curl -fsSL https://cdelivery.dev/install.sh | sh
+```
+
+需要指定服务器之间使用的地址时：
+
+```sh
+curl -fsSL https://cdelivery.dev/install.sh | sh -s -- --advertise-addr 10.0.0.10
+```
+
+将 `10.0.0.10` 替换为当前服务器拥有、且其他服务器可访问的地址。它不是域名，也不一定是你浏览器使用的公网地址。
+
+</Step>
+
+<Step title="打开控制台">
+
+安装完成后，访问：
+
+```text
+http://SERVER_IP:9000
+```
+
+将 `SERVER_IP` 替换为你能访问的服务器地址。macOS 通常使用 `http://localhost:9000`。通过 SSH 隧道管理远程服务器时，也使用隧道对应的本地地址。
+
+</Step>
+
+<Step title="创建首个管理员">
+
+首次打开控制台时，填写姓名、邮箱和密码，创建第一个 Admin 账户。保存后会自动登录并进入平台设置。
+
+在平台设置页，可设置平台域名、开启 Insight，也可直接进入控制台。Insight 默认使用本地存储，保留 90 天。后续在平台设置和 Insight 页面管理。
+
+如果已有安装恢复运行，使用原有账户。不要把再次运行安装器当作清空账户、重置密码或更改服务器通信地址的方法。
+
+</Step>
+
+</Steps>
+
+## 验证安装结果
+
+- 能打开控制台并使用管理员账户登录。
+- 服务器列表中的地址和资源信息符合预期。
+- 能打开分组管理及平台设置。
+
+## 下一步
+
+[部署第一个应用](/docs/zh-cn/getting-started/first-app/)
+
+## 无法打开或登录
+
+| 现象 | 检查顺序 |
+| --- | --- |
+| 安装资源无法下载 | DNS、HTTPS 出站访问、代理及安装器的原始错误 |
+| Docker 连接失败 | Docker 是否启动、当前权限、服务端版本 |
+| 浏览器连接超时 | 服务器地址、9000 端口、云安全组、宿主防火墙 |
+| 隧道访问失败 | SSH 会话是否仍在运行、本地端口是否被其他程序占用 |
+| 首次设置后显示登录页 | 使用刚创建的账户登录 |
+| 原管理员无法登录 | 使用[恢复管理访问](/docs/zh-cn/administration/platform/recovery/)中的现有恢复方式 |
+
+保存安装器报错的完整上下文，但在分享前移除密码、令牌和加入凭证。需要域名访问控制台时，继续[平台域名与访问](/docs/zh-cn/administration/platform/access/)。

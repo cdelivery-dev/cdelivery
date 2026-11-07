@@ -1,0 +1,33 @@
+---
+title: "Verificações de integridade e lançamentos"
+description: "Verifique a integridade da aplicação, escolha uma estratégia de atualização, valide candidatos e recupere versões após falhas."
+sidebar:
+  group:
+    label: "Verificações de integridade e lançamentos"
+    icon: "ph:shield-check"
+  order: 26
+---
+
+Use XHealth para verificar a aplicação, uma estratégia de atualização para controlar as réplicas, Guardian para validar candidatos e rollback para restaurar uma configuração anterior.
+
+## Escolha uma tarefa
+
+<CardGrid>
+
+<Card title="Configurar XHealth" href="/docs/pt-br/guides/release-safety/xhealth/" icon="ph:heartbeat">
+  XHealth executa verificações em tarefas separadas dos contêineres de negócio.
+</Card>
+
+<Card title="Estratégias de atualização" href="/docs/pt-br/guides/release-safety/update-strategy/" icon="ph:arrows-clockwise">
+  Defina paralelismo, ordem, observação e resposta a falhas na substituição de tarefas.
+</Card>
+
+<Card title="Validação com Guardian" href="/docs/pt-br/guides/release-safety/guardian/" icon="ph:shield-check">
+  Guardian testa uma configuração candidata antes de promovê-la para a aplicação ativa.
+</Card>
+
+<Card title="Reversão e falhas de implantação" href="/docs/pt-br/guides/release-safety/rollback/" icon="ph:arrow-u-up-left">
+  Rollback restaura configuração anterior, não dados nem versões da plataforma.
+</Card>
+
+</CardGrid>

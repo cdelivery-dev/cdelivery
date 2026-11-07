@@ -1,0 +1,61 @@
+---
+title: "CDelivery 文档"
+description: "从安装和首次部署开始，逐步学习应用运维、网络、观测、自动化和平台管理。"
+sidebar:
+  order: 1
+---
+
+CDelivery 是自托管的应用运维平台。你提供服务器和容器镜像，通过控制台部署应用、配置访问入口、观察运行状态，并按需要接入自动检查、定时任务和 AI 助手。
+
+## 开始使用
+
+1. [安装前准备](/docs/zh-cn/getting-started/requirements/)：准备服务器地址、网络与访问条件。
+2. [安装部署](/docs/zh-cn/getting-started/installation/)：启动平台并创建管理员。
+3. [部署第一个应用](/docs/zh-cn/getting-started/first-app/)：部署 Nginx 并验证访问。
+
+## 核心概念
+
+| 对象 | 含义 |
+| --- | --- |
+| 服务器 | 提供计算资源和本地存储的机器。 |
+| 分组 | 组织应用，并提供组内通信网络。 |
+| 应用 | 容器镜像、配置和期望运行方式的组合。 |
+| 副本 | 应用实际运行的实例。 |
+
+分组不隔离账户权限，访问范围见[角色与权限](/docs/zh-cn/administration/accounts/roles/)。需要保存业务数据时，先了解[数据持久化](/docs/zh-cn/guides/apps/persistence/)；副本和应用回滚不能替代备份。
+
+## 应用运维
+
+<CardGrid>
+
+<Card title="应用管理" href="/docs/zh-cn/guides/apps/" icon="ph:cube">
+  创建、运行配置、配置文件与数据、扩缩容、调度和生命周期
+</Card>
+
+<Card title="域名与 HTTPS" href="/docs/zh-cn/guides/networking/" icon="ph:globe">
+  应用通信、端口、路由、自动证书、自定义证书和网络排障
+</Card>
+
+<Card title="健康检查与发布" href="/docs/zh-cn/guides/release-safety/" icon="ph:shield-check">
+  XHealth、更新策略、Guardian 验证、回滚与失败处理
+</Card>
+
+<Card title="日志、指标与事件" href="/docs/zh-cn/guides/observability/" icon="ph:chart-line">
+  应用与访问日志、应用与服务器指标、事件、采集和保留
+</Card>
+
+</CardGrid>
+
+## 平台与自动化
+
+<CardGrid>
+
+<Card title="自动化" href="/docs/zh-cn/guides/automation/" icon="ph:lightning">
+  定时任务、消息通知、AI 助手与 API/MCP 接入
+</Card>
+
+<Card title="平台管理" href="/docs/zh-cn/administration/" icon="ph:gear">
+  服务器、分组、账户、访问控制与平台维护
+</Card>
+
+</CardGrid>

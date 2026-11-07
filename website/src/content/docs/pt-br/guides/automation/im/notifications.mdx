@@ -1,0 +1,34 @@
+---
+title: "Configurações e falhas de notificação"
+description: "Entrega depende de canal da plataforma, assinatura pessoal e elegibilidade do destinatário."
+sidebar:
+  order: 51
+---
+
+Entrega depende de canal da plataforma, assinatura pessoal e elegibilidade do destinatário.
+
+## Preparar
+
+Admin habilita o canal; cada usuário confirma seu e-mail ou vincula seu próprio ID. Novas contas recebem e-mails por padrão, e novas vinculações recebem notificações por padrão. Você pode desativá-las na conta.
+
+Desvincular remove a assinatura; vincular novamente a ativa. Salvar novamente ou substituir o ID preserva a preferência, assim como alterar o e-mail da conta. Configurar ou remover um canal da plataforma não altera preferências pessoais.
+
+[Plantão](/docs/pt-br/guides/automation/duty/) é adicional para análise IA. Alertas comuns não precisam de modelo. Desativar plantão não desativa todos os alertas; desativar assinatura não remove vínculo.
+
+## Perfis e idioma
+
+Assinantes com perfil igual ou superior ao do plantão recebem a análise por IA; os demais recebem o alerta original. Os registros de operações seguem a mesma restrição de perfil.
+
+O plantão com IA aguarda a análise e envia uma notificação por destinatário e canal. Em caso de falha, cancelamento, resposta sem conteúdo útil ou limite de 60 segundos excedido, envia o alerta original. Com o plantão desativado, envia o alerta original diretamente.
+
+Reativar o plantão não reanalisa eventos pendentes.
+
+Idioma do aviso segue configuração; conversa segue usuário.
+
+## Diagnóstico
+
+Confira evento real, credenciais/permissões do canal, destinatário, assinatura, perfil, restrições/spam e erros do modelo.
+
+Registre horário, canal, conta e evento, sem tokens ou senhas. Ausência de aviso não comprova saúde. Depois de trocar ID, valide com conversa de leitura: avatar e nome não bastam.
+
+Veja os [guias de canais](/docs/pt-br/guides/automation/im/).

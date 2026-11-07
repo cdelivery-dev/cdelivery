@@ -1,0 +1,34 @@
+---
+title: "Benachrichtigungen und Fehlersuche"
+description: "Zustellung benötigt Plattformkanal, persönliches Abonnement und geeigneten Empfänger."
+sidebar:
+  order: 51
+---
+
+Zustellung benötigt Plattformkanal, persönliches Abonnement und geeigneten Empfänger.
+
+## Einrichten
+
+Admin aktiviert den Kanal; Nutzer bestätigen ihre E-Mail-Adresse oder verknüpfen ihre eigene ID. Neue Konten erhalten standardmäßig E-Mails, neue Verknüpfungen standardmäßig Benachrichtigungen. Du kannst sie im Konto ausschalten.
+
+Das Aufheben einer Verknüpfung entfernt ihr Abonnement; erneutes Verknüpfen aktiviert es. Erneutes Speichern oder Ersetzen der ID sowie Ändern der Konto-E-Mail erhalten die Benachrichtigungseinstellung. Das Einrichten oder Entfernen eines Plattformkanals ändert keine persönlichen Einstellungen.
+
+[KI-Dienst](/docs/de/guides/automation/duty/) ist zusätzlich. Normale Warnungen brauchen kein Modell. Dienst aus bedeutet nicht alle Warnungen aus; Abbestellen entfernt keine Identität.
+
+## Rollen und Sprache
+
+Abonnenten mit mindestens der Rolle des Bereitschaftsdienstes erhalten die KI-Analyse; alle anderen erhalten den ursprünglichen Alarm. Für Berichte über ausgeführte Aktionen gilt dieselbe Rollenbeschränkung.
+
+Der KI-Bereitschaftsdienst wartet auf die Analyse und sendet dann eine Nachricht pro Empfänger und Kanal. Bei Fehlern, Abbruch, fehlendem verwertbarem Text oder Überschreitung des 60-Sekunden-Limits wird der ursprüngliche Alarm gesendet. Bei deaktiviertem Dienst wird dieser direkt gesendet.
+
+Beim erneuten Aktivieren werden ausstehende Ereignisse nicht nachträglich analysiert.
+
+Hinweise folgen eingestellter Sprache, Gespräche dem Dialog.
+
+## Diagnose
+
+Tatsächliches Ereignis, Kanalzugang/Rechte, Empfänger, Abonnement, Rolle, Providerbeschränkung/Spam und Modellfehler prüfen.
+
+Zeit, Kanal, Konto und Ereignis ohne Geheimnisse notieren. Keine Nachricht bedeutet nicht gesund. Nach neuer Bindung lesendes Gespräch testen; Avatar/Name genügt nicht.
+
+Siehe [Kanalanleitungen](/docs/de/guides/automation/im/).

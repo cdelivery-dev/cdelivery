@@ -1,0 +1,73 @@
+---
+title: "Install CDelivery"
+description: "Install CDelivery, create the first administrator, and open the dashboard."
+sidebar:
+  order: 3
+---
+
+## Before you start
+
+Complete the [installation preparations](/docs/getting-started/requirements/) before running the installer. Installation needs administrative permissions and creates platform resources.
+
+On Linux, inspect the installer's Docker and networking output. On macOS, start Docker first. If IPv6 preparation fails, follow the displayed options; unattended runs cannot rely on interactive choices. See the [networking FAQ](/docs/guides/networking/faq/).
+
+## Steps
+
+<Steps>
+
+<Step title="Run the installer">
+
+```sh
+curl -fsSL https://cdelivery.dev/install.sh | sh
+```
+
+To explicitly select the address other servers use:
+
+```sh
+curl -fsSL https://cdelivery.dev/install.sh | sh -s -- --advertise-addr 10.0.0.10
+```
+
+Replace the address with one assigned to this server and reachable by its peers. It is not a domain and need not be your browser's public destination.
+
+</Step>
+
+<Step title="Open the dashboard">
+
+Open `http://SERVER_IP:9000`; on macOS, normally use `http://localhost:9000`. An SSH tunnel uses its corresponding local address.
+
+</Step>
+
+<Step title="Create the first administrator">
+
+For a new installation, enter your name, email, and password to create the first Admin. You will be signed in automatically and taken to Platform setup.
+
+In Platform setup, you can set the platform domain and enable Insight, or go straight to the dashboard. Insight defaults to local storage with 90 days of retention. Manage these later in Platform settings and Insight.
+
+A resumed installation preserves its account. Rerunning the installer does not reset passwords, erase accounts, or migrate an existing communication address.
+
+</Step>
+
+</Steps>
+
+## You should see
+
+- You can sign in with your administrator account.
+- The server list shows the expected address and resources.
+- You can open groups and Platform settings.
+
+## Next step
+
+[Deploy your first application](/docs/getting-started/first-app/)
+
+## Troubleshooting
+
+| Failure | Check |
+| --- | --- |
+| Downloads fail | DNS, outbound HTTPS, proxy, original error |
+| Docker connection fails | Daemon, permissions, server version |
+| Browser times out | Address, port 9000, cloud and host firewalls |
+| Tunnel fails | SSH session and local port conflicts |
+| Sign-in page appears after first setup | Sign in with the account you just created |
+| Existing account cannot sign in | [Recovery procedure](/docs/administration/platform/recovery/) |
+
+Remove passwords and tokens before sharing diagnostic output. Configure a [platform domain](/docs/administration/platform/access/) after basic access works.

@@ -1,0 +1,49 @@
+{% extends "settings.html" %}
+
+{% import "user/password.html" as password %}
+{% import "settings/nav.html" as nav %}
+{% import "user/role.html" as role %}
+
+{% block title %}{{ tt!("ui.user.create.title") }} - {{ tt!("ui.nav.settings") }} | {{ super() }}{% endblock title %}
+
+{% block settings_navigation %}{{ nav::nav("users") }}{% endblock settings_navigation %}
+
+{% block main %}
+<header>
+  <h1>{{ tt!("ui.user.create.title") }}</h1>
+</header>
+<noscript><p>{{ tt!("ui.javascript.required") }}</p></noscript>
+
+<form
+  method="post"
+  action="/settings/users"
+  autocomplete="off"
+  x-data='{ submitting: false, role: "Reader" }'
+  @submit="if ($refs.password.value !== $refs.confirmPassword.value) { $refs.confirmPassword.setCustomValidity($refs.confirmPassword.dataset.mismatch); $refs.confirmPassword.reportValidity(); $event.preventDefault(); return } if (submitting) { $event.preventDefault(); return } $refs.payload.value = JSON.stringify({ first_name: $refs.firstName.value, last_name: $refs.lastName.value, email: $refs.email.value, password_sha256: sha256($refs.password.value), role }); submitting = true"
+>
+  <input x-ref="payload" type="hidden" name="payload" />
+  <div class="stack section-stack">
+    <div class="fields">
+      <div class="field">
+        <label for="user-first-name">{{ tt!("ui.form.user.firstName.label") }}: </label>
+        <input x-ref="firstName" id="user-first-name" class="text" type="text" minlength="1" maxlength="64" required />
+      </div>
+      <div class="field">
+        <label for="user-last-name">{{ tt!("ui.form.user.lastName.label") }}: </label>
+        <input x-ref="lastName" id="user-last-name" class="text" type="text" minlength="1" maxlength="64" required />
+      </div>
+      <div class="field">
+        <label for="user-email">{{ tt!("ui.form.user.email.label") }}: </label>
+        <input x-ref="email" id="user-email" class="text" type="email" maxlength="254" spellcheck="false" required />
+      </div>
+    </div>
+    {% let default_role = crate::operation::typ::Role::Reader %}
+    {{ role::radiogroup(default_role) }}
+    <div class="fields">
+      {{ password::fields("user-password", "user-confirm-password", tt!("ui.form.user.password.label"), true) }}
+    </div>
+  </div>
+  <div class="actions"><input class="button" type="submit" value='{{ tt!("ui.common.create") }}' :disabled="submitting" /></div>
+</form>
+<form id="user-role-options"></form>
+{% endblock main %}

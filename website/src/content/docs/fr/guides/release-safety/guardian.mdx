@@ -1,0 +1,28 @@
+---
+title: "Validation avec Guardian"
+description: "Guardian vérifie un candidat avant de promouvoir une nouvelle configuration."
+sidebar:
+  order: 29
+---
+
+Guardian vérifie un candidat avant de promouvoir une nouvelle configuration.
+
+## Préparer
+
+Configurez [XHealth](/docs/fr/guides/release-safety/xhealth/), activez Guardian pour une application compatible et prévoyez la capacité du candidat et de l’application active.
+
+Lorsque Guardian est activé, les changements d’image, d’options d’exécution du conteneur, de XConfig ou de groupe déclenchent la validation du candidat. Le groupe se modifie via l’API. Le mode volume local ne prend pas Guardian en charge.
+
+## Phases
+
+Deploying : placement et démarrage. Validating : assertions. Failed : erreur. Promoting : remplacement actif.
+
+Réessayer, ignorer et annuler dépendent de la phase. Ignorer accepte sans validation réussie ; cela ne transforme pas un échec en succès.
+
+## Vérifier
+
+Séparez GuardianApp et GuardianCheck dans les journaux. Contrôlez ports, outils, environnement, capacité et assertions, puis les réplicas réels et la requête après promotion.
+
+Consultez [stratégie](/docs/fr/guides/release-safety/update-strategy/) et [rollback](/docs/fr/guides/release-safety/rollback/).
+
+[Secrets](/docs/fr/guides/apps/secrets/).

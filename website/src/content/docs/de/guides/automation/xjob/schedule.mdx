@@ -1,0 +1,14 @@
+---
+title: "XJob-Intervalle und Zeitlimits"
+description: "Wartezeit nach jedem Lauf und unabhängiges Ausführungszeitlimit festlegen."
+sidebar:
+  order: 39
+---
+
+Beide Werte sind erforderlich, jeweils 1 bis 1440 Minuten. Die API akzeptiert ganze Zahlen in `Minutes` (1–1440) oder `Hours` (1–24), etwa `{"unit":"Minutes","value":30}`. Das Zeitlimit darf länger als das Intervall sein.
+
+Der erste Lauf wartet das Intervall ab Erstellung der Konfiguration, weitere Läufe ab dem Ende des aktuellen Laufs, unabhängig von Erfolg oder Fehler. Während eines aktiven Laufs gibt es keinen nächsten Termin. Ein manueller Start überspringt die Wartezeit, wird aber während eines aktiven Laufs abgelehnt.
+
+Das Zeitlimit beginnt mit der Erstellung des Ausführungstasks, einschließlich Vorbereitung und Image-Download. Der Controller prüft alle 30 Sekunden und fordert bei Überschreitung einen Stopp an. Start, Prüfung, Beendigung und Controller-Ausfälle können ihn verzögern; es ist keine harte Frist. Änderungen gelten ohne neuen Startzeitpunkt auch für den aktuellen Lauf. Eine Verlängerung nimmt einen angeforderten Stopp nicht zurück.
+
+Die Konfiguration liegt im Dienst, der Laufzustand stammt aus Task-Beobachtungen. Fehlt der aktuelle Datensatz, wartet der Controller bei Bedarf das bestehende Beobachtungsfenster von 90 Sekunden ab und nähert den nächsten Termin durch Dienstaktualisierung plus Intervall an. Das garantiert kein volles Intervall nach dem tatsächlichen Ende. Ausfälle erzeugen keinen Rückstau verpasster Läufe. Vor Wiederholung eines manuellen Aufrufs mit unklarem Ergebnis zuerst die Wirkung prüfen.

@@ -1,0 +1,64 @@
+{% extends "settings.html" %}
+
+{% import "settings/nav.html" as nav %}
+{% import "../version.html" as versions %}
+
+{% block title %}{{ tt!("ui.settings.cdelivery.title") }} | {{ super() }}{% endblock title %}
+
+{% block settings_navigation %}{{ nav::nav("cdelivery") }}{% endblock settings_navigation %}
+
+{% block main %}
+<header>
+  <h1>{{ tt!("ui.settings.cdelivery.title") }}</h1>
+</header>
+{% let current_version = Some(current.version.as_str()) %}
+<form
+  method="post"
+  action="/settings/cdelivery"
+  {% if let Some(version) = target_version %}data-confirm='{{ tt!("ui.settings.version.confirm", version = version) }}'{% endif %}
+  x-data="{ submitting: false, version: '', domain: '', https: true }"
+  x-init="domain = $refs.domain.value; https = $refs.https.checked"
+  @submit="
+    if (submitting || (version && !confirm($el.dataset.confirm))) { $event.preventDefault(); return }
+    const body = {};
+    if (version) body.version = version;
+    if (!$refs.domain.matches(':disabled') && (domain !== $refs.domain.defaultValue || https !== $refs.https.defaultChecked)) body.domain = domain ? { domain, https } : null;
+    $refs.payload.value = JSON.stringify(body);
+    submitting = true;
+  "
+>
+  <input x-ref="payload" type="hidden" name="payload" />
+  <div class="stack section-stack">
+    <div class="fields">
+      {% call versions::field("version-release", tt!("ui.version.label"), current_version, target_version, latest_unavailable, true, "submitting") %}
+        x-model="version"
+      {% endcall %}
+    </div>
+    <fieldset{% if !pingress_enabled %} disabled{% endif %}>
+      <legend>{{ tt!("ui.app.published.domain.label") }}</legend>
+      {% if pingress_enabled %}
+      <small>{{ tt!("ui.settings.cdelivery.domain.help") }}</small>
+      {% else %}
+      <small>{{ tt!("ui.settings.cdelivery.domain.requiresPingress") }} <a href="/pingress">{{ tt!("ui.settings.cdelivery.domain.goToPingress") }}</a></small>
+      {% endif %}
+      <div class="fields mt-2">
+        <div class="field">
+          <label for="cdelivery-domain">{{ tt!("ui.app.published.domain.label") }}:</label>
+          <input x-ref="domain" x-model="domain" id="cdelivery-domain" class="text" type="text" minlength="2" maxlength="255"
+            value="{% match current.domain %}{% when Some(domain) %}{{ domain.domain }}{% when None %}{% endmatch %}"
+            placeholder='{{ tt!("ui.app.published.domain.placeholder") }}' pattern="[^.].*[.].*[^.]"
+            title='{{ tt!("ui.app.published.domain.validation") }}' spellcheck="false" :disabled="submitting" />
+          <label class="choice">
+            <input x-ref="https" x-model="https" type="checkbox"{% match current.domain %}{% when Some(domain) %}{% if domain.https %} checked{% endif %}{% when None %} checked{% endmatch %} :disabled="submitting" />
+            <span>{{ tt!("ui.app.published.https.label") }}</span>
+          </label>
+        </div>
+      </div>
+    </fieldset>
+  </div>
+  <div class="actions">
+    <input class="button" type="submit" value='{{ tt!("ui.common.save") }}' :disabled="submitting || (!version && ({{ !pingress_enabled }} || (domain === $refs.domain.defaultValue && https === $refs.https.defaultChecked)))" />
+  </div>
+</form>
+
+{% endblock main %}

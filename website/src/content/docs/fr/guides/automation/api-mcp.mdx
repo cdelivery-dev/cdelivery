@@ -1,0 +1,57 @@
+---
+title: "Accès API et MCP"
+description: "REST et MCP partagent opérations et autorisation ; les chemins sont ceux de votre instance."
+sidebar:
+  order: 60
+---
+
+REST et MCP partagent opérations et autorisation ; les chemins sont ceux de votre instance.
+
+## Clé
+
+Compte → MCP/API keys : nom de 1–64 octets UTF-8, plafond de rôle et expiration future facultative. Copiez immédiatement, une seule présentation.
+
+Une clé par outil facilite la révocation. Son rôle ne dépasse pas celui effectif à la création et reste limité par le compte actuel. Mot de passe changé : clé conservée. Compte supprimé : clé invalidée.
+
+## REST
+
+Définissez URL et clé localement :
+
+```sh
+curl --fail-with-body "$CDELIVERY_URL/api/me" \
+  -H "Authorization: Bearer $CDELIVERY_API_KEY"
+```
+
+Attendez votre profil. `/scalar` documente le schéma installé.
+
+Patch : absent conserve ; `null` efface uniquement les champs compatibles ; patch vide valide. Enums sensibles à la casse : Reader/Operator/Admin.
+
+## MCP
+
+Configurez le client HTTP distant avec `/mcp` et `Authorization: Bearer YOUR_API_KEY`. Listez les outils et testez une lecture pour vérifier le compte et les droits avant toute écriture.
+
+## Erreurs
+
+401 : secret invalide/expiré/révoqué ou utilisateur indisponible. 403 : droits. 422 : champs/prérequis. Connexion : URL, TLS, proxy.
+
+Après révocation, vérifiez le rejet. Voir [rôles](/docs/fr/administration/accounts/roles/).
+
+[Secrets](/docs/fr/guides/apps/secrets/): Reader peut consulter les métadonnées. Operator et Admin peuvent créer, supprimer et associer les secrets. Le contenu ne peut être ni relu, ni téléchargé, ni modifié.
+
+
+| REST | MCP / Agent |
+| --- | --- |
+| `POST /api/secrets` | `secret_create` |
+| `GET /api/secrets?kind=Text` | `secret_list` |
+| `DELETE /api/secrets/{name}` | `secret_delete` |
+
+`POST /api/secrets`:
+
+```json
+{"name":"api-token","content":{"Text":"REPLACE_LOCALLY"}}
+```
+
+- `content.File`: Base64.
+- `container_options.env`: `[{"name":"TOKEN","value":{"name":"api-token","id":"SECRET_ID"}}]`.
+- `POST /api/apps` → `xconfigs`: `[{"target":"/app/credentials","secret":{"name":"api-file","id":"SECRET_ID"}}]`.
+- `PATCH /api/apps/{name}` → `xconfigs`: `[{"Secret":{"target":"/app/credentials","secret":{"name":"api-file","id":"SECRET_ID"}}}]`.

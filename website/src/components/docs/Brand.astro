@@ -1,0 +1,11 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { site } from '../../config';
+import { translate } from '../../i18n';
+const locale = Astro.locals.docsLocale;
+const t = translate(locale);
+---
+<a href={getRelativeLocaleUrl(locale ?? 'en', '/')} aria-label={t('site.brand.home')} class="flex shrink-0 items-center gap-2.5 text-foreground no-underline transition-opacity hover:opacity-70">
+  <svg class="h-5 w-8 shrink-0" viewBox="2 6 20 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.06 9.39a10 10 0 0 0-.232-.218a4 4 0 1 0 0 5.656a10 10 0 0 0 2.172-2.828a10 10 0 0 1 2.172-2.828a4 4 0 1 1 0 5.656a10 10 0 0 1-.234-.219" /></svg>
+  <span class="text-base font-semibold tracking-tight">{site.name}</span>
+</a>

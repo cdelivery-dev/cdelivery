@@ -1,0 +1,33 @@
+---
+title: "Zustandsprüfungen und Releases"
+description: "Prüfe den Anwendungszustand, wähle eine Update-Strategie, validiere Kandidaten und behebe fehlgeschlagene Releases."
+sidebar:
+  group:
+    label: "Zustandsprüfungen und Releases"
+    icon: "ph:shield-check"
+  order: 26
+---
+
+XHealth prüft die Anwendung, die Update-Strategie steuert den Austausch der Replikate, Guardian validiert Kandidaten und ein Rollback stellt eine frühere Konfiguration wieder her.
+
+## Aufgabe auswählen
+
+<CardGrid>
+
+<Card title="XHealth konfigurieren" href="/docs/de/guides/release-safety/xhealth/" icon="ph:heartbeat">
+  XHealth prüft Anwendungen in separaten Aufgaben statt im Anwendungscontainer.
+</Card>
+
+<Card title="Update-Strategien" href="/docs/de/guides/release-safety/update-strategy/" icon="ph:arrows-clockwise">
+  Lege Parallelität, Reihenfolge, Beobachtung und Fehlerreaktion fest.
+</Card>
+
+<Card title="Release-Prüfung mit Guardian" href="/docs/de/guides/release-safety/guardian/" icon="ph:shield-check">
+  Guardian validiert eine Kandidatenkonfiguration vor Übernahme in den laufenden Dienst.
+</Card>
+
+<Card title="Rollback und fehlgeschlagene Releases" href="/docs/de/guides/release-safety/rollback/" icon="ph:arrow-u-up-left">
+  Rollback stellt vorherige Anwendungskonfiguration wieder her, nicht Daten oder Plattformversionen.
+</Card>
+
+</CardGrid>

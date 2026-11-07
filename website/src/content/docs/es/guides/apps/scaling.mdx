@@ -1,0 +1,26 @@
+---
+title: "Réplicas y escalado automático"
+description: "Las réplicas aportan capacidad, pero no copian datos locales ni eliminan cuellos de botella externos."
+sidebar:
+  order: 16
+---
+
+Las réplicas aportan capacidad, pero no copian datos locales ni eliminan cuellos de botella externos.
+
+## Réplicas fijas
+
+Define el número, guarda y compara tareas deseadas y reales. Cada réplica debe satisfacer [ubicación](/docs/es/guides/apps/placement/) y recursos. Las aplicaciones con estado mantienen una réplica fija.
+
+## Escalado automático
+
+Configura mínimo y máximo dentro de 1–65536. El controlador evalúa aproximadamente cada 30 segundos y usa una ventana de al menos 60 segundos, ajustada al intervalo de recogida.
+
+Utilización sostenida superior al 70% provoca expansión hacia un objetivo del 60%. Reducir exige estar por debajo del 50% durante al menos cinco minutos. Un pico aislado no implica cambio inmediato.
+
+Se necesitan muestras recientes de todas las réplicas y capacidad disponible. Los datos ausentes no cuentan como inactividad. Los límites CPU ayudan a valorar réplicas adicionales en un mismo servidor; sin ellos las decisiones son más conservadoras.
+
+## Verificar
+
+Activa recogida, aplica carga representativa y observa métricas y réplicas. Si no cambia, revisa límites del rango, frescura, etiquetas, reservas y máximo por servidor. Aumentar el número deseado puede dejar tareas pendientes.
+
+Consulta [métricas](/docs/es/guides/observability/metrics/application/) y [recursos](/docs/es/guides/apps/resources/).

@@ -1,0 +1,28 @@
+---
+title: "Volumes verwalten"
+description: "Volumes sind lokal; gleichnamige Volumes auf anderen Maschinen enthalten andere Daten."
+sidebar:
+  order: 55
+---
+
+Volumes sind lokal; gleichnamige Volumes auf anderen Maschinen enthalten andere Daten.
+
+## Erstellen
+
+Admin aktiviert cdelivery-agent. Servervolumes öffnen, gültigen Namen und optional Beschreibung bis 256 Zeichen anlegen. In [zustandsbehafteter Anwendung](/docs/de/guides/apps/persistence/stateful/) desselben Servers mounten und Datenerhalt testen.
+
+## Anzeigen
+
+Größenberechnung durchsucht Daten und kann dauern. Fehlende Größe ist nicht leer. Gesamt/frei beschreibt Host; reservierte Plattformvolumes sind keine gewöhnlichen Anwendungsvolumes.
+
+## Löschen/Diagnose
+
+<Aside type="caution">
+Das Löschen eines Volumes entfernt seine lokalen Daten. Beim Löschen der Anwendung bleibt das Volume erhalten.
+</Aside>
+
+Falls die Beschreibung nicht gespeichert wurde, aktualisiere die Liste und bearbeite die Beschreibung des erstellten Volumes.
+
+Referenzen und wiederherstellbare Sicherung prüfen. Belegt: Aufgabenende abwarten oder Verwendung klären. Komponente deaktivieren löscht keine Daten.
+
+Ladefehler: Server und Agent prüfen. Volume fehlt: ID/Name; anderswo neu anlegen ist kein Restore. Siehe [Persistenz](/docs/de/guides/apps/persistence/).

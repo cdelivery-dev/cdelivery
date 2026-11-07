@@ -1,0 +1,33 @@
+---
+title: "健康检查与发布"
+description: "配置健康检查和更新策略，验证候选版本，并在发布失败后恢复应用。"
+sidebar:
+  group:
+    label: "健康检查与发布"
+    icon: "ph:shield-check"
+  order: 26
+---
+
+用 XHealth 验证业务响应，用更新策略控制副本替换，用 Guardian 验证候选配置；需要恢复已推广的配置时使用回滚。
+
+## 按任务查找
+
+<CardGrid>
+
+<Card title="配置健康检查" href="/docs/zh-cn/guides/release-safety/xhealth/" icon="ph:heartbeat">
+  使用 Hurl 或自定义命令检查应用响应，配置目标、执行间隔和发布验证。
+</Card>
+
+<Card title="更新策略" href="/docs/zh-cn/guides/release-safety/update-strategy/" icon="ph:arrows-clockwise">
+  配置副本更新顺序、并行度、观察窗口和失败动作，并评估容量与业务影响。
+</Card>
+
+<Card title="发布验证（Guardian）" href="/docs/zh-cn/guides/release-safety/guardian/" icon="ph:shield-check">
+  先验证候选配置再推广到正式应用，理解失败、重试、跳过和取消的含义。
+</Card>
+
+<Card title="回滚与失败处理" href="/docs/zh-cn/guides/release-safety/rollback/" icon="ph:arrow-u-up-left">
+  区分取消候选发布和恢复上一份配置，验证回滚后的副本及业务状态。
+</Card>
+
+</CardGrid>

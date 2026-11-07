@@ -1,0 +1,125 @@
+{%- macro mem_select(kind, label, none_label, custom_label) -%}
+<select id="mem-{{ kind }}-select" class="text" x-model="$$mem_{{ kind }}_type" aria-label="{{ label }}">
+  <option value="none">{{ none_label }}</option>
+  <option value="custom">{{ custom_label }}</option>
+</select>
+{%- endmacro -%}
+
+{%- macro mem_input(kind, value_label, unit_label) -%}
+<input id="mem-{{ kind }}-input" class="text inline-number" type="number" min="1" x-model.number="$$mem_{{ kind }}_value" aria-label="{{ value_label }}" required />
+<select id="mem-{{ kind }}-unit-select" class="text" x-model="$$mem_{{ kind }}_unit" aria-label="{{ unit_label }}">
+  <option value="MiB">MiB</option>
+  <option value="GiB">GiB</option>
+</select>
+{%- endmacro -%}
+
+{%- macro cpu_select(kind, label, none_label, custom_label) -%}
+<select id="cpu-{{ kind }}-select" class="text" x-model="$$cpu_{{ kind }}_type" aria-label="{{ label }}">
+  <option value="none">{{ none_label }}</option>
+  <option value="custom">{{ custom_label }}</option>
+</select>
+{%- endmacro -%}
+
+{%- macro cpu_input(kind, label) -%}
+<input
+  id="cpu-{{ kind }}-input"
+  class="text inline-number"
+  type="number"
+  min="0.001"
+  max="10000"
+  step="0.001"
+  x-model.number="$$cpu_{{ kind }}_value"
+  aria-label="{{ label }}"
+  required
+/>
+{%- endmacro -%}
+
+{%- macro editable() -%}
+<li x-data="resourceData">
+  {% match crate::locale::current() %}
+  {% when crate::locale::Locale::ZhCn %}
+  容器运行对于内存{{ mem_select("reservations", tt!("ui.app.resource.mem.reservation.mode.label"), tt!("ui.app.resource.mem.reservation.none"), tt!("ui.app.resource.mem.reservation.custom")) }}<template x-if="$$mem_reservations_type === 'custom'"><span>{{ mem_input("reservations", tt!("ui.app.resource.mem.reservation.value.label"), tt!("ui.app.resource.mem.reservation.unit.label")) }}</span></template>，{{ mem_select("limits", tt!("ui.app.resource.mem.limit.mode.label"), tt!("ui.app.resource.mem.limit.none"), tt!("ui.app.resource.mem.limit.custom")) }}<template x-if="$$mem_limits_type === 'custom'"><span>{{ mem_input("limits", tt!("ui.app.resource.mem.limit.value.label"), tt!("ui.app.resource.mem.limit.unit.label")) }}</span></template>；对于CPU{{ cpu_select("reservations", tt!("ui.app.resource.cpu.reservation.mode.label"), tt!("ui.app.resource.cpu.reservation.none"), tt!("ui.app.resource.cpu.reservation.custom")) }}<template x-if="$$cpu_reservations_type === 'custom'"><span>{{ cpu_input("reservations", tt!("ui.app.resource.cpu.reservation.value.label")) }}核心</span></template>，{{ cpu_select("limits", tt!("ui.app.resource.cpu.limit.mode.label"), tt!("ui.app.resource.cpu.limit.none"), tt!("ui.app.resource.cpu.limit.custom")) }}<template x-if="$$cpu_limits_type === 'custom'"><span>{{ cpu_input("limits", tt!("ui.app.resource.cpu.limit.value.label")) }}核心</span></template>。
+  {% when crate::locale::Locale::ZhTw %}
+  容器的記憶體{{ mem_select("reservations", tt!("ui.app.resource.mem.reservation.mode.label"), tt!("ui.app.resource.mem.reservation.none"), tt!("ui.app.resource.mem.reservation.custom")) }}<template x-if="$$mem_reservations_type === 'custom'"><span>{{ mem_input("reservations", tt!("ui.app.resource.mem.reservation.value.label"), tt!("ui.app.resource.mem.reservation.unit.label")) }}</span></template>，{{ mem_select("limits", tt!("ui.app.resource.mem.limit.mode.label"), tt!("ui.app.resource.mem.limit.none"), tt!("ui.app.resource.mem.limit.custom")) }}<template x-if="$$mem_limits_type === 'custom'"><span>{{ mem_input("limits", tt!("ui.app.resource.mem.limit.value.label"), tt!("ui.app.resource.mem.limit.unit.label")) }}</span></template>；CPU{{ cpu_select("reservations", tt!("ui.app.resource.cpu.reservation.mode.label"), tt!("ui.app.resource.cpu.reservation.none"), tt!("ui.app.resource.cpu.reservation.custom")) }}<template x-if="$$cpu_reservations_type === 'custom'"><span>{{ cpu_input("reservations", tt!("ui.app.resource.cpu.reservation.value.label")) }}核心</span></template>，{{ cpu_select("limits", tt!("ui.app.resource.cpu.limit.mode.label"), tt!("ui.app.resource.cpu.limit.none"), tt!("ui.app.resource.cpu.limit.custom")) }}<template x-if="$$cpu_limits_type === 'custom'"><span>{{ cpu_input("limits", tt!("ui.app.resource.cpu.limit.value.label")) }}核心</span></template>。
+  {% when crate::locale::Locale::Ja %}
+  メモリは<template x-if="$$mem_reservations_type === 'custom'"><span>{{ mem_input("reservations", tt!("ui.app.resource.mem.reservation.value.label"), tt!("ui.app.resource.mem.reservation.unit.label")) }}を</span></template>{{ mem_select("reservations", tt!("ui.app.resource.mem.reservation.mode.label"), tt!("ui.app.resource.mem.reservation.none"), tt!("ui.app.resource.mem.reservation.custom")) }}。使用量の上限は<template x-if="$$mem_limits_type === 'custom'"><span>{{ mem_input("limits", tt!("ui.app.resource.mem.limit.value.label"), tt!("ui.app.resource.mem.limit.unit.label")) }}に</span></template>{{ mem_select("limits", tt!("ui.app.resource.mem.limit.mode.label"), tt!("ui.app.resource.mem.limit.none"), tt!("ui.app.resource.mem.limit.custom")) }}。CPU は<template x-if="$$cpu_reservations_type === 'custom'"><span>{{ cpu_input("reservations", tt!("ui.app.resource.cpu.reservation.value.label")) }}コアを</span></template>{{ cpu_select("reservations", tt!("ui.app.resource.cpu.reservation.mode.label"), tt!("ui.app.resource.cpu.reservation.none"), tt!("ui.app.resource.cpu.reservation.custom")) }}。使用量の上限は<template x-if="$$cpu_limits_type === 'custom'"><span>{{ cpu_input("limits", tt!("ui.app.resource.cpu.limit.value.label")) }}コアに</span></template>{{ cpu_select("limits", tt!("ui.app.resource.cpu.limit.mode.label"), tt!("ui.app.resource.cpu.limit.none"), tt!("ui.app.resource.cpu.limit.custom")) }}。
+  {% when crate::locale::Locale::PtBr %}
+  Para a memória, {{ mem_select("reservations", tt!("ui.app.resource.mem.reservation.mode.label"), tt!("ui.app.resource.mem.reservation.none"), tt!("ui.app.resource.mem.reservation.custom")) }}<template x-if="$$mem_reservations_type === 'custom'"><span> {{ mem_input("reservations", tt!("ui.app.resource.mem.reservation.value.label"), tt!("ui.app.resource.mem.reservation.unit.label")) }}</span></template> e {{ mem_select("limits", tt!("ui.app.resource.mem.limit.mode.label"), tt!("ui.app.resource.mem.limit.none"), tt!("ui.app.resource.mem.limit.custom")) }}<template x-if="$$mem_limits_type === 'custom'"><span> {{ mem_input("limits", tt!("ui.app.resource.mem.limit.value.label"), tt!("ui.app.resource.mem.limit.unit.label")) }}</span></template>; em núcleos de CPU, {{ cpu_select("reservations", tt!("ui.app.resource.cpu.reservation.mode.label"), tt!("ui.app.resource.cpu.reservation.none"), tt!("ui.app.resource.cpu.reservation.custom")) }}<template x-if="$$cpu_reservations_type === 'custom'"><span> {{ cpu_input("reservations", tt!("ui.app.resource.cpu.reservation.value.label")) }}</span></template> e {{ cpu_select("limits", tt!("ui.app.resource.cpu.limit.mode.label"), tt!("ui.app.resource.cpu.limit.none"), tt!("ui.app.resource.cpu.limit.custom")) }}<template x-if="$$cpu_limits_type === 'custom'"><span> {{ cpu_input("limits", tt!("ui.app.resource.cpu.limit.value.label")) }}</span></template>.
+  {% when crate::locale::Locale::Es %}
+  Para la memoria, {{ mem_select("reservations", tt!("ui.app.resource.mem.reservation.mode.label"), tt!("ui.app.resource.mem.reservation.none"), tt!("ui.app.resource.mem.reservation.custom")) }}<template x-if="$$mem_reservations_type === 'custom'"><span> {{ mem_input("reservations", tt!("ui.app.resource.mem.reservation.value.label"), tt!("ui.app.resource.mem.reservation.unit.label")) }}</span></template> y {{ mem_select("limits", tt!("ui.app.resource.mem.limit.mode.label"), tt!("ui.app.resource.mem.limit.none"), tt!("ui.app.resource.mem.limit.custom")) }}<template x-if="$$mem_limits_type === 'custom'"><span> {{ mem_input("limits", tt!("ui.app.resource.mem.limit.value.label"), tt!("ui.app.resource.mem.limit.unit.label")) }}</span></template>; para la CPU, en núcleos, {{ cpu_select("reservations", tt!("ui.app.resource.cpu.reservation.mode.label"), tt!("ui.app.resource.cpu.reservation.none"), tt!("ui.app.resource.cpu.reservation.custom")) }}<template x-if="$$cpu_reservations_type === 'custom'"><span> {{ cpu_input("reservations", tt!("ui.app.resource.cpu.reservation.value.label")) }}</span></template> y {{ cpu_select("limits", tt!("ui.app.resource.cpu.limit.mode.label"), tt!("ui.app.resource.cpu.limit.none"), tt!("ui.app.resource.cpu.limit.custom")) }}<template x-if="$$cpu_limits_type === 'custom'"><span> {{ cpu_input("limits", tt!("ui.app.resource.cpu.limit.value.label")) }}</span></template>.
+  {% when crate::locale::Locale::Fr %}
+  Pour la mémoire, {{ mem_select("reservations", tt!("ui.app.resource.mem.reservation.mode.label"), tt!("ui.app.resource.mem.reservation.none"), tt!("ui.app.resource.mem.reservation.custom")) }}<template x-if="$$mem_reservations_type === 'custom'"><span> {{ mem_input("reservations", tt!("ui.app.resource.mem.reservation.value.label"), tt!("ui.app.resource.mem.reservation.unit.label")) }}</span></template> et {{ mem_select("limits", tt!("ui.app.resource.mem.limit.mode.label"), tt!("ui.app.resource.mem.limit.none"), tt!("ui.app.resource.mem.limit.custom")) }}<template x-if="$$mem_limits_type === 'custom'"><span> {{ mem_input("limits", tt!("ui.app.resource.mem.limit.value.label"), tt!("ui.app.resource.mem.limit.unit.label")) }}</span></template>. Pour le CPU (en cœurs), {{ cpu_select("reservations", tt!("ui.app.resource.cpu.reservation.mode.label"), tt!("ui.app.resource.cpu.reservation.none"), tt!("ui.app.resource.cpu.reservation.custom")) }}<template x-if="$$cpu_reservations_type === 'custom'"><span> {{ cpu_input("reservations", tt!("ui.app.resource.cpu.reservation.value.label")) }}</span></template> et {{ cpu_select("limits", tt!("ui.app.resource.cpu.limit.mode.label"), tt!("ui.app.resource.cpu.limit.none"), tt!("ui.app.resource.cpu.limit.custom")) }}<template x-if="$$cpu_limits_type === 'custom'"><span> {{ cpu_input("limits", tt!("ui.app.resource.cpu.limit.value.label")) }}</span></template>.
+  {% when crate::locale::Locale::De %}
+  Für den Arbeitsspeicher {{ mem_select("reservations", tt!("ui.app.resource.mem.reservation.mode.label"), tt!("ui.app.resource.mem.reservation.none"), tt!("ui.app.resource.mem.reservation.custom")) }}<template x-if="$$mem_reservations_type === 'custom'"><span> {{ mem_input("reservations", tt!("ui.app.resource.mem.reservation.value.label"), tt!("ui.app.resource.mem.reservation.unit.label")) }}</span></template> {{ mem_select("limits", tt!("ui.app.resource.mem.limit.mode.label"), tt!("ui.app.resource.mem.limit.none"), tt!("ui.app.resource.mem.limit.custom")) }}<template x-if="$$mem_limits_type === 'custom'"><span> {{ mem_input("limits", tt!("ui.app.resource.mem.limit.value.label"), tt!("ui.app.resource.mem.limit.unit.label")) }}</span></template> festlegen. Für die CPU (in Kernen) {{ cpu_select("reservations", tt!("ui.app.resource.cpu.reservation.mode.label"), tt!("ui.app.resource.cpu.reservation.none"), tt!("ui.app.resource.cpu.reservation.custom")) }}<template x-if="$$cpu_reservations_type === 'custom'"><span> {{ cpu_input("reservations", tt!("ui.app.resource.cpu.reservation.value.label")) }}</span></template> {{ cpu_select("limits", tt!("ui.app.resource.cpu.limit.mode.label"), tt!("ui.app.resource.cpu.limit.none"), tt!("ui.app.resource.cpu.limit.custom")) }}<template x-if="$$cpu_limits_type === 'custom'"><span> {{ cpu_input("limits", tt!("ui.app.resource.cpu.limit.value.label")) }}</span></template> festlegen.
+  {% when crate::locale::Locale::En %}
+  For memory, the container {{ mem_select("reservations", tt!("ui.app.resource.mem.reservation.mode.label"), tt!("ui.app.resource.mem.reservation.none"), tt!("ui.app.resource.mem.reservation.custom")) }}<template x-if="$$mem_reservations_type === 'custom'"><span> {{ mem_input("reservations", tt!("ui.app.resource.mem.reservation.value.label"), tt!("ui.app.resource.mem.reservation.unit.label")) }}</span></template> {{ mem_select("limits", tt!("ui.app.resource.mem.limit.mode.label"), tt!("ui.app.resource.mem.limit.none"), tt!("ui.app.resource.mem.limit.custom")) }}<template x-if="$$mem_limits_type === 'custom'"><span> {{ mem_input("limits", tt!("ui.app.resource.mem.limit.value.label"), tt!("ui.app.resource.mem.limit.unit.label")) }}</span></template>; in CPU cores, it {{ cpu_select("reservations", tt!("ui.app.resource.cpu.reservation.mode.label"), tt!("ui.app.resource.cpu.reservation.none"), tt!("ui.app.resource.cpu.reservation.custom")) }}<template x-if="$$cpu_reservations_type === 'custom'"><span> {{ cpu_input("reservations", tt!("ui.app.resource.cpu.reservation.value.label")) }}</span></template> {{ cpu_select("limits", tt!("ui.app.resource.cpu.limit.mode.label"), tt!("ui.app.resource.cpu.limit.none"), tt!("ui.app.resource.cpu.limit.custom")) }}<template x-if="$$cpu_limits_type === 'custom'"><span> {{ cpu_input("limits", tt!("ui.app.resource.cpu.limit.value.label")) }}</span></template>.
+  {% endmatch %}
+</li>
+<script>
+document.addEventListener("alpine:init", () => {
+  const specGet = (self, side, field) =>
+    self.resources && self.resources[side] ? self.resources[side][field] ?? null : null;
+  const specSet = (self, side, field, value) => {
+    if (value === null) {
+      if (!self.resources || !self.resources[side]) return;
+      self.resources[side][field] = null;
+      const spec = self.resources[side];
+      if (spec.cpus == null && spec.memory == null) self.resources[side] = null;
+      if (self.resources.limits == null && self.resources.reservations == null) self.resources = null;
+      return;
+    }
+    if (!self.resources) self.resources = { limits: null, reservations: null };
+    if (!self.resources[side]) self.resources[side] = { cpus: null, memory: null };
+    self.resources[side][field] = value;
+  };
+  const accessors = {};
+  for (const side of ["limits", "reservations"]) {
+    accessors[`$$mem_${side}_type`] = {
+      get() { return specGet(this, side, "memory") ? "custom" : "none"; },
+      set(val) {
+        specSet(this, side, "memory", val === "custom" ? { unit: "MiB", value: side === "limits" ? 512 : 256 } : null);
+      },
+    };
+    accessors[`$$mem_${side}_value`] = {
+      get() { return specGet(this, side, "memory")?.value ?? null; },
+      set(val) { const m = specGet(this, side, "memory"); if (m) m.value = val; },
+    };
+    accessors[`$$mem_${side}_unit`] = {
+      get() { return specGet(this, side, "memory")?.unit ?? "MiB"; },
+      set(val) { const m = specGet(this, side, "memory"); if (m) m.unit = val; },
+    };
+    accessors[`$$cpu_${side}_type`] = {
+      get() { return specGet(this, side, "cpus") != null ? "custom" : "none"; },
+      set(val) { specSet(this, side, "cpus", val === "custom" ? (side === "limits" ? 1.5 : 0.5) : null); },
+    };
+    accessors[`$$cpu_${side}_value`] = {
+      get() { return specGet(this, side, "cpus"); },
+      set(val) { specSet(this, side, "cpus", val); },
+    };
+  }
+  Alpine.data("resourceData", () => {
+    const data = {};
+    for (const [name, acc] of Object.entries(accessors)) {
+      Object.defineProperty(data, name, { get: acc.get, set: acc.set, enumerable: true, configurable: true });
+    }
+    return data;
+  });
+});
+</script>
+{%- endmacro -%}
+
+{%- macro bytesize(value) -%}
+{%- match value -%}
+{%- when crate::operation::typ::ByteSize::MiB(n) -%}{{ n }}&nbsp;MiB
+{%- when crate::operation::typ::ByteSize::GiB(n) -%}{{ n }}&nbsp;GiB
+{%- when crate::operation::typ::ByteSize::TiB(n) -%}{{ n }}&nbsp;TiB
+{%- endmatch -%}
+{%- endmacro -%}
+
+{%- macro duration(value) -%}
+{%- match value -%}
+{%- when crate::operation::typ::Duration::Seconds(n) -%}{{ n }}&nbsp;{{ crate::locale::current().quantity(**n, tt!("ui.app.duration.secondsOne"), tt!("ui.app.duration.seconds")) }}
+{%- when crate::operation::typ::Duration::Minutes(n) -%}{{ n }}&nbsp;{{ crate::locale::current().quantity(**n, tt!("ui.app.duration.minutesOne"), tt!("ui.app.duration.minutes")) }}
+{%- when crate::operation::typ::Duration::Hours(n) -%}{{ n }}&nbsp;{{ crate::locale::current().quantity(**n, tt!("ui.app.duration.hoursOne"), tt!("ui.app.duration.hours")) }}
+{%- endmatch -%}
+{%- endmacro -%}

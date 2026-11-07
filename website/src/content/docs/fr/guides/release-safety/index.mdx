@@ -1,0 +1,33 @@
+---
+title: "Contrôles de santé et déploiements"
+description: "Contrôlez l’état des applications, choisissez une stratégie de mise à jour, validez les candidats et récupérez après un échec."
+sidebar:
+  group:
+    label: "Contrôles de santé et déploiements"
+    icon: "ph:shield-check"
+  order: 26
+---
+
+XHealth vérifie l’application, la stratégie de mise à jour contrôle le remplacement des réplicas, Guardian valide les candidats et le retour arrière rétablit une configuration précédente.
+
+## Choisir une tâche
+
+<CardGrid>
+
+<Card title="Configurer XHealth" href="/docs/fr/guides/release-safety/xhealth/" icon="ph:heartbeat">
+  XHealth exécute les contrôles dans des tâches distinctes des conteneurs métier.
+</Card>
+
+<Card title="Stratégies de mise à jour" href="/docs/fr/guides/release-safety/update-strategy/" icon="ph:arrows-clockwise">
+  Contrôlez parallélisme, ordre, observation et réaction aux échecs.
+</Card>
+
+<Card title="Validation avec Guardian" href="/docs/fr/guides/release-safety/guardian/" icon="ph:shield-check">
+  Guardian vérifie un candidat avant de promouvoir une nouvelle configuration.
+</Card>
+
+<Card title="Retour arrière et échecs" href="/docs/fr/guides/release-safety/rollback/" icon="ph:arrow-u-up-left">
+  Rollback restaure une configuration précédente, pas les données ou la plateforme.
+</Card>
+
+</CardGrid>

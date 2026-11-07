@@ -1,0 +1,36 @@
+---
+title: "Certificados automáticos y renovación"
+description: "ACME emite y renueva certificados cuando DNS y validación pueden alcanzar Pingress."
+sidebar:
+  order: 23
+---
+
+ACME emite y renueva certificados cuando DNS y validación pueden alcanzar Pingress.
+
+## Preparar
+
+Dirige el dominio a Pingress y permite 80/443. HTTP-01 necesita el puerto 80:
+
+```sh
+curl -i http://app.example.com/.well-known/acme-challenge/healthz
+```
+
+Espera HTTP 200 sin depender de redirecciones. Corrige DNS, AAAA, proxy y cortafuegos antes de solicitar emisión.
+
+Los certificados automáticos están seleccionados al habilitar Pingress. Puedes desmarcarlos y habilitarlos después en los ajustes de certificados.
+
+La API de creación usa `"acme": "LetsEncrypt"` de forma predeterminada. Para HTTP sin HTTPS o certificados manuales, envía `"acme": null`; esto elimina la cuenta conservada y los certificados automáticos, pero mantiene los certificados subidos. Staging y Pebble son entornos de prueba sin confianza pública de producción. La API también ofrece dns-persist-01 cuando la autoridad lo admite; no es un formulario genérico de proveedores DNS. Consulta [validaciones ACME](https://letsencrypt.org/docs/challenge-types/).
+
+## Tiempos
+
+Los certificados se emiten en segundo plano. Se revisa la emisión aproximadamente cada cinco minutos y la renovación cada ocho horas. El momento de renovación sigue la información de la autoridad o el periodo de validez.
+
+La validación debe seguir accesible. Los certificados cargados manualmente no se renuevan así.
+
+## Verificar
+
+Comprueba dominio, emisor y caducidad desde un cliente real, con IPv4 e IPv6 si ambos están publicados. Una AAAA incorrecta puede fallar aunque IPv4 funcione.
+
+La cuenta de certificados automáticos se prepara antes de desplegar Pingress. Si el despliegue falla, se conserva para reintentar. Mientras Pingress no exista y no haya certificados automáticos almacenados, se puede elegir otra autoridad compatible mediante la API.
+
+Revisa el error concreto y evita repetir solicitudes sin corregirlo. Para gestión externa, utiliza [certificados propios](/docs/es/guides/networking/custom-certificates/).

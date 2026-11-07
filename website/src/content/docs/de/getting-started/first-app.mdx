@@ -1,0 +1,70 @@
+---
+title: "Erste Anwendung bereitstellen"
+description: "Stelle Nginx über einen veröffentlichten Port bereit und prüfe eine echte HTTP-Antwort."
+sidebar:
+  order: 4
+---
+
+Stelle Nginx über einen veröffentlichten Port bereit und prüfe eine echte HTTP-Antwort.
+
+## Vorbereitung
+
+Verwende eine funktionierende Installation. Ein Admin erstellt die Gruppe; Operator oder Admin stellt die Anwendung bereit. Der Server muss das öffentliche Nginx-Image von Docker Hub laden können. TCP-Port 8080 muss frei und von deinem Computer erreichbar sein.
+
+Führe für den SSH-Zugriff diesen Befehl auf deinem Computer aus und halte die Sitzung offen:
+
+```sh
+ssh -L 9000:127.0.0.1:9000 -L 8080:127.0.0.1:8080 your-user@server.example.com
+```
+
+## Schritte
+
+<Steps>
+
+<Step title="Gruppe erstellen">
+
+Erstelle eine Gruppe namens `demo`.
+
+</Step>
+
+<Step title="Anwendung konfigurieren">
+
+Erstelle darin die Anwendung `hello-web` mit dem Image `nginx:stable-alpine`. Behalte den Standardbefehl und ein festes Replikat.
+
+</Step>
+
+<Step title="Port veröffentlichen">
+
+Veröffentliche den Container-Port **80** als Server-Port **8080**, mit TCP.
+
+</Step>
+
+<Step title="Anwendung bereitstellen">
+
+Speichere die Anwendung und warte, bis das Replikat läuft.
+
+</Step>
+
+</Steps>
+
+Domain, Volume und eigener Befehl sind nicht nötig. Das [offizielle Image](https://hub.docker.com/_/nginx) startet Nginx im Vordergrund.
+
+## Test
+
+Öffne auf deinem Computer `http://SERVER_IP:8080` oder führe den folgenden Befehl aus. Ersetze `SERVER_IP` durch die erreichbare Serveradresse.
+
+```sh
+curl -i http://SERVER_IP:8080
+```
+
+Wenn du den SSH-Tunnel nutzt, halte die Sitzung offen und führe stattdessen auf deinem Computer Folgendes aus:
+
+```sh
+curl -i http://localhost:8080
+```
+
+HTTP 200 und Nginx-Seite erwarten; zusätzlich Replikate und Logs prüfen.
+
+Pullfehler: Registry/Architektur. Prozessende: Befehl/Logs. Timeout: Zuordnung, Adresse, Firewall, Tunnel. Eine Domainroute würde internen Port 80 nutzen.
+
+Zum Aufräumen Anwendung löschen, Aufgabenende abwarten, leere Gruppe löschen. Weiter zur [Anwendungsverwaltung](/docs/de/guides/apps/).

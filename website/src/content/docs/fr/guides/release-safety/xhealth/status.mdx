@@ -1,0 +1,26 @@
+---
+title: "États et dépannage de XHealth"
+description: "Distinguez attente, exécution, succès, échec et fin sans résultat exploitable."
+sidebar:
+  order: 27
+---
+
+Distinguez attente, exécution, succès, échec et fin sans résultat exploitable.
+
+## États
+
+Pending : attente. Running : exécution. Passed : succès. Failed : échec. Settled : fin sans résultat utile.
+
+Settled ne signifie pas Passed ; Guardian considère l’absence de résultat comme un problème de validation.
+
+## Diagnostic
+
+En attente, contrôlez ressources, serveurs, image et placement. Exécution prolongée : timeout ou dépendance bloquée. Échec : journaux XHealth, assertion, sortie, port, chemin, environnement et outils.
+
+Un échec interne ne démontre pas un problème de certificat. Un succès interne ne garantit pas l’accès public ; testez DNS/TLS séparément.
+
+## Après modification
+
+Relancez et vérifiez timestamp et définition, plutôt qu’un ancien résultat vert. Mesurez la disponibilité métier, pas simplement l’existence d’un processus.
+
+Revenez à la [configuration](/docs/fr/guides/release-safety/xhealth/) ou consultez les [journaux](/docs/fr/guides/observability/logs/application/).

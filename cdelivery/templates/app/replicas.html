@@ -1,0 +1,91 @@
+{%- macro mode_select() -%}
+<select class="text" x-model="$$replicaMode" :disabled="mounts !== null" aria-label='{{ tt!("ui.app.replicas.mode") }}'>
+  <option value="Fixed">{{ tt!("ui.app.replicas.fixed") }}</option>
+  <option value="Dynamic">{{ tt!("ui.app.replicas.dynamic") }}</option>
+</select>
+{%- endmacro -%}
+
+{%- macro count_input() -%}
+<input id="replicas" class="text inline-number" type="number" min="1" max="65536" x-model.number="$$replicaCount" :disabled="mounts !== null" :aria-label="replicas.Dynamic ? $el.dataset.minimum : $el.dataset.fixed" data-minimum='{{ tt!("ui.app.replicas.minimum") }}' data-fixed='{{ tt!("ui.app.image.replicas.label") }}' required />
+{%- endmacro -%}
+
+{%- macro maximum_select() -%}
+<select class="text" x-model="$$replicaMaxMode" aria-label='{{ tt!("ui.app.replicas.maximum") }}'>
+  <option value="unlimited">{{ tt!("ui.app.replicas.unlimited") }}</option>
+  <option value="limited">{{ tt!("ui.app.replicas.specified") }}</option>
+</select>
+{%- endmacro -%}
+
+{%- macro maximum_input() -%}
+<input class="text inline-number" type="number" :min="replicas.Dynamic.min" max="65536" x-model.number="replicas.Dynamic.max" aria-label='{{ tt!("ui.app.replicas.maximum") }}' required />
+{%- endmacro -%}
+
+{%- macro editable(mode) -%}
+<div x-data="replicasData({{ mode == "create" }})">
+  {% match crate::locale::current() %}
+  {% when crate::locale::Locale::ZhCn %}
+  <template x-if="!replicas.Dynamic"><p>{{ mode_select() }}运行{{ count_input() }}个副本。</p></template>
+  <template x-if="replicas.Dynamic"><p>{{ mode_select() }}调整副本数，至少{{ count_input() }}个，上限{{ maximum_select() }}<template x-if="$$replicaMaxMode === 'limited'"><span>为{{ maximum_input() }}个</span></template>。</p></template>
+  {% when crate::locale::Locale::ZhTw %}
+  <template x-if="!replicas.Dynamic"><p>{{ mode_select() }}執行{{ count_input() }}個副本。</p></template>
+  <template x-if="replicas.Dynamic"><p>{{ mode_select() }}調整副本數，至少{{ count_input() }}個，上限{{ maximum_select() }}<template x-if="$$replicaMaxMode === 'limited'"><span>為{{ maximum_input() }}個</span></template>。</p></template>
+  {% when crate::locale::Locale::Ja %}
+  <template x-if="!replicas.Dynamic"><p>レプリカ数を{{ count_input() }}個に{{ mode_select() }}。</p></template>
+  <template x-if="replicas.Dynamic"><p>レプリカ数を{{ mode_select() }}。最小{{ count_input() }}個、上限は{{ maximum_select() }}<template x-if="$$replicaMaxMode === 'limited'"><span>で{{ maximum_input() }}個に設定</span></template>。</p></template>
+  {% when crate::locale::Locale::PtBr %}
+  <template x-if="!replicas.Dynamic"><p>{{ mode_select() }} o número de réplicas em {{ count_input() }}.</p></template>
+  <template x-if="replicas.Dynamic"><p>{{ mode_select() }} o número de réplicas: mínimo {{ count_input() }}, máximo {{ maximum_select() }}<template x-if="$$replicaMaxMode === 'limited'"><span> {{ maximum_input() }}</span></template>.</p></template>
+  {% when crate::locale::Locale::Es %}
+  <template x-if="!replicas.Dynamic"><p>{{ mode_select() }} el número de réplicas en {{ count_input() }}.</p></template>
+  <template x-if="replicas.Dynamic"><p>{{ mode_select() }} el número de réplicas: mínimo {{ count_input() }}, máximo {{ maximum_select() }}<template x-if="$$replicaMaxMode === 'limited'"><span> {{ maximum_input() }}</span></template>.</p></template>
+  {% when crate::locale::Locale::Fr %}
+  <template x-if="!replicas.Dynamic"><p>{{ mode_select() }} le nombre de répliques à {{ count_input() }}.</p></template>
+  <template x-if="replicas.Dynamic"><p>{{ mode_select() }} le nombre de répliques : minimum {{ count_input() }}, maximum {{ maximum_select() }}<template x-if="$$replicaMaxMode === 'limited'"><span> {{ maximum_input() }}</span></template>.</p></template>
+  {% when crate::locale::Locale::De %}
+  <template x-if="!replicas.Dynamic"><p>Die Replikatanzahl {{ mode_select() }} bei {{ count_input() }} halten.</p></template>
+  <template x-if="replicas.Dynamic"><p>Die Replikatanzahl {{ mode_select() }} anpassen: mindestens {{ count_input() }}, die Obergrenze <template x-if="$$replicaMaxMode === 'limited'"><span>auf {{ maximum_input() }} </span></template>{{ maximum_select() }}.</p></template>
+  {% when crate::locale::Locale::En %}
+  <template x-if="!replicas.Dynamic"><p>Keep the replica count {{ mode_select() }} at {{ count_input() }}.</p></template>
+  <template x-if="replicas.Dynamic"><p>Scale {{ mode_select() }}, keeping at least {{ count_input() }} <span data-one="replica" data-other="replicas" x-text="CDelivery.quantity($$replicaCount, $el.dataset)">replicas</span>, with the maximum {{ maximum_select() }}<template x-if="$$replicaMaxMode === 'limited'"><span> {{ maximum_input() }}</span></template>.</p></template>
+  {% endmatch %}
+</div>
+<script>
+document.addEventListener("alpine:init", () => {
+  Alpine.data("replicasData", (creating) => ({
+    initialized: !creating,
+    get $$replicaMode() { return this.replicas.Dynamic ? "Dynamic" : "Fixed"; },
+    set $$replicaMode(mode) {
+      if (mode === this.$$replicaMode) return;
+      if (mode === "Dynamic") {
+        this.replicas = { Dynamic: { min: this.initialized ? this.replicas.Fixed : 1, max: null } };
+        this.initialized = true;
+      } else {
+        this.replicas = { Fixed: this.desiredReplicas ?? this.replicas.Dynamic.min };
+      }
+    },
+    get $$replicaCount() { return this.replicas.Dynamic?.min ?? this.replicas.Fixed; },
+    set $$replicaCount(value) {
+      if (this.replicas.Dynamic) this.replicas.Dynamic.min = value;
+      else this.replicas.Fixed = value;
+    },
+    get $$replicaMaxMode() { return this.replicas.Dynamic.max == null ? "unlimited" : "limited"; },
+    set $$replicaMaxMode(mode) {
+      this.replicas.Dynamic.max = mode === "limited" ? this.replicas.Dynamic.min : null;
+    },
+  }));
+});
+</script>
+{%- endmacro -%}
+
+{%- macro readonly(replicas) -%}
+{% match replicas %}
+{% when crate::operation::app::typ::replicas::Replicas::Fixed(count) %}
+<p>{{ tt!("ui.app.replicas.summary.fixed", count = count) }}</p>
+{% when crate::operation::app::typ::replicas::Replicas::Dynamic { min, max } %}
+{% if let Some(max) = max %}
+<p>{{ tt!("ui.app.replicas.summary.bounded", min = min, max = max) }}</p>
+{% else %}
+<p>{{ tt!("ui.app.replicas.summary.unlimited", min = min) }}</p>
+{% endif %}
+{% endmatch %}
+{%- endmacro -%}

@@ -1,0 +1,52 @@
+---
+title: "Domínios e HTTPS"
+description: "Separe comunicação interna, portas publicadas e rotas HTTP/HTTPS do Pingress."
+sidebar:
+  group:
+    label: "Domínios e HTTPS"
+    icon: "ph:globe"
+  order: 20
+---
+
+Separe comunicação interna, portas publicadas e rotas HTTP/HTTPS do Pingress.
+
+## Escolher entrada
+
+| Necessidade | Configuração |
+| --- | --- |
+| Comunicação no grupo | Nome da aplicação e porta interna |
+| TCP/UDP direto | Mapeamento de porta |
+| HTTP com domínio | Rota para porta do contêiner |
+| HTTPS | Rota e certificado válido |
+
+Rota não exige publicar antes uma porta, e seu destino não é o número da porta pública.
+
+## Escolher uma tarefa
+
+<CardGrid>
+
+<Card title="Comunicação e portas publicadas" href="/docs/pt-br/guides/networking/connectivity/" icon="ph:plugs-connected">
+  Aplicações no mesmo grupo se conectam por nome e porta interna.
+</Card>
+
+<Card title="Domínios e rotas" href="/docs/pt-br/guides/networking/routing/" icon="ph:globe">
+  Pingress combina domínio e condições da requisição para encaminhar ao contêiner.
+</Card>
+
+<Card title="Certificados automáticos e renovação" href="/docs/pt-br/guides/networking/automatic-certificates/" icon="ph:certificate">
+  ACME emite e renova quando o domínio e a validação chegam ao Pingress.
+</Card>
+
+<Card title="Certificados próprios" href="/docs/pt-br/guides/networking/custom-certificates/" icon="ph:key">
+  Carregue cadeia e chave privada PEM quando a emissão é administrada externamente.
+</Card>
+
+<Card title="Perguntas frequentes sobre rede" href="/docs/pt-br/guides/networking/faq/" icon="ph:question">
+  Investigue IPv6, endereços de clientes, DNS, rotas e certificados.
+</Card>
+
+</CardGrid>
+
+## Solução de problemas
+
+Teste DNS, conexão, TLS e resposta separadamente. Um certificado emitido não garante backend funcional. O [domínio do console](/docs/pt-br/administration/platform/access/) possui configuração própria.

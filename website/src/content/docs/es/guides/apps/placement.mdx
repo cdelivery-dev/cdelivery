@@ -1,0 +1,28 @@
+---
+title: "Selección de servidores y ubicación"
+description: "La ubicación restringe qué máquinas pueden ejecutar una réplica y cuántas admite cada una."
+sidebar:
+  order: 17
+---
+
+La ubicación restringe qué máquinas pueden ejecutar una réplica y cuántas admite cada una.
+
+## Configurar
+
+Admin añade la [etiqueta](/docs/es/administration/nodes/labels/) a los servidores previstos. En la aplicación, selecciona la etiqueta y el máximo de réplicas por servidor, revisa reservas y guarda.
+
+Tres réplicas con máximo uno por máquina necesitan al menos tres servidores elegibles. Además deben estar preparados, disponibles para planificar y tener recursos.
+
+La etiqueta es una condición de pertenencia, no un lenguaje de consultas complejas. Las aplicaciones con estado seleccionan directamente un servidor fijo.
+
+## Cambios y datos
+
+Cambiar restricciones puede sustituir o mover tareas. StartFirst puede exigir capacidad adicional. La ubicación no copia archivos ni volúmenes: un nombre o etiqueta idénticos en otra máquina no proporcionan los datos originales.
+
+Consulta [aplicaciones con estado](/docs/es/guides/apps/persistence/stateful/) para almacenamiento local.
+
+## Diagnosticar
+
+Si una tarea espera, comprueba etiqueta real, disponibilidad, recursos, reservas y máximo por servidor. Lee su error antes de repetir reinicios.
+
+Una máquina eliminada y reincorporada puede tener otro ID. Revisa selecciones fijas y etiquetas después de [reincorporarla](/docs/es/administration/nodes/).

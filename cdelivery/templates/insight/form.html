@@ -1,0 +1,64 @@
+{% import "version.html" as versions %}
+
+{% if let Some(data) = form %}
+{% let server_configurable = insight.server.is_some() || data.server_target_version.is_some() %}
+{% let agent_configurable = insight.agent.is_some() || data.agent_target_version.is_some() %}
+{% let configurable = server_configurable && agent_configurable %}
+<script id="insight-current" type="application/json">{{ insight|json|safe }}</script>
+<script id="insight-nodes" type="application/json">{{ nodes|json|safe }}</script>
+
+<div class="mt-3" x-data="insightSpec">
+<form
+  method="post"
+  action="/insight/configure"
+  autocomplete="off"
+  @submit="prepare($event)"
+>
+  <input x-ref="payload" type="hidden" name="payload" />
+  <div class="stack section-stack">
+    <div class="fields">
+      {% let mut server_current = None %}
+      {% if let Some(server) = insight.server %}
+      {% mut server_current = Some(server.version.as_str()) %}
+      {% endif %}
+      {% let server_target = data.server_target_version %}
+      {% let server_unavailable = data.server_latest_unavailable %}
+      {% call versions::field("insight-server-version", tt!("ui.insight.version.server"), server_current, server_target, server_unavailable, true, "submitting") %}
+        x-ref="serverVersion"
+      {% endcall %}
+      {% let mut agent_current = None %}
+      {% if let Some(agent) = insight.agent %}
+      {% mut agent_current = Some(agent.version.as_str()) %}
+      {% endif %}
+      {% let agent_target = data.agent_target_version %}
+      {% let agent_unavailable = data.agent_latest_unavailable %}
+      {% call versions::field("insight-agent-version", tt!("ui.insight.version.agent"), agent_current, agent_target, agent_unavailable, true, "submitting") %}
+        x-ref="agentVersion"
+      {% endcall %}
+    </div>
+    {% include "insight/fields.html" %}
+  </div>
+  <div class="actions">
+    {% if deployed %}<input type="submit" form="insight-disable-form" class="button danger" value='{{ tt!("ui.common.disable") }}' :disabled="submitting" />{% endif %}
+    <input class="button" type="submit" value='{% if deployed %}{{ tt!("ui.common.update") }}{% else %}{{ tt!("ui.common.enable") }}{% endif %}' {% if configurable %}:disabled="submitting"{% else %}disabled{% endif %} />
+  </div>
+</form>
+
+{% if deployed %}
+<form
+  id="insight-disable-form"
+  method="post"
+  action="/insight/disable"
+  data-confirm='{{ tt!("ui.insight.disable.confirm") }}'
+  @submit="if (submitting || !confirm($el.dataset.confirm)) { $event.preventDefault(); return } runPreparation($event, {}, 'disable')"
+>
+  <input type="hidden" name="payload" value="{}" />
+</form>
+{% endif %}
+{% let preparation_destination = "/insight" %}
+{% let preparation_recovery = "/insight" %}
+{% include "preparation.html" %}
+</div>
+
+{% include "insight/script.html" %}
+{% endif %}

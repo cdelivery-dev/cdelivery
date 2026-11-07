@@ -1,0 +1,31 @@
+{% macro problems(result, context) %}
+{% match result %}
+{% when Err(error) %}
+<article>
+  <h3 class="abnormal">{{ tt!("ui.events.problemsUnavailable") }}</h3>
+  <pre class="diagnostic">{{ error }}</pre>
+</article>
+{% when Ok(conditions) %}
+{% for condition in conditions %}
+<article>
+  <h3 class="abnormal">{{ crate::ui::events::kind_title(condition.kind) }}{% if context.is_empty() || condition.subject != context %}: <span translate="no">{{ condition.subject }}</span>{% endif %}</h3>
+  <p class="diagnostic-summary" translate="no">{{ condition.detail }}</p>
+  <small class="inline-meta">
+    <span>{{ tt!("ui.conditions.since") }} <relative-time datetime="{{ condition.since }}">{{ condition.since }}</relative-time></span>
+    {% if !context.is_empty() && condition.subject == context %}
+    {% match condition.kind %}
+    {% when insight_wire::event::Kind::RuntimeIssue %}<a href="/apps/{{ context }}/logs?source=app">{{ tt!("ui.diagnostic.logs") }}</a>
+    {% when insight_wire::event::Kind::XHealthFailed %}<a href="/apps/{{ context }}/logs?source=xhealth">{{ tt!("ui.diagnostic.logs") }}</a>
+    {% when _ %}
+    {% endmatch %}
+    {% endif %}
+  </small>
+  <details>
+    <summary>{{ tt!("ui.diagnostic.details") }}</summary>
+    <pre class="diagnostic" translate="no">{{ condition.detail }}</pre>
+    <small>{{ tt!("ui.conditions.observed") }} <relative-time datetime="{{ condition.observed_at }}">{{ condition.observed_at }}</relative-time></small>
+  </details>
+</article>
+{% endfor %}
+{% endmatch %}
+{% endmacro %}

@@ -1,0 +1,37 @@
+---
+title: "Antes de instalar"
+description: "Planeje os endereços dos servidores, as portas de rede, o acesso ao console e o armazenamento."
+sidebar:
+  order: 2
+---
+
+Um servidor basta para começar. Vários servidores precisam de endereços estáveis que permitam a comunicação entre eles.
+
+## Endereços de comunicação entre servidores
+
+O endereço anunciado precisa ser alcançável pelos outros servidores; pode diferir do navegador. Loopback não serve para comunicação remota.
+
+## Rede e acesso
+
+| Porta | Uso | Acesso |
+| --- | --- | --- |
+| TCP 9000 | Console/API | Rede administrativa |
+| TCP 80/443 | Pingress | Clientes |
+| Portas publicadas | Aplicações | Clientes previstos |
+| TCP 2377 | Gerenciamento | Entre servidores |
+| TCP/UDP 7946 | Comunicação | Entre servidores |
+| UDP 4789 | Tráfego de aplicações | Entre servidores |
+
+Confira firewall do host e regras de nuvem. Restrinja portas internas às máquinas participantes. Consulte os [requisitos de rede](https://docs.docker.com/engine/network/drivers/overlay/#requirements).
+
+Para administrar um servidor remoto, você pode usar um túnel SSH:
+
+```sh
+ssh -L 9000:127.0.0.1:9000 your-user@server.example.com
+```
+
+Mantenha o túnel aberto e visite localhost:9000. A porta 8080 do exemplo precisa de outro encaminhamento.
+
+## Planejamento de dados
+
+Escolha servidor e backup antes de criar aplicações com estado. Domínio é opcional. Confira [IPv6](/docs/pt-br/guides/networking/faq/) e prossiga à [instalação](/docs/pt-br/getting-started/installation/).

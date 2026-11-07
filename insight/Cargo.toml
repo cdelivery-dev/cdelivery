@@ -1,0 +1,58 @@
+[package]
+name = "insight"
+version = "0.1.0"
+edition = "2024"
+publish = false
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+
+[dependencies]
+axum = { workspace = true }
+axum-extra = { workspace = true }
+bytes = { workspace = true }
+http = { workspace = true }
+cipher = { workspace = true }
+datafusion = { workspace = true }
+futures-util = { workspace = true }
+getset = { workspace = true }
+insight-schema = { workspace = true }
+insight-wire = { workspace = true }
+jiff = { workspace = true }
+logging = { workspace = true }
+macros = { workspace = true }
+mimalloc = { workspace = true }
+object_store = { workspace = true }
+parquet = { workspace = true }
+pingress-wire = { workspace = true }
+scc = { workspace = true }
+serde = { workspace = true }
+strum = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true }
+tokio-util = { workspace = true }
+tracing = { workspace = true }
+uuid = { workspace = true }
+
+[dev-dependencies]
+arrow = { workspace = true }
+base64 = { workspace = true }
+rustix = { workspace = true, features = ["process"] }
+serde_json = { workspace = true }
+sha2 = { workspace = true }
+
+[[test]]
+name = "storage"
+test = false
+
+[features]
+benchmark = []
+tokio-console = ["logging/tokio-console"]
+
+[[bench]]
+name = "log"
+harness = false
+required-features = ["benchmark"]
+
+[lints]
+workspace = true

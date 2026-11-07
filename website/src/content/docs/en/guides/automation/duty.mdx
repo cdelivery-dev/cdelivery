@@ -1,0 +1,38 @@
+---
+title: "AI on-call"
+description: "Configure unattended analysis, check intervals, roles, notification language, and recipients."
+sidebar:
+  order: 45
+---
+
+AI on-call responds to alerts and recoveries and performs periodic checks. Routine changes such as creating, updating, or restarting an app remain in event history for diagnosis and do not trigger AI analysis. It uses a configured model and can execute tools within its assigned role.
+
+## Configure
+
+<Steps>
+
+1. Prepare a working [model](/docs/guides/automation/models/).
+2. Choose an on-call role, policy, check interval, and notification language.
+3. Enable on-call and configure recipient channels.
+4. Inspect subsequent events, analysis, and notifications.
+5. Verify any resulting operation against actual platform state.
+
+</Steps>
+
+Defaults are Operator, NearCritical, a 30-minute check interval, and English notifications. The interval accepts 15 minutes to 24 hours. Event-driven analysis does not wait for the next check.
+
+Policies include EarlyRisk, NearCritical, and LimitOrFailure. They describe when the agent should act on risk; they are not one universal fixed numeric threshold for every resource.
+
+## Permissions and recipients
+
+Reader provides observation. Operator and Admin allow unattended writes within their platform permissions. AI on-call has no personal account scope and does not act as a selected human user.
+
+Subscribed users receive AI analysis only when their role is at least the on-call role; other subscribers receive the original alert. Operation receipts follow the same role restriction.
+
+AI on-call analyzes alerts before sending notifications; if no usable analysis is available, it sends the original alert. See [notification delivery rules](/docs/guides/automation/im/notifications/).
+
+## Verify and troubleshoot
+
+Check on-call configuration, model errors, recent events, channel delivery, subscriptions, and role filtering. An absent notification does not prove no problem exists.
+
+Disabling on-call does not disable ordinary operational alerts. User conversations follow the user's language; on-call notifications use the configured notification language. See [notification troubleshooting](/docs/guides/automation/im/notifications/).

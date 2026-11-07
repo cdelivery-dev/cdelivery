@@ -1,0 +1,32 @@
+---
+import InformationLayout from '../layouts/InformationLayout.astro';
+import { site } from '../config';
+import { translate } from '../i18n';
+
+const t = translate(Astro.currentLocale);
+---
+<InformationLayout title={t('site.footer.privacy')} description={t('site.privacy.description')} updated="2026-10-29">
+  <section>
+    <h2>{t('site.privacy.hostingTitle')}</h2>
+    <p>{t('site.privacy.hostingBody')}</p>
+    <p><a href="https://www.cloudflare.com/privacypolicy/">{t('site.information.cloudflarePrivacy')}</a></p>
+  </section>
+  <section>
+    <h2>{t('site.privacy.preferencesTitle')}</h2>
+    <p>{t('site.privacy.preferencesBody')}</p>
+  </section>
+  <section>
+    <h2>{t('site.privacy.correspondenceTitle')}</h2>
+    <p>{t('site.privacy.correspondenceBody')}</p>
+    <p><a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">{t('site.information.githubPrivacy')}</a></p>
+  </section>
+  <section>
+    <h2>{t('site.privacy.instancesTitle')}</h2>
+    <p>{t('site.privacy.instancesBody')}</p>
+  </section>
+  <section>
+    <h2>{t('site.privacy.questionsTitle')}</h2>
+    <p>{t('site.privacy.questionsBody')}</p>
+    <p><a href={`mailto:${site.email}`}>{site.email}</a></p>
+  </section>
+</InformationLayout>

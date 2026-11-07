@@ -1,0 +1,36 @@
+---
+title: "Certificats automatiques et renouvellement"
+description: "ACME émet et renouvelle lorsque DNS et validation atteignent Pingress."
+sidebar:
+  order: 23
+---
+
+ACME émet et renouvelle lorsque DNS et validation atteignent Pingress.
+
+## Préparer
+
+Configurez DNS et 80/443. HTTP-01 utilise 80 :
+
+```sh
+curl -i http://app.example.com/.well-known/acme-challenge/healthz
+```
+
+Attendez 200 sans dépendre d’une redirection. Corrigez AAAA, proxy et pare-feu.
+
+Les certificats automatiques sont sélectionnés par défaut lors de l’activation de Pingress. Vous pouvez les désélectionner et les activer plus tard dans les paramètres des certificats.
+
+L’API de création utilise `"acme": "LetsEncrypt"` par défaut. Pour HTTP seul ou des certificats gérés manuellement, envoyer `"acme": null` ; cela supprime le compte conservé et les certificats automatiques, tout en gardant les certificats importés. Staging et Pebble sont des environnements de test. L’API propose dns-persist-01 si l’autorité le prend en charge, pas une intégration DNS générique. Voir [validations ACME](https://letsencrypt.org/docs/challenge-types/).
+
+## Délais
+
+Les certificats sont émis en arrière-plan. L’émission est vérifiée environ toutes les cinq minutes, le renouvellement toutes les huit heures. La date de renouvellement suit les informations de l’autorité ou la période de validité.
+
+Conservez l’accès de validation. Les certificats manuels ne sont pas renouvelés automatiquement.
+
+## Contrôler
+
+Vérifiez domaine, émetteur et expiration en IPv4/IPv6 si publiés. Une AAAA erronée peut échouer malgré IPv4.
+
+Le compte de certificats automatiques est préparé avant le déploiement de Pingress. Si le déploiement échoue, le compte est conservé pour réessayer. Tant que Pingress n’existe pas et qu’aucun certificat automatique n’est stocké, une autre autorité prise en charge peut être choisie via l’API.
+
+Corrigez la cause avant de répéter. Voir [certificats propres](/docs/fr/guides/networking/custom-certificates/).

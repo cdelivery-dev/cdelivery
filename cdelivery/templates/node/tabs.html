@@ -1,0 +1,14 @@
+{%- macro tabs(id, active) -%}
+<nav class="tab-list" aria-label='{{ tt!("ui.node.title") }}'>
+  <a href="/nodes/{{ id }}"{% if active == "overview" %} aria-current="page"{% endif %}>{{ tt!("ui.node.tab.overview") }}</a>
+  <a href="/nodes/{{ id }}/metrics"{% if active == "metrics" %} aria-current="page"{% endif %}>{{ tt!("ui.node.tab.metrics") }}</a>
+  <a href="/nodes/{{ id }}/volumes"{% if active == "volumes" %} aria-current="page"{% endif %}>{{ tt!("ui.volume.title") }}</a>
+</nav>
+{%- endmacro -%}
+
+{%- macro page_header(id, hostname, active) -%}
+<header>
+  <h1 translate="no">{{ hostname }}</h1>
+  {{ tabs(id, active) }}
+</header>
+{%- endmacro -%}

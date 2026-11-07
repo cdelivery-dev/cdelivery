@@ -1,0 +1,37 @@
+---
+title: "Vor der Installation"
+description: "Plane Serveradressen, Netzwerkports, Konsolenzugriff und Datenspeicherung vor der Installation."
+sidebar:
+  order: 2
+---
+
+Ein Server genügt für den Einstieg. Mehrere Server benötigen stabile Adressen, über die sie einander erreichen können.
+
+## Adressen für die Serverkommunikation
+
+Die angekündigte Adresse muss für andere Server erreichbar sein; Browseradresse darf abweichen. Loopback eignet sich nicht für entfernte Teilnehmer.
+
+## Netzwerk und Zugriff
+
+| Port | Zweck | Zugriff |
+| --- | --- | --- |
+| TCP 9000 | Konsole/API | Verwaltungsnetz |
+| TCP 80/443 | Pingress | Clients |
+| Veröffentlichte Ports | Anwendungen | Vorgesehene Clients |
+| TCP 2377 | Verwaltung | Zwischen Servern |
+| TCP/UDP 7946 | Kommunikation | Zwischen Servern |
+| UDP 4789 | Anwendungsverkehr | Zwischen Servern |
+
+Prüfe Host-Firewall und Cloud-Regeln. Interne Ports auf beteiligte Server beschränken. Siehe [Docker-Anforderungen](https://docs.docker.com/engine/network/drivers/overlay/#requirements).
+
+Für die Verwaltung eines entfernten Servers kannst du einen SSH-Tunnel verwenden:
+
+```sh
+ssh -L 9000:127.0.0.1:9000 your-user@server.example.com
+```
+
+Tunnel offen halten; für 8080 ist eine weitere Weiterleitung nötig.
+
+## Datenplanung
+
+Speicherserver und Sicherung vor zustandsbehafteten Anwendungen festlegen. Domain ist optional. Siehe [IPv6](/docs/de/guides/networking/faq/) und [Installation](/docs/de/getting-started/installation/).

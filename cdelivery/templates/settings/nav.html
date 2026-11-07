@@ -1,0 +1,15 @@
+{%- macro nav(active) -%}
+<li class="nav-section">{{ tt!("ui.settings.agent.title") }}</li>
+<li><a href="/settings/agent/model"{% if active == "model" %} aria-current="page"{% endif %}>{{ tt!("ui.settings.agent.model") }}</a></li>
+<li><a href="/settings/agent/duty"{% if active == "duty" %} aria-current="page"{% endif %}>{{ tt!("ui.settings.agent.duty.title") }}</a></li>
+<li class="nav-section">{{ tt!("ui.settings.channels.title") }}</li>
+<li><a href="/settings/channels/email"{% if active == "email" %} aria-current="page"{% endif %}>{{ tt!("ui.channel.email.title") }}</a></li>
+<li><a href="/settings/channels/slack"{% if active == "slack" %} aria-current="page"{% endif %}>{{ tt!("ui.channel.slack.title") }}</a></li>
+<li><a href="/settings/channels/telegram"{% if active == "telegram" %} aria-current="page"{% endif %}>{{ tt!("ui.channel.telegram.title") }}</a></li>
+<li><a href="/settings/channels/discord"{% if active == "discord" %} aria-current="page"{% endif %}>{{ tt!("ui.channel.discord.title") }}</a></li>
+<li><a href="/settings/channels/lark"{% if active == "lark" %} aria-current="page"{% endif %}>{{ tt!("ui.channel.lark.title") }}</a></li>
+<li><a href="/settings/channels/feishu"{% if active == "feishu" %} aria-current="page"{% endif %}>{{ tt!("ui.channel.feishu.title") }}</a></li>
+<li class="nav-section">{{ tt!("ui.settings.nav.system") }}</li>
+<li><a href="/settings/cdelivery"{% if active == "cdelivery" %} aria-current="page"{% endif %}>{{ tt!("ui.settings.cdelivery.title") }}</a></li>
+<li><a href="/settings/users"{% if active == "users" %} aria-current="page"{% endif %}>{{ tt!("ui.user.title") }}</a></li>
+{%- endmacro nav -%}

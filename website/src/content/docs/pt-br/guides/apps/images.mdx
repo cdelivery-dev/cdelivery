@@ -1,0 +1,26 @@
+---
+title: "Imagens e registros"
+description: "Escolha referência de imagem, versão e credenciais apropriadas ao registro."
+sidebar:
+  order: 9
+---
+
+Escolha referência de imagem, versão e credenciais apropriadas ao registro.
+
+## Configurar
+
+Use repositório e tag, como `nginx:stable-alpine`, sem `https://` ou URL de página. A entrada atual não aceita digest `@sha256:`. Confira arquitetura e requisitos da versão.
+
+Alterar a tag no registro não inicia implantação automaticamente. Salvar configuração igual também não substitui tarefas; use [reinício](/docs/pt-br/guides/apps/lifecycle/) quando necessário.
+
+## Registro privado
+
+Informe usuário e senha/token de pull. O console exige senha quando há usuário. Cancele uma edição desnecessária para manter o existente ou preencha o par ao trocar.
+
+A API preserva segredo omitido apenas se seu escopo não mudar. Outro registro exige credenciais adequadas. Senhas salvas não são devolvidas em texto.
+
+## Diagnóstico
+
+Imagem inexistente: nome/tag. Não autorizado: usuário, token e permissões. Timeout/TLS: DNS, rede e certificado. Incompatibilidade: arquitetura e manifesto. Processo encerra: comando, ambiente e montagens.
+
+Depois do download, confira versão, logs e uma requisição real. Em bancos, avalie formato dos dados antes de atualizar: [reverter](/docs/pt-br/guides/release-safety/rollback/) não restaura conteúdo.

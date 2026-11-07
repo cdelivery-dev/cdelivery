@@ -1,0 +1,69 @@
+{%- macro fields(create) -%}
+<div class="fields xjob-fields">
+  {% if create %}
+  <div class="field">
+    <label for="xjob-name">{{ tt!("ui.xjob.name.label") }}</label>
+    <input id="xjob-name" class="text" type="text" placeholder='{{ tt!("ui.xjob.name.placeholder") }}' minlength="1" maxlength="16" pattern="^[a-z0-9]([a-z0-9\-]*[a-z0-9])?$" title='{{ tt!("ui.xjob.name.validation") }}' x-model="job" spellcheck="false" required />
+  </div>
+  {% endif %}
+  <div class="field">
+    <label for="xjob-interval">{{ tt!("ui.xjob.interval.label") }}</label>
+    <div class="row">
+      <input id="xjob-interval" class="text" type="number" min="1" :max="interval.unit === 'Hours' ? 24 : 1440" step="1" x-model.number="interval.value" aria-describedby="xjob-interval-help" required />
+      <select id="xjob-interval-unit" class="text" x-model="interval.unit" aria-label='{{ tt!("ui.xjob.interval.unit") }}' required>
+        <option value="Minutes" data-one='{{ tt!("ui.app.duration.minutesOne") }}' data-other='{{ tt!("ui.app.duration.minutes") }}' x-text="CDelivery.quantity(interval.value, $el.dataset)">{{ tt!("ui.app.duration.minutes") }}</option>
+        <option value="Hours" data-one='{{ tt!("ui.app.duration.hoursOne") }}' data-other='{{ tt!("ui.app.duration.hours") }}' x-text="CDelivery.quantity(interval.value, $el.dataset)">{{ tt!("ui.app.duration.hours") }}</option>
+      </select>
+    </div>
+    <small id="xjob-interval-help">{{ tt!("ui.xjob.interval.help") }}</small>
+  </div>
+  <div class="field">
+    <label for="xjob-timeout">{{ tt!("ui.xjob.timeout.label") }}</label>
+    <div class="row">
+      <input id="xjob-timeout" class="text" type="number" min="1" :max="timeout.unit === 'Hours' ? 24 : 1440" step="1" x-model.number="timeout.value" aria-describedby="xjob-timeout-help" required />
+      <select id="xjob-timeout-unit" class="text" x-model="timeout.unit" aria-label='{{ tt!("ui.xjob.timeout.unit") }}' required>
+        <option value="Minutes" data-one='{{ tt!("ui.app.duration.minutesOne") }}' data-other='{{ tt!("ui.app.duration.minutes") }}' x-text="CDelivery.quantity(timeout.value, $el.dataset)">{{ tt!("ui.app.duration.minutes") }}</option>
+        <option value="Hours" data-one='{{ tt!("ui.app.duration.hoursOne") }}' data-other='{{ tt!("ui.app.duration.hours") }}' x-text="CDelivery.quantity(timeout.value, $el.dataset)">{{ tt!("ui.app.duration.hours") }}</option>
+      </select>
+    </div>
+    <small id="xjob-timeout-help">{{ tt!("ui.xjob.timeout.help") }}</small>
+  </div>
+  <div class="field">
+    <label for="xjob-command">{{ tt!("ui.xjob.command.label") }}</label>
+    <input id="xjob-command" class="text" type="text" minlength="1" maxlength="8192" x-model="command_line" placeholder='{{ tt!("ui.xjob.command.placeholder") }}' spellcheck="false" required />
+    <small>{{ tt!("ui.xjob.command.helper") }}</small>
+  </div>
+</div>
+{%- endmacro -%}
+
+{%- macro script(create) -%}
+<script>
+document.addEventListener("alpine:init", () => {
+  Alpine.data("xjobForm", () => {
+    const initial = JSON.parse(document.getElementById("xjob-form-init").textContent);
+    return {
+      job: "",
+      interval: { ...initial.interval },
+      timeout: { ...initial.timeout },
+      command_line: initial.command_line,
+      submitting: false,
+      prepare(event) {
+        if (this.submitting) { event.preventDefault(); return; }
+        const { interval, timeout } = this;
+        {% if create %}
+        this.$refs.payload.value = JSON.stringify({ job: this.job, spec: { interval, timeout, command: [] }, command_line: this.command_line });
+        {% else %}
+        const changes = {};
+        if (JSON.stringify(interval) !== JSON.stringify(initial.interval)) changes.interval = interval;
+        if (JSON.stringify(timeout) !== JSON.stringify(initial.timeout)) changes.timeout = timeout;
+        const commandLine = this.command_line !== initial.command_line ? this.command_line : null;
+        if (Object.keys(changes).length === 0 && commandLine === null) { alert({{ tt!("ui.app.noChange")|json|safe }}); event.preventDefault(); return; }
+        this.$refs.payload.value = JSON.stringify({ changes, command_line: commandLine });
+        {% endif %}
+        this.submitting = true;
+      },
+    };
+  });
+});
+</script>
+{%- endmacro -%}

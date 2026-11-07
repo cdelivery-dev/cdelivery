@@ -1,0 +1,68 @@
+---
+import Icon from '@cloudflare/nimbus-docs/components/Icon.astro';
+import { site, type Locale } from '../../config';
+import { translate } from '../../i18n';
+import { docsPath } from '../../routes';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = translate(locale);
+const indexUrl = `${docsPath(locale)}llms.txt`;
+const prompt = t('docs.aiPrompt', { url: new URL(indexUrl, site.url).href });
+---
+
+<details data-ai-resources data-pagefind-ignore data-copied={t('docs.copied')} class="mt-4 border-t border-border pt-3">
+  <summary class="nb-sidebar-row text-sm leading-5 text-foreground">
+    <Icon name="ph:sparkle" class="h-4 w-4 shrink-0 text-muted-foreground" />
+    {t('docs.aiResources')}
+  </summary>
+  <div class="ms-3 mt-0.5 space-y-0.5 border-s border-border ps-2">
+    <p class="px-3 py-2 text-xs leading-5 text-muted-foreground">{t('docs.aiHelp')}</p>
+    <button type="button" class="nb-sidebar-link w-full cursor-pointer text-start text-sm font-[450] leading-5">
+      <span data-ai-copy-label role="status" aria-live="polite" aria-atomic="true">{t('docs.copyPrompt')}</span>
+    </button>
+    <p data-ai-copy-error role="status" class="px-3 py-2 text-xs leading-5 text-muted-foreground" hidden>{t('docs.copyFailed')}</p>
+    <p data-ai-prompt class="select-all px-3 pb-2 text-xs leading-5 [overflow-wrap:anywhere]" hidden>{prompt}</p>
+    <a href={indexUrl} target="_blank" rel="noopener" class="nb-sidebar-link text-sm font-[450] leading-5">
+      <span class="min-w-0">{t('docs.documentationIndex')} <span class="whitespace-nowrap">(llms.txt)</span></span>
+      <Icon name="ph:arrow-up-right" class="h-3.5 w-3.5 shrink-0" />
+    </a>
+  </div>
+</details>
+
+<script>
+  import { mount } from '@cloudflare/nimbus-docs/client';
+
+  mount('[data-ai-resources]', (root: HTMLElement) => {
+    const button = root.querySelector<HTMLButtonElement>('button')!;
+    const label = root.querySelector<HTMLElement>('[data-ai-copy-label]')!;
+    const error = root.querySelector<HTMLElement>('[data-ai-copy-error]')!;
+    const prompt = root.querySelector<HTMLElement>('[data-ai-prompt]')!;
+    const idle = label.textContent!;
+    let resetTimer: number | undefined;
+
+    async function copyPrompt() {
+      window.clearTimeout(resetTimer);
+      label.textContent = idle;
+      error.hidden = true;
+      prompt.hidden = true;
+      try {
+        await navigator.clipboard.writeText(prompt.textContent!);
+        label.textContent = root.dataset.copied!;
+        resetTimer = window.setTimeout(() => { label.textContent = idle; }, 2000);
+      } catch {
+        error.hidden = false;
+        prompt.hidden = false;
+      }
+    }
+
+    button.addEventListener('click', copyPrompt);
+    return () => {
+      window.clearTimeout(resetTimer);
+      button.removeEventListener('click', copyPrompt);
+    };
+  });
+</script>

@@ -1,0 +1,26 @@
+---
+title: "XJob-Ergebnisse und Fehler"
+description: "Die Ansicht zeigt aktuellen/letzten Lauf und nächsten Termin, keine unbegrenzte Historie."
+sidebar:
+  order: 40
+---
+
+Die Ansicht zeigt aktuellen/letzten Lauf und nächsten Termin, keine unbegrenzte Historie.
+
+Das API-Feld `last_run` bezeichnet die Erstellung des zuletzt beobachteten Tasks, nicht dessen Ende. Fehlende Datensätze beweisen keinen Erfolg. Stopps wegen Zeitüberschreitung erzeugen `XJobFailed`-Ereignisse; bei fehlendem Laufdatensatz Ereignisse und Logs prüfen.
+
+## Lesen
+
+Name, Zustand, Zeiten und Ergebnis prüfen; richtige XJob-Logquelle wählen. Pending ist nicht abgeschlossen, Running nicht erfolgreich. Exitcode null muss Geschäftserfolg bedeuten.
+
+## Diagnose
+
+Kein Start: Server/Ressourcen/Image. Befehl fehlt: Werkzeuge/Pfad. Dienst unerreichbar: Gruppe/Host/Port/Zugang. Timeout: Abhängigkeit/Dauer. Keine Logs: Quelle/Zeitraum/Treiber. Doppelte Wirkung: Befehlsverhalten.
+
+Separate Container erhalten keine temporären Geschäftsdateien automatisch.
+
+## Wiederholen
+
+Vorher prüfen, ob bereits Teilwirkungen eingetreten sind. Fehler machen Schreibvorgänge oder externe Anfragen nicht rückgängig.
+
+Nach Befehls-/[Zeitplanänderung](/docs/de/guides/automation/xjob/schedule/) neuen Lauf und nächsten Termin prüfen. Vollständige Geschäftshistorie im Geschäftssystem führen.

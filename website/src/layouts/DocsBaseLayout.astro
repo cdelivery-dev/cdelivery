@@ -1,0 +1,81 @@
+---
+import '@fontsource-variable/inter';
+import '@fontsource-variable/jetbrains-mono';
+import interLatin from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import '../styles/globals.css';
+import '../styles/prose.css';
+import { SearchDialog } from '../components/ui/search';
+import Favicons from '../components/Favicons.astro';
+import AgentDirective from '../components/docs/AgentDirective.astro';
+import Icon from '@cloudflare/nimbus-docs/components/Icon.astro';
+import { site, type Locale } from '../config';
+import { translate } from '../i18n';
+import { docsPath } from '../routes';
+import { head } from '../docs/metadata';
+
+interface Props { title: string; description?: string; locale: Locale; slug?: string; markdownUrl?: string; noindex?: boolean }
+const { title, description = '', locale, slug = '', markdownUrl, noindex = false } = Astro.props;
+Astro.locals.docsLocale = locale;
+const t = translate(locale);
+const canonical = new URL(docsPath(locale, slug), site.url).href;
+const llms = `${docsPath(locale)}llms.txt`;
+const structuredData = JSON.stringify({ '@context': 'https://schema.org', '@type': 'WebPage', name: title, description, url: canonical, inLanguage: locale, isPartOf: { '@type': 'WebSite', name: site.name, url: site.url } }).replaceAll('<', '\\u003c');
+---
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} - {site.name}</title>
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    {noindex && <meta name="robots" content="noindex" />}
+    {!noindex && head(locale, slug, title, description).map(({ tag: Tag, attrs }) => <Tag {...attrs} />)}
+    {!noindex && <script type="application/ld+json" set:html={structuredData} />}
+    <Favicons />
+    <link rel="preload" href={interLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href={`/_nimbus/shiki.css${import.meta.env.DEV ? `?v=${Date.now()}` : ''}`} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    {markdownUrl && <link rel="alternate" type="text/markdown" href={new URL(markdownUrl, site.url)} />}
+    {!noindex && <link rel="alternate" type="text/plain" title="LLM index" href={new URL(llms, site.url)} />}
+    <script is:inline>
+      (() => {
+        const media = window.matchMedia('(prefers-color-scheme: dark)');
+        let unsaved;
+        const preference = () => {
+          if (unsaved) return unsaved;
+          try {
+            const value = localStorage.getItem('ui-mode');
+            return value === 'dark' || value === 'light' ? value : null;
+          } catch { return null; }
+        };
+        const apply = (mode) => {
+          if (mode === 'dark' || mode === 'light') unsaved = mode;
+          const selected = preference() ?? (media.matches ? 'dark' : 'light');
+          document.documentElement.dataset.mode = selected;
+          document.documentElement.style.colorScheme = selected;
+          document.querySelectorAll('[data-nb-theme-toggle]').forEach((button) => {
+            button.dataset.nbState = selected;
+            button.setAttribute('aria-pressed', String(selected === 'dark'));
+          });
+        };
+        apply();
+        media.addEventListener('change', () => apply());
+        window.addEventListener('storage', (event) => { if (event.key === 'ui-mode') apply(); });
+        window.__nbApplyTheme = apply;
+      })();
+    </script>
+  </head>
+  <body class="min-h-screen bg-background text-foreground antialiased" data-copy-code={t('docs.copyCode')} data-copied={t('docs.copied')} data-copy-failed={t('docs.copyFailed')} data-copy-link={t('docs.copyLink')}>
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:start-2 focus:top-2 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground">{t('site.skipLink')}</a>
+    {!noindex && markdownUrl && <AgentDirective markdownUrl={new URL(markdownUrl, site.url).href} llmsUrl={new URL(llms, site.url).href} />}
+    <slot />
+    <template id="docs-copy-icon"><Icon name="ph:copy" /></template>
+    <template id="docs-check-icon"><Icon name="ph:check" /></template>
+    <span id="docs-copy-status" class="sr-only" aria-live="polite" />
+    <SearchDialog />
+    <script>
+      import '../docs/copy';
+    </script>
+  </body>
+</html>

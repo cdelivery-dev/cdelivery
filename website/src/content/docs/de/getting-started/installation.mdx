@@ -1,0 +1,70 @@
+---
+title: "CDelivery installieren"
+description: "Installiere CDelivery, erstelle den ersten Administrator und öffne das Dashboard."
+sidebar:
+  order: 3
+---
+
+## Voraussetzungen
+
+Führe den Installer mit Administratorrechten aus und prüfe anschließend den Konsolenzugang.
+
+Prüfe zuerst die [Installationsvorbereitung](/docs/de/getting-started/requirements/).
+
+Unter macOS Docker starten. Bei IPv6-Problemen Diagnose beachten; unbeaufsichtigte Ausführung kann keine manuelle Auswahl voraussetzen.
+
+## Schritte
+
+<Steps>
+
+<Step title="Installer ausführen">
+
+```sh
+curl -fsSL https://cdelivery.dev/install.sh | sh
+```
+
+Für eine bestimmte Serveradresse:
+
+```sh
+curl -fsSL https://cdelivery.dev/install.sh | sh -s -- --advertise-addr 10.0.0.10
+```
+
+Verwende eine lokale, für andere Server erreichbare IP, keine Domain. Sie muss nicht öffentlich sein.
+
+</Step>
+
+<Step title="Dashboard öffnen">
+
+Öffne `http://SERVER_IP:9000`, unter macOS oder über einen Tunnel `http://localhost:9000`.
+
+</Step>
+
+<Step title="Ersten Administrator erstellen">
+
+Gib Name, E-Mail und Passwort ein, um den ersten Admin zu erstellen. Du wirst automatisch angemeldet und zur Plattform-Einrichtung weitergeleitet.
+
+In der Plattform-Einrichtung kannst du die Domain einrichten und Insight aktivieren oder direkt das Dashboard öffnen. Insight verwendet standardmäßig lokalen Speicher mit 90 Tagen Aufbewahrung. Die weitere Verwaltung erfolgt in den Plattform-Einstellungen und auf der Insight-Seite.
+
+Eine fortgesetzte Installation behält ihr Konto. Wiederholung setzt weder Passwort noch bestehende Kommunikationsadresse zurück.
+
+</Step>
+
+</Steps>
+
+## Ergebnis prüfen
+
+- Du kannst dich mit deinem Administratorkonto anmelden.
+- Die Serverliste zeigt die erwartete Adresse und Ressourcen.
+- Gruppen und Plattform-Einstellungen lassen sich öffnen.
+
+## Nächster Schritt
+
+[Erste Anwendung bereitstellen](/docs/de/getting-started/first-app/)
+
+## Fehlerbehebung
+
+Downloadfehler: DNS/HTTPS. Dockerfehler: Dienst, Version, Rechte. Browsertimeout: IP, 9000, Firewall, Tunnel. Kontoprobleme: [Wiederherstellung](/docs/de/administration/platform/recovery/).
+
+Falls nach der Ersteinrichtung die Anmeldeseite erscheint, melde dich mit dem gerade erstellten Konto an.
+
+Zugangsdaten vor Weitergabe von Diagnosen entfernen.

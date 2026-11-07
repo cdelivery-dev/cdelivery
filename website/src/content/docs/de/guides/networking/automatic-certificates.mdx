@@ -1,0 +1,36 @@
+---
+title: "Automatische Zertifikate und Erneuerung"
+description: "ACME stellt Zertifikate aus und erneuert sie bei erreichbarer Domainvalidierung."
+sidebar:
+  order: 23
+---
+
+ACME stellt Zertifikate aus und erneuert sie bei erreichbarer Domainvalidierung.
+
+## Vorbereiten
+
+DNS und 80/443 einrichten. Standard HTTP-01 verwendet Port 80:
+
+```sh
+curl -i http://app.example.com/.well-known/acme-challenge/healthz
+```
+
+200 ohne erforderliche Weiterleitung erwarten. AAAA, Proxy und Firewall zuerst korrigieren.
+
+Automatische Zertifikate sind beim Aktivieren von Pingress vorausgewählt. Du kannst die Auswahl aufheben und sie später in den Zertifikatseinstellungen aktivieren.
+
+Die Erstellungs-API verwendet standardmäßig `"acme": "LetsEncrypt"`. Für reines HTTP oder manuell verwaltete Zertifikate `"acme": null` angeben; dadurch werden das behaltene Konto und automatische Zertifikate gelöscht, hochgeladene Zertifikate bleiben erhalten. Staging/Pebble sind Testumgebungen ohne öffentliche Produktionsvertrauensstellung. Die API unterstützt dns-persist-01 bei geeigneter Zertifizierungsstelle, keine allgemeine DNS-Anbieteroberfläche. Siehe [ACME-Verfahren](https://letsencrypt.org/docs/challenge-types/).
+
+## Zeitablauf
+
+Zertifikate werden im Hintergrund ausgestellt. Die Ausstellung wird ungefähr alle fünf Minuten geprüft, die Erneuerung alle acht Stunden. Der Erneuerungszeitpunkt richtet sich nach den Angaben der Zertifizierungsstelle oder dem Gültigkeitszeitraum.
+
+Validierung erreichbar halten. Manuelle Zertifikate werden nicht automatisch erneuert.
+
+## Kontrolle
+
+Domain, Aussteller und Ablauf aus Clientperspektive prüfen, auch IPv6. Falsches AAAA kann trotz funktionierendem IPv4 scheitern.
+
+Das Konto für automatische Zertifikate wird vor der Bereitstellung von Pingress eingerichtet. Scheitert die Bereitstellung, bleibt es für einen erneuten Versuch erhalten. Solange Pingress nicht existiert und keine automatischen Zertifikate gespeichert sind, kann über die API eine andere unterstützte Zertifizierungsstelle gewählt werden.
+
+Ursache vor Wiederholung beheben. Siehe [eigene Zertifikate](/docs/de/guides/networking/custom-certificates/).

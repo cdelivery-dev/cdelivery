@@ -1,0 +1,32 @@
+---
+title: "Estados e diagnóstico do XHealth"
+description: "Diferencie espera, execução, resultado e encerramento sem resultado utilizável."
+sidebar:
+  order: 27
+---
+
+Diferencie espera, execução, resultado e encerramento sem resultado utilizável.
+
+## Estados
+
+| Estado | Significado |
+| --- | --- |
+| Pending | Aguardando |
+| Running | Executando |
+| Passed | Sucesso |
+| Failed | Falha |
+| Settled | Encerrado sem resultado útil |
+
+Settled não significa Passed. Guardian trata ausência de resultado como falha de validação.
+
+## Investigar
+
+Em espera, confira servidores, recursos, imagem e agendamento. Em execução prolongada, confira timeout e dependência bloqueada. Em falha, abra logs XHealth e examine asserção, saída, porta, caminho, ambiente e ferramentas.
+
+Falha HTTP interna não demonstra problema de certificado. Sucesso interno também não comprova acesso público: teste DNS e TLS separadamente.
+
+## Após alterar
+
+Rode novamente e confira timestamp e definição novos. Não use resultado verde antigo. Faça asserções de prontidão de negócio.
+
+Retorne à [configuração](/docs/pt-br/guides/release-safety/xhealth/) ou leia [logs da aplicação](/docs/pt-br/guides/observability/logs/application/).

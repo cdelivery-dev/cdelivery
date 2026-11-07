@@ -1,0 +1,6 @@
+---
+import Placeholder from '../../components/Placeholder.astro';
+import { translate } from '../../i18n';
+const t = translate(Astro.currentLocale);
+---
+<Placeholder title={t('site.nav.blog')} />

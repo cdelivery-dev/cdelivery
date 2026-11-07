@@ -1,0 +1,36 @@
+---
+title: "Certificados automáticos e renovação"
+description: "ACME emite e renova quando o domínio e a validação chegam ao Pingress."
+sidebar:
+  order: 23
+---
+
+ACME emite e renova quando o domínio e a validação chegam ao Pingress.
+
+## Preparar
+
+Aponte DNS e libere 80/443. HTTP-01 padrão usa porta 80:
+
+```sh
+curl -i http://app.example.com/.well-known/acme-challenge/healthz
+```
+
+Espere 200 sem depender de redirecionamento. Corrija AAAA, proxy e firewall antes de pedir certificado.
+
+Os certificados automáticos vêm selecionados ao habilitar o Pingress. Você pode desmarcá-los e habilitá-los depois nas configurações de certificados.
+
+A API de criação usa `"acme": "LetsEncrypt"` por padrão. Para HTTP sem HTTPS ou certificados manuais, envie `"acme": null`; isso remove a conta mantida e os certificados automáticos, preservando os certificados enviados. Staging e Pebble servem para testes, sem confiança pública de produção. A API também admite dns-persist-01 quando a autoridade suporta; não é formulário genérico de provedores DNS. Veja [desafios ACME](https://letsencrypt.org/docs/challenge-types/).
+
+## Frequência
+
+Os certificados são emitidos em segundo plano. A emissão é verificada aproximadamente a cada cinco minutos; a renovação, a cada oito horas. O momento da renovação segue as informações da autoridade ou o período de validade.
+
+Mantenha validação acessível. Certificados manuais não são renovados automaticamente.
+
+## Diagnóstico
+
+Confira domínio, emissor e validade no cliente, inclusive IPv6 quando anunciado. AAAA incorreto pode falhar com IPv4 funcionando. Corrija erro antes de repetir pedidos.
+
+A conta de certificados automáticos é preparada antes da implantação do Pingress. Se a implantação falhar, a conta será mantida para nova tentativa. Enquanto o Pingress não existir e não houver certificados automáticos armazenados, outra autoridade compatível poderá ser escolhida pela API.
+
+Veja [certificados próprios](/docs/pt-br/guides/networking/custom-certificates/) para emissão externa.

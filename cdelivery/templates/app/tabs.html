@@ -1,0 +1,19 @@
+{%- macro tabs(name, active, can_edit) -%}
+<nav class="tab-list" aria-label='{{ tt!("ui.app.tab.navigation") }}'>
+  <a href="/apps/{{ name }}"{% if active == "overview" %} aria-current="page"{% endif %}>{{ tt!("ui.app.tab.overview") }}</a>
+  {% if can_edit %}<a href="/apps/{{ name }}/spec"{% if active == "spec" %} aria-current="page"{% endif %}>{{ tt!("ui.app.tab.specification") }}</a>{% endif %}
+  <a href="/apps/{{ name }}/xhealth"{% if active == "xhealth" %} aria-current="page"{% endif %}>{{ tt!("ui.app.tab.xhealth") }}</a>
+  <a href="/apps/{{ name }}/xjobs"{% if active == "xjob" %} aria-current="page"{% endif %}>{{ tt!("ui.app.tab.xjob") }}</a>
+  <a href="/apps/{{ name }}/metrics"{% if active == "metrics" %} aria-current="page"{% endif %}>{{ tt!("ui.app.tab.metrics") }}</a>
+  <a href="/apps/{{ name }}/logs"{% if active == "logs" %} aria-current="page"{% endif %}>{{ tt!("ui.app.tab.logs") }}</a>
+  <a href="/apps/{{ name }}/events"{% if active == "events" %} aria-current="page"{% endif %}>{{ tt!("ui.events.title") }}</a>
+</nav>
+{%- endmacro -%}
+
+{%- macro page_header(name, description, active, can_edit) -%}
+<header>
+  <h1 translate="no">{{ name }}</h1>
+  {% if let Some(description) = description %}<p>{{ description }}</p>{% endif %}
+  {{ tabs(name, active, can_edit) }}
+</header>
+{%- endmacro -%}

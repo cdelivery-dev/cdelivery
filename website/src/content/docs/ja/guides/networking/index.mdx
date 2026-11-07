@@ -1,0 +1,54 @@
+---
+title: "ドメインと HTTPS"
+description: "内部通信、公開ポート、Pingress の HTTP/HTTPS ルートを区別します。"
+sidebar:
+  group:
+    label: "ドメインと HTTPS"
+    icon: "ph:globe"
+  order: 20
+---
+
+内部通信、公開ポート、Pingress の HTTP/HTTPS ルートを区別します。
+
+## 選択
+
+| 用途 | 設定 |
+| --- | --- |
+| グループ内通信 | アプリ名と内部ポート |
+| TCP/UDP の直接接続 | ポート公開 |
+| HTTP ドメイン | コンテナーポートへのルート |
+| HTTPS | ルートと有効な証明書 |
+
+ドメインルートのためにポートを直接公開する必要はありません。
+
+## 目的から探す
+
+<CardGrid>
+
+<Card title="アプリ間通信とポート公開" href="/docs/ja/guides/networking/connectivity/" icon="ph:plugs-connected">
+  同じグループのアプリは名前とコンテナーポートで接続します。
+</Card>
+
+<Card title="ドメインとルーティング" href="/docs/ja/guides/networking/routing/" icon="ph:globe">
+  Pingress はドメインとリクエスト条件からアプリの宛先ポートを選びます。
+</Card>
+
+<Card title="自動証明書と更新" href="/docs/ja/guides/networking/automatic-certificates/" icon="ph:certificate">
+  ACME はドメイン検証が Pingress に到達できる状態で証明書を発行・更新します。
+</Card>
+
+<Card title="独自証明書" href="/docs/ja/guides/networking/custom-certificates/" icon="ph:key">
+  外部で発行を管理する場合、PEM の証明書チェーンと対応する秘密鍵を登録します。
+</Card>
+
+<Card title="ネットワークのよくある質問" href="/docs/ja/guides/networking/faq/" icon="ph:question">
+  IPv6、クライアントアドレス、DNS、ルーティング、証明書の問題を調べます。
+</Card>
+
+</CardGrid>
+
+## トラブルシューティング
+
+DNS、接続、TLS、アプリ応答を別々に検証します。証明書取得成功はバックエンド正常の証明ではありません。
+
+[管理画面のドメイン](/docs/ja/administration/platform/access/)は別設定です。

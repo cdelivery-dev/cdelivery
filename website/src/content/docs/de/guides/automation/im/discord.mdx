@@ -1,0 +1,26 @@
+---
+title: "Discord-Anbindung"
+description: "Discord verwendet Gateway und ausgehende Verbindungen, keinen öffentlichen Callback."
+sidebar:
+  order: 48
+---
+
+Discord verwendet Gateway und ausgehende Verbindungen, keinen öffentlichen Callback.
+
+## Einrichten
+
+App/Bot erstellen, Bot-Token beziehen und mit Kanalansicht und Nachrichtenversand installieren; Threadversand bei Bedarf ergänzen. Admin speichert Token.
+
+Developer Mode aktivieren, eigene User ID kopieren und zuordnen. Client Secret, Application ID, Server und Kanal sind keine persönliche ID. Siehe [offizielle Anleitung](https://docs.discord.com/developers/quick-start/getting-started).
+
+Private Nachrichten und direkte Erwähnungen benötigen hier keinen privilegierten Message-Content-Intent für beliebige Servernachrichten.
+
+## Test
+
+Mit [Modell](/docs/de/guides/automation/models/) lesende Frage privat oder per Erwähnung stellen. Konto/Rolle prüfen.
+
+## Diagnose
+
+Installation, Token, Kanalrechte, private Einschränkungen, Gateway und Zuordnung kontrollieren. Online bedeutet nicht überall sendeberechtigt.
+
+Fremde Identität kann deine Aktionen nutzen. Bei fehlenden Warnungen [Abonnements](/docs/de/guides/automation/im/notifications/) prüfen.

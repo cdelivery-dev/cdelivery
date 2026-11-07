@@ -1,0 +1,57 @@
+---
+title: "Acceso mediante API y MCP"
+description: "REST y MCP comparten operaciones y autorización; las rutas pertenecen a tu instancia."
+sidebar:
+  order: 60
+---
+
+REST y MCP comparten operaciones y autorización; las rutas pertenecen a tu instancia.
+
+## Clave
+
+En Cuenta → MCP / API keys, crea nombre de 1–64 bytes UTF-8, techo de rol y vencimiento futuro opcional. Copia inmediatamente: se muestra una vez.
+
+Separa claves por herramienta. Su rol no supera el efectivo al crear y queda limitado por el rol actual del usuario. Cambiar contraseña no revoca; eliminar usuario invalida.
+
+## REST
+
+Define URL y clave en tu entorno:
+
+```sh
+curl --fail-with-body "$CDELIVERY_URL/api/me" \
+  -H "Authorization: Bearer $CDELIVERY_API_KEY"
+```
+
+Espera información de tu cuenta. `/scalar` documenta el schema de la versión instalada.
+
+Los cambios usan normalmente patch: omitir conserva, `null` limpia solo campos que lo permiten; patch vacío es válido. Los enums distinguen mayúsculas: Reader, Operator, Admin.
+
+## MCP
+
+Configura el cliente HTTP remoto con `/mcp` y `Authorization: Bearer YOUR_API_KEY`. Lista las herramientas y prueba una lectura para verificar la cuenta y los permisos antes de escribir.
+
+## Errores
+
+401: credencial inválida, vencida, revocada o usuario no autenticable. 403: rol insuficiente. 422: campos o requisitos inválidos. Para conexión, revisa URL, TLS y proxy.
+
+Revoca y verifica rechazo de la clave antigua. Consulta [roles](/docs/es/administration/accounts/roles/).
+
+[Secretos](/docs/es/guides/apps/secrets/): Reader puede listar metadatos. Operator y Admin pueden crear, eliminar y vincular secretos. El contenido no se puede volver a leer, descargar ni editar.
+
+
+| REST | MCP / Agent |
+| --- | --- |
+| `POST /api/secrets` | `secret_create` |
+| `GET /api/secrets?kind=Text` | `secret_list` |
+| `DELETE /api/secrets/{name}` | `secret_delete` |
+
+`POST /api/secrets`:
+
+```json
+{"name":"api-token","content":{"Text":"REPLACE_LOCALLY"}}
+```
+
+- `content.File`: Base64.
+- `container_options.env`: `[{"name":"TOKEN","value":{"name":"api-token","id":"SECRET_ID"}}]`.
+- `POST /api/apps` → `xconfigs`: `[{"target":"/app/credentials","secret":{"name":"api-file","id":"SECRET_ID"}}]`.
+- `PATCH /api/apps/{name}` → `xconfigs`: `[{"Secret":{"target":"/app/credentials","secret":{"name":"api-file","id":"SECRET_ID"}}}]`.

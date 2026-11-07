@@ -1,0 +1,47 @@
+---
+title: "Erfassung und Aufbewahrung"
+description: "Admin richtet Insight, Sammler, Speicher und Aufbewahrungsdauer ein."
+sidebar:
+  order: 37
+---
+
+Admin richtet Insight, Sammler, Speicher und Aufbewahrungsdauer ein.
+
+## Erstmals aktivieren
+
+<Steps>
+
+1. Wähle die Versionen von Dienst und Sammlern.
+2. Wähle den Speichertyp und trage Speicherort und Zugangsdaten ein.
+3. Konfiguriere die Platzierung des Dienstes.
+4. Lege Aufbewahrung, Abtastung und Flush-Intervall fest.
+5. Speichere und prüfe, ob Dienst und Sammler laufen.
+6. Öffne Server- und Anwendungsmetriken und prüfe neue Daten.
+
+</Steps>
+
+## Speicher und Platzierung
+
+Local, S3, S3-compatible mit Endpoint, GCS mit Dienstkonto-JSON oder Azure wählen. Identität und Zugang vorbereiten.
+
+Nach Aktivierung lassen sich Typ/Identität nicht wie normale Einstellungen migrieren; Zugangsdaten und passende Region können geändert werden. Local verlangt festen Server. Migration/Sicherung getrennt planen.
+
+## Zeitintervalle und Aufbewahrung
+
+Aufbewahrung: 90 Tage, Bereich 1–3650. Messung: fünf Sekunden, Bereich 1–60. Flush: drei Minuten. Dateisysteme: eigener Fünfminutentakt.
+
+Fester Server kann Puffer abfragen. Verteilte Labelplatzierung benötigt möglicherweise Flush/Synchronisierung. Häufigere Werte und längere Historie brauchen mehr Speicher.
+
+<Aside type="caution">
+Eine kürzere Aufbewahrung kann historische Daten löschen. Eine spätere Verlängerung stellt sie nicht wieder her.
+</Aside>
+
+## Prüfen und Fehler beheben
+
+Ressource, Quelle und Zeitfenster bis 31 Tage wählen; bei Vorfällen eingrenzen.
+
+Leer kann keine Aktivität, Verzögerung, deaktivierte Erfassung oder abgelaufene Aufbewahrung bedeuten. Abfragefehler separat behandeln. Fehlende Werte sind nicht null Verbrauch.
+
+Aktivität erzeugen und frische Logs/Metriken/Ereignisse pro Server prüfen. Vergangenheit wird nicht importiert.
+
+Bei Lücken Komponenten, Netzwerk, Zugang, Zeitraum und Ablauf prüfen. [Logtreiber](/docs/de/guides/observability/logs/application/) separat einstellen.

@@ -1,0 +1,36 @@
+<dialog
+  class="preparation-dialog" :class="{ 'preparation-pending': preparationPending }"
+  data-preparation data-unexpected='{{ tt!("ui.preparation.unexpected") }}' data-auth-required='{{ tt!("error.AuthRequired") }}'
+  aria-labelledby="preparation-title"
+  :aria-describedby="preparing || preparationPending ? 'preparation-description' : null"
+  x-effect="if (preparing && !$el.open) CDelivery.openDialog($el)"
+  @cancel="if (submitting) $event.preventDefault()"
+>
+  <div class="preparation-heading">
+    <span class="preparation-spinner" aria-hidden="true" x-show="preparing" x-cloak></span>
+    <div>
+      <h2 id="preparation-title" role="status"
+        data-waiting='{{ tt!("ui.preparation.waiting") }}' data-unconfirmed='{{ tt!("ui.preparation.unconfirmed") }}' data-failed='{{ tt!("ui.error.title") }}'
+        x-text="preparing || (!preparationPending && !preparationDiagnostic) ? $el.dataset.waiting : preparationPending ? $el.dataset.unconfirmed : $el.dataset.failed"
+      >{{ tt!("ui.preparation.waiting") }}</h2>
+      <p id="preparation-description" x-show="preparing || preparationPending" x-cloak
+        data-waiting='{{ tt!("ui.preparation.waitingHelp") }}' data-unconfirmed='{{ tt!("ui.preparation.unconfirmedHelp") }}'
+        x-text="preparing ? $el.dataset.waiting : $el.dataset.unconfirmed"
+      ></p>
+    </div>
+  </div>
+  <div role="alert" x-show="!preparing && preparationDiagnostic" x-cloak>
+    <pre class="diagnostic" x-text="preparationDiagnostic"></pre>
+    <ul x-show="Object.keys(preparationErrors).length">
+      <template x-for="(message, field) in preparationErrors" :key="field">
+        <li><code x-text="field"></code> <span x-text="message"></span></li>
+      </template>
+    </ul>
+  </div>
+  <div class="actions" x-show="!preparing && (preparationPending || preparationDiagnostic)" x-cloak>
+    <button class="button" type="button" @click="$el.closest('dialog').close()" x-show="!submitting">{{ tt!("ui.preparation.back") }}</button>
+    {% if preparation_recovery != preparation_destination %}<a class="button secondary" href="{{ preparation_recovery }}" x-show="submitting">{{ tt!("ui.preparation.back") }}</a>{% endif %}
+    <a class="button secondary" href="{{ preparation_destination }}" x-show="submitting">{{ tt!("ui.common.continue") }}</a>
+    <button class="button" type="button" @click="runPreparation()" x-show="preparationPending">{{ tt!("ui.preparation.recheck") }}</button>
+  </div>
+</dialog>

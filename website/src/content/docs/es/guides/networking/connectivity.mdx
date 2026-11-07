@@ -1,0 +1,26 @@
+---
+title: "Conectividad y puertos publicados"
+description: "Las aplicaciones de un mismo grupo se conectan por nombre y puerto del contenedor."
+sidebar:
+  order: 21
+---
+
+Las aplicaciones de un mismo grupo se conectan por nombre y puerto del contenedor.
+
+## Conexiones internas
+
+Por ejemplo, usa `database:5432` para un servicio que escuche ahí. Dentro del contenedor, localhost apunta al propio contenedor. El destino debe escuchar en una interfaz accesible, normalmente `0.0.0.0`.
+
+No presupongas resolución entre grupos diferentes. El grupo proporciona red, no separación de permisos de cuentas.
+
+## Publicar
+
+Selecciona TCP o UDP y asocia un puerto de contenedor a uno público disponible. Nginx puede mapear 80 a 8080/TCP. Guarda, comprueba réplicas y prueba `http://SERVER_IP:8080`.
+
+Revisa cortafuegos y reglas de nube. Un túnel SSH debe reenviar este puerto además del 9000 de la consola. El mapeo no inicia un listener ni convierte un protocolo TCP en HTTP.
+
+## Resolver problemas
+
+Comprueba proceso, interfaz, puerto interno, grupo y red entre servidores. Para acceso público añade protocolo, puerto publicado, dirección y cortafuegos.
+
+Las [rutas de dominio](/docs/es/guides/networking/routing/) usan el puerto interno y no requieren mapeo público. Consulta la [FAQ](/docs/es/guides/networking/faq/) para IPv6 y red del host.

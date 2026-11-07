@@ -1,0 +1,26 @@
+---
+title: "Images und Registries"
+description: "Wähle Image-Referenz, Version und passende Zugangsdaten für die Registry."
+sidebar:
+  order: 9
+---
+
+Wähle Image-Referenz, Version und passende Zugangsdaten für die Registry.
+
+## Referenz
+
+Repository und Tag verwenden, etwa `nginx:stable-alpine`, ohne `https://` oder Webseiten-URL. Das aktuelle Feld akzeptiert kein `@sha256:`-Digest. Architektur und Versionsanforderungen prüfen.
+
+Externe Tagänderungen starten nicht automatisch eine Bereitstellung. Unverändertes Speichern ebenfalls nicht; gegebenenfalls [neu starten](/docs/de/guides/apps/lifecycle/).
+
+## Privat
+
+Bei angegebenem Benutzernamen verlangt die Konsole ein Passwort. Unnötige Bearbeitung abbrechen oder beim Ändern das erforderliche Paar angeben.
+
+Die API behält ausgelassene Geheimnisse nur bei unverändertem Geltungsbereich. Andere Registry benötigt passenden Zugang. Gespeicherte Passwörter werden nicht zurückgegeben.
+
+## Diagnose
+
+Fehlendes Image: Name/Tag. Zugriff verweigert: Token/Rechte. Timeout/TLS: DNS/Netz/Zertifikat. Inkompatibel: Architektur. Prozessende: Befehl, Umgebung, Mounts.
+
+Nach Pull Version, Logs und echte Anfrage prüfen. Bei Datenbanken stellt [Rollback](/docs/de/guides/release-safety/rollback/) keine Daten wieder her.

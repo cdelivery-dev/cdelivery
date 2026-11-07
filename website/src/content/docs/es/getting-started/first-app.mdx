@@ -1,0 +1,70 @@
+---
+title: "Desplegar la primera aplicación"
+description: "Despliega Nginx mediante un puerto publicado y comprueba una respuesta HTTP real."
+sidebar:
+  order: 4
+---
+
+Despliega Nginx mediante un puerto publicado y comprueba una respuesta HTTP real.
+
+## Preparar
+
+Necesitas una instalación operativa. Admin crea el grupo; Operator o Admin despliega la aplicación. El servidor debe poder descargar la imagen pública de Nginx desde Docker Hub. TCP 8080 debe estar disponible y ser accesible desde tu equipo.
+
+Para acceder por SSH, ejecuta este comando en tu equipo y mantén abierta la sesión:
+
+```sh
+ssh -L 9000:127.0.0.1:9000 -L 8080:127.0.0.1:8080 your-user@server.example.com
+```
+
+## Pasos
+
+<Steps>
+
+<Step title="Crear un grupo">
+
+Crea un grupo llamado `demo`.
+
+</Step>
+
+<Step title="Configurar la aplicación">
+
+Crea la aplicación `hello-web` en ese grupo con la imagen `nginx:stable-alpine`. Conserva el comando de la imagen y una réplica fija.
+
+</Step>
+
+<Step title="Publicar un puerto">
+
+Publica el puerto del contenedor **80** como puerto del servidor **8080**, con TCP.
+
+</Step>
+
+<Step title="Desplegar la aplicación">
+
+Guarda la aplicación y espera a que la réplica se ejecute.
+
+</Step>
+
+</Steps>
+
+No hacen falta dominio, volumen ni comando personalizado. La [imagen oficial](https://hub.docker.com/_/nginx) ya inicia Nginx en primer plano.
+
+## Verificar
+
+Desde tu equipo, abre `http://SERVER_IP:8080` o ejecuta el siguiente comando. Sustituye `SERVER_IP` por la dirección accesible del servidor.
+
+```sh
+curl -i http://SERVER_IP:8080
+```
+
+Si usas el túnel SSH, mantén abierta la sesión y ejecuta en tu equipo este comando en su lugar:
+
+```sh
+curl -i http://localhost:8080
+```
+
+Espera HTTP 200 y la bienvenida de Nginx. Comprueba también réplicas y registros.
+
+Si falla la descarga, revisa registro y arquitectura. Si termina el contenedor, restaura el comando predeterminado y lee los registros. Si no conecta, revisa mapeo, IP y cortafuegos. Una ruta de dominio usaría el puerto interno 80.
+
+Para limpiar, elimina la aplicación, espera la salida de sus contenedores y elimina el grupo vacío. Continúa con la [gestión de aplicaciones](/docs/es/guides/apps/).

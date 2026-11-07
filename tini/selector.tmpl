@@ -1,0 +1,8 @@
+{{- $arch := env "CD_INIT_ARCH" -}}
+{{- if or (eq $arch "aarch64") (eq $arch "arm64") -}}
+{{- config "/run/cdelivery/tini/arm64" -}}
+{{- else if or (eq $arch "x86_64") (eq $arch "amd64") -}}
+{{- config "/run/cdelivery/tini/amd64" -}}
+{{- else -}}
+{{- config "/run/cdelivery/tini/unsupported-architecture" -}}
+{{- end -}}

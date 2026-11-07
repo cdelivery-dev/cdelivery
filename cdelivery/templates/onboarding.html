@@ -1,0 +1,89 @@
+{% extends "settings.html" %}
+
+{% import "settings/nav.html" as nav %}
+{% import "node/select.html" as select %}
+
+{% block title %}{{ tt!("ui.onboarding.title") }} | {{ super() }}{% endblock title %}
+{% block settings_navigation %}{{ nav::nav("") }}{% endblock settings_navigation %}
+
+{% block main %}
+<header>
+  <h1>{{ tt!("ui.onboarding.title") }}</h1>
+  <p>{{ tt!("ui.onboarding.description") }}</p>
+</header>
+<script id="insight-current" type="application/json">{{ insight|json|safe }}</script>
+<script id="insight-nodes" type="application/json">{{ nodes|json|safe }}</script>
+{% let initial_setup = true %}
+{% include "insight/script.html" %}
+<form id="platform-setup-form" method="post" action="/setup/platform" autocomplete="off" x-data="platformSetup" @submit="prepare($event)">
+  <div class="stack section-stack">
+  {% if insight.server.is_none() || insight.agent.is_none() %}
+  <section id="insight">
+    <h2 class="section-title">Insight</h2>
+    {% if insight.server.is_some() %}
+    <p>{{ tt!("ui.insight.status.serverOnly") }}</p>
+    {% else %}
+    {% if insight.agent.is_some() %}<p>{{ tt!("ui.insight.status.agentOnly") }}</p>{% endif %}
+    <div class="stack section-stack mt-3">{% include "insight/fields.html" %}</div>
+    {% endif %}
+  </section>
+  {% else %}
+  <p>{{ tt!("ui.onboarding.insightConfigured") }}</p>
+  {% endif %}
+
+  {% if current.domain.is_none() %}
+  <section id="domain">
+    <h2 class="section-title">{{ tt!("ui.onboarding.domain") }}</h2>
+    <p>{{ tt!("ui.onboarding.domainHelp") }}</p>
+    {% if let Some(gateway) = pingress %}
+    {% if !gateway.acme_enabled %}<p>{{ tt!("ui.onboarding.certificateRequired") }} <a href="/pingress/certificates">{{ tt!("ui.pingress.certs.title") }}</a></p>{% endif %}
+    {% endif %}
+    <div class="fields">
+      <div class="field">
+        <label for="setup-domain">{{ tt!("ui.onboarding.domainLabel") }}</label>
+        <input id="setup-domain" class="text" type="text" x-model="domain" maxlength="253" pattern="[^.].*[.].*[^.]" spellcheck="false" placeholder="ops.example.com" title='{{ tt!("ui.app.published.domain.validation") }}' />
+      </div>
+      {% if pingress.is_none() %}
+      <div class="field" x-data="{ nodeOptions: gatewayNodes }">
+        <label for="setup-node">{{ tt!("ui.node.entity") }}</label>
+        {{ select::node("setup-node", "gatewayNode", tt!("ui.pingress.placement.selectNode"), "!!domain.trim()") }}
+      </div>
+      {% endif %}
+    </div>
+  </section>
+  {% endif %}
+  </div>
+  <div class="actions">
+    <a class="button secondary" href="/" @click="if (submitting) $event.preventDefault()" :aria-disabled="submitting" :tabindex="submitting ? -1 : 0">{{ tt!("ui.common.skip") }}</a>
+    <input class="button" type="submit" value='{{ tt!("ui.common.save") }}' :disabled="submitting" />
+  </div>
+  {% let preparation_destination = "/" %}
+  {% let preparation_recovery = "/setup/platform" %}
+  {% include "preparation.html" %}
+</form>
+<script>
+document.addEventListener("alpine:init", () => {
+  Alpine.data("platformSetup", () => {
+    const nodes = JSON.parse(document.getElementById("insight-nodes").textContent).nodes;
+    const { nodeOptions } = CDelivery.placementOptions(nodes, "NodeId", "", "");
+    return {
+      ...insightSpec("/"),
+      domain: "",
+      gatewayNodes: nodeOptions,
+      gatewayNode: nodeOptions.length === 1 ? nodeOptions[0].id : "",
+      prepare(event) {
+        if (CDelivery.guard(this, event)) return;
+        const body = { insight: {% if insight.server.is_none() %}this.payload(){% else %}{}{% endif %} };
+        {% if current.domain.is_none() %}
+        if (this.domain.trim()) {
+          body.domain = { domain: this.domain.trim() };
+          {% if pingress.is_none() %}body.domain.placement = { NodeId: this.gatewayNode };{% endif %}
+        }
+        {% endif %}
+        return this.runPreparation(event, body, "enable");
+      },
+    };
+  });
+});
+</script>
+{% endblock main %}

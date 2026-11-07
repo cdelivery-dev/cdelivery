@@ -1,0 +1,83 @@
+---
+import { defaultLocale } from '../config';
+import { translate } from '../i18n';
+const locale = Astro.currentLocale ?? defaultLocale;
+const t = translate(locale);
+const productionLines = 43_000;
+const codeLines = new Intl.NumberFormat(locale, { notation: 'compact', maximumSignificantDigits: 2 }).formatToParts(productionLines)
+  .map(({ type, value }) => `${locale.startsWith('zh') && type === 'compact' ? ' ' : ''}${value}`)
+  .join('').toLocaleLowerCase(locale);
+const [codePrefix, codeSuffix] = t('site.footprint.codeLines').split('{{lines}}');
+const codeStrokes = [
+  [[20, 52, 41, 64, 16], [34, 62, 48, 57, 28, 45, 60, 18], [26, 46, 64, 35, 54, 24, 58, 42, 20]],
+  [[58, 36, 61, 42, 24, 54, 46, 18], [30, 62, 44, 16], [42, 64, 51, 28, 60, 39, 54, 32, 48, 22]],
+  [[48, 62, 18], [26, 54, 38, 60, 46, 16], [38, 64, 52, 28, 20], [24, 56, 41, 62, 33, 48, 18]],
+  [[34, 60, 45, 66, 52, 20], [22, 46, 62, 38, 54, 26, 60, 42, 52, 16], [46, 64, 32, 58, 44, 18]],
+].flatMap((blocks, column) => {
+  let row = 0;
+  return blocks.flatMap((widths, block) => {
+    const strokes = widths.map((width, line) => ({
+      x: column * 94 + (line > 0 && line < widths.length - 1 ? 6 + (line % 3 === 0 ? 6 : 0) : 0),
+      y: row++ * 5,
+      width,
+      accent: line === (column + block) % widths.length,
+    }));
+    row++;
+    return strokes;
+  });
+});
+const metrics = [
+  { name: 'CDelivery', purpose: t('site.footprint.platformRole'), memory: 50 },
+  { name: 'Pingress', purpose: t('site.footprint.gatewayRole'), memory: 30 },
+  { name: t('site.footprint.observabilityName'), purpose: t('site.footprint.observabilityRole'), memory: 120 },
+] as const;
+const maxMemory = Math.max(...metrics.map(({ memory }) => memory));
+---
+<section class="home-section container" id="footprint" aria-labelledby="footprint-title">
+  <header class="section-copy">
+    <h2 class="section-title" id="footprint-title">{t('site.footprint.title')}</h2>
+    <p>{t('site.footprint.description')}</p>
+  </header>
+  <div class="home-columns footprint-visuals">
+    <figure aria-labelledby="codebase-lines">
+      <figcaption>{t('site.footprint.codeDescription')}</figcaption>
+      <div class="codebase-visual">
+        <p class="metric-label" id="codebase-lines">{codePrefix}<strong class="codebase-number">{codeLines}</strong>{codeSuffix}</p>
+        <svg class="codebase-map" viewBox="0 0 360 117" width="360" height="117" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+          {codeStrokes.map(({ x, y, width, accent }) => <rect x={x} y={y} width={width} height="2" rx="1" class:list={{ accent }} />)}
+        </svg>
+      </div>
+    </figure>
+    <figure>
+      <figcaption>{t('site.footprint.note')}</figcaption>
+      <dl class="footprint-metrics">
+        {metrics.map(({ name, purpose, memory }) => <div style={`--bar-width:${memory / maxMemory * 100}%`}>
+          <dt>{name}<span class="footprint-purpose metric-label">{purpose}</span></dt>
+          <dd>{memory}<span class="metric-unit">MiB</span></dd>
+        </div>)}
+      </dl>
+    </figure>
+  </div>
+</section>
+<style>
+  .footprint-visuals { align-items: stretch; row-gap: 24px; margin-top: 32px; }
+  .footprint-visuals > figure { display: grid; grid-row: span 2; grid-template-rows: subgrid; }
+  .codebase-visual { display: grid; grid-template-rows: auto minmax(0, 1fr); gap: 24px; }
+  .codebase-number { margin-inline-end: 8px; color: var(--color-accent); font-size: clamp(3rem, 4.5vw, 4rem); font-weight: var(--weight-body); line-height: 1; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .codebase-map { width: 100%; height: 100%; min-height: 0; }
+  .codebase-map rect { fill: var(--color-muted); opacity: .25; }
+  .codebase-map .accent { fill: var(--color-accent-bar); opacity: 1; }
+  .footprint-metrics { display: grid; grid-auto-rows: 1fr; gap: 24px; margin: 0; }
+  .footprint-metrics > div { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: 12px 24px; min-width: 0; }
+  .footprint-metrics > div::after { content: ''; grid-column: 1 / -1; width: var(--bar-width); height: 8px; border-radius: 0 3px 3px 0; background: var(--color-accent-bar); }
+  dt { min-width: 0; line-height: 1.35; }
+  .footprint-purpose { display: block; margin-top: 4px; }
+  dd { margin: 0; color: var(--color-accent); font-size: 1.5rem; line-height: 1.1; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  figcaption { color: var(--color-muted); font-size: .75rem; line-height: 1.5; }
+  @media (width < 800px) {
+    .footprint-visuals { row-gap: 40px; }
+    .footprint-visuals > figure { grid-row: auto; grid-template-rows: auto auto; gap: 24px; }
+    .codebase-visual { grid-template-rows: auto auto; }
+    .codebase-map { height: auto; }
+  }
+</style>

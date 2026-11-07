@@ -1,0 +1,34 @@
+[package]
+name = "pingress"
+version = "0.1.0"
+edition = "2024"
+publish = false
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+
+[dependencies]
+arc-swap = { workspace = true }
+async-trait = { workspace = true }
+base64 = { workspace = true }
+bytes = { workspace = true }
+cipher = { workspace = true }
+getrandom = { workspace = true }
+http = { workspace = true }
+insight-wire = { workspace = true }
+jiff = { workspace = true }
+logging = { workspace = true }
+macros = { workspace = true }
+pingora = { workspace = true }
+pingress-wire = { workspace = true }
+reqwest = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+
+[features]
+tokio-console = ["logging/tokio-console"]
+
+[lints]
+workspace = true

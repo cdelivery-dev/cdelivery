@@ -1,0 +1,71 @@
+---
+title: "域名与路由"
+description: "把域名映射到应用端口，并使用路径、请求头或 Cookie 条件分配请求。"
+sidebar:
+  order: 22
+---
+
+域名路由由应用配置管理，需要 Operator 或 Admin。管理员应先启用 Pingress，并准备可访问的 HTTP/HTTPS 入口。
+
+## 配置 Pingress
+
+先确认应用在预期容器端口提供服务，再配置入口。
+
+管理员打开 Pingress，选择可用版本及部署位置，可以指定服务器或服务器标签。目标服务器需满足网络条件，HTTP/HTTPS 入口通常使用 TCP 80 和 443。
+
+保存后确认实例数量和运行状态。选择标签时，应把 DNS 或前置负载均衡指向实际运行 Pingress 的可达服务器；给一台服务器加标签不会自动修改外部 DNS。
+
+应用域名路由由 Operator 或 Admin 在应用配置中管理；Pingress 组件和证书管理需要 Admin。
+
+域名记录、应用路由和证书是分别管理的对象。只添加 DNS 不会自动创建应用路由，只打开 HTTPS 开关也不代表证书已签发。
+
+## 绑定一个域名
+
+<Steps>
+
+1. 在 DNS 服务商处将 `app.example.com` 指向 Pingress 的入口地址。
+2. 打开应用配置，添加域名规则。
+3. 填写域名及应用实际监听的容器端口，例如 `80`。
+4. 暂不添加其他条件，先建立简单入口。
+5. HTTPS 默认勾选；需要 HTTP 时可取消勾选。使用 HTTPS 时启用[自动证书](/docs/zh-cn/guides/networking/automatic-certificates/)或上传[自定义证书](/docs/zh-cn/guides/networking/custom-certificates/)。
+6. 保存后访问该域名，确认命中正确应用；使用 HTTPS 时同时核对证书域名和业务响应。
+
+</Steps>
+
+域名字段不包含 `http://`、`https://`、端口或路径。当前域名输入使用 ASCII 域名；国际化域名应使用对应的 ASCII 表示。不要将 IP 地址或通配符当作普通域名填写。
+
+## 条件路由
+
+| 条件 | 用途 |
+| --- | --- |
+| 路径前缀 | 将某个路径分支交给指定目标端口 |
+| 请求头 | 根据指定请求头存在或值匹配选择规则 |
+| Cookie | 根据指定 Cookie 存在或值匹配选择规则 |
+| HTTPS | 为该域名规则启用 HTTPS 行为 |
+
+同一条规则中填写的条件需要同时满足。填写请求头或 Cookie 的名称、但不指定匹配值时，表达的是存在性条件；指定值后则按该值判断。
+
+路径前缀按路径边界匹配：`/api` 匹配 `/api` 和 `/api/users`，不匹配 `/apix`。转发时保留原请求路径。
+
+## 示例：前端与 API
+
+可以让网站默认规则指向前端端口，再让 `/api` 前缀规则指向提供 API 的目标。配置前确认后端实际接受带 `/api` 的请求路径。
+
+多条规则重叠时，条件数量及前缀等会影响选择。应尽量让规则职责清晰，并分别验证命中与不命中的请求，不要依赖列表显示顺序充当任意优先级设置。
+
+## 验证 DNS 与入口
+
+```sh
+curl -I http://app.example.com
+curl -I https://app.example.com
+```
+
+替换为实际域名。DNS 尚未传播时，可以使用支持指定解析地址的客户端做定向测试，但最终仍要验证公开 DNS 的结果。
+
+如果配置了 AAAA 记录，必须确认 IPv6 路径同样可用。只验证 IPv4 成功不足以证明所有客户端都能访问。
+
+## 故障定位
+
+请求未到达 Pingress 时检查 DNS、地址和防火墙。到达但未匹配时检查域名、路径、请求头及 Cookie。匹配后上游失败时检查容器端口、实际副本和应用监听地址。
+
+使用[访问日志](/docs/zh-cn/guides/observability/logs/access/)核对匹配结果；TLS 问题转到[自动证书与续期](/docs/zh-cn/guides/networking/automatic-certificates/)。

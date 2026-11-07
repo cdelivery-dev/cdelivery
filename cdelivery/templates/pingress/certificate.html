@@ -1,0 +1,9 @@
+{%- macro status(optional_certificate) -%}
+{% if let Some(certificate) = optional_certificate %}
+  <span class="inline-meta"><span>{% match certificate.source %}
+  {% when crate::operation::pingress::typ::CertSource::Manual %}{{ tt!("ui.pingress.certs.source.manual") }}
+  {% when crate::operation::pingress::typ::CertSource::Acme %}{{ tt!("ui.pingress.certs.source.acme") }}
+  {% endmatch %}</span>
+  {% if certificate.expired %} <strong>{{ tt!("ui.pingress.certs.expired") }}</strong>{% endif %}</span>
+{% else %}<strong>{{ tt!("ui.pingress.certs.missing") }}</strong>{% endif %}
+{%- endmacro -%}

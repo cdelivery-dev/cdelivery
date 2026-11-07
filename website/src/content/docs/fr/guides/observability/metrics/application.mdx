@@ -1,0 +1,26 @@
+---
+title: "Métriques d’application"
+description: "Comparez consommation, réplicas et changements de configuration dans le temps."
+sidebar:
+  order: 34
+---
+
+Comparez consommation, réplicas et changements de configuration dans le temps.
+
+## Lire
+
+Activez collecte et sélectionnez jusqu’à 31 jours. Vérifiez unités : CPU en cœurs diffère d’un pourcentage relatif à une limite.
+
+Les agrégats peuvent afficher minimum, moyenne et maximum. Une moyenne masque des pics ; un maximum n’est pas une charge durable. Une période d’agrégation large lisse les événements brefs.
+
+## Utiliser
+
+Comparez avant/après mise à jour, redémarrage et changement de réplicas. Distinguez total et consommation par instance.
+
+L’adaptation automatique nécessite des observations récentes de tous les réplicas. Des mesures partielles peuvent bloquer une décision ; absence ne signifie pas inactivité.
+
+## Lacunes
+
+Contrôlez identité, période, collecteur, stockage et conservation. Pas d’historique avant activation ; flush/synchronisation peuvent retarder les dernières données.
+
+Les tâches brèves produisent peu d’échantillons. Utilisez [journaux](/docs/fr/guides/observability/logs/application/), ajustez les [ressources](/docs/fr/guides/apps/resources/) sous charge représentative et comparez le [serveur](/docs/fr/guides/observability/metrics/server/).

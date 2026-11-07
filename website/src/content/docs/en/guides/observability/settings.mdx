@@ -1,0 +1,59 @@
+---
+title: "Collection and retention settings"
+description: "Enable Insight, choose storage and placement, and understand sampling, flushing, and retained history."
+sidebar:
+  order: 37
+---
+
+An Admin configures Insight and its node collectors. Choose storage before enabling the service; the storage identity and type cannot later be changed as an ordinary settings edit.
+
+Application log availability also depends on the selected log driver. Enabling collection does not backfill earlier logs.
+
+## Enable collection
+
+<Steps>
+
+1. Choose the service and collector versions.
+2. Choose the storage type and provide its location and credentials.
+3. Configure service placement.
+4. Set retention, sampling, and flush intervals.
+5. Save and check the service and collectors are running.
+6. Open server and application metrics and verify new data appears.
+
+</Steps>
+
+## Storage and placement
+
+| Storage | Required planning |
+| --- | --- |
+| Local | Fixed server and its local data |
+| S3 | Bucket, region, credentials |
+| S3-compatible | Bucket, endpoint, credentials |
+| GCS | Storage location and service-account JSON |
+| Azure | Account/container access settings |
+
+After enabling, supported changes include credentials and applicable region settings, not a general storage migration. Local storage requires fixed-server placement. Plan backup and migration separately.
+
+## Timing and retention
+
+Console defaults are 90 days of retention, five-second samples, and a three-minute flush interval. Retention accepts 1–3650 days; sampling accepts 1–60 seconds. Filesystem collection has its own five-minute cadence.
+
+A fixed server can answer queries from buffered data. With distributed placement selected by label, newly collected data can require flushing and synchronization before it becomes queryable. Shorter sampling increases data volume; longer retention requires more storage.
+
+<Aside type="caution">
+Decreasing retention can remove history. Increasing it later does not restore deleted data.
+</Aside>
+
+## Verify and troubleshoot
+
+Select the correct application or server, source, and time range. Most historical queries accept a range of at most 31 days; choose a narrower range for diagnosis.
+
+An empty result can mean no matching activity, collection disabled, delayed samples, or expired history. A query error means the request did not complete successfully. Missing values must not be interpreted as zero usage.
+
+Enable the service and collectors, create new application activity, and confirm fresh logs, metrics, and events. Check each server's reporting state.
+
+For gaps, inspect component health, network, storage credentials, selected range, flush delay, and retention.
+
+Changing the application log driver is separate; see [application logs](/docs/guides/observability/logs/application/).
+
+Correlate a failed request with access logs, application logs, metrics, and nearby events before changing configuration.

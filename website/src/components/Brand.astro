@@ -1,0 +1,17 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { defaultLocale, site } from '../config';
+import { translate } from '../i18n';
+interface Props { wordmark?: boolean; locale?: string }
+const { wordmark = false, locale = Astro.currentLocale ?? defaultLocale } = Astro.props;
+const t = translate(locale);
+---
+<a class="brand" href={getRelativeLocaleUrl(locale, '/')} aria-label={t('site.brand.home')}>
+  <svg width="33.33" height="20" viewBox="2 6 20 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.06 9.39a10 10 0 0 0-.232-.218a4 4 0 1 0 0 5.656a10 10 0 0 0 2.172-2.828a10 10 0 0 1 2.172-2.828a4 4 0 1 1 0 5.656a10 10 0 0 1-.234-.219" /></svg>
+  {wordmark && <span>{site.name}</span>}
+</a>
+<style>
+  .brand { display: inline-flex; align-items: center; justify-content: center; gap: 12px; min-height: 44px; color: var(--color-text); text-decoration: none; }
+  .brand svg { flex-shrink: 0; }
+  .brand span { font-size: 1.25rem; font-weight: var(--weight-heading); line-height: 1; letter-spacing: -.02em; }
+</style>

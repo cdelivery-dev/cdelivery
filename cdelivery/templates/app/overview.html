@@ -1,0 +1,139 @@
+{% extends "dashboard.html" %}
+
+{% import "app/tabs.html" as tab %}
+{% import "app/image.html" as image_macro %}
+{% import "app/replicas.html" as replicas_macro %}
+{% import "app/published.html" as published %}
+{% import "app/xconfig.html" as xconfig %}
+{% import "app/container.html" as container %}
+{% import "app/mounts.html" as mounts_macro %}
+{% import "app/changes.html" as changes_macro %}
+{% import "metric_chart.html" as metric %}
+{% import "time_range.html" as time_range %}
+{% import "conditions.html" as conditions_macro %}
+
+{% block title %}{{ self.spec.name }} - {{ tt!("ui.app.entity") }} | {{ super() }}{% endblock title %}
+
+{% block main %}
+{% let name = self.spec.name %}
+{% let image = self.spec.image %}
+{% let image_auth = self.spec.image_auth %}
+{% let replicas = self.spec.replicas %}
+{% let domains = self.spec.domains %}
+{% let ports = self.spec.ports %}
+{% let xconfigs = self.spec.xconfigs %}
+{% let container_options = self.spec.container_options %}
+{% let mounts = self.spec.mounts %}
+{% let description = self.spec.description %}
+{{ tab::page_header(name, description, "overview", can_edit) }}
+{% let conditions = self.conditions %}
+<div x-data="{ actionSubmitting: false }">
+<div class="status-list">
+{{ conditions_macro::problems(conditions, name.as_str()) }}
+
+{% if let Err(error) = self.guardian %}
+<section>
+  <h3 class="abnormal">{{ tt!("ui.conditions.guardianUnavailable") }}</h3>
+  <pre class="diagnostic">{{ error }}</pre>
+</section>
+{% endif %}
+{% if let Some(g) = self.guardian() %}
+<section>
+  <h3>{{ tt!("ui.app.guardian.title") }}</h3>
+  <p><span class="inline-meta"><b>{% match g.phase %}{% when crate::operation::guardian::typ::GuardianPhase::Deploying %}{{ tt!("ui.app.guardian.phase.deploying") }}{% when crate::operation::guardian::typ::GuardianPhase::Validating %}{{ tt!("ui.app.guardian.phase.validating") }}{% when crate::operation::guardian::typ::GuardianPhase::Failed %}{{ tt!("ui.app.guardian.phase.failed") }}{% when crate::operation::guardian::typ::GuardianPhase::Promoting %}{{ tt!("ui.app.guardian.phase.promoting") }}{% endmatch %}</b> <small><relative-time datetime="{{ g.submitted_at }}">{{ g.submitted_at }}</relative-time></small></span></p>
+  <small>{{ tt!("ui.app.guardian.description") }}</small>
+  {% if can_edit && g.cancellable %}<div class="actions">
+    <button type="submit" class="button danger" form="guardian_cancel_form" :disabled="actionSubmitting">{{ tt!("ui.common.cancel") }}</button>
+    {% if g.actionable %}<button class="button" type="submit" form="guardian_skip_form" :disabled="actionSubmitting">{{ tt!("ui.common.skip") }}</button>
+    <button class="button" type="submit" form="guardian_retry_form" :disabled="actionSubmitting">{{ tt!("ui.common.retry") }}</button>{% endif %}
+  </div>{% endif %}
+</section>
+{% endif %}
+</div>
+
+{% if !conditions.as_ref().is_ok_and(Vec::is_empty) || self.guardian().is_some() || self.guardian.is_err() %}
+<h2 class="section-title">{{ tt!("ui.app.tab.metrics") }}</h2>
+{% endif %}
+{% match self.metrics %}
+{% when Err(error) %}
+<p class="abnormal">{{ tt!("ui.conditions.metricsUnavailable") }}</p>
+<pre class="diagnostic">{{ error }}</pre>
+{% when Ok(state) %}
+{% let metrics_start = window.range.0 %}
+{% let metrics_end = window.range.1 %}
+{% let preset = window.preset %}
+{% match state %}
+{% when crate::ui::metrics::MetricsState::Disabled %}
+{% when crate::ui::metrics::MetricsState::Empty | crate::ui::metrics::MetricsState::Charts(_) %}
+<form
+  method="get"
+  action="/apps/{{ name }}"
+  class="row query-bar"
+  x-data='CDelivery.timeRange({{ metrics_start|json }}, {{ metrics_end|json }}, {{ preset|json }})'
+>
+  {{ time_range::fields(preset) }}
+</form>
+{% endmatch %}
+{{ metric::content(state, metrics_start, metrics_end, "app-overview", true) }}
+{% endmatch %}
+
+{% if let Some(rollback) = self.spec.rollback %}
+<h2 class="section-title">{{ tt!("ui.app.changes.title") }}</h2>
+{% let attribution = self.attribution %}
+{% match rollback %}
+{% when crate::operation::app::typ::view::Rollback::Available(change) %}{{ changes_macro::change(change, attribution) }}
+{% when crate::operation::app::typ::view::Rollback::InProgress(change) %}
+  {% if let Some(change) = change %}{{ changes_macro::change(change, attribution) }}{% endif %}
+  <p class="muted mt-2">{{ tt!("ui.app.rollback.inProgress") }}</p>
+{% when crate::operation::app::typ::view::Rollback::Paused(change) %}
+  {% if let Some(change) = change %}{{ changes_macro::change(change, attribution) }}{% endif %}
+  <p class="muted mt-2">{{ tt!("ui.app.rollback.paused") }}</p>
+{% when crate::operation::app::typ::view::Rollback::Completed(change) %}
+  {% if let Some(change) = change %}{{ changes_macro::change(change, attribution) }}{% endif %}
+  <p class="muted mt-2">{{ tt!("ui.app.rollback.done") }}</p>
+{% endmatch %}
+{% endif %}
+
+<h2 class="section-title">{{ tt!("ui.app.tab.specification") }}</h2>
+<ul class="stack">
+  <li>
+    <h3>{{ tt!("ui.app.section.image") }}</h3>
+    {{ image_macro::readonly(image, image_auth) }}
+  </li>
+  <li>
+    <h3>{{ tt!("ui.app.section.replicas") }}</h3>
+    {% if mounts.is_none() %}
+    {{ replicas_macro::readonly(replicas) }}
+    {% if let Some(placement) = self.spec.placement %}
+    {% if let Some(max) = placement.max_replicas_per_node %}<p>{{ tt!("ui.app.replicas.summary.perNode", max = max) }}</p>{% else %}<p>{{ tt!("ui.app.replicas.summary.perNodeUnlimited") }}</p>{% endif %}
+    {% else %}<p>{{ tt!("ui.app.replicas.summary.perNodeUnlimited") }}</p>{% endif %}
+    {% endif %}
+    {% match self.instances %}
+    {% when Ok(instances) %}<p>{{ tt!("ui.app.replicas.summary.current", running = instances.running, desired = instances.desired) }}</p>
+    {% when Err(error) %}
+    <p>{{ tt!("ui.app.replicas.summary.target", desired = self.spec.desired_replicas) }}</p>
+    <p class="abnormal">{{ tt!("ui.app.replicas.statusUnavailable") }}</p>
+    <pre class="diagnostic">{{ error }}</pre>
+    {% endmatch %}
+  </li>
+  {% if !domains.is_empty() || !ports.is_empty() %}<li><h3>{{ tt!("ui.app.section.published") }}</h3>{{ published::readonly(domains, ports) }}</li>{% endif %}
+  {% if !xconfigs.is_empty() || mounts.is_some() %}<li><h3>{{ tt!("ui.app.section.files") }}</h3>{{ xconfig::readonly(name, xconfigs) }}{{ mounts_macro::readonly(mounts) }}</li>{% endif %}
+  <li><h3>{{ tt!("ui.app.section.container") }}</h3>{{ container::readonly(container_options, command_line) }}</li>
+</ul>
+
+{% if can_edit %}<div class="actions">
+  {% if self.rollback_available() %}<button class="button" type="submit" form="rollback_form" :disabled="actionSubmitting">{{ tt!("ui.app.rollback.label") }}</button>{% endif %}
+  <button class="button" type="submit" form="restart_form" :disabled="actionSubmitting">{{ tt!("ui.app.restart.label") }}</button>
+</div>{% endif %}
+
+{% if can_edit %}
+<form id="restart_form" method="post" action="/apps/{{ name }}/restart" data-confirm='{{ tt!("ui.app.restart.confirm") }}' @submit="if (actionSubmitting) { $event.preventDefault(); return } if (!confirm($el.dataset.confirm)) { $event.preventDefault(); return } $refs.restartPayload.value = '{}'; actionSubmitting = true"><input x-ref="restartPayload" type="hidden" name="payload" /></form>
+{% if self.rollback_available() %}<form id="rollback_form" method="post" action="/apps/{{ name }}/rollback" data-confirm='{{ tt!("ui.app.rollback.confirm") }}' @submit="if (actionSubmitting) { $event.preventDefault(); return } if (!confirm($el.dataset.confirm)) { $event.preventDefault(); return } $refs.rollbackPayload.value = '{}'; actionSubmitting = true"><input x-ref="rollbackPayload" type="hidden" name="payload" /></form>{% endif %}
+{% if let Some(g) = self.guardian() %}{% if g.cancellable %}
+{% if g.actionable %}<form id="guardian_retry_form" method="post" action="/apps/{{ name }}/guardian/retry" @submit="if (actionSubmitting) { $event.preventDefault(); return } $refs.guardianRetryPayload.value = '{}'; actionSubmitting = true"><input x-ref="guardianRetryPayload" type="hidden" name="payload" /></form>
+<form id="guardian_skip_form" method="post" action="/apps/{{ name }}/guardian/skip" data-confirm='{{ tt!("ui.app.guardian.skipConfirm") }}' @submit="if (actionSubmitting) { $event.preventDefault(); return } if (!confirm($el.dataset.confirm)) { $event.preventDefault(); return } $refs.guardianSkipPayload.value = '{}'; actionSubmitting = true"><input x-ref="guardianSkipPayload" type="hidden" name="payload" /></form>{% endif %}
+<form id="guardian_cancel_form" method="post" action="/apps/{{ name }}/guardian/cancel" data-confirm='{{ tt!("ui.app.guardian.cancelConfirm") }}' @submit="if (actionSubmitting) { $event.preventDefault(); return } if (!confirm($el.dataset.confirm)) { $event.preventDefault(); return } $refs.guardianCancelPayload.value = '{}'; actionSubmitting = true"><input x-ref="guardianCancelPayload" type="hidden" name="payload" /></form>
+{% endif %}{% endif %}
+{% endif %}
+</div>
+{% endblock main %}

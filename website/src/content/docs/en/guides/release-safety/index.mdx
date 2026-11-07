@@ -1,0 +1,33 @@
+---
+title: "Health checks and releases"
+description: "Check application health, choose an update strategy, validate candidates, and recover from failed releases."
+sidebar:
+  group:
+    label: "Health checks and releases"
+    icon: "ph:shield-check"
+  order: 26
+---
+
+Use XHealth to verify the application, an update strategy to control replica replacement, Guardian to validate a candidate, and rollback to restore an earlier configuration.
+
+## Choose a task
+
+<CardGrid>
+
+<Card title="Configure XHealth checks" href="/docs/guides/release-safety/xhealth/" icon="ph:heartbeat">
+  Create Hurl or custom-command checks and understand what the check target actually tests.
+</Card>
+
+<Card title="Application update strategies" href="/docs/guides/release-safety/update-strategy/" icon="ph:arrows-clockwise">
+  Control update parallelism, task order, monitoring, and failure actions.
+</Card>
+
+<Card title="Release validation with Guardian" href="/docs/guides/release-safety/guardian/" icon="ph:shield-check">
+  Validate a candidate before promoting application changes and handle failed validation explicitly.
+</Card>
+
+<Card title="Rollback and release failures" href="/docs/guides/release-safety/rollback/" icon="ph:arrow-u-up-left">
+  Restore a previous application configuration and verify recovery without confusing it with data restoration.
+</Card>
+
+</CardGrid>

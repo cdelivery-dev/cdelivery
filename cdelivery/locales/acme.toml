@@ -1,0 +1,61 @@
+_version = 2
+
+[acme.NoAuthorization]
+en = "order for %{domain} has no authorization"
+zh-CN = "%{domain} 的订单无授权记录"
+zh-TW = "%{domain} 的訂單沒有授權記錄"
+ja = "%{domain} の ACME オーダーに認可情報がありません。"
+pt-BR = "o pedido para %{domain} não tem autorização"
+es = "la orden para %{domain} no tiene autorización"
+fr = "La commande de certificat pour %{domain} ne contient aucune autorisation"
+de = "Dem Auftrag für %{domain} fehlt die Autorisierung"
+
+[acme.ChallengeNotOffered]
+en = "CA did not offer challenge %{kind}"
+zh-CN = "CA 未提供 %{kind} 挑战"
+zh-TW = "CA 未提供 %{kind} 驗證挑戰"
+ja = "CA が %{kind} チャレンジを提供していません。"
+pt-BR = "a autoridade certificadora não ofereceu o desafio %{kind}"
+es = "la CA no ofreció el desafío %{kind}"
+fr = "L’autorité de certification ne propose pas le défi %{kind}"
+de = "Die Zertifizierungsstelle hat keine Challenge vom Typ %{kind} angeboten"
+
+[acme.OrderNotReady]
+en = "order not ready: %{status}"
+zh-CN = "订单未就绪：%{status}"
+zh-TW = "訂單尚未就緒：%{status}"
+ja = "ACME オーダーの準備が整っていません：%{status}"
+pt-BR = "pedido ainda não está pronto: %{status}"
+es = "la orden no está lista: %{status}"
+fr = "Commande de certificat non prête : %{status}"
+de = "Auftrag noch nicht bereit: %{status}"
+
+[acme.RenewalStartOutOfRange]
+en = "suggested renewal start is out of range: %{second}"
+zh-CN = "建议续期开始时间超出范围：%{second}"
+zh-TW = "建議的更新開始時間超出範圍：%{second}"
+ja = "推奨される更新開始時刻が範囲外です：%{second}"
+pt-BR = "o início de renovação sugerido está fora do intervalo: %{second}"
+es = "el inicio de renovación sugerido está fuera de rango: %{second}"
+fr = "La date de début de renouvellement suggérée est hors limites : %{second}"
+de = "Vorgeschlagener Beginn der Erneuerung liegt außerhalb des gültigen Bereichs: %{second}"
+
+[acme.Timeout]
+en = "ACME operation timed out"
+zh-CN = "ACME 操作超时"
+zh-TW = "ACME 操作逾時"
+ja = "ACME の処理がタイムアウトしました。"
+pt-BR = "a operação ACME excedeu o tempo limite"
+es = "la operación ACME superó el tiempo de espera"
+fr = "Délai de l’opération ACME dépassé"
+de = "Zeitüberschreitung beim ACME-Vorgang"
+
+[acme.AccountUriInvalid]
+en = "ACME server returned an invalid account URI: %{uri}"
+zh-CN = "ACME 服务器返回的账户 URI 无效：%{uri}"
+zh-TW = "ACME 伺服器傳回的帳戶 URI 無效：%{uri}"
+ja = "ACME サーバーが無効なアカウント URI を返しました：%{uri}"
+pt-BR = "o servidor ACME retornou uma URI de conta inválida: %{uri}"
+es = "el servidor ACME devolvió una URI de cuenta no válida: %{uri}"
+fr = "Le serveur ACME a renvoyé un URI de compte invalide : %{uri}"
+de = "Der ACME-Server hat eine ungültige Konto-URI zurückgegeben: %{uri}"

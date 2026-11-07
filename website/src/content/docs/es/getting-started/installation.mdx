@@ -1,0 +1,70 @@
+---
+title: "Instalar CDelivery"
+description: "Instala CDelivery, crea el primer administrador y abre el panel."
+sidebar:
+  order: 3
+---
+
+## Antes de empezar
+
+Ejecuta el instalador con permisos administrativos y verifica el acceso a la plataforma.
+
+Completa primero los [preparativos de instalación](/docs/es/getting-started/requirements/).
+
+En macOS inicia Docker previamente. Ante problemas IPv6, sigue el diagnóstico del instalador; una ejecución desatendida no puede depender de una elección interactiva.
+
+## Pasos
+
+<Steps>
+
+<Step title="Ejecutar el instalador">
+
+```sh
+curl -fsSL https://cdelivery.dev/install.sh | sh
+```
+
+Para seleccionar la dirección de comunicación entre servidores:
+
+```sh
+curl -fsSL https://cdelivery.dev/install.sh | sh -s -- --advertise-addr 10.0.0.10
+```
+
+Sustituye la IP por una dirección de esta máquina accesible desde las demás. No es un dominio ni necesariamente la IP pública del navegador.
+
+</Step>
+
+<Step title="Abrir el panel">
+
+Abre `http://SERVER_IP:9000`, o `http://localhost:9000` en macOS o mediante un túnel.
+
+</Step>
+
+<Step title="Crear el primer administrador">
+
+Introduce nombre, correo y contraseña para crear el primer Admin. Se iniciará sesión automáticamente y se abrirá la configuración de la plataforma.
+
+En la configuración de la plataforma, puedes configurar el dominio y activar Insight o ir directamente al panel. Insight utiliza almacenamiento local y retención de 90 días por defecto. Después, gestiona estos recursos en los ajustes de la plataforma y en la página de Insight.
+
+Una instalación reanudada conserva la cuenta. Repetir el instalador no restablece contraseñas ni cambia una dirección de comunicación existente.
+
+</Step>
+
+</Steps>
+
+## Resultado esperado
+
+- Puedes iniciar sesión con la cuenta de administrador.
+- La lista de servidores muestra la dirección y los recursos esperados.
+- Puedes abrir los grupos y los ajustes de la plataforma.
+
+## Siguiente paso
+
+[Desplegar la primera aplicación](/docs/es/getting-started/first-app/)
+
+## Resolución de problemas
+
+Si falla la descarga, revisa DNS y HTTPS saliente. Si falla Docker, revisa servicio, versión y permisos. Si el navegador no conecta, comprueba puerto 9000, IP, cortafuegos y túnel. Para cuentas existentes, consulta [recuperación](/docs/es/administration/platform/recovery/).
+
+Si aparece la página de inicio de sesión después de la configuración inicial, utiliza la cuenta que acabas de crear.
+
+Elimina credenciales de cualquier diagnóstico compartido.

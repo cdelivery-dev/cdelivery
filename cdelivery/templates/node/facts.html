@@ -1,0 +1,26 @@
+{% import "node/status.html" as status %}
+
+{%- macro render(node) -%}
+<dt>{{ tt!("ui.node.detail.availability") }}</dt>
+<dd>{{ status::availability(node) }}</dd>
+{% if let crate::operation::node::typ::NodeRole::Manager = node.role %}
+<dt>{{ tt!("ui.node.detail.reachability") }}</dt>
+<dd>{{ status::reachability(node) }}</dd>
+<dt>{{ tt!("ui.node.detail.leader") }}</dt>
+<dd>{% match node.leader %}{% when Some(true) %}{{ tt!("ui.node.leader.yes") }}{% when Some(false) %}{{ tt!("ui.node.leader.no") }}{% when None %}—{% endmatch %}</dd>
+{% endif %}
+<dt>{{ tt!("ui.node.header.engine") }}</dt>
+<dd translate="no">{% if node.engine_version.is_empty() %}—{% else %}{{ node.engine_version }}{% endif %}</dd>
+<dt>{{ tt!("ui.node.detail.os") }}</dt>
+<dd translate="no">{% if let Some(os) = node.os %}{% if os.is_empty() %}—{% else %}{{ os }}{% endif %}{% else %}—{% endif %}</dd>
+<dt>{{ tt!("ui.node.detail.architecture") }}</dt>
+<dd translate="no">{% if let Some(architecture) = node.architecture %}{% if architecture.is_empty() %}—{% else %}{{ architecture }}{% endif %}{% else %}—{% endif %}</dd>
+<dt>ID</dt>
+<dd translate="no">{{ node.id }}</dd>
+<dt>{{ tt!("ui.node.detail.createdAt") }}</dt>
+<dd><time datetime="{{ node.created_at }}" x-data x-init="$el.textContent = CDelivery.formatInstant($el.dateTime)">{{ node.created_at }}</time></dd>
+{% if !node.status_message.is_empty() %}
+<dt>{{ tt!("ui.node.detail.statusMessage") }}</dt>
+<dd class="node-message" translate="no">{{ node.status_message }}</dd>
+{% endif %}
+{%- endmacro -%}

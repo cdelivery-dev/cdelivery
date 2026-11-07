@@ -1,0 +1,124 @@
+{% extends "account.html" %}
+
+{% import "account/nav.html" as nav %}
+{% import "user/role.html" as role_label %}
+
+{% block title %}{{ tt!("ui.account.apikeys.title") }} - {{ tt!("ui.account.nav.account") }} | {{ super() }}{% endblock title %}
+
+{% block account_navigation %}{{ nav::nav("apikeys") }}{% endblock account_navigation %}
+
+{% block main %}
+<header>
+  <h1>{{ tt!("ui.account.apikeys.title") }}</h1>
+  <p>{{ tt!("ui.account.apikeys.subtitle") }}</p>
+</header>
+
+<h2>{{ tt!("ui.account.apikeys.list.title") }}</h2>
+
+{% include "account/connection.html" %}
+
+<div class="table-scroll">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">{{ tt!("ui.account.apikeys.name") }}</th>
+        <th scope="col">{{ tt!("ui.account.profile.role") }}</th>
+        <th scope="col">{{ tt!("ui.account.apikeys.createdAt") }}</th>
+        <th scope="col">{{ tt!("ui.account.apikeys.expiresAt") }}</th>
+        <th scope="col" aria-label='{{ tt!("ui.common.actions") }}'></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for key in keys %}
+      <tr>
+        <th scope="row">{{ key.name }}</th>
+        <td>{% let key_role = key.role %}{{ role_label::label(key_role) }}</td>
+        <td><relative-time datetime="{{ key.created_at }}">{{ key.created_at }}</relative-time></td>
+        <td>{% if let Some(expires_at) = key.expires_at %}<relative-time datetime="{{ expires_at }}">{{ expires_at }}</relative-time>{% else %}{{ tt!("ui.account.apikeys.never") }}{% endif %}</td>
+        <td>
+          <form
+            method="post"
+            action="/account/apikeys/{{ key.id }}/revoke"
+            x-data="{ submitting: false }"
+            data-confirm='{{ tt!("ui.account.apikeys.revoke.confirm") }}'
+            @submit="if (submitting || !confirm($el.dataset.confirm)) { $event.preventDefault(); return } $refs.payload.value = '{}'; submitting = true"
+          >
+            <input x-ref="payload" type="hidden" name="payload" />
+            <input type="submit" class="row-action danger" value='{{ tt!("ui.common.revoke") }}' :disabled="submitting" />
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+      {% if keys.is_empty() %}<tr><td colspan="5" class="muted">{{ tt!("ui.account.apikeys.empty") }}</td></tr>{% endif %}
+    </tbody>
+  </table>
+</div>
+
+<form
+  class="apikey-create"
+  method="post"
+  action="/account/apikeys"
+  autocomplete="off"
+  x-data="{
+    submitting: false,
+    localDate(days) {
+      const date = new Date();
+      date.setDate(date.getDate() + days);
+      return new Date(date.getTime() - date.getTimezoneOffset() * 60_000).toISOString().slice(0, 10)
+    },
+    refreshExpiryMin(input) {
+      input.min = this.localDate(1)
+    },
+    activateExpiry(input) {
+      this.refreshExpiryMin(input);
+      if (input.type !== 'text') return;
+      input.value = this.localDate(7);
+      input.type = 'date'
+    },
+    openExpiry(input) {
+      this.activateExpiry(input);
+      input.getBoundingClientRect();
+      input.showPicker?.()
+    }
+  }"
+  @submit="if (submitting) { $event.preventDefault(); return } let expiresAt = null; if ($refs.expires.value) { const expires = new Date(`${$refs.expires.value}T00:00:00Z`); expires.setUTCDate(expires.getUTCDate() + 1); expiresAt = expires.toISOString() } $refs.payload.value = JSON.stringify({ name: $refs.name.value, role: $refs.role.value, expires_at: expiresAt }); submitting = true"
+>
+  <input x-ref="payload" type="hidden" name="payload" />
+  <h2>{{ tt!("ui.account.apikeys.create.title") }}</h2>
+  <p>{{ tt!("ui.account.apikeys.create.subtitle") }}</p>
+  <div class="fields">
+    <div class="field">
+      <label for="account-apikey-name">{{ tt!("ui.account.apikeys.name") }}: </label>
+      <input x-ref="name" id="account-apikey-name" class="text" type="text" maxlength="64" required />
+    </div>
+    <div class="field">
+      <label for="account-apikey-role">{{ tt!("ui.account.profile.role") }}: </label>
+      <select x-ref="role" id="account-apikey-role" class="text">
+        <option value="Reader">{{ tt!("ui.account.role.reader") }}</option>
+        {% match role %}
+        {% when crate::concept::user::Role::Reader %}
+        {% when crate::concept::user::Role::Operator %}<option value="Operator">{{ tt!("ui.account.role.operator") }}</option>
+        {% when crate::concept::user::Role::Admin %}<option value="Operator">{{ tt!("ui.account.role.operator") }}</option><option value="Admin">{{ tt!("ui.account.role.admin") }}</option>
+        {% endmatch %}
+      </select>
+    </div>
+    <div class="field">
+      <label for="account-apikey-expires">{{ tt!("ui.account.apikeys.expiresAt") }}: </label>
+      <input
+        x-ref="expires"
+        id="account-apikey-expires"
+        class="text"
+        type="text"
+        aria-describedby="account-apikey-expires-help"
+        @focus="activateExpiry($el)"
+        @click="openExpiry($el)"
+        @blur="if (!$el.value && !$el.validity.badInput) $el.type = 'text'"
+      />
+      <small id="account-apikey-expires-help">{{ tt!("ui.account.apikeys.expires.help") }}</small>
+    </div>
+  </div>
+  <div class="actions">
+    <input class="button" type="submit" value='{{ tt!("ui.common.create") }}' :disabled="submitting" @click="refreshExpiryMin($refs.expires)" />
+  </div>
+</form>
+{% endblock main %}

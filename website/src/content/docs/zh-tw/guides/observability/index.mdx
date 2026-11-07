@@ -1,0 +1,24 @@
+---
+title: "日誌、指標與事件"
+description: "選擇日誌、指標或事件作為排障入口，理解採集狀態、時間範圍和資料缺失。"
+sidebar:
+  group:
+    label: "日誌、指標與事件"
+    icon: "ph:chart-line"
+  order: 31
+---
+
+日誌、指標和事件回答不同問題。日誌解釋程序輸出，指標顯示隨時間變化的資源和請求情況，事件記錄平台觀察到的操作與執行變化。
+
+## 選擇資料入口
+
+| 需要回答的問題 | 頁面 |
+| --- | --- |
+| 程序為什麼啟動失敗 | [應用程式日誌](/docs/zh-tw/guides/observability/logs/application/) |
+| 請求是否到達入口、回傳了什麼 | [存取日誌](/docs/zh-tw/guides/observability/logs/access/) |
+| 應用程式是否受 CPU 或內存影響 | [應用程式指標](/docs/zh-tw/guides/observability/metrics/application/) |
+| 某台機器是否資源不足 | [伺服器指標](/docs/zh-tw/guides/observability/metrics/server/) |
+| 故障前發生過什麼變更 | [操作事件](/docs/zh-tw/guides/observability/events/) |
+| 資料為何遲到或沒有儲存 | [採集與保留設定](/docs/zh-tw/guides/observability/settings/) |
+
+Reader、Operator 和 Admin 均可讀取共享觀測資訊。設定 Insight、存儲和採集組件需要 Admin。

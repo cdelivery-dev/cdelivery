@@ -1,0 +1,28 @@
+---
+title: "Guardian によるリリース検証"
+description: "Guardian は候補構成を検証してから実アプリへ反映します。"
+sidebar:
+  order: 29
+---
+
+Guardian は候補構成を検証してから実アプリへ反映します。
+
+## 準備
+
+[XHealth](/docs/ja/guides/release-safety/xhealth/)を設定し、対応アプリで Guardian を有効化して候補と既存の両方の資源を確保します。
+
+Guardian が有効な場合、イメージ、コンテナー実行設定、XConfig、グループの変更で候補を検証します。グループ変更は API で行います。ローカルボリューム方式は非対応です。
+
+## フェーズ
+
+Deploying は配置・起動、Validating は検証、Failed は失敗、Promoting は本番反映です。
+
+再試行、スキップ、キャンセルは状態により表示されます。スキップは検証成功なしで受け入れる判断で、失敗を成功に変える操作ではありません。
+
+## 確認
+
+GuardianApp と GuardianCheck のログを分けて調べます。ポート、ツール、環境、資源、条件を確認し、反映後は実レプリカとサービスを試します。
+
+[更新方式](/docs/ja/guides/release-safety/update-strategy/)と[ロールバック](/docs/ja/guides/release-safety/rollback/)を確認します。
+
+[シークレット](/docs/ja/guides/apps/secrets/).

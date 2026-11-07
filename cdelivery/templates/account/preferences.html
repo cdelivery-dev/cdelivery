@@ -1,0 +1,51 @@
+{% extends "account.html" %}
+
+{% import "account/nav.html" as nav %}
+
+{% block title %}{{ tt!("ui.account.preferences.title") }} - {{ tt!("ui.account.nav.account") }} | {{ super() }}{% endblock title %}
+
+{% block account_navigation %}{{ nav::nav("preferences") }}{% endblock account_navigation %}
+
+{% block main %}
+<header>
+  <h1>{{ tt!("ui.account.preferences.title") }}</h1>
+</header>
+
+<form
+  method="post"
+  action="/account/preferences"
+  x-data="{ submitting: false }"
+  @submit="if (submitting) { $event.preventDefault(); return } $refs.payload.value = JSON.stringify({ language: $refs.language.value || null, theme: $refs.theme.value }); submitting = true"
+>
+  <input x-ref="payload" type="hidden" name="payload" />
+  <div class="fields">
+    <div class="field">
+      <label for="account-language">{{ tt!("ui.account.preferences.language") }}: </label>
+      <select x-ref="language" id="account-language" class="text">
+        <option value=""{% if preferences.language.is_none() %} selected{% endif %}>{{ tt!("ui.account.preferences.language.auto") }}</option>
+        <hr />
+        <option value="De"{% if let Some(crate::locale::Locale::De) = preferences.language %} selected{% endif %}>Deutsch</option>
+        <option value="En"{% if let Some(crate::locale::Locale::En) = preferences.language %} selected{% endif %}>English</option>
+        <option value="Es"{% if let Some(crate::locale::Locale::Es) = preferences.language %} selected{% endif %}>Español</option>
+        <option value="Fr"{% if let Some(crate::locale::Locale::Fr) = preferences.language %} selected{% endif %}>Français</option>
+        <option value="Ja"{% if let Some(crate::locale::Locale::Ja) = preferences.language %} selected{% endif %}>日本語</option>
+        <option value="PtBr"{% if let Some(crate::locale::Locale::PtBr) = preferences.language %} selected{% endif %}>Português (Brasil)</option>
+        <option value="ZhCn"{% if let Some(crate::locale::Locale::ZhCn) = preferences.language %} selected{% endif %}>简体中文</option>
+        <option value="ZhTw"{% if let Some(crate::locale::Locale::ZhTw) = preferences.language %} selected{% endif %}>繁體中文</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="account-theme">{{ tt!("ui.account.preferences.theme") }}: </label>
+      <select x-ref="theme" id="account-theme" class="text">
+        <option value="Auto"{% if let crate::theme::Theme::Auto = preferences.theme %} selected{% endif %}>{{ tt!("ui.account.preferences.theme.auto") }}</option>
+        <hr />
+        <option value="Light"{% if let crate::theme::Theme::Light = preferences.theme %} selected{% endif %}>{{ tt!("ui.account.preferences.theme.light") }}</option>
+        <option value="Dark"{% if let crate::theme::Theme::Dark = preferences.theme %} selected{% endif %}>{{ tt!("ui.account.preferences.theme.dark") }}</option>
+      </select>
+    </div>
+  </div>
+  <div class="actions">
+    <input class="button" type="submit" value='{{ tt!("ui.common.save") }}' :disabled="submitting" />
+  </div>
+</form>
+{% endblock main %}

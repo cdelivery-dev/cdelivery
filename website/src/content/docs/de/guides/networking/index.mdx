@@ -1,0 +1,54 @@
+---
+title: "Domains und HTTPS"
+description: "Unterscheide internes Netzwerk, veröffentlichte Ports und HTTP/HTTPS-Routing über Pingress."
+sidebar:
+  group:
+    label: "Domains und HTTPS"
+    icon: "ph:globe"
+  order: 20
+---
+
+Unterscheide internes Netzwerk, veröffentlichte Ports und HTTP/HTTPS-Routing über Pingress.
+
+## Auswahl
+
+| Bedarf | Konfiguration |
+| --- | --- |
+| Kommunikation innerhalb Gruppe | Name und interner Port |
+| Direktes TCP/UDP | Portfreigabe |
+| HTTP-Domain | Route zum Containerport |
+| HTTPS | Route plus gültiges Zertifikat |
+
+Eine Domainroute benötigt keinen zusätzlich veröffentlichten Port.
+
+## Nach Aufgabe auswählen
+
+<CardGrid>
+
+<Card title="Verbindungen und veröffentlichte Ports" href="/docs/de/guides/networking/connectivity/" icon="ph:plugs-connected">
+  Anwendungen derselben Gruppe erreichen sich über Namen und Containerport.
+</Card>
+
+<Card title="Domains und Routen" href="/docs/de/guides/networking/routing/" icon="ph:globe">
+  Pingress kombiniert Domain und Anfragebedingungen zur Auswahl eines Anwendungsports.
+</Card>
+
+<Card title="Automatische Zertifikate und Erneuerung" href="/docs/de/guides/networking/automatic-certificates/" icon="ph:certificate">
+  ACME stellt Zertifikate aus und erneuert sie bei erreichbarer Domainvalidierung.
+</Card>
+
+<Card title="Eigene Zertifikate" href="/docs/de/guides/networking/custom-certificates/" icon="ph:key">
+  Lade PEM-Kette und passenden privaten Schlüssel für extern verwaltete Zertifikate hoch.
+</Card>
+
+<Card title="Häufige Netzwerkfragen" href="/docs/de/guides/networking/faq/" icon="ph:question">
+  IPv6, Clientadressen, DNS, Routing und Zertifikate untersuchen.
+</Card>
+
+</CardGrid>
+
+## Fehlerbehebung
+
+DNS, TCP, TLS und Antwort getrennt testen. Zertifikatserteilung beweist keinen funktionierenden Backendprozess.
+
+Die [Konsolendomain](/docs/de/administration/platform/access/) hat eigene Einstellungen.

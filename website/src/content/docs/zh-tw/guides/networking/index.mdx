@@ -1,0 +1,53 @@
+---
+title: "網域與 HTTPS"
+description: "選擇內部通信、發佈連接埠或網域入口，並按順序設定 Pingress 和憑證。"
+sidebar:
+  group:
+    label: "網域與 HTTPS"
+    icon: "ph:globe"
+  order: 20
+---
+
+應用程式網路可以分為三個層次：組內應用程式通信、直接發佈連接埠、通過 Pingress 使用網域。先選擇存取方式，再設定相應的伺服器、防火牆和憑證。
+
+## 選擇入口
+
+| 存取需求 | 使用方式 | 示例 |
+| --- | --- | --- |
+| 同分組應用程式互相呼叫 | 應用程式名稱與容器連接埠 | `http://backend:8080` |
+| 直接存取某個應用程式連接埠 | 發佈連接埠 | `http://SERVER_IP:8080` |
+| 使用網站網域及 HTTPS | Pingress 與網域路由 | `https://app.example.com` |
+
+應用程式通過 Pingress 暴露容器連接埠時，不需要為了同一個入口再單獨發佈該連接埠。資料庫等內部服務也不必為了組內通信暴露公網連接埠。
+
+## 按任務查找
+
+<CardGrid>
+
+<Card title="應用程式間通信與連接埠發佈" href="/docs/zh-tw/guides/networking/connectivity/" icon="ph:plugs-connected">
+  設定組內服務地址和對外發佈連接埠，區分容器連接埠、伺服器連接埠與網域路由。
+</Card>
+
+<Card title="網域與路由" href="/docs/zh-tw/guides/networking/routing/" icon="ph:globe">
+  把網域映射到應用程式連接埠，並使用路徑、請求頭或 Cookie 條件分配請求。
+</Card>
+
+<Card title="自動憑證與續期" href="/docs/zh-tw/guides/networking/automatic-certificates/" icon="ph:certificate">
+  啟用自動憑證、驗證網域可達性，並檢查簽發、續期及失敗狀態。
+</Card>
+
+<Card title="自訂憑證" href="/docs/zh-tw/guides/networking/custom-certificates/" icon="ph:key">
+  上傳憑證鏈與私鑰、驗證網域及有效期，並維護手動憑證的替換和刪除。
+</Card>
+
+<Card title="網路常見問題" href="/docs/zh-tw/guides/networking/faq/" icon="ph:question">
+  排查 IPv6、用戶端位址、DNS、路由與憑證問題。
+</Card>
+
+</CardGrid>
+
+## 排查存取失敗
+
+沿著“用戶端 → DNS → Pingress → 應用程式容器連接埠”逐段檢查。應用程式副本執行但外部存取失敗時，先區分是連接、TLS、路由還是業務回應問題。
+
+使用[存取日誌](/docs/zh-tw/guides/observability/logs/access/)檢查請求是否到達入口及匹配到哪個應用程式。IPv6、用戶端地址和安裝後網路調整見[常見問題](/docs/zh-tw/guides/networking/faq/)。

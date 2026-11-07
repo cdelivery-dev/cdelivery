@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="{{ crate::locale::current().tag() }}" data-theme="{{ crate::theme::current().token() }}">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    {% match crate::theme::current() %}
+    {% when crate::theme::Theme::Light %}<meta name="theme-color" content="#ffffff" />
+    {% when crate::theme::Theme::Dark %}<meta name="theme-color" content="#1e1e1e" />
+    {% when crate::theme::Theme::Auto %}<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1e1e1e" />
+    {% endmatch %}
+    <link rel="icon" href="{{ crate::ui::asset::FAVICON_LIGHT_PATH.as_str() }}" type="image/svg+xml" sizes="any" media="(prefers-color-scheme: light)" />
+    <link rel="icon" href="{{ crate::ui::asset::FAVICON_DARK_PATH.as_str() }}" type="image/svg+xml" sizes="any" media="(prefers-color-scheme: dark)" />
+    <title>{% block title %}CDelivery{% endblock title %}</title>
+    <link rel="stylesheet" href="{{ crate::ui::asset::STYLE_PATH.as_str() }}" />
+    <link rel="stylesheet" href="{{ crate::ui::asset::DYGRAPH_STYLE_PATH }}" />
+    <script defer src="{{ crate::ui::asset::SHARED_PATH.as_str() }}"></script>
+    <script defer src="{{ crate::ui::asset::SHA256_PATH }}"></script>
+    <script defer src="{{ crate::ui::asset::ALPINE_PATH }}"></script>
+    <script type="module" src="{{ crate::ui::asset::RELATIVE_TIME_PATH }}"></script>
+    <script defer src="{{ crate::ui::asset::DYGRAPH_PATH }}"></script>
+    <script defer src="{{ crate::ui::asset::DYGRAPH_SMOOTH_PATH }}"></script>
+    {% block head %}{% endblock head %}
+  </head>
+  {% block body %}
+  <body></body>
+  {% endblock body %}
+</html>

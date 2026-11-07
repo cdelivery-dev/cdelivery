@@ -1,0 +1,30 @@
+---
+title: "Guardia automática"
+description: "La guardia analiza eventos y realiza rondas periódicas con un rol explícito."
+sidebar:
+  order: 45
+---
+
+La guardia analiza alertas y recuperaciones y realiza rondas periódicas con un rol explícito. Los cambios habituales, como crear, actualizar o reiniciar una aplicación, se guardan en el historial de eventos para el diagnóstico y no activan el análisis de IA.
+
+## Configurar
+
+Prepara [modelo](/docs/es/guides/automation/models/), elige rol, política, intervalo e idioma, habilita guardia y configura receptores.
+
+Los valores iniciales son Operator, NearCritical, 30 minutos e inglés. Intervalo permitido: 15 minutos–24 horas. El análisis por eventos no espera a la ronda siguiente.
+
+EarlyRisk, NearCritical y LimitOrFailure expresan cuándo actuar ante riesgo; no equivalen a un umbral numérico universal.
+
+## Permisos y destinatarios
+
+Reader observa; Operator y Admin permiten escrituras desatendidas dentro de sus permisos. La guardia no tiene ámbito de cuenta personal.
+
+Los suscriptores con un rol igual o superior al de la guardia reciben el análisis de IA; los demás reciben la alerta original. Los resultados de operaciones tienen la misma restricción de rol.
+
+La guardia analiza las alertas antes de notificarlas; si no hay un análisis útil, envía la alerta original. Consulta las [reglas de notificación](/docs/es/guides/automation/im/notifications/).
+
+## Verificar
+
+Comprueba eventos, análisis, operaciones y estado real. Si no llega notificación, revisa modelo, canal, suscripción y filtro de rol.
+
+Deshabilitar guardia no desactiva alertas ordinarias. Las notificaciones usan el idioma configurado; conversaciones siguen al usuario. Consulta [diagnóstico de notificaciones](/docs/es/guides/automation/im/notifications/).

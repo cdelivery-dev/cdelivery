@@ -1,0 +1,33 @@
+---
+title: "ヘルスチェックとリリース"
+description: "アプリの状態を確認し、更新方法と候補検証を設定して、リリースの失敗から復旧します。"
+sidebar:
+  group:
+    label: "ヘルスチェックとリリース"
+    icon: "ph:shield-check"
+  order: 26
+---
+
+XHealth でアプリの動作を確認し、更新戦略でレプリカの置換を制御します。Guardian は候補構成を検証し、ロールバックは以前の構成を復元します。
+
+## 目的から選ぶ
+
+<CardGrid>
+
+<Card title="XHealth の設定" href="/docs/ja/guides/release-safety/xhealth/" icon="ph:heartbeat">
+  XHealth は業務コンテナーとは別のタスクでアプリを検証します。
+</Card>
+
+<Card title="更新方式" href="/docs/ja/guides/release-safety/update-strategy/" icon="ph:arrows-clockwise">
+  置換の並列数、順序、監視期間、失敗時の動作を設定します。
+</Card>
+
+<Card title="Guardian によるリリース検証" href="/docs/ja/guides/release-safety/guardian/" icon="ph:shield-check">
+  Guardian は候補構成を検証してから実アプリへ反映します。
+</Card>
+
+<Card title="ロールバックとリリース失敗" href="/docs/ja/guides/release-safety/rollback/" icon="ph:arrow-u-up-left">
+  ロールバックは以前のアプリ構成を戻し、データやプラットフォーム版は戻しません。
+</Card>
+
+</CardGrid>

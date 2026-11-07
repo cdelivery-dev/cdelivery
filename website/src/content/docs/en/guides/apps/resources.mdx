@@ -1,0 +1,35 @@
+---
+title: "Resource reservations and limits"
+description: "Set per-replica CPU and memory requirements and diagnose capacity-related failures."
+sidebar:
+  order: 11
+---
+
+Reservations guide placement; limits constrain runtime use. Both apply to each replica, so account for replica count and overlap during updates.
+
+## Configure resources
+
+Open application settings and choose CPU and memory values appropriate to measured workload needs. CPU uses cores: `0.5` means half a core. Accepted CPU values range from 0.001 to 10000 in steps of 0.001. Memory values use the displayed units such as MiB and GiB.
+
+A reservation is not dedicated hardware, and a limit is not proof of adequate application capacity. Keep reservations within their corresponding limits and leave capacity for the host and platform.
+
+| Setting | Effect |
+| --- | --- |
+| CPU reservation | Scheduling requirement |
+| CPU limit | Runtime CPU ceiling |
+| Memory reservation | Scheduling requirement |
+| Memory limit | Runtime memory ceiling; exceeding it can terminate the process |
+
+See [Docker resource constraints](https://docs.docker.com/engine/containers/resource_constraints/) for runtime behavior.
+
+## Plan replicas and updates
+
+Four replicas with a 512 MiB reservation require capacity for four such tasks. Start-first updates can require additional temporary tasks. Combining reservations, placement labels, and per-server replica caps may leave no eligible machine.
+
+Automatic scaling also needs usable observations and appropriate capacity. A CPU limit helps it assess multiple replicas on the same server; see [scaling](/docs/guides/apps/scaling/).
+
+## Verify
+
+Inspect application metrics under representative load, compare actual replicas with desired replicas, and check server headroom. Pending tasks may indicate unsatisfied placement or reservations. Restarting processes with memory errors may need a larger limit or an application fix.
+
+Do not treat missing metrics as zero consumption. Read [application metrics](/docs/guides/observability/metrics/application/) before tuning limits.

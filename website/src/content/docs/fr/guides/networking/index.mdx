@@ -1,0 +1,54 @@
+---
+title: "Domaines et HTTPS"
+description: "Distinguez réseau interne, ports publiés et routage HTTP/HTTPS par Pingress."
+sidebar:
+  group:
+    label: "Domaines et HTTPS"
+    icon: "ph:globe"
+  order: 20
+---
+
+Distinguez réseau interne, ports publiés et routage HTTP/HTTPS par Pingress.
+
+## Choisir
+
+| Besoin | Configuration |
+| --- | --- |
+| Communication du groupe | Nom et port interne |
+| TCP/UDP direct | Port publié |
+| HTTP avec domaine | Route vers port du conteneur |
+| HTTPS | Route et certificat valide |
+
+Une route ne nécessite pas de publier le port ; elle vise le port interne.
+
+## Choisir une tâche
+
+<CardGrid>
+
+<Card title="Connexions et ports publiés" href="/docs/fr/guides/networking/connectivity/" icon="ph:plugs-connected">
+  Les applications d’un groupe se joignent par nom et port interne.
+</Card>
+
+<Card title="Domaines et routage" href="/docs/fr/guides/networking/routing/" icon="ph:globe">
+  Pingress associe domaine et conditions de requête à un port d’application.
+</Card>
+
+<Card title="Certificats automatiques et renouvellement" href="/docs/fr/guides/networking/automatic-certificates/" icon="ph:certificate">
+  ACME émet et renouvelle lorsque DNS et validation atteignent Pingress.
+</Card>
+
+<Card title="Certificats personnalisés" href="/docs/fr/guides/networking/custom-certificates/" icon="ph:key">
+  Chargez une chaîne PEM et sa clé correspondante lorsque l’émission est gérée ailleurs.
+</Card>
+
+<Card title="Questions fréquentes sur le réseau" href="/docs/fr/guides/networking/faq/" icon="ph:question">
+  Diagnostiquer IPv6, les adresses clientes, le DNS, les routes et les certificats.
+</Card>
+
+</CardGrid>
+
+## Dépannage
+
+Testez séparément DNS, connexion, TLS et réponse. Un certificat émis ne prouve pas le bon fonctionnement du backend.
+
+Le [domaine de la console](/docs/fr/administration/platform/access/) est configuré séparément.

@@ -1,0 +1,49 @@
+---
+title: "Create and deploy an application"
+description: "Choose an image or template, configure an application, and verify its first deployment."
+sidebar:
+  order: 8
+---
+
+An Operator or Admin can create applications in an existing group. Ask an Admin to create the group and any required local volumes first.
+
+## Create
+
+<Steps>
+
+1. Open the target group and choose to create an application.
+2. Enter a unique name: 1–16 lowercase letters, digits, or hyphens, with no leading or trailing hyphen or reserved name.
+3. Enter an image reference, or choose a supplied database template.
+4. Configure required environment variables, container ports, and access.
+5. Choose persistent storage now if needed.
+6. Check replicas, placement, resources, and update behavior, then save.
+
+</Steps>
+
+Descriptions can contain up to 500 characters. Names are unique across the platform, not just the group. The console does not later rename an application or move it to another group.
+
+## Image or template
+
+A template fills image-specific startup, environment, and data defaults; it does not establish a backup policy or verify your database design. Review generated credentials and the image's data path before submitting.
+
+PostgreSQL 18 and MariaDB 12 templates load their images from the remote release catalog. If no successful catalog snapshot is available, create an application manually. Catalog updates affect newly opened forms, not existing applications.
+
+For a stateless web service, begin with one replica and verify its container port. For a database, read [stateful applications](/docs/guides/apps/persistence/stateful/) first: this mode fixes one replica to a selected server.
+
+## Defaults and verification
+
+A blank form defaults to one fixed replica, the image's command, host logging, and no additional reservations or placement label. Updates default to all replicas in parallel, stop-first order, a 60-second monitor, zero failure tolerance, and rollback on failure. Review the [update strategy](/docs/guides/release-safety/update-strategy/) for availability requirements.
+
+Saving unchanged configuration does not force a redeployment; use restart when replacement is intended. Arbitrary environment values and file contents are not automatically secret or redacted.
+
+Add [XHealth](/docs/guides/release-safety/xhealth/) for business checks and [Guardian](/docs/guides/release-safety/guardian/) for candidate validation before promotion.
+
+## Verify and diagnose
+
+Wait for the expected replica to run. Inspect application logs, then request its published endpoint or test a same-group connection.
+
+A pull failure points to the reference, registry credentials, network, or architecture. A pending task may lack eligible servers or reserved resources. An exiting process needs its startup error checked; changing a host port cannot fix a failing process.
+
+The [first application example](/docs/getting-started/first-app/) provides a complete Nginx deployment. Continue with [images](/docs/guides/apps/images/) and [runtime settings](/docs/guides/apps/container/).
+
+[Secrets](/docs/guides/apps/secrets/).

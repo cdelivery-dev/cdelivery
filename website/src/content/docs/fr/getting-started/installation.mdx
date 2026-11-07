@@ -1,0 +1,70 @@
+---
+title: "Installer CDelivery"
+description: "Installez CDelivery, créez le premier administrateur et ouvrez le tableau de bord."
+sidebar:
+  order: 3
+---
+
+## Avant de commencer
+
+Exécutez l’installateur avec les droits administratifs, puis vérifiez l’accès à la console.
+
+Suivez d’abord les [préparatifs d’installation](/docs/fr/getting-started/requirements/).
+
+Sur macOS, démarrez Docker. En cas de problème IPv6, suivez le diagnostic ; un lancement non interactif ne peut dépendre d’un choix manuel.
+
+## Étapes
+
+<Steps>
+
+<Step title="Exécuter l’installateur">
+
+```sh
+curl -fsSL https://cdelivery.dev/install.sh | sh
+```
+
+Pour choisir l’adresse entre serveurs :
+
+```sh
+curl -fsSL https://cdelivery.dev/install.sh | sh -s -- --advertise-addr 10.0.0.10
+```
+
+Utilisez une adresse de cette machine accessible aux autres, pas un domaine. Elle n’est pas nécessairement publique.
+
+</Step>
+
+<Step title="Ouvrir le tableau de bord">
+
+Ouvrez `http://SERVER_IP:9000`, ou `http://localhost:9000` sur macOS ou par tunnel.
+
+</Step>
+
+<Step title="Créer le premier administrateur">
+
+Renseignez nom, e-mail et mot de passe pour créer le premier Admin. Vous serez automatiquement connecté et dirigé vers la configuration de la plateforme.
+
+Dans la configuration de la plateforme, vous pouvez configurer le domaine et activer Insight, ou accéder directement au tableau de bord. Insight utilise par défaut un stockage local avec 90 jours de rétention. Gérez ensuite ces fonctions dans les paramètres de la plateforme et la page Insight.
+
+Une installation reprise conserve son compte. Relancer ne réinitialise ni mot de passe ni adresse existante.
+
+</Step>
+
+</Steps>
+
+## Résultat attendu
+
+- Vous pouvez vous connecter avec votre compte administrateur.
+- La liste des serveurs affiche l’adresse et les ressources attendues.
+- Vous pouvez ouvrir les groupes et les paramètres de la plateforme.
+
+## Étape suivante
+
+[Déployer une première application](/docs/fr/getting-started/first-app/)
+
+## Dépannage
+
+Échec de téléchargement : DNS/HTTPS sortant. Docker : service, version, droits. Navigateur : IP, 9000, pare-feu, tunnel. Compte existant inaccessible : [récupération](/docs/fr/administration/platform/recovery/).
+
+Si la page de connexion apparaît après la configuration initiale, utilisez le compte que vous venez de créer.
+
+Retirez les secrets avant de partager un diagnostic.

@@ -1,0 +1,30 @@
+---
+title: "Uninstall and cleanup"
+description: "Preview resource removal and understand retained volumes and interrupted cleanup."
+sidebar:
+  order: 64
+---
+
+<Aside type="danger">
+Uninstall removes platform management resources, application definitions, accounts, and credentials. The script preserves all data volumes and their descriptions.
+</Aside>
+
+## Uninstall
+
+Run in an interactive terminal on a management server with Docker CLI and jq, using its local Docker Unix socket. Record application settings, images, servers, and volumes, and back up business data. Stop creating or recreating resources during removal.
+
+```sh
+curl -fsSL https://cdelivery.dev/uninstall.sh | sh
+```
+
+Review the displayed Docker endpoint and resources, then enter `y` or `Y` and press Enter to confirm. Press Enter without typing, enter any other text, or use Ctrl+C to cancel. If no resources remain to remove, the script exits without prompting.
+
+The script stops the main program first, then removes platform-managed resources. Before reporting completion, it waits up to 120 seconds for managed networks to disappear from the local Docker network list. On timeout, it lists the remaining networks and exits with an error. It does not uninstall Docker, erase application volumes, or delete external DNS, object storage, or provider accounts.
+
+## Verify and recover from interruption
+
+Check that the listed management resources are gone and retained volumes remain on their original servers. Container cleanup is asynchronous; exit on offline machines cannot be confirmed until they reconnect.
+
+On a deletion error, the script stops. Resolve the connection, reference, or permission problem and rerun the same command to preview and confirm again. Do not reinstall or recreate same-named resources while cleanup is unfinished.
+
+Deleting retained volumes requires a separate decision. A new installation creates new management data; restoring business workloads requires your saved configuration and storage recovery procedure.

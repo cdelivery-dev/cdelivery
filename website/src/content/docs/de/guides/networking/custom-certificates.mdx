@@ -1,0 +1,26 @@
+---
+title: "Eigene Zertifikate"
+description: "Lade PEM-Kette und passenden privaten Schlüssel für extern verwaltete Zertifikate hoch."
+sidebar:
+  order: 24
+---
+
+Lade PEM-Kette und passenden privaten Schlüssel für extern verwaltete Zertifikate hoch.
+
+## Installieren
+
+Admin stellt aktuell gültiges, den Hostnamen abdeckendes Zertifikat mit vollständiger Kette und passendem Schlüssel bereit. Domain wählen, hochladen, speichern und HTTPS-Route prüfen.
+
+Am Client Namen, Aussteller, Kette und Ablauf für jeden Eingang kontrollieren, einschließlich IPv6. Schlüssel nicht in Diagnosen veröffentlichen.
+
+Upload beweist nicht, dass DNS den richtigen Server erreicht.
+
+## Erneuern
+
+Eigene Zertifikate nehmen nicht an ACME-Erneuerung teil. Ablauf verfolgen, rechtzeitig ersetzen und tatsächlich ausgeliefertes Zertifikat prüfen.
+
+## Fehler
+
+Adressprobleme von TLS trennen. Namen, Daten, Kette und Schlüsselpaar kontrollieren. Vorgeschalteter Proxy kann ein anderes Zertifikat ausliefern.
+
+Für Automatik siehe [ACME](/docs/de/guides/networking/automatic-certificates/) und Validierungsvoraussetzungen.

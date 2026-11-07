@@ -1,0 +1,18 @@
+{%- macro field(id, label, current, target, unavailable, can_edit, busy = "false", help = "") -%}
+{% let selectable = can_edit && current.is_some() && target.is_some() %}
+<div class="field">
+  <label for="{{ id }}">{{ label }}</label>
+  <select id="{{ id }}" class="text version-select" {% if !can_edit || (current.is_none() && target.is_none()) %}disabled{% else %}:disabled="{{ busy }}"{% endif %}
+    title="{% if let Some(version) = current %}{{ version }}{% endif %}{% if selectable %} → {% endif %}{% if current.is_none() || selectable %}{% if let Some(version) = target %}{{ version }}{% endif %}{% endif %}"
+    {% if can_edit && unavailable %}aria-describedby="{{ id }}-help"{% endif %} {{ caller() }}>
+    {% if let Some(version) = current %}<option value="">{% if selectable %}{{ tt!("ui.version.current", version = version) }}{% else %}{{ version }}{% endif %}</option>{% endif %}
+    {% if current.is_none() || selectable %}
+    {% if let Some(version) = target %}<option value="{{ version }}">{% if selectable %}{{ tt!("ui.version.latest", version = version) }}{% else %}{{ version }}{% endif %}</option>{% endif %}
+    {% endif %}
+    {% if current.is_none() && target.is_none() %}<option value="">—</option>{% endif %}
+  </select>
+  {% if can_edit && unavailable %}
+  <small id="{{ id }}-help">{{ tt!("ui.version.unavailable") }}{% if !help.is_empty() %}<br />{{ help }}{% endif %}</small>
+  {% endif %}
+</div>
+{%- endmacro -%}

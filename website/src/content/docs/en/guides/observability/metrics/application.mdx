@@ -1,0 +1,28 @@
+---
+title: "Application metrics"
+description: "Read resource series, distinguish missing samples, and use observations for scaling and diagnosis."
+sidebar:
+  order: 34
+---
+
+Application metrics help explain CPU, memory, and resource behavior across replicas. They require enabled and healthy collection.
+
+## Read a chart
+
+Open the application metrics view, select a time range of at most 31 days, and inspect the displayed units. CPU in cores is different from a percentage relative to a limit. Memory values should be compared with both application requirements and configured limits.
+
+Aggregated buckets can show minimum, average, and maximum values. A low average can hide a brief peak, while a maximum alone does not describe sustained load. Larger time buckets smooth short events.
+
+## Use the observations
+
+Compare metrics before and after a release, restart, or replica change. Check the actual replica count and avoid confusing aggregate demand with per-replica utilization.
+
+Automatic scaling requires fresh observations from all running replicas. A partial or stale series can prevent a scaling decision; missing samples are not interpreted as idle replicas.
+
+## Diagnose missing or unusual data
+
+Confirm the application identity, selected range, collector state, storage availability, and retention. Recently enabled collection has no earlier history. Depending on storage placement and flush timing, recent data may appear after a delay.
+
+A task that exits quickly may leave sparse observations; use [logs](/docs/guides/observability/logs/application/) and [events](/docs/guides/observability/events/) as well.
+
+Tune [resource reservations and limits](/docs/guides/apps/resources/) using representative load, and check [server metrics](/docs/guides/observability/metrics/server/) before assuming the application alone is responsible.

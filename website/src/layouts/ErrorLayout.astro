@@ -1,0 +1,26 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { defaultLocale } from '../config';
+import { translate } from '../i18n';
+import SiteLayout from './SiteLayout.astro';
+
+interface Props {
+  title: string;
+  heading: string;
+}
+
+const { title, heading } = Astro.props;
+const locale = Astro.currentLocale ?? defaultLocale;
+const t = translate(locale);
+---
+<SiteLayout title={title} languageSwitchPath="/">
+  <section class="error-page container">
+    <h1>{heading}</h1>
+    <p class="home-link"><a href={getRelativeLocaleUrl(locale)}>{t('site.error.home')}</a></p>
+  </section>
+</SiteLayout>
+<style>
+  .error-page { display: grid; align-content: center; gap: 32px; min-height: inherit; padding-block: 48px; text-align: center; }
+  h1 { font-size: clamp(1.75rem, 5vw, 3rem); }
+  .home-link a { text-decoration: underline; text-underline-offset: 4px; }
+</style>

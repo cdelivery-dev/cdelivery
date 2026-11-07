@@ -1,0 +1,183 @@
+---
+import { translate } from '../i18n';
+const t = translate(Astro.currentLocale);
+const inputs = ['site.ai.metrics', 'site.ai.applicationLogs', 'site.ai.accessRecords', 'site.ai.operationEvents', 'site.ai.more'] as const;
+const outputs = ['site.ai.diagnosis', 'site.ai.notifications', 'site.ai.actions', 'site.ai.more'] as const;
+const instances = [1, 2, 3];
+const [instancePrefix, instanceSuffix] = t('site.xconfig.instance').split('{{number}}');
+const scaling = { out: 150, in: 430 };
+const replicaPath = `M1 75H${scaling.out}V39H${scaling.in}V75H499`;
+---
+<section class="operation-section home-columns home-section container" id="ai" aria-labelledby="ai-title">
+  <h2 class="section-title" id="ai-title">{t('site.ai.title')}</h2>
+  <div class="section-copy">
+    <p>{t('site.ai.context')}</p>
+    <p>{t('site.ai.duty')}</p>
+    <p>{t('site.ai.channels')}</p>
+  </div>
+  <figure class="illustration" aria-label={t('site.ai.diagramDescription')}>
+    <div class="ai-stage">
+      <div class="flow-group ai-inputs" style={`--items:${inputs.length}`}>
+        <ul class="flow-list ai-list">{inputs.map((key) => <li>{t(key)}<span class="link" aria-hidden="true"></span></li>)}</ul>
+        <div class="flow-branch" aria-hidden="true"><span class="link"></span></div>
+      </div>
+      <div class="node node-emphasis ai-node"><span class="node-name">{t('site.ai.analysis')}</span><span class="node-detail">{t('site.ai.correlate')}</span></div>
+      <div class="flow-group flow-output ai-outputs" style={`--items:${outputs.length}`}>
+        <div class="flow-branch" aria-hidden="true"><span class="link"></span></div>
+        <ul class="flow-list ai-list">{outputs.map((key) => <li><span class="link" aria-hidden="true"></span>{t(key)}</li>)}</ul>
+      </div>
+    </div>
+  </figure>
+</section>
+<section class="operation-section scaling-section home-columns home-section container" id="autoscaling" aria-labelledby="autoscaling-title">
+  <h2 class="section-title" id="autoscaling-title">{t('site.autoscaling.title')}</h2>
+  <div class="section-copy">
+    <p>{t('site.autoscaling.description')}</p>
+  </div>
+  <figure class="illustration" aria-label={t('site.autoscaling.diagramDescription')}>
+    <div class="scale-timeline" style={`--scale-out:${scaling.out / 500};--scale-in:${scaling.in / 500}`}>
+      <div class="scale-markers" aria-hidden="true">
+        <span class="scale-marker" style="--position:var(--scale-out)"></span>
+        <span class="scale-marker" style="--position:var(--scale-in)"></span>
+      </div>
+      <div class="track-heading" style="grid-area:cpu-heading"><strong>{t('site.autoscaling.cpu')}</strong><span>{t('site.autoscaling.illustrative')}</span></div>
+      <div class="plot" style="grid-area:cpu">
+        <svg viewBox="0 0 500 100" preserveAspectRatio="none" aria-hidden="true">
+          <path class="plot-grid" d="M0 25H500 M0 50H500 M0 75H500"/>
+          <path class="cpu-line" d={`M1 64L25 62L45 64L70 58L95 44L120 24L140 14L${scaling.out} 12L175 10L200 11L225 10L245 14L265 35L285 54L310 67L335 78L360 80L390 79L${scaling.in} 80L445 80L460 65L480 62L499 64`}/>
+        </svg>
+      </div>
+      <div class="track-heading" style="grid-area:replica-heading"><strong>{t('site.autoscaling.running')}</strong><span>{t('site.autoscaling.sameTimeline')}</span></div>
+      <div class="plot" style="grid-area:replicas">
+        <svg viewBox="0 0 500 100" preserveAspectRatio="none" aria-hidden="true">
+          <path class="replica-area" d={`${replicaPath}V99H1Z`}/>
+          <path class="plot-grid" d="M0 99H500"/>
+          <path class="replica-line" d={replicaPath}/>
+        </svg>
+        <span class="replica-value">2</span><span class="replica-value">4</span><span class="replica-value">2</span>
+      </div>
+      <div class="scale-events"><span>{t('site.autoscaling.scaleOut')}</span><span>{t('site.autoscaling.scaleIn')}</span></div>
+    </div>
+  </figure>
+</section>
+<section class="operation-section home-columns home-section container" id="xconfig" aria-labelledby="xconfig-title">
+  <h2 class="section-title" id="xconfig-title">{t('site.xconfig.title')}</h2>
+  <div class="section-copy">
+    <p>{t('site.xconfig.description')}</p>
+  </div>
+  <figure class="illustration" aria-label={t('site.xconfig.diagramDescription')}>
+    <div class="config-stage">
+      <div class="config-file">
+        <span class="file-name">app.conf<span class="version">v2</span></span>
+        <svg class="file-icon" viewBox="0 0 40 48" aria-hidden="true"><path d="M5 2H25L35 12V46H5Z M25 2V12H35"/><path class="file-lines" d="M12 21H27 M12 27H23 M12 33H27"/></svg>
+      </div>
+      <div class="link config-entry" aria-hidden="true"></div>
+      <div class="node node-emphasis config-node"><span class="node-name">XConfig</span><span class="node-detail">{t('site.xconfig.distribute')}</span></div>
+      <div class="flow-group flow-output config-group" style={`--items:${instances.length}`}>
+        <div class="flow-branch" aria-hidden="true"><span class="link"></span></div>
+        <ul class="flow-list instances">
+          {instances.map((number) => <li class="instance"><span class="link" aria-hidden="true"></span><span class="instance-mark" aria-hidden="true"></span><span class="instance-name"><span class="instance-label">{instancePrefix}<span class="instance-number">{number}</span>{instanceSuffix}</span><span class="version">v2</span></span></li>)}
+        </ul>
+      </div>
+    </div>
+  </figure>
+</section>
+<style>
+  .operation-section { grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr); align-items: start; gap: 32px 48px; margin-bottom: clamp(88px, 10vw, 144px); }
+  .operation-section > .section-title { grid-column: 1 / -1; }
+  .scaling-section > :is(.section-copy, .illustration) { grid-column: 1 / -1; }
+  .scaling-section > .section-copy { max-width: 76ch; }
+  .illustration { --line: #cdd0d3; --label-accent: #946849; --connector: 32px; --flow-gap: 12px; container-type: inline-size; width: 100%; color: var(--color-text); }
+  .node { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; min-width: 0; border: 1px solid var(--color-border); border-radius: 8px; background: #fff; text-align: center; }
+  .node-name { font-size: 1rem; font-weight: var(--weight-heading); line-height: 1.35; }
+  .node-detail { color: var(--color-muted); font-size: .8125rem; line-height: 1.4; }
+  .node-emphasis { padding: 16px 12px; border-color: #dfc6b6; background: color-mix(in srgb, var(--color-accent) 5%, #fff); }
+  .node-emphasis .node-name { color: var(--label-accent); }
+  .link { position: relative; height: 1px; align-self: center; }
+  .link::before { content: ''; position: absolute; inset: 0; background: var(--line); }
+  .link::after { content: ''; position: absolute; top: -2px; right: 1px; width: 5px; height: 5px; border-top: 1px solid var(--line); border-right: 1px solid var(--line); transform: rotate(45deg); }
+  .flow-group { display: grid; grid-template-columns: subgrid; grid-column: span 2; }
+  .flow-list { display: grid; grid-auto-rows: 1fr; gap: var(--flow-gap); grid-column: 1; grid-row: 1; padding: 0; margin: 0; list-style: none; }
+  .flow-list > li { position: relative; min-width: 0; }
+  .flow-list .link { position: absolute; top: 50%; right: calc(-1px - var(--connector) / 2); width: calc(var(--connector) / 2 + 1px); }
+  .flow-group:not(.flow-output) .flow-list .link::after { display: none; }
+  .flow-branch { position: relative; grid-column: 2; grid-row: 1; }
+  .flow-branch::before { content: ''; position: absolute; top: calc((100% - (var(--items) - 1) * var(--flow-gap)) / (var(--items) * 2)); bottom: calc((100% - (var(--items) - 1) * var(--flow-gap)) / (var(--items) * 2)); left: calc(var(--connector) / 2); border-left: 1px solid var(--line); }
+  .flow-branch > .link { position: absolute; top: 50%; left: calc(var(--connector) / 2); right: 0; }
+  .flow-output .flow-branch { grid-column: 1; }
+  .flow-output .flow-branch::before { left: auto; right: calc(var(--connector) / 2); }
+  .flow-output .flow-branch > .link { left: 0; right: calc(var(--connector) / 2); }
+  .flow-output .flow-branch > .link::after { display: none; }
+  .flow-output .flow-list { grid-column: 2; }
+  .flow-output .flow-list .link { left: calc(-1px - var(--connector) / 2); right: auto; }
+  .ai-stage, .config-stage { display: grid; grid-template-columns: minmax(min-content, max-content) minmax(var(--connector), 1fr) minmax(min-content, 156px) minmax(var(--connector), 1fr) minmax(min-content, max-content); align-items: center; width: 100%; }
+  .ai-list li, .instance { display: flex; align-items: center; gap: 8px; min-height: 42px; padding: 10px 12px; border: 1px solid var(--color-border); border-radius: 5px; font-size: .875rem; line-height: 20px; }
+  .ai-list li::before { content: ''; }
+  .ai-list li::before, .instance-mark { flex: none; width: 4px; height: 4px; border-radius: 1px; background: #c5c9cd; }
+  .ai-node { min-height: 104px; }
+  .scale-timeline { display: grid; grid-template-columns: 152px minmax(0, 1fr); grid-template-rows: [cpu-start] auto 20px auto [replica-end] 5px auto; grid-template-areas: "cpu-heading cpu" ". ." "replica-heading replicas" ". ." ". events"; column-gap: 24px; align-items: center; }
+  .scale-markers { position: relative; grid-column: 2; grid-row: cpu-start / replica-end; align-self: stretch; }
+  .track-heading { position: relative; display: flex; flex-direction: column; gap: 4px; }
+  .track-heading strong { font-size: .9375rem; font-weight: var(--weight-body); }
+  .track-heading span { color: var(--color-muted); font-size: .75rem; }
+  .plot { position: relative; height: 88px; }
+  .plot svg { width: 100%; height: 100%; overflow: visible; }
+  .plot-grid { stroke: var(--color-border); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .cpu-line { fill: none; stroke: #99a3ad; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+  .replica-line { fill: none; stroke: var(--color-accent); stroke-width: 2; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+  .replica-area { fill: var(--color-accent); opacity: .05; }
+  .scale-marker { position: absolute; inset-block: 0; left: calc(100% * var(--position)); border-left: 1px dashed #ded5ce; }
+  .replica-value { position: absolute; top: 48%; color: var(--color-accent); font-size: 1.25rem; line-height: 1; transform: translateX(-50%); }
+  .replica-value:first-of-type { left: calc(100% * var(--scale-out) / 2); }
+  .replica-value:nth-of-type(2) { left: calc(100% * (var(--scale-out) + var(--scale-in)) / 2); top: 12%; }
+  .replica-value:nth-of-type(3) { left: calc(100% * (var(--scale-in) + 1) / 2); }
+  .scale-events { display: grid; grid-area: events; grid-template-columns: calc(100% * var(--scale-out)) calc(100% * (var(--scale-in) - var(--scale-out))) minmax(0, 1fr); min-height: 22px; color: var(--color-muted); font-size: .75rem; line-height: 1.5; }
+  .scale-events span { position: relative; grid-row: 1; justify-self: start; align-self: start; transform: translateX(-50%); white-space: nowrap; }
+  .scale-events span:first-child { grid-column: 2; }
+  .scale-events span:last-child { grid-column: 3; }
+  .scale-events span::before { content: ''; position: absolute; bottom: calc(100% + 4px); left: 50%; height: 7px; border-left: 1px solid #d8c5b7; }
+  .config-file { display: flex; align-items: center; gap: 8px; }
+  .file-icon { flex: none; width: 32px; height: auto; fill: #fff; stroke: #b9bfc5; stroke-width: 1.25; stroke-linecap: round; stroke-linejoin: round; }
+  .file-lines { stroke: var(--color-accent-bar); }
+  .file-name { display: grid; justify-items: end; gap: 4px; text-align: right; font: .75rem/18px var(--font-mono); }
+  .config-node { min-height: 88px; }
+  .instance-name { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; min-width: 0; }
+  .version { padding: 0 4px; border-radius: 3px; background: color-mix(in srgb, var(--color-accent) 10%, #fff); color: var(--label-accent); font: .75rem/18px var(--font-mono); white-space: nowrap; }
+  @container (width < 640px) {
+    .scale-timeline { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto [cpu-start] auto 20px auto auto [replica-end] 5px auto; grid-template-areas: "cpu-heading" "cpu" "." "replica-heading" "replicas" "." "events"; }
+    .scale-markers { grid-column: 1; }
+    .track-heading { flex-direction: row; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+    .track-heading span { padding-left: 8px; background: #fff; }
+    .track-heading strong { padding-right: 8px; background: #fff; }
+    .scale-events span:last-child { transform: translateX(-100%); }
+    .scale-events span:last-child::before { left: auto; right: 0; }
+  }
+  @container (width < 480px) {
+    .ai-stage, .config-stage { grid-template-columns: minmax(0, 1fr); justify-items: center; }
+    .flow-group { --flow-gap: 8px; display: block; grid-column: auto; width: 100%; }
+    .ai-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .ai-inputs .ai-list li:last-child { grid-column: 1 / -1; }
+    .ai-list li, .instance { min-height: 38px; padding: 8px 12px; font-size: .8125rem; }
+    .flow-list .link { display: none; }
+    .ai-stage .flow-branch, .config-entry { width: 1px; height: 28px; margin-inline: auto; }
+    .ai-stage .flow-branch::before { display: none; }
+    .ai-stage .flow-branch > .link { inset: 0; height: 100%; }
+    .ai-stage .flow-branch > .link::after, .config-entry::after { display: block; top: auto; right: -2px; bottom: 1px; transform: rotate(135deg); }
+    .ai-node { width: min(100%, 220px); min-height: 88px; }
+    .config-file { position: relative; width: 32px; justify-self: center; }
+    .file-name { position: absolute; top: 50%; right: calc(100% + 8px); width: max-content; transform: translateY(-50%); }
+    .config-node { width: min(100%, 220px); }
+    .config-group { --branch-height: 32px; }
+    .config-group .flow-branch { height: var(--branch-height); }
+    .config-group .flow-branch::before { top: 50%; bottom: auto; left: calc((100% - (var(--items) - 1) * var(--flow-gap)) / (var(--items) * 2)); right: calc((100% - (var(--items) - 1) * var(--flow-gap)) / (var(--items) * 2)); border-left: 0; border-top: 1px solid var(--line); }
+    .config-group .flow-branch > .link { top: 0; left: 50%; right: auto; width: 1px; height: 50%; }
+    .instances { grid-template-columns: repeat(var(--items), minmax(0, 1fr)); }
+    .instance-label { min-width: 0; }
+    .instance-number { display: inline-block; width: 1ch; text-align: center; }
+    .instance::before { content: ''; position: absolute; bottom: 100%; left: 50%; height: calc(var(--branch-height) / 2); border-left: 1px solid var(--line); }
+  }
+  @media (width < 960px) {
+    .operation-section { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+    .operation-section > .illustration { margin-top: 12px; }
+  }
+</style>

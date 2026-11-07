@@ -1,0 +1,26 @@
+---
+title: "Resultados e diagnóstico do XJob"
+description: "A página mostra execução atual/recente e próxima ocorrência, não histórico ilimitado."
+sidebar:
+  order: 40
+---
+
+A página mostra execução atual/recente e próxima ocorrência, não histórico ilimitado.
+
+O campo `last_run` da API indica a criação da tarefa mais recente observada, não seu término. A ausência do registro não prova sucesso. Paradas por timeout geram eventos `XJobFailed`; se o registro da execução desapareceu, consulte eventos e logs.
+
+## Ler resultado
+
+Confira nome, estado, timestamps e resultado; selecione fonte XJob com nome correto nos logs. Pending não é concluído; Running não é sucesso. Saída zero precisa representar o resultado esperado.
+
+## Investigar
+
+Sem início: servidores, recursos e imagem. Comando ausente: caminho e ferramentas. Serviço inacessível: grupo, host, porta e credenciais. Timeout: dependência e duração. Logs ausentes: fonte, período, driver e retenção. Duplicidade: comportamento do comando.
+
+O contêiner é independente e não herda automaticamente arquivos temporários da aplicação.
+
+## Repetir
+
+Verifique se a tentativa anterior executou parte do trabalho. Uma falha não desfaz escritas ou requisições externas.
+
+Depois de editar comando ou [agenda](/docs/pt-br/guides/automation/xjob/schedule/), confira execução nova e próximo horário. Se precisar de histórico completo de negócio, registre-o no sistema de negócio.

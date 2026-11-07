@@ -1,0 +1,28 @@
+---
+title: "Sélection des serveurs et placement"
+description: "Déterminez les machines éligibles et le maximum de réplicas par serveur."
+sidebar:
+  order: 17
+---
+
+Déterminez les machines éligibles et le maximum de réplicas par serveur.
+
+## Configurer
+
+Admin ajoute une [étiquette](/docs/fr/administration/nodes/labels/). Sélectionnez-la dans l’application, définissez plafond par serveur, vérifiez réservations et enregistrez.
+
+Trois réplicas avec plafond un nécessitent trois machines éligibles, prêtes, disponibles et suffisamment dimensionnées. Une étiquette représente une appartenance, pas un langage de requêtes.
+
+Les applications avec état choisissent un serveur fixe.
+
+## Changer
+
+Modifier les contraintes peut remplacer ou déplacer les tâches. StartFirst peut nécessiter une marge supplémentaire.
+
+Le placement ne copie pas fichiers ou volumes. Une étiquette ou un nom identique ne rend pas les données disponibles. Voir [mode avec état](/docs/fr/guides/apps/persistence/stateful/).
+
+## Vérifier
+
+Contrôlez répartition réelle, étiquettes, disponibilité, réservations et plafonds. Lisez l’erreur avant de redémarrer plusieurs fois.
+
+Une machine supprimée puis ajoutée peut changer d’ID : révisez sélections fixes et étiquettes après [réintégration](/docs/fr/administration/nodes/).

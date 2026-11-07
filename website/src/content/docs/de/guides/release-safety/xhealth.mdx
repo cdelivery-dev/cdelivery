@@ -1,0 +1,41 @@
+---
+title: "XHealth konfigurieren"
+description: "XHealth prüft Anwendungen in separaten Aufgaben statt im Anwendungscontainer."
+sidebar:
+  order: 26
+---
+
+XHealth prüft Anwendungen in separaten Aufgaben statt im Anwendungscontainer.
+
+## Jetzt ausführen
+
+Operator/Admin kann **Jetzt ausführen** wählen, `POST /api/apps/{name}/xhealth/run` ohne Body aufrufen oder das MCP/Agent-Tool `xhealth_run` mit `app` verwenden. Die Prüfung muss aktiviert sein und verwendet die gespeicherte Konfiguration für die aktuelle Anwendung. Weitere Aufrufe während des Wartens oder der Ausführung liefern `409`; das nächste Intervall beginnt mit dem Start des neuen Laufs. Guardian-Prüfungen für Kandidaten bleiben unabhängig.
+
+Die API liefert bei Annahme `202` mit `{"ok":true}`, ohne das Ergebnis abzuwarten. Aktualisiere die Seite, verwende `xhealth_get` oder lies die XHealth-Logs. Ein Timeout oder eine verlorene Antwort bedeutet nicht, dass die Übermittlung fehlgeschlagen ist: Prüfe den Status vor einem erneuten Aufruf. Anfragen werden nicht dedupliziert; ein weiterer Aufruf nach Abschluss startet einen neuen Lauf.
+
+## Hurl
+
+Operator/Admin wählt Zielport und Intervall ab einer Minute:
+
+```hurl
+GET {{TARGET_URL}}/health
+HTTP 200
+```
+
+Ausführung: `hurl --test /xhealth.hurl`, Variable `HURL_VARIABLE_TARGET_URL`. Auch bei Domainauswahl wird internes HTTP geprüft, nicht öffentliches DNS/TLS. Siehe [Hurl](https://hurl.dev/docs/request.html).
+
+## Eigener Befehl
+
+Verwendet Image und relevante Konfiguration in einem anderen Container, kein exec. `TARGET_HOST` und `TARGET_PORT` stehen bereit; Expansion benötigt Shell.
+
+Exitcode null bedeutet Erfolg. Werkzeug, sinnvolle Assertion und Laufzeit prüfen. Ein immer erfolgreicher Befehl beweist keine Gesundheit.
+
+## Verifizieren
+
+Ausführen, Status/Logs lesen und kontrolliert testen, dass ungültige Antworten fehlschlagen. Zielport muss eindeutig sein.
+
+Siehe [Zustände](/docs/de/guides/release-safety/xhealth/status/) und [Guardian](/docs/de/guides/release-safety/guardian/).
+
+XJob, XHealth, Hurl und Guardian übernehmen die Geheimniszuordnungen. Hurl verwendet Textgeheimnisse über `HURL_VARIABLE_NAME` und `{{NAME}}` im Skript. `HURL_VARIABLE_TARGET_URL`, `TARGET_HOST` und `TARGET_PORT` sind für die jeweilige Prüfmethode reserviert. Mounts dürfen bei Hurl `/xhealth.hurl` nicht verdecken.
+
+[Geheimnisse](/docs/de/guides/apps/secrets/).

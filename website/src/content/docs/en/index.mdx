@@ -1,0 +1,61 @@
+---
+title: "CDelivery documentation"
+description: "Install CDelivery, deploy applications, and manage networking, observability, automation, and your platform."
+sidebar:
+  order: 1
+---
+
+CDelivery is an operations platform for deploying container images and maintaining applications. Start with one server, then add capacity when your workloads require it.
+
+## Get started
+
+1. [Before installation](/docs/getting-started/requirements/): Prepare server addresses, networking, and console access.
+2. [Install CDelivery](/docs/getting-started/installation/): Start the platform and create an administrator.
+3. [Deploy your first application](/docs/getting-started/first-app/): Deploy Nginx and verify access.
+
+## Core concepts
+
+| Object | Purpose |
+| --- | --- |
+| Server | Provides compute resources and local storage. |
+| Group | Organizes applications and provides a shared network. |
+| Application | Combines a container image, configuration, and desired runtime settings. |
+| Replica | A running instance of an application. |
+
+Groups do not isolate account permissions; see [roles and permissions](/docs/administration/accounts/roles/). For data that must survive container replacement, read [data persistence](/docs/guides/apps/persistence/). Replicas and application rollback do not replace backups.
+
+## Application operations
+
+<CardGrid>
+
+<Card title="Applications" href="/docs/guides/apps/" icon="ph:cube">
+  Creation, runtime settings, configuration and data, scaling, placement, lifecycle
+</Card>
+
+<Card title="Domains and HTTPS" href="/docs/guides/networking/" icon="ph:globe">
+  Internal connections, published ports, routing, certificates, troubleshooting
+</Card>
+
+<Card title="Health checks and releases" href="/docs/guides/release-safety/" icon="ph:shield-check">
+  XHealth, update strategies, Guardian validation, rollback
+</Card>
+
+<Card title="Logs, metrics, and events" href="/docs/guides/observability/" icon="ph:chart-line">
+  Application and access logs, application and server metrics, collection and retention
+</Card>
+
+</CardGrid>
+
+## Platform and automation
+
+<CardGrid>
+
+<Card title="Automation" href="/docs/guides/automation/" icon="ph:lightning">
+  Scheduled tasks, notifications, AI assistance, and API/MCP access
+</Card>
+
+<Card title="Platform management" href="/docs/administration/" icon="ph:gear">
+  Servers, groups, accounts, access, and platform maintenance
+</Card>
+
+</CardGrid>
