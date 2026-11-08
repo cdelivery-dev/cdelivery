@@ -7,6 +7,8 @@ sidebar:
 
 XHealth exécute les contrôles dans des tâches distinctes des conteneurs métier.
 
+Les tâches de vérification utilisent les variables d’environnement et les montages de [Secrets](/docs/fr/guides/apps/secrets/) configurés dans l’application.
+
 ## Exécuter maintenant
 
 Operator/Admin peut sélectionner **Exécuter maintenant**, appeler `POST /api/apps/{name}/xhealth/run` sans corps ou utiliser l’outil MCP/Agent `xhealth_run` avec `app`. Le contrôle doit être activé et utilise la configuration enregistrée pour l’application actuelle. Une demande pendant l’attente ou l’exécution renvoie `409` ; le prochain intervalle part du début de la nouvelle exécution. Les contrôles des candidats Guardian restent indépendants.
@@ -17,12 +19,16 @@ L’API renvoie `202` avec `{"ok":true}` dès l’acceptation, sans attendre le 
 
 Operator/Admin choisit port et intervalle d’au moins une minute, puis charge :
 
+Pour l’exemple Hello, choisissez le port interne `80` et vérifiez `/` :
+
 ```hurl
-GET {{TARGET_URL}}/health
+GET {{TARGET_URL}}/
 HTTP 200
 ```
 
 La commande est `hurl --test /xhealth.hurl`, avec `HURL_VARIABLE_TARGET_URL`. Même avec un domaine sélectionné, la cible utilise HTTP interne, sans vérifier DNS public ou TLS. Voir [Hurl](https://hurl.dev/docs/request.html).
+
+Si la vérification nécessite un jeton, associez un secret texte à la variable `HURL_VARIABLE_API_TOKEN` de l’application et utilisez `{{API_TOKEN}}` dans le fichier Hurl. La plateforme fournit `TARGET_URL` ; réservez sa variable `HURL_VARIABLE_TARGET_URL` et le chemin `/xhealth.hurl` du fichier de vérification.
 
 ## Commande
 
@@ -30,12 +36,14 @@ Le contrôle utilise image et configuration pertinentes dans un autre conteneur,
 
 Code zéro signifie succès. Vérifiez outil présent, assertion utile et durée bornée.
 
+Hello contient `sh` et `wget`, ce qui permet cette vérification personnalisée :
+
+```sh
+sh -c 'wget -q -O /dev/null "http://$TARGET_HOST:$TARGET_PORT/"'
+```
+
 ## Validation
 
 Exécutez, lisez état/journaux et vérifiez qu’une réponse incorrecte échoue dans un test contrôlé. Le port cible doit être non ambigu.
 
 Voir [états](/docs/fr/guides/release-safety/xhealth/status/) et [Guardian](/docs/fr/guides/release-safety/guardian/).
-
-XJob, XHealth, Hurl et Guardian héritent des associations de secrets. Hurl utilise `HURL_VARIABLE_NAME` pour un secret texte et `{{NAME}}` dans le script. `HURL_VARIABLE_TARGET_URL`, `TARGET_HOST` et `TARGET_PORT` sont réservés à leurs méthodes de vérification. Les montages ne doivent pas masquer `/xhealth.hurl` pour Hurl.
-
-[Secrets](/docs/fr/guides/apps/secrets/).

@@ -13,6 +13,8 @@ Lesekonfiguration: [XConfig](/docs/de/guides/apps/xconfig/). Lokale Daten: Serve
 
 Lokaler Modus wird bei Erstellung gewählt und bindet ein Replikat an einen Server. Er ist kein beliebig nachträglich aktivierbarer Schalter.
 
+Auch Anwendungen mit lokalen Volumes können Datei-Secrets aus [Secrets](/docs/de/guides/apps/secrets/) schreibgeschützt einbinden, um Zugangsdaten bereitzustellen.
+
 ## Einbinden und testen
 
 Richtigen Server/Volume und tatsächlichen Schreibpfad wählen. Falscher Mount kann leer bleiben, während die Anwendung anderswo schreibt.
@@ -24,5 +26,3 @@ Testdaten schreiben, neu starten, Bestand prüfen. Zusätzlich Restore testen; N
 Gleichnamige Volumes auf anderen Maschinen sind andere Daten. Labels kopieren nichts. Anwendung löschen erhält Volume; Volume löschen entfernt Daten. Image-Rollback macht Migrationen nicht rückgängig.
 
 Siehe [zustandsbehaftete Anwendungen](/docs/de/guides/apps/persistence/stateful/) und [Volumes](/docs/de/administration/nodes/volumes/).
-
-[Geheimnisse](/docs/de/guides/apps/secrets/).

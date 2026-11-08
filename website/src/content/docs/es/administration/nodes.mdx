@@ -15,7 +15,7 @@ Worker ejecuta cargas; Manager participa también en gestión. Credenciales de i
 
 ## Estados
 
-Ready/Down/Disconnected describen conexión. Active acepta tareas; Pause no acepta nuevas; Drain indica vaciado. Reachable/Unreachable corresponde a gestión de Manager. Una alerta de recolector trata de muestras, no necesariamente caída del servidor.
+Ready, Down y Disconnected describen el estado de la conexión. Active acepta tareas nuevas. Pause detiene las nuevas asignaciones y mantiene las tareas existentes en ejecución. Drain activa el modo de vaciado, que impide nuevas asignaciones y retira las tareas existentes del servidor; no confirma que la migración haya terminado. Reachable y Unreachable indican la accesibilidad del servidor de gestión. Una alerta del recolector indica observaciones desactualizadas, no necesariamente un fallo del servidor.
 
 Consulta la capacidad disponible en las [métricas del servidor](/docs/es/guides/observability/metrics/server/).
 

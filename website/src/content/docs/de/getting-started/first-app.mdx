@@ -1,15 +1,15 @@
 ---
 title: "Erste Anwendung bereitstellen"
-description: "Stelle Nginx über einen veröffentlichten Port bereit und prüfe eine echte HTTP-Antwort."
+description: "Stelle Hello über einen veröffentlichten Port bereit und prüfe eine echte HTTP-Antwort."
 sidebar:
   order: 4
 ---
 
-Stelle Nginx über einen veröffentlichten Port bereit und prüfe eine echte HTTP-Antwort.
+Stelle Hello über einen veröffentlichten Port bereit und prüfe eine echte HTTP-Antwort.
 
 ## Vorbereitung
 
-Verwende eine funktionierende Installation. Ein Admin erstellt die Gruppe; Operator oder Admin stellt die Anwendung bereit. Der Server muss das öffentliche Nginx-Image von Docker Hub laden können. TCP-Port 8080 muss frei und von deinem Computer erreichbar sein.
+Verwende eine funktionierende Installation. Ein Admin erstellt die Gruppe; Operator oder Admin stellt die Anwendung bereit. Der Server muss das öffentliche Hello-Image von GHCR laden können. TCP-Port 8080 muss frei und von deinem Computer erreichbar sein.
 
 Führe für den SSH-Zugriff diesen Befehl auf deinem Computer aus und halte die Sitzung offen:
 
@@ -29,7 +29,7 @@ Erstelle eine Gruppe namens `demo`.
 
 <Step title="Anwendung konfigurieren">
 
-Erstelle darin die Anwendung `hello-web` mit dem Image `nginx:stable-alpine`. Behalte den Standardbefehl und ein festes Replikat.
+Erstelle darin die Anwendung `hello-web` mit dem Image `ghcr.io/cdelivery-dev/hello:1.0.0`. Behalte den Standardbefehl und ein festes Replikat.
 
 </Step>
 
@@ -47,7 +47,7 @@ Speichere die Anwendung und warte, bis das Replikat läuft.
 
 </Steps>
 
-Domain, Volume und eigener Befehl sind nicht nötig. Das [offizielle Image](https://hub.docker.com/_/nginx) startet Nginx im Vordergrund.
+Domain, Volume und eigener Befehl sind nicht nötig. Hello verwendet BusyBox httpd und startet standardmäßig im Vordergrund.
 
 ## Test
 
@@ -63,7 +63,7 @@ Wenn du den SSH-Tunnel nutzt, halte die Sitzung offen und führe stattdessen auf
 curl -i http://localhost:8080
 ```
 
-HTTP 200 und Nginx-Seite erwarten; zusätzlich Replikate und Logs prüfen.
+Erwarte HTTP 200 und eine Klartextantwort mit `Hostname`, `IP`, `Method`, `URI` und Anfrage-Headern; zusätzlich Replikate und Logs prüfen.
 
 Pullfehler: Registry/Architektur. Prozessende: Befehl/Logs. Timeout: Zuordnung, Adresse, Firewall, Tunnel. Eine Domainroute würde internen Port 80 nutzen.
 

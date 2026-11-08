@@ -1,15 +1,15 @@
 ---
 title: "Déployer une première application"
-description: "Déployez Nginx sur un port publié et vérifiez une réponse HTTP réelle."
+description: "Déployez Hello sur un port publié et vérifiez une réponse HTTP réelle."
 sidebar:
   order: 4
 ---
 
-Déployez Nginx sur un port publié et vérifiez une réponse HTTP réelle.
+Déployez Hello sur un port publié et vérifiez une réponse HTTP réelle.
 
 ## Préparer
 
-Utilisez une installation opérationnelle. Admin crée le groupe ; Operator ou Admin déploie l’application. Le serveur doit pouvoir télécharger l’image publique Nginx depuis Docker Hub. Le port TCP 8080 doit être libre et accessible depuis votre ordinateur.
+Utilisez une installation opérationnelle. Admin crée le groupe ; Operator ou Admin déploie l’application. Le serveur doit pouvoir télécharger l’image publique Hello depuis GHCR. Le port TCP 8080 doit être libre et accessible depuis votre ordinateur.
 
 Pour un accès par SSH, exécutez cette commande sur votre ordinateur et laissez la session ouverte :
 
@@ -29,7 +29,7 @@ Créez un groupe nommé `demo`.
 
 <Step title="Configurer l’application">
 
-Créez l’application `hello-web` dans ce groupe avec l’image `nginx:stable-alpine`. Conservez la commande par défaut et un réplica fixe.
+Créez l’application `hello-web` dans ce groupe avec l’image `ghcr.io/cdelivery-dev/hello:1.0.0`. Conservez la commande par défaut et une réplique fixe.
 
 </Step>
 
@@ -41,13 +41,13 @@ Publiez le port du conteneur **80** sur le port du serveur **8080**, en TCP.
 
 <Step title="Déployer l’application">
 
-Enregistrez l’application et attendez que le réplica soit en cours d’exécution.
+Enregistrez l’application et attendez que la réplique soit en cours d’exécution.
 
 </Step>
 
 </Steps>
 
-Aucun domaine, volume ou commande personnalisée n’est nécessaire. L’[image officielle](https://hub.docker.com/_/nginx) lance déjà Nginx au premier plan.
+Aucun domaine, volume ou commande personnalisée n’est nécessaire. Hello utilise BusyBox httpd et démarre au premier plan par défaut.
 
 ## Tester
 
@@ -63,7 +63,7 @@ Si vous utilisez le tunnel SSH, laissez la session ouverte et exécutez plutôt 
 curl -i http://localhost:8080
 ```
 
-Attendez HTTP 200 et la page Nginx. Vérifiez aussi réplicas et journaux.
+Attendez HTTP 200 et une réponse en texte brut contenant `Hostname`, `IP`, `Method`, `URI` et les en-têtes de la requête. Vérifiez aussi répliques et journaux.
 
 Échec de pull : registre/architecture. Arrêt du processus : commande et journaux. Timeout : mappage, adresse, pare-feu et tunnel. Une route de domaine utiliserait le port interne 80.
 

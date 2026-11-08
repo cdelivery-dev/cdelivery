@@ -15,7 +15,7 @@ Worker betreibt Aufgaben, Manager zusätzlich Verwaltung. Einladung 30 Minuten w
 
 ## Zustände
 
-Ready/Down/Disconnected: Verbindung. Active nimmt Aufgaben an, Pause keine neuen, Drain bedeutet Räumen. Reachable betrifft Manager. Sammlerwarnung zeigt alte Daten, nicht zwingend Ausfall.
+Ready, Down und Disconnected beschreiben den Verbindungsstatus. Active nimmt neue Tasks an. Pause unterbindet neue Zuweisungen und lässt bestehende Tasks weiterlaufen. Der Drain-Modus verhindert neue Zuweisungen und verlagert bestehende Tasks vom Server; er bestätigt nicht den Abschluss der Migration. Reachable beschreibt die Erreichbarkeit des Verwaltungsservers. Eine Warnung des Erfassungsagenten weist auf veraltete Beobachtungen hin, nicht zwingend auf einen Serverausfall.
 
 Prüfe die verfügbare Kapazität in den [Servermetriken](/docs/de/guides/observability/metrics/server/).
 

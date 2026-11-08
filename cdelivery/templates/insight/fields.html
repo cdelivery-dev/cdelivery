@@ -118,7 +118,7 @@
       <p>
       {% match crate::locale::current() %}
       {% when crate::locale::Locale::ZhCn %}
-      <label for="insight-flush-interval">缓冲数据会在</label>{{ flush_interval_control() }}内落盘。
+      <label for="insight-flush-interval">缓冲数据会在</label>{{ flush_interval_control() }}内写入存储。
       {% when crate::locale::Locale::ZhTw %}
       <label for="insight-flush-interval">暫存資料會在</label>{{ flush_interval_control() }}內寫入儲存空間。
       {% when crate::locale::Locale::De %}
@@ -126,7 +126,7 @@
       {% when crate::locale::Locale::En %}
       <label for="insight-flush-interval">Buffered data is flushed to storage within</label> {{ flush_interval_control() }}.
       {% when crate::locale::Locale::Ja %}
-      <label for="insight-flush-interval">バッファ内のデータの書き込み間隔を</label>{{ flush_interval_control() }}にする。
+      <label for="insight-flush-interval">バッファ内のデータを最大</label>{{ flush_interval_control() }}以内にストレージへ書き込む。
       {% when crate::locale::Locale::PtBr %}
       <label for="insight-flush-interval">Gravar os dados em buffer no armazenamento em até</label> {{ flush_interval_control() }}.
       {% when crate::locale::Locale::Es %}

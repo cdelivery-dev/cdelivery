@@ -5,9 +5,9 @@ sidebar:
   order: 13
 ---
 
-The upload and download instructions below apply to ordinary configuration files. File secrets use a separate source in the same dialog, cannot be downloaded, and are limited to 511,999 bytes.
-
 A configuration mount associates uploaded content with one absolute file path inside the container. Check both the path and the consuming application's configuration.
+
+The examples below use ordinary XConfig uploads. To replace a File secret, create a new one in [Secrets](/docs/guides/apps/secrets/), select it in the existing mount entry and save the application configuration.
 
 ## Mount and replace
 
@@ -27,7 +27,17 @@ The existing target path is not editable in place in the console. To change it, 
 
 ## Example and verification
 
-Mounting an Nginx server configuration at `/etc/nginx/conf.d/default.conf` only works if its syntax and referenced paths match the image. An upload returning success does not prove that Nginx can parse it.
+For the Hello example (`ghcr.io/cdelivery-dev/hello:1.0.0`), save this as `index.html` and upload it with XConfig to `/www/index.html`:
+
+```html
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>CDelivery Hello</title></head>
+<body><h1>Hello from XConfig</h1></body>
+</html>
+```
+
+Keep the default startup command and the TCP 80 → 8080 mapping. After the update, open `/` and expect `Hello from XConfig` instead of the request information. Removing this mount restores the default response in new containers.
 
 Verify the expected replica count, startup logs, and an endpoint whose behavior depends on the file. Reopening or downloading the file verifies stored content, not runtime consumption.
 
@@ -36,5 +46,3 @@ Verify the expected replica count, startup logs, and an endpoint whose behavior 
 The file's in-use indication concerns its application; it is not a platform-wide configuration library. Old orphaned content can be collected, so do not use it as a backup history.
 
 Before removing a mount, determine whether the application can start without it. Store source configuration in your own controlled location and back up business data separately. See [XConfig](/docs/guides/apps/xconfig/) for size and visibility rules.
-
-[Secrets](/docs/guides/apps/secrets/).

@@ -11,24 +11,28 @@ Keep the image's default startup command unless its documentation requires an ov
 
 The command is parsed into arguments with quoting support. Shell expansion, pipes, redirects, and `&&` require an explicitly invoked shell:
 
+With the Hello image (`ghcr.io/cdelivery-dev/hello:1.0.0`), this command prints the value of `GREETING` to the startup log, then starts the HTTP server:
+
 ```sh
-sh -c 'exec ./server --port "$PORT"'
+sh -c 'printf "%s\n" "$GREETING"; exec httpd -f -v -p 80 -h /www'
 ```
+
+Set `GREETING=Hello` to try this example. This changes the log output.
 
 The image must contain that shell and executable. Prefer a foreground process so that container state reflects the application. A command that exits successfully still ends the main process.
 
 ## Environment
 
-Add each variable by name and value. Names contain 1–128 characters and cannot include `=`; values can contain up to 4096 characters. Use the names and formats expected by the image.
+An environment variable can use a plain value or a Text secret. To use [Secrets](/docs/guides/apps/secrets/), enter the variable name, switch the source to **Secret**, select an existing secret and confirm, then save the application configuration.
+
+Add each variable by name and value. Names contain 1–128 characters and cannot include `=`; plain values can contain up to 4096 characters. Use the names and formats expected by the image.
 
 For example, a program may read `PORT=8080`, but adding that variable does not automatically publish port 8080 or guarantee the program uses it. Configure [network access](/docs/guides/networking/connectivity/) separately.
 
-Arbitrary environment variables are shared configuration, not automatically redacted secret fields. Avoid treating them as private account storage.
+Plain environment values are shared configuration, not automatically redacted secret fields. Avoid treating them as private account storage.
 
 ## Verify and troubleshoot
 
 Save the change, inspect replacement tasks, and read startup logs. An unchanged save does not restart tasks. Check spelling, quoting, executable paths, working directory assumptions, and whether required tools exist in the image.
 
 If a shell expression appears literally in arguments, explicitly invoke the shell. If the program binds only to loopback inside the container, other applications and the gateway cannot reach it. For larger configuration, use [XConfig](/docs/guides/apps/xconfig/) where supported instead of forcing file content into environment variables.
-
-[Secrets](/docs/guides/apps/secrets/): Create a Text secret for an environment variable, or a File secret for an XConfig mount. Create it on the Secrets page before selecting it in the application's configuration.

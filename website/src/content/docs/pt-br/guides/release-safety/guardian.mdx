@@ -13,6 +13,8 @@ Configure [XHealth](/docs/pt-br/guides/release-safety/xhealth/), habilite Guardi
 
 Com Guardian habilitado, mudanças na imagem, nas opções de execução do contêiner, no XConfig ou no grupo iniciam a validação do candidato. O grupo é alterado pela API. Aplicações com volumes locais não suportam Guardian.
 
+Alterar a seleção de [Segredos](/docs/pt-br/guides/apps/secrets/) também passa pela validação junto à configuração do aplicativo. O candidato e suas verificações usam os segredos selecionados nessa alteração.
+
 ## Fases
 
 Deploying: posicionamento, download e início. Validating: asserções. Failed: detalhes da falha. Promoting: substituição ativa.
@@ -24,5 +26,3 @@ Repetir, ignorar e cancelar aparecem conforme a fase. Ignorar aceita sem valida�
 Separe logs GuardianApp e GuardianCheck. Revise portas, ferramentas, ambiente, capacidade e asserções. Depois da promoção, teste réplicas reais e serviço.
 
 Leia [estratégia](/docs/pt-br/guides/release-safety/update-strategy/) e [rollback](/docs/pt-br/guides/release-safety/rollback/).
-
-[Segredos](/docs/pt-br/guides/apps/secrets/).

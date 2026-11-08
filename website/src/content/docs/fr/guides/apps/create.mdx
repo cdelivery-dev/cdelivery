@@ -14,29 +14,29 @@ Créez depuis une image ou un modèle, puis vérifiez la première exécution.
 1. Ouvrez un groupe existant avec le rôle Operator ou Admin.
 2. Renseignez un nom unique de 1–16 minuscules, chiffres ou tirets, sans tiret initial ou final ni nom réservé.
 3. Choisissez l’image ou le modèle, puis les variables et les ports.
-4. Définissez la persistance, les ressources, les réplicas et le placement.
+4. Définissez la persistance, les ressources, les répliques et le placement.
 5. Vérifiez la configuration et enregistrez.
 
 </Steps>
 
 Description : 500 caractères maximum. Le nom est unique dans toute la plateforme. La console ne change ensuite ni nom ni groupe.
 
+Créez d’abord vos mots de passe, jetons et fichiers d’identifiants dans [Secrets](/docs/fr/guides/apps/secrets/), puis sélectionnez-les dans les variables d’environnement ou les fichiers de configuration.
+
 ## Modèles et données
 
 Les modèles PostgreSQL 18 et MariaDB 12 chargent leurs images depuis le catalogue distant des versions. Sans catalogue chargé avec succès, créez l’application manuellement. Les mises à jour du catalogue concernent les formulaires ouverts ensuite, pas les applications existantes.
 
-Un modèle fournit des valeurs initiales, pas une politique de sauvegarde. Vérifiez identifiants générés, version et répertoire. Une [application avec état](/docs/fr/guides/apps/persistence/stateful/) reste sur un serveur avec un réplica.
+Un modèle fournit des valeurs initiales, pas une politique de sauvegarde. Vérifiez identifiants générés, version et répertoire. Une [application avec état](/docs/fr/guides/apps/persistence/stateful/) reste sur un serveur avec une réplique.
 
 ## Valeurs initiales
 
-Un réplica, commande de l’image, journaux du serveur, sans réservation ni étiquette supplémentaire. Mise à jour : tous en parallèle, StopFirst, surveillance 60 secondes, tolérance zéro, Rollback.
+Une réplique, commande de l’image, journaux du serveur, sans réservation ni étiquette supplémentaire. Mise à jour : toutes les répliques en parallèle, StopFirst, surveillance 60 secondes, tolérance zéro, Rollback.
 
-Revoyez la [stratégie](/docs/fr/guides/release-safety/update-strategy/) pour la disponibilité. Enregistrer sans changement ne redémarre pas. Variables et fichiers arbitraires ne sont pas automatiquement masqués. Contrôlez réplicas, journaux et requête réelle.
+Revoyez la [stratégie](/docs/fr/guides/release-safety/update-strategy/) pour la disponibilité. Enregistrer sans changement ne redémarre pas. Les valeurs ordinaires des variables et les fichiers de configuration téléversés ne sont pas automatiquement masqués. Contrôlez répliques, journaux et requête réelle.
 
 ## Contrôler
 
-Attendez le réplica, lisez les journaux et testez le service. Pull échoué : référence, identifiants, réseau, architecture. Tâche en attente : machine éligible et ressources. Processus arrêté : commande/configuration.
+Attendez la réplique, lisez les journaux et testez le service. Pull échoué : référence, identifiants, réseau, architecture. Tâche en attente : machine éligible et ressources. Processus arrêté : commande/configuration.
 
-L’[exemple Nginx](/docs/fr/getting-started/first-app/) fournit un parcours complet. Voir [registres privés](/docs/fr/guides/apps/images/).
-
-[Secrets](/docs/fr/guides/apps/secrets/).
+L’[exemple Hello](/docs/fr/getting-started/first-app/) fournit un parcours complet. Voir [registres privés](/docs/fr/guides/apps/images/).

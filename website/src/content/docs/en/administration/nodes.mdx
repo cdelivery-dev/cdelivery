@@ -23,7 +23,7 @@ Workers run workloads; Managers also participate in management. Join credentials
 
 ## Read state
 
-Ready, Down, and Disconnected describe runtime connectivity. Active accepts scheduling; Pause does not accept new tasks; Drain indicates draining. Manager reachability is a separate management status. Collector warnings indicate stale observations and should be checked separately.
+Ready, Down, and Disconnected describe runtime connectivity. Active accepts new tasks. Pause stops new task assignments while existing tasks continue running. Drain mode stops task assignments and moves existing tasks off the server; it does not confirm that migration has finished. Manager reachability is a separate management status. Collector warnings indicate stale observations and should be checked separately.
 
 Check current capacity in [server metrics](/docs/guides/observability/metrics/server/).
 

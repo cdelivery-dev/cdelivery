@@ -12,20 +12,24 @@ sidebar:
 留空时使用镜像默认启动方式。自定义时需要填写完整的可执行程序及参数，例如：
 
 ```text
-nginx -g 'daemon off;'
+httpd -f -v -p 80 -h /www
 ```
 
 命令会按引号和空格解析为参数，不会自动交给 shell 执行。管道、重定向、`&&` 和环境变量替换只有在你显式启动 shell 时才具有 shell 含义。
 
-确实需要 shell 时，可以填写：
+使用 Hello 镜像（`ghcr.io/cdelivery-dev/hello:1.0.0`）时，下面的命令会将环境变量 `GREETING` 的值打印到启动日志，然后启动 HTTP 服务：
 
 ```text
-sh -c 'printf "%s\n" "$GREETING"; exec nginx -g "daemon off;"'
+sh -c 'printf "%s\n" "$GREETING"; exec httpd -f -v -p 80 -h /www'
 ```
+
+设置 `GREETING=Hello` 即可验证上述示例；该变量影响的是日志输出。
 
 镜像必须包含 `sh` 及所调用程序。`exec` 让最后的服务进程接替 shell，有利于正确接收停止信号。改变入口还可能跳过镜像自带的初始化逻辑，优先遵循镜像作者的启动说明。
 
 ## 环境变量
+
+环境变量可以直接填写普通值，也可以选择[文本机密数据](/docs/zh-cn/guides/apps/secrets/)。使用机密数据时，填写变量名，将来源切换为**机密数据**，选择已创建的内容并确认，最后保存应用配置。
 
 <Steps>
 
@@ -36,15 +40,15 @@ sh -c 'printf "%s\n" "$GREETING"; exec nginx -g "daemon off;"'
 
 </Steps>
 
-变量名长度为 1–128，不能包含 `=`；值最多 4096 个字符。这里填写的是值本身，不需要额外包一层 shell 引号。`$OTHER` 不会因为写在变量值中就自动替换成另一个变量。
+变量名长度为 1–128，不能包含 `=`；普通值最多 4096 个字符。这里填写的是值本身，不需要额外包一层 shell 引号。`$OTHER` 不会因为写在变量值中就自动替换成另一个变量。
 
 同分组数据库可以使用应用名称作为主机名。容器内的 `localhost` 指向该容器自身，不能用它代替另一个数据库应用的地址，参见[应用间通信](/docs/zh-cn/guides/networking/connectivity/)。
 
 ## 配置内容的可见性
 
-环境变量属于共享应用配置。平台只对明确识别的秘密字段脱敏，不会自动把每个看起来像密码的业务变量变为个人秘密。应依据实际账户权限决定哪些内容适合存放在这里。
+直接填写的普通环境变量属于共享应用配置。平台只对明确识别的秘密字段脱敏，不会自动把每个看起来像密码的业务变量变为个人秘密。应依据实际账户权限决定哪些内容适合存放在这里。
 
-较大的配置文件使用 [XConfig](/docs/zh-cn/guides/apps/xconfig/)；持续写入的业务数据使用[数据卷](/docs/zh-cn/guides/apps/persistence/)。
+较大的配置文件使用[XConfig](/docs/zh-cn/guides/apps/xconfig/)；持续写入的业务数据使用[数据卷](/docs/zh-cn/guides/apps/persistence/)。
 
 ## 启动失败怎么检查
 
@@ -57,5 +61,3 @@ sh -c 'printf "%s\n" "$GREETING"; exec nginx -g "daemon off;"'
 | 保存后仍像旧配置 | 新副本尚未替换完成，或 Guardian 未推广候选配置 |
 
 应用的自动重启延迟可在重启策略设置中调整，默认 60 秒。重启不能修复持续存在的错误命令；应先修正配置，再看[应用日志](/docs/zh-cn/guides/observability/logs/application/)。
-
-[机密](/docs/zh-cn/guides/apps/secrets/): 在机密页面创建文本或文件机密，再到应用配置中选择。文本用于环境变量，文件用于 XConfig 挂载。

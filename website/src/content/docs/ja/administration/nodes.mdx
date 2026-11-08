@@ -15,7 +15,7 @@ Worker はタスクを実行し、Manager は管理にも参加します。参�
 
 ## 状態
 
-Ready/Down/Disconnected は接続状態。Active は配置可、Pause は新規配置なし、Drain は排出状態。Reachable は Manager 接続です。収集警告は報告の古さで、必ずしもサーバー停止ではありません。
+Ready/Down/Disconnected は接続状態を表します。Active は新規タスクを受け入れ、Pause は既存タスクを動かしたまま新規配置を停止します。Drain は新規配置を停止して既存タスクを退避させるドレインモードで、移行完了を示すものではありません。Reachable は管理サーバーへの接続状態です。収集の警告は観測データの古さを示し、必ずしもサーバー停止を意味しません。
 
 現在の使用量と空き容量は[サーバー指標](/docs/ja/guides/observability/metrics/server/)で確認します。
 

@@ -19,10 +19,10 @@ Selecciona versión en Ajustes → CDelivery, confirma y espera reinicio. Reabre
 
 Actualiza componentes por separado. Verifica HTTPS tras Pingress, muestras nuevas tras Insight/recolectores y lectura de volúmenes tras cdelivery-agent. Tras reinicio, obtén nuevas credenciales de incorporación.
 
+Las aplicaciones con secretos de texto adoptan el runtime incluido en la plataforma al cambiar su configuración de despliegue. Actualizar solo la plataforma no las reinicia. Guardar sin cambios, editar la descripción, escalar o reiniciar normalmente mantiene el runtime existente; el rollback de la aplicación restaura la versión anterior.
+
 ## Diagnosticar
 
 Metadatos inaccesibles no significan versión actualizada. Revisa red hacia publicaciones. Para descarga fallida, comprueba arquitectura, imagen y tareas.
 
 La [reversión de aplicación](/docs/es/guides/release-safety/rollback/) no restaura plataforma ni datos. Para login, usa [recuperación](/docs/es/administration/platform/recovery/).
-
-Los secretos de texto usan el runtime incluido cuando cambia realmente el despliegue. Actualizar solo la plataforma no reinicia aplicaciones. Guardar sin cambios, modificar la descripción, escalar y reiniciar normalmente conserva las referencias; la reversión restaura las anteriores.

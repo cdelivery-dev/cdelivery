@@ -28,7 +28,7 @@ sidebar:
 1. 以 Admin 登入，打開 **Pingress → 憑證**。
 2. 如果啟用 Pingress 時未開啟自動憑證，在此開啟。
 3. 在應用程式中儲存啟用 HTTPS 的網域規則。
-4. 回傳憑證清單，查看該網域的來源、有效期和狀態。
+4. 返回憑證清單，查看該網域的來源、有效期和狀態。
 5. 使用實際網域存取 HTTPS，驗證憑證覆蓋該網域且業務正常。
 
 </Steps>
@@ -51,7 +51,7 @@ curl -i http://app.example.com/.well-known/acme-challenge/healthz
 
 手動上傳的憑證由你負責續期，不會因為啟用了自動憑證就自動替換。對應操作見[自訂憑證](/docs/zh-tw/guides/networking/custom-certificates/)。
 
-接口還支援取決於憑證機構能力的持久 DNS 驗證設定；控制台沒有通用 DNS 服務商憑據表單。不要把其他 ACME 工具的 DNS-01 操作步驟直接套用為當前界面功能。
+接口還支援取決於憑證機構能力的持久 DNS 驗證設定；控制台沒有通用 DNS 服務商驗證資訊表單。不要把其他 ACME 工具的 DNS-01 操作步驟直接套用為當前介面功能。
 
 ## 簽發或續期失敗
 

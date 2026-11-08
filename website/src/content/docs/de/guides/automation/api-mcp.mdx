@@ -30,14 +30,9 @@ Patch: ausgelassen behält Wert, `null` leert nur geeignete Felder, leerer Patch
 
 Richte den HTTP-Client auf `/mcp` mit `Authorization: Bearer YOUR_API_KEY`. Liste die Werkzeuge auf und prüfe Konto und Rechte mit einem lesenden Aufruf vor Schreibzugriffen.
 
-## Fehler
+## Secrets verwenden
 
-401: ungültig/abgelaufen/widerrufen oder Nutzer unzugänglich. 403: Rechte. 422: Felder/Voraussetzungen. Verbindung: URL/TLS/Proxy.
-
-Nach Widerruf Ablehnung testen. Siehe [Rollen](/docs/de/administration/accounts/roles/).
-
-[Geheimnisse](/docs/de/guides/apps/secrets/): Reader dürfen Metadaten auflisten. Operator und Admin dürfen Geheimnisse erstellen, löschen und zuordnen. Inhalte lassen sich weder zurücklesen noch herunterladen oder bearbeiten.
-
+Um [Secrets](/docs/de/guides/apps/secrets/) per REST oder MCP zu verwalten, erstellst du das Secret, fragst Name und ID ab und ordnest es dann einer Anwendung zu. Erstellen, Löschen und Zuordnen erfordert Operator oder Admin.
 
 | REST | MCP / Agent |
 | --- | --- |
@@ -45,13 +40,27 @@ Nach Widerruf Ablehnung testen. Siehe [Rollen](/docs/de/administration/accounts/
 | `GET /api/secrets?kind=Text` | `secret_list` |
 | `DELETE /api/secrets/{name}` | `secret_delete` |
 
-`POST /api/secrets`:
+Erstelle beispielsweise ein Text-Secret mit diesem Body für `POST /api/secrets`:
 
 ```json
-{"name":"api-token","content":{"Text":"REPLACE_LOCALLY"}}
+{
+  "name": "api-token",
+  "content": { "Text": "REPLACE_LOCALLY" }
+}
 ```
 
-- `content.File`: Base64.
-- `container_options.env`: `[{"name":"TOKEN","value":{"name":"api-token","id":"SECRET_ID"}}]`.
-- `POST /api/apps` → `xconfigs`: `[{"target":"/app/credentials","secret":{"name":"api-file","id":"SECRET_ID"}}]`.
-- `PATCH /api/apps/{name}` → `xconfigs`: `[{"Secret":{"target":"/app/credentials","secret":{"name":"api-file","id":"SECRET_ID"}}}]`.
+Für ein Datei-Secret verwende `content.File` mit dem Base64-kodierten Dateiinhalt.
+
+Rufe nach dem Erstellen `GET /api/secrets?kind=Text` auf. Suche den Namen in der zurückgegebenen Liste `secrets` und übernimm `name` und `id`. Für Dateien nutze `kind=File`.
+
+Verwende Name und ID in der Anwendungsanfrage und ersetze damit `SECRET_ID`. Die Ausschnitte zeigen die Zuordnungsfelder; ergänze die übrigen Felder für das Erstellen oder Aktualisieren der Anwendung.
+
+- Umgebungsvariablen (`container_options.env`): `[{"name":"API_TOKEN","value":{"name":"api-token","id":"SECRET_ID"}}]`.
+- Dateieinbindungen beim Erstellen einer Anwendung (`POST /api/apps` → `xconfigs`): `[{"target":"/etc/app/credentials.json","secret":{"name":"api-file","id":"SECRET_ID"}}]`.
+- Dateieinbindungen beim Aktualisieren einer Anwendung (`PATCH /api/apps/{name}` → `xconfigs`): `[{"Secret":{"target":"/etc/app/credentials.json","secret":{"name":"api-file","id":"SECRET_ID"}}}]`.
+
+## Fehler
+
+401: ungültig/abgelaufen/widerrufen oder Nutzer unzugänglich. 403: Rechte. 422: Felder/Voraussetzungen. Verbindung: URL/TLS/Proxy.
+
+Nach Widerruf Ablehnung testen. Siehe [Rollen](/docs/de/administration/accounts/roles/).

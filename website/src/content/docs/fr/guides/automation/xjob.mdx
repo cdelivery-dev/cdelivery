@@ -17,10 +17,10 @@ Ce n’est pas exec dans le conteneur métier. Ne présumez pas l’accès à se
 
 ## Concevoir et vérifier
 
+XJob utilise aussi les variables d’environnement et les montages de [Secrets](/docs/fr/guides/apps/secrets/) configurés dans l’application. Il n’est pas nécessaire de ressaisir leur contenu dans la tâche.
+
 Les commandes avec effets externes doivent gérer les répétitions. Le planificateur n’offre pas de transaction globale.
 
 Code zéro doit représenter le succès métier. Vérifiez l’effet et les journaux XJob du bon nom.
 
 Voir [planification](/docs/fr/guides/automation/xjob/schedule/) et [résultats](/docs/fr/guides/automation/xjob/results/) pour les intervalles et les échecs.
-
-[Secrets](/docs/fr/guides/apps/secrets/).

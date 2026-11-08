@@ -7,6 +7,8 @@ sidebar:
 
 XHealth ejecuta comprobaciones en tareas independientes de los contenedores de negocio.
 
+Las tareas de comprobación usan las variables de entorno y los montajes de [Secretos](/docs/es/guides/apps/secrets/) configurados en la aplicación.
+
 ## Ejecutar ahora
 
 Operator o Admin puede seleccionar **Ejecutar ahora**, llamar a `POST /api/apps/{name}/xhealth/run` sin cuerpo o usar la herramienta MCP/Agent `xhealth_run` con `app`. La comprobación debe estar activada y usa la configuración guardada sobre la aplicación actual. Las solicitudes durante la espera o ejecución devuelven `409`; el siguiente intervalo se cuenta desde el inicio de la nueva ejecución. Las comprobaciones de candidatos de Guardian son independientes.
@@ -17,12 +19,16 @@ La API devuelve `202` con `{"ok":true}` al aceptar la solicitud, sin esperar el 
 
 Operator o Admin selecciona puerto e intervalo mínimo de un minuto y carga una prueba:
 
+Para el ejemplo Hello, selecciona el puerto interno `80` y comprueba `/`:
+
 ```hurl
-GET {{TARGET_URL}}/health
+GET {{TARGET_URL}}/
 HTTP 200
 ```
 
 Se ejecuta `hurl --test /xhealth.hurl` con `HURL_VARIABLE_TARGET_URL`. Incluso al seleccionar un dominio, el destino usa HTTP interno; no verifica DNS público ni certificado TLS. Consulta [Hurl](https://hurl.dev/docs/request.html).
+
+Si la comprobación necesita un token, vincula un secreto de texto a la variable `HURL_VARIABLE_API_TOKEN` de la aplicación y usa `{{API_TOKEN}}` en el archivo Hurl. La plataforma proporciona `TARGET_URL`; reserva su variable `HURL_VARIABLE_TARGET_URL` y la ruta `/xhealth.hurl` del archivo de comprobación.
 
 ## Comandos propios
 
@@ -30,12 +36,14 @@ La comprobación usa imagen y configuración pertinente de la aplicación en otr
 
 El código cero significa éxito. Comprueba que la imagen contenga el ejecutable y que termine dentro del tiempo permitido. Un comando sin aserción útil puede dar falsa confianza.
 
+Hello incluye `sh` y `wget`, por lo que admite esta comprobación personalizada:
+
+```sh
+sh -c 'wget -q -O /dev/null "http://$TARGET_HOST:$TARGET_PORT/"'
+```
+
 ## Verificar
 
 Ejecuta la prueba, lee estado y registros, y verifica en una prueba controlada que una respuesta inválida falle. Asegúrate de que ruta o puerto seleccionado identifique un destino interno inequívoco.
 
 Consulta [estados](/docs/es/guides/release-safety/xhealth/status/) y [Guardian](/docs/es/guides/release-safety/guardian/).
-
-XJob, XHealth, Hurl y Guardian heredan los vínculos de secretos. Hurl usa `HURL_VARIABLE_NAME` para un secreto de texto y `{{NAME}}` en el script. `HURL_VARIABLE_TARGET_URL`, `TARGET_HOST` y `TARGET_PORT` están reservados para sus métodos de comprobación. Los montajes no deben ocultar `/xhealth.hurl` en Hurl.
-
-[Secretos](/docs/es/guides/apps/secrets/).

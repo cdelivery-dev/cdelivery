@@ -5,9 +5,9 @@ sidebar:
   order: 13
 ---
 
-Las instrucciones de carga y descarga siguientes se refieren a archivos ordinarios. Los secretos de archivo usan otra fuente en el mismo diálogo, no se pueden descargar y admiten hasta 511.999 bytes.
-
 Relaciona contenido cargado con una ruta de archivo y verifica que las nuevas tareas lo utilicen.
+
+Los ejemplos siguientes usan cargas XConfig normales. Para sustituir un secreto de archivo, crea otro en [Secretos](/docs/es/guides/apps/secrets/), selecciónalo en el montaje existente y guarda la configuración de la aplicación.
 
 ## Procedimiento
 
@@ -25,7 +25,17 @@ La sustitución genera una nueva versión; según los ajustes puede pasar por [G
 
 ## Comprobar
 
-Para Nginx, `/etc/nginx/conf.d/default.conf` debe contener sintaxis y rutas compatibles con la imagen. Descargar el archivo confirma el contenido guardado, no su uso en ejecución.
+Para el ejemplo Hello (`ghcr.io/cdelivery-dev/hello:1.0.0`), guarda este contenido como `index.html` y súbelo con XConfig a `/www/index.html`:
+
+```html
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>CDelivery Hello</title></head>
+<body><h1>Hello from XConfig</h1></body>
+</html>
+```
+
+Conserva el comando predeterminado y el mapeo TCP 80 → 8080. Tras actualizar, abre `/` y comprueba que aparece `Hello from XConfig` en lugar de la información de la solicitud. Al retirar el montaje, los nuevos contenedores recuperan la respuesta predeterminada.
 
 Si falla el arranque, revisa ruta, permisos esperados y errores del programa. Antes de retirar un montaje, confirma que la aplicación puede arrancar sin él.
 
@@ -34,5 +44,3 @@ Si falla el arranque, revisa ruta, permisos esperados y errores del programa. An
 La indicación de uso corresponde a la aplicación, no a un catálogo global. El contenido huérfano antiguo puede limpiarse y no constituye historial de respaldo.
 
 Conserva la fuente de configuración en tu propio sistema. Consulta [XConfig](/docs/es/guides/apps/xconfig/) para límites y visibilidad.
-
-[Secretos](/docs/es/guides/apps/secrets/).

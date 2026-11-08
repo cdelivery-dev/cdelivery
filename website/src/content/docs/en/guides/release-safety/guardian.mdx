@@ -15,6 +15,8 @@ With Guardian enabled, changes to the image, container runtime options, XConfig,
 
 After saving a change, follow the release phase on the application overview.
 
+Changing a [Secrets](/docs/guides/apps/secrets/) selection also goes through validation with the application configuration. The candidate and its checks use the secrets selected in that submission.
+
 ## Phases and decisions
 
 | Phase | What to inspect |
@@ -33,5 +35,3 @@ Use the separate Guardian application and Guardian check log sources to identify
 After promotion, verify live replicas and the actual business endpoint.
 
 Review [update strategies](/docs/guides/release-safety/update-strategy/) and [rollback](/docs/guides/release-safety/rollback/) before relying on automatic recovery.
-
-[Secrets](/docs/guides/apps/secrets/).

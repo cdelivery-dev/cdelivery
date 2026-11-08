@@ -7,6 +7,8 @@ sidebar:
 
 Choose stateful mode during creation when an application needs a local data volume. This mode fixes one replica to one server. It does not use dynamic placement, automatic scaling, ordinary XConfig uploads, or Guardian.
 
+Local-volume applications can still mount read-only File secrets from [Secrets](/docs/guides/apps/secrets/) to provide credential files.
+
 ## Create
 
 <Steps>
@@ -37,5 +39,3 @@ Take a consistent backup before a data-format change and test restoration. [Appl
 If the server is unavailable, selecting another server with a same-named volume does not recover the data. Restore or migrate the data through your storage procedure, then verify the new deployment.
 
 Deleting the application retains its volume. Track the original server and volume name before cleanup; [volume management](/docs/administration/nodes/volumes/) handles the separate deletion.
-
-[Secrets](/docs/guides/apps/secrets/): File mounts are read-only with mode 0444. Local-volume applications support File secrets, although ordinary XConfig uploads remain unavailable. XJob, XHealth, Hurl and Guardian inherit bindings; candidate checks use candidate references. Ordinary exec sessions do not automatically inherit startup-injected variables.

@@ -11,22 +11,26 @@ Konfiguriere den Hauptprozess und unterscheide Argumente von Shell-Auswertung.
 
 Image-Standard beibehalten, sofern kein anderer Befehl nötig ist. Anführungszeichen werden verarbeitet; Variablen, Pipes und Umleitungen benötigen explizite Shell:
 
+Mit dem Hello-Image (`ghcr.io/cdelivery-dev/hello:1.0.0`) schreibt dieser Befehl den Wert von `GREETING` ins Startlog und startet den HTTP-Server:
+
 ```sh
-sh -c 'exec ./server --port "$PORT"'
+sh -c 'printf "%s\n" "$GREETING"; exec httpd -f -v -p 80 -h /www'
 ```
+
+Setze `GREETING=Hello`, um das Beispiel zu testen. Diese Variable verändert die Logausgabe.
 
 Image muss Shell und Programm enthalten. Hauptprozess im Vordergrund ausführen; sein Ende beendet den Container.
 
 ## Umgebung
 
-Namen: 1–128 Zeichen, kein `=`. Werte: bis 4096 Zeichen. Nur vom Programm verstandene Variablen verwenden. `PORT=8080` veröffentlicht keinen Port und erzwingt keinen Listener.
+Eine Umgebungsvariable kann einen normalen Wert oder ein Text-Secret verwenden. Für [Secrets](/docs/de/guides/apps/secrets/) gibst du den Variablennamen ein, wechselst zur Quelle **Secret**, wählst ein vorhandenes Secret und bestätigst. Speichere danach die Anwendungskonfiguration.
 
-Beliebige Werte sind geteilte Konfiguration ohne automatische Geheimniserkennung. Für Dateien siehe [XConfig](/docs/de/guides/apps/xconfig/).
+Namen: 1–128 Zeichen, kein `=`. Normale Werte: bis 4096 Zeichen. Nur vom Programm verstandene Variablen verwenden. `PORT=8080` veröffentlicht keinen Port und erzwingt keinen Listener.
+
+Normal eingegebene Werte sind geteilte Konfiguration ohne automatische Erkennung vertraulicher Werte. Für Dateien siehe [XConfig](/docs/de/guides/apps/xconfig/).
 
 ## Prüfen
 
 Speichern, neue Aufgaben und Logs kontrollieren. Ohne Änderung kein Neustart. Pfade, Werkzeuge und Quotes prüfen; wörtliche Expansion deutet auf fehlende Shell.
 
 Nur internes Loopback verhindert externe Containerzugriffe. [Netzwerk/Ports](/docs/de/guides/networking/connectivity/) getrennt konfigurieren.
-
-[Geheimnisse](/docs/de/guides/apps/secrets/): Erstellen Sie ein Text- oder Dateigeheimnis auf der Seite Geheimnisse und wählen Sie es anschließend in der Anwendung aus. Text wird als Umgebungsvariable verwendet, eine Datei als XConfig eingebunden.

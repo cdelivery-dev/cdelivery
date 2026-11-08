@@ -11,6 +11,8 @@ Reader, Operator et Admin accordent des droits croissants sur toute la plateform
 
 | Capacité | Reader | Operator | Admin |
 | --- | --- | --- | --- |
+| Consulter les noms, types et descriptions des [Secrets](/docs/fr/guides/apps/secrets/) | Oui | Oui | Oui |
+| Créer, supprimer et associer des secrets | Non | Oui | Oui |
 | Informations partagées | Oui | Oui | Oui |
 | Compte et clés personnels | Oui | Oui | Oui |
 | Applications, XHealth, XJob, Guardian | Non | Oui | Oui |
@@ -29,5 +31,3 @@ Console, REST, MCP et outils IA suivent les mêmes règles. Messages utilisent l
 ## Vérifier
 
 Attribuez puis testez avec le compte. Admin ne peut se supprimer/rétrograder lui-même. Changer le mot de passe invalide sessions, pas clés. Voir [utilisateurs](/docs/fr/administration/accounts/users/).
-
-[Secrets](/docs/fr/guides/apps/secrets/): Reader peut consulter les métadonnées. Operator et Admin peuvent créer, supprimer et associer les secrets. Le contenu ne peut être ni relu, ni téléchargé, ni modifié.

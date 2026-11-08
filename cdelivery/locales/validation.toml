@@ -422,7 +422,7 @@ de = "Muss mit %{field} übereinstimmen"
 
 [validation.volume_name_reserved]
 en = "agent and insight-data are reserved system volume names"
-zh-CN = "agent 和 insight-data 是系统保留的卷名"
+zh-CN = "agent 和 insight-data 是系统保留的数据卷名称"
 zh-TW = "agent 和 insight-data 是系統保留的資料卷名稱"
 ja = "agent と insight-data はシステムが予約しているボリューム名です。"
 pt-BR = "agent e insight-data são nomes de volumes reservados pelo sistema"
@@ -433,7 +433,7 @@ de = "agent und insight-data sind reservierte Namen für System-Volumes"
 [validation.image_reference]
 en = "Use an image reference such as busybox:1.38, with a lowercase repository and no @digest"
 zh-CN = "使用镜像引用，例如 busybox:1.38；仓库名须小写，不能带 @digest"
-zh-TW = "使用映像引用，例如 busybox:1.38；儲存庫名稱須為小寫，不能帶 @digest"
+zh-TW = "使用映像檔參照，例如 busybox:1.38；儲存庫名稱須為小寫，不能帶 @digest"
 ja = "busybox:1.38 のようなイメージ参照を指定してください。リポジトリ名は小文字で、@digest は付けられません。"
 pt-BR = "Use uma referência de imagem como busybox:1.38, com repositório em minúsculas e sem @digest"
 es = "Usar una referencia de imagen como busybox:1.38, con el repositorio en minúsculas y sin @digest"

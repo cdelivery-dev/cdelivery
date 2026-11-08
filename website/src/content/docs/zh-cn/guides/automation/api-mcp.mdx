@@ -43,6 +43,35 @@ Authorization: Bearer YOUR_API_KEY
 
 具体配置格式由客户端决定。连接后先列出工具并调用只读操作，确认账户与权限正确，再执行写操作。
 
+## 使用机密数据
+
+通过 API 或 MCP 管理[机密数据](/docs/zh-cn/guides/apps/secrets/)时，先创建，再查询名称和 ID，最后将它绑定到应用。创建、删除和绑定需要 Operator 或 Admin。
+
+| REST | MCP / Agent |
+| --- | --- |
+| `POST /api/secrets` | `secret_create` |
+| `GET /api/secrets?kind=Text` | `secret_list` |
+| `DELETE /api/secrets/{name}` | `secret_delete` |
+
+创建文本机密数据，例如向 `POST /api/secrets` 提交：
+
+```json
+{
+  "name": "api-token",
+  "content": { "Text": "REPLACE_LOCALLY" }
+}
+```
+
+创建文件机密数据时，使用 `content.File` 并传入文件内容的 Base64 编码。
+
+创建成功后，调用 `GET /api/secrets?kind=Text`，在返回的 `secrets` 列表中按名称找到对应的 `name` 和 `id`。文件机密数据使用 `kind=File`。
+
+在应用请求中使用查询到的名称和 ID，替换下面的 `SECRET_ID`。以下是绑定字段片段，其他字段按创建或修改应用的要求填写。
+
+- 环境变量（`container_options.env`）：`[{"name":"API_TOKEN","value":{"name":"api-token","id":"SECRET_ID"}}]`。
+- 创建应用时的文件挂载（`POST /api/apps` → `xconfigs`）：`[{"target":"/etc/app/credentials.json","secret":{"name":"api-file","id":"SECRET_ID"}}]`。
+- 修改应用时的文件挂载（`PATCH /api/apps/{name}` → `xconfigs`）：`[{"Secret":{"target":"/etc/app/credentials.json","secret":{"name":"api-file","id":"SECRET_ID"}}}]`。
+
 ## 排障与撤销
 
 | 结果 | 检查 |
@@ -54,23 +83,3 @@ Authorization: Bearer YOUR_API_KEY
 | MCP 看见工具但调用失败 | 具体操作的授权、参数和业务前置条件 |
 
 撤销密钥后重新请求，确认旧凭证无法继续访问。角色规则见[角色与权限](/docs/zh-cn/administration/accounts/roles/)。
-
-[机密](/docs/zh-cn/guides/apps/secrets/): Reader 可以列出元数据；Operator 和 Admin 可以创建、删除和绑定。正文不能回读、下载或编辑。
-
-
-| REST | MCP / Agent |
-| --- | --- |
-| `POST /api/secrets` | `secret_create` |
-| `GET /api/secrets?kind=Text` | `secret_list` |
-| `DELETE /api/secrets/{name}` | `secret_delete` |
-
-`POST /api/secrets`:
-
-```json
-{"name":"api-token","content":{"Text":"REPLACE_LOCALLY"}}
-```
-
-- `content.File`: Base64.
-- `container_options.env`: `[{"name":"TOKEN","value":{"name":"api-token","id":"SECRET_ID"}}]`.
-- `POST /api/apps` → `xconfigs`: `[{"target":"/app/credentials","secret":{"name":"api-file","id":"SECRET_ID"}}]`.
-- `PATCH /api/apps/{name}` → `xconfigs`: `[{"Secret":{"target":"/app/credentials","secret":{"name":"api-file","id":"SECRET_ID"}}}]`.

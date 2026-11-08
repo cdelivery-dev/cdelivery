@@ -11,7 +11,9 @@ La couche inscriptible d’un conteneur n’assure pas la conservation lors de s
 
 Configuration en lecture : [XConfig](/docs/fr/guides/apps/xconfig/). Données locales : volume sur un serveur. Données partagées : service de stockage adapté. Récupération : sauvegarde indépendante et testée.
 
-Le mode local se choisit à la création et fixe un réplica à une machine ; il ne s’ajoute pas simplement après coup.
+Le mode local se choisit à la création et fixe une réplique à une machine ; il ne s’ajoute pas simplement après coup.
+
+Les applications avec volumes locaux peuvent aussi monter des fichiers de [Secrets](/docs/fr/guides/apps/secrets/) en lecture seule pour fournir des identifiants.
 
 ## Monter et tester
 
@@ -24,5 +26,3 @@ Créez des données, redémarrez et vérifiez leur présence. Testez aussi une r
 Un volume homonyme ailleurs contient d’autres données. Les étiquettes ne répliquent pas. Supprimer l’application conserve les volumes ; supprimer un volume retire ses données. Revenir à une image ne défait pas une migration.
 
 Voir [applications avec état](/docs/fr/guides/apps/persistence/stateful/) et [gestion des volumes](/docs/fr/administration/nodes/volumes/).
-
-[Secrets](/docs/fr/guides/apps/secrets/).

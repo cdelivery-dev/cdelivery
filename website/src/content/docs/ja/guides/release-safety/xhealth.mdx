@@ -1,11 +1,13 @@
 ---
 title: "XHealth の設定"
-description: "XHealth は業務コンテナーとは別のタスクでアプリを検証します。"
+description: "XHealth は業務コンテナとは別のタスクでアプリを検証します。"
 sidebar:
   order: 26
 ---
 
-XHealth は業務コンテナーとは別のタスクでアプリを検証します。
+XHealth は業務コンテナとは別のタスクでアプリを検証します。
+
+チェックタスクはアプリに設定された [シークレット](/docs/ja/guides/apps/secrets/) の環境変数とファイルマウントを使用します。
 
 ## 今すぐ実行
 
@@ -17,25 +19,31 @@ API は要求の受理時に `202` と `{"ok":true}` を返し、結果を待ち
 
 Operator/Admin が対象ポートと最低 1 分の間隔を設定します。
 
+Hello の例では内部ポート `80` を選び、`/` を確認します。
+
 ```hurl
-GET {{TARGET_URL}}/health
+GET {{TARGET_URL}}/
 HTTP 200
 ```
 
 実行は `hurl --test /xhealth.hurl`、対象変数は `HURL_VARIABLE_TARGET_URL` です。ドメインを選んでも内部 HTTP を確認するため、公開 DNS や TLS は検証しません。[Hurl](https://hurl.dev/docs/request.html)を参照してください。
 
+チェックにトークンが必要な場合は、テキストシークレットをアプリの `HURL_VARIABLE_API_TOKEN` 変数に設定し、Hurl 内で `{{API_TOKEN}}` を使います。`TARGET_URL` はプラットフォームが提供するため、`HURL_VARIABLE_TARGET_URL` とチェックファイルの `/xhealth.hurl` は別の用途に使わないでください。
+
 ## 独自コマンド
 
-アプリのイメージと関連設定を別コンテナーで使います。実行中アプリへの exec ではありません。`TARGET_HOST` と `TARGET_PORT` が渡り、展開には明示的なシェルが必要です。
+アプリのイメージと関連設定を別コンテナで使います。実行中アプリへの exec ではありません。`TARGET_HOST` と `TARGET_PORT` が渡り、展開には明示的なシェルが必要です。
 
 終了コード 0 が成功です。ツールの存在、意味のある検証、制限内の終了を確認します。
+
+Hello には `sh` と `wget` が含まれるため、次の独自チェックを使えます。
+
+```sh
+sh -c 'wget -q -O /dev/null "http://$TARGET_HOST:$TARGET_PORT/"'
+```
 
 ## 確認
 
 実行して状態とログを読み、制御したテストで異常応答が失敗になることを確認します。選択先の内部ポートを曖昧にしないでください。
 
 [状態](/docs/ja/guides/release-safety/xhealth/status/)と [Guardian](/docs/ja/guides/release-safety/guardian/) へ進みます。
-
-XJob、XHealth、Hurl、Guardian はアプリのシークレット関連付けを継承します。Hurl ではテキストを `HURL_VARIABLE_NAME` に関連付け、スクリプトで `{{NAME}}` を使用できます。各チェック方式の `HURL_VARIABLE_TARGET_URL`、`TARGET_HOST`、`TARGET_PORT` は予約されています。Hurl の `/xhealth.hurl` をマウントで覆うことはできません。
-
-[シークレット](/docs/ja/guides/apps/secrets/).

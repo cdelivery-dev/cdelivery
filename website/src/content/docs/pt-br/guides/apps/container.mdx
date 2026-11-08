@@ -11,22 +11,26 @@ Configure o processo principal sem confundir argumentos com execução por shell
 
 Mantenha o padrão da imagem, salvo necessidade específica. A entrada é dividida em argumentos com aspas; expansão, pipes e redirecionamentos exigem shell explícita:
 
+Na imagem Hello (`ghcr.io/cdelivery-dev/hello:1.0.0`), este comando imprime o valor de `GREETING` no log de inicialização e inicia o servidor HTTP:
+
 ```sh
-sh -c 'exec ./server --port "$PORT"'
+sh -c 'printf "%s\n" "$GREETING"; exec httpd -f -v -p 80 -h /www'
 ```
+
+Defina `GREETING=Hello` para testar o exemplo. Essa variável altera a saída do log.
 
 A imagem precisa conter shell e executável. Use processo em primeiro plano; terminar o comando principal encerra o contêiner.
 
 ## Ambiente
 
-Nomes: 1–128 caracteres, sem `=`. Valores: até 4096 caracteres. Use variáveis entendidas pelo programa. `PORT=8080` não publica a porta nem obriga o processo a utilizá-la.
+Uma variável de ambiente pode usar um valor comum ou um segredo de texto. Para usar [Segredos](/docs/pt-br/guides/apps/secrets/), informe o nome da variável, mude a origem para **Segredo**, selecione um segredo existente e confirme; depois salve a configuração do aplicativo.
 
-Valores arbitrários são configuração compartilhada, sem ocultação automática. Para arquivos, considere [XConfig](/docs/pt-br/guides/apps/xconfig/).
+Nomes: 1–128 caracteres, sem `=`. Valores comuns: até 4096 caracteres. Use variáveis entendidas pelo programa. `PORT=8080` não publica a porta nem obriga o processo a utilizá-la.
+
+Valores comuns são configuração compartilhada, sem ocultação automática. Para arquivos, considere [XConfig](/docs/pt-br/guides/apps/xconfig/).
 
 ## Verificar
 
 Salve e examine tarefas novas e logs. Sem mudanças não há reinício. Confira caminhos, aspas e ferramentas da imagem. Expansão literal indica ausência de shell.
 
 O processo deve escutar numa interface acessível, não apenas loopback interno. Configure [portas e rede](/docs/pt-br/guides/networking/connectivity/) separadamente.
-
-[Segredos](/docs/pt-br/guides/apps/secrets/): Crie um segredo de texto ou arquivo na página Segredos e selecione-o na configuração do aplicativo. Texto é usado em variáveis de ambiente; arquivo é montado pelo XConfig.

@@ -13,6 +13,8 @@ Configurez [XHealth](/docs/fr/guides/release-safety/xhealth/), activez Guardian 
 
 Lorsque Guardian est activé, les changements d’image, d’options d’exécution du conteneur, de XConfig ou de groupe déclenchent la validation du candidat. Le groupe se modifie via l’API. Le mode volume local ne prend pas Guardian en charge.
 
+Modifier la sélection de [Secrets](/docs/fr/guides/apps/secrets/) déclenche aussi la validation de la configuration. Le candidat et ses vérifications utilisent les secrets sélectionnés dans cette soumission.
+
 ## Phases
 
 Deploying : placement et démarrage. Validating : assertions. Failed : erreur. Promoting : remplacement actif.
@@ -21,8 +23,6 @@ Réessayer, ignorer et annuler dépendent de la phase. Ignorer accepte sans vali
 
 ## Vérifier
 
-Séparez GuardianApp et GuardianCheck dans les journaux. Contrôlez ports, outils, environnement, capacité et assertions, puis les réplicas réels et la requête après promotion.
+Séparez GuardianApp et GuardianCheck dans les journaux. Contrôlez ports, outils, environnement, capacité et assertions, puis les répliques réelles et la requête après promotion.
 
 Consultez [stratégie](/docs/fr/guides/release-safety/update-strategy/) et [rollback](/docs/fr/guides/release-safety/rollback/).
-
-[Secrets](/docs/fr/guides/apps/secrets/).

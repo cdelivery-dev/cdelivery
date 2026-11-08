@@ -15,7 +15,7 @@ Worker héberge les tâches ; Manager participe aussi à la gestion. L’invitat
 
 ## États
 
-Ready/Down/Disconnected : connexion. Active accepte les tâches, Pause refuse les nouvelles, Drain indique évacuation. Reachable concerne Manager. Alerte collecteur signifie données anciennes, pas nécessairement serveur arrêté.
+Ready, Down et Disconnected décrivent l’état de la connexion. Active accepte de nouvelles tâches. Pause suspend les nouvelles affectations et laisse les tâches existantes s’exécuter. Drain active le mode de drainage, qui bloque les nouvelles affectations et retire les tâches existantes du serveur ; il ne confirme pas la fin de leur migration. Reachable indique l’accessibilité du serveur de gestion. Une alerte du collecteur signale des observations anciennes, pas nécessairement l’arrêt du serveur.
 
 Consultez la capacité disponible dans les [métriques du serveur](/docs/fr/guides/observability/metrics/server/).
 

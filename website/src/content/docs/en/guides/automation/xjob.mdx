@@ -26,6 +26,8 @@ Do not assume a job inherits writable data from a live container. Make required 
 
 ## Operational design
 
+XJob also uses the application's configured [Secrets](/docs/guides/apps/secrets/) environment variables and file mounts. You do not need to enter their content again in the task.
+
 Commands that send messages, write records, or call external APIs should handle repeated execution appropriately. Scheduling is not a transaction system for those external side effects.
 
 A successful container exit only proves the command reported success. Make its exit status reflect the operation you intend to verify.
@@ -35,5 +37,3 @@ A successful container exit only proves the command reported success. Make its e
 Check the selected image, command tools, environment, target service connectivity, and execution time. Inspect the XJob log source for the specific task name.
 
 [Scheduling rules](/docs/guides/automation/xjob/schedule/) explain intervals, timeouts, and recovery. [Results and troubleshooting](/docs/guides/automation/xjob/results/) explain last/current execution state and failures.
-
-[Secrets](/docs/guides/apps/secrets/).

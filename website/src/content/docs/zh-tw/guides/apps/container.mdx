@@ -1,6 +1,6 @@
 ---
 title: "啟動指令與環境變數"
-description: "設定容器進程、參數和環境變數，並理解指令解析及啟動失敗的檢查方法。"
+description: "設定容器程序、參數和環境變數，並理解指令解析及啟動失敗的檢查方法。"
 sidebar:
   order: 10
 ---
@@ -12,20 +12,24 @@ sidebar:
 留空時使用映像檔預設啟動方式。自訂時需要填寫完整的可執行程序及參數，例如：
 
 ```text
-nginx -g 'daemon off;'
+httpd -f -v -p 80 -h /www
 ```
 
 指令會按引號和空格解析為參數，不會自動交給 shell 執行。管道、重定向、`&&` 和環境變數替換只有在你顯式啟動 shell 時才具有 shell 含義。
 
-確實需要 shell 時，可以填寫：
+使用 Hello 映像檔（`ghcr.io/cdelivery-dev/hello:1.0.0`）時，以下指令會將環境變數 `GREETING` 的值印到啟動日誌，然後啟動 HTTP 服務：
 
 ```text
-sh -c 'printf "%s\n" "$GREETING"; exec nginx -g "daemon off;"'
+sh -c 'printf "%s\n" "$GREETING"; exec httpd -f -v -p 80 -h /www'
 ```
 
-映像檔必須包含 `sh` 及所呼叫程序。`exec` 讓最後的服務進程接替 shell，有利於正確接收停止信號。改變入口還可能跳過映像檔自帶的初始化邏輯，優先遵循映像檔作者的啟動說明。
+設定 `GREETING=Hello` 即可驗證上述範例；該變數影響的是日誌輸出。
+
+映像檔必須包含 `sh` 及所呼叫程序。`exec` 讓最後的服務程序接替 shell，有利於正確接收停止信號。改變入口還可能跳過映像檔自帶的初始化邏輯，優先遵循映像檔作者的啟動說明。
 
 ## 環境變數
+
+環境變數可以直接填寫一般值，也可以選擇[文字機密資料](/docs/zh-tw/guides/apps/secrets/)。使用機密資料時，填寫變數名稱，將來源切換為**機密資料**，選擇已建立的內容並確認，最後儲存應用程式設定。
 
 <Steps>
 
@@ -36,15 +40,15 @@ sh -c 'printf "%s\n" "$GREETING"; exec nginx -g "daemon off;"'
 
 </Steps>
 
-變數名長度為 1–128，不能包含 `=`；值最多 4096 個字符。這裡填寫的是值本身，不需要額外包一層 shell 引號。`$OTHER` 不會因為寫在變數值中就自動替換成另一個變數。
+變數名長度為 1–128，不能包含 `=`；一般值最多 4096 個字元。這裡填寫的是值本身，不需要額外包一層 shell 引號。`$OTHER` 不會因為寫在變數值中就自動替換成另一個變數。
 
 同分組資料庫可以使用應用程式名稱作為主機名。容器內的 `localhost` 指向該容器自身，不能用它代替另一個資料庫應用程式的地址，參見[應用程式間通信](/docs/zh-tw/guides/networking/connectivity/)。
 
 ## 設定內容的可見性
 
-環境變數屬於共享應用程式設定。平台只對明確識別的秘密字段脫敏，不會自動把每個看起來像密碼的業務變數變為個人秘密。應依據實際帳戶權限決定哪些內容適合存放在這裡。
+直接填寫的一般環境變數屬於共享應用程式設定。平台只對明確識別的機密欄位脫敏，不會自動把每個看起來像密碼的業務變數變為個人秘密。應依據實際帳戶權限決定哪些內容適合存放在這裡。
 
-較大的設定檔案使用 [XConfig](/docs/zh-tw/guides/apps/xconfig/)；持續寫入的業務資料使用[資料卷](/docs/zh-tw/guides/apps/persistence/)。
+較大的設定檔案使用[XConfig](/docs/zh-tw/guides/apps/xconfig/)；持續寫入的業務資料使用[資料卷](/docs/zh-tw/guides/apps/persistence/)。
 
 ## 啟動失敗怎麼檢查
 
@@ -56,6 +60,4 @@ sh -c 'printf "%s\n" "$GREETING"; exec nginx -g "daemon off;"'
 | 資料庫無法連接 | 使用了錯誤主機名、容器連接埠或認證資訊 |
 | 儲存後仍像舊設定 | 新副本尚未替換完成，或 Guardian 未推廣候選設定 |
 
-應用程式的自動重啟延遲可在重啟策略設定中調整，預設 60 秒。重啟不能修復持續存在的錯誤指令；應先修正設定，再看[應用程式日誌](/docs/zh-tw/guides/observability/logs/application/)。
-
-[機密](/docs/zh-tw/guides/apps/secrets/): 先在機密頁面建立文字或檔案機密，再到應用設定中選取。文字用於環境變數，檔案用於 XConfig 掛載。
+應用程式的自動重新啟動延遲可在重新啟動策略設定中調整，預設 60 秒。重新啟動不能修復持續存在的錯誤指令；應先修正設定，再看[應用程式日誌](/docs/zh-tw/guides/observability/logs/application/)。

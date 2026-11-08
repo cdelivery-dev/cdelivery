@@ -11,6 +11,8 @@ Roles apply across the platform, not per group. Reader, Operator, and Admin prov
 
 | Capability | Reader | Operator | Admin |
 | --- | --- | --- | --- |
+| View [Secrets](/docs/guides/apps/secrets/) names, types and descriptions | Yes | Yes | Yes |
+| Create, delete and bind secrets | No | Yes | Yes |
 | Inspect shared applications, servers, and runtime information | Yes | Yes | Yes |
 | Manage own profile, password, bindings, and API keys | Yes | Yes | Yes |
 | Change applications, XHealth, XJob, and Guardian | No | Yes | Yes |
@@ -31,5 +33,3 @@ REST, MCP, console operations, and user-initiated AI tools follow the same rules
 Use Reader for observation, Operator for routine application work, and Admin for platform administration. Verify access with the intended account before attaching automation.
 
 Admins cannot delete or downgrade themselves. Password changes invalidate browser sessions but not API keys. See [users](/docs/administration/accounts/users/) and [API access](/docs/guides/automation/api-mcp/) for handover and revocation.
-
-[Secrets](/docs/guides/apps/secrets/): Reader can list metadata. Operator and Admin can create, delete and bind secrets. Content cannot be read back, downloaded or edited.

@@ -11,8 +11,8 @@
 <p align="center">A lightweight, self-hosted operations platform for deploying and running applications on your own servers.</p>
 
 <p align="center">
-  <a href="https://cdelivery.dev">Website</a> ·
-  <a href="https://cdelivery.dev/docs/">Documentation</a> ·
+  <a href="https://cdelivery.dev">Website</a> /
+  <a href="https://cdelivery.dev/docs/">Documentation</a> /
   <a href="#get-started">Getting started</a>
 </p>
 

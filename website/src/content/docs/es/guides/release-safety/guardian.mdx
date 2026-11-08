@@ -13,6 +13,8 @@ Configura una [comprobación XHealth](/docs/es/guides/release-safety/xhealth/) s
 
 Con Guardian habilitado, los cambios de imagen, opciones de ejecución del contenedor, XConfig o grupo inician la validación del candidato. El grupo se cambia mediante la API. Las aplicaciones con volúmenes locales no admiten Guardian.
 
+Cambiar la selección de [Secretos](/docs/es/guides/apps/secrets/) también pasa por la validación de la configuración. El candidato y sus comprobaciones usan los secretos seleccionados en ese envío.
+
 ## Fases
 
 | Fase | Revisar |
@@ -29,5 +31,3 @@ Cuando se ofrezcan reintentar, omitir o cancelar, decide según la fase y el fal
 Separa registros GuardianApp y GuardianCheck. Revisa puerto, herramientas, variables, capacidad y aserciones. Tras promover, comprueba réplicas activas y endpoint real.
 
 Revisa [estrategia](/docs/es/guides/release-safety/update-strategy/) y [reversión](/docs/es/guides/release-safety/rollback/).
-
-[Secretos](/docs/es/guides/apps/secrets/).

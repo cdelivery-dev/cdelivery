@@ -9,16 +9,18 @@ Guardian 在相關應用程式設定更新時先部署候選實例，使用 XHea
 
 ## 啟用條件
 
-- 應用程式使用無狀態部署方式；本地資料掛載應用程式不支援 Guardian。
+- 應用程式使用無狀態部署方式；本機資料掛載應用程式不支援 Guardian。
 - 已設定並驗證 XHealth，檢查能穩定判斷業務是否可用。
 - 操作者具有 Operator 或 Admin 權限。
-- 映像檔儲存庫、資源和調度條件允許候選實例執行。
+- 映像檔儲存庫、資源和排程條件允許候選實例執行。
 
 在應用程式的 **XHealth** 頁面開啟 Guardian。首次啟用前先讓現有檢查通過，避免每次發佈都因檢查設定本身錯誤而失敗。
 
 ## 哪些變化會驗證
 
 啟用 Guardian 後，映像檔、容器執行參數、XConfig 或分組變更會觸發候選驗證。分組變更透過 API 操作。
+
+修改[機密資料](/docs/zh-tw/guides/apps/secrets/)選擇也會隨應用程式設定進入驗證；候選執行個體及其檢查使用本次提交所選的機密資料。
 
 ## 發佈過程
 
@@ -50,5 +52,3 @@ Guardian 在相關應用程式設定更新時先部署候選實例，使用 XHea
 查看[應用程式日誌](/docs/zh-tw/guides/observability/logs/application/)時區分正式應用程式、Guardian 候選應用程式和 Guardian 檢查來源。候選映像檔無法執行、檢查工具缺失、目標連接埠錯誤和資源不足需要分別處理。
 
 存在未完成候選發佈時，後續設定修改可能被拒絕。先處理當前發佈，再提交下一次變更。需要恢復已推廣的設定時，閱讀[回復與失敗處理](/docs/zh-tw/guides/release-safety/rollback/)。
-
-[機密](/docs/zh-tw/guides/apps/secrets/).

@@ -18,6 +18,8 @@ El sistema escribible de un contenedor no garantiza conservar datos cuando se re
 
 El modo de volúmenes se elige al crear. Ejecuta una réplica en servidor fijo; no se activa simplemente sobre una aplicación ordinaria existente.
 
+Las aplicaciones con volúmenes locales también pueden montar archivos de [Secretos](/docs/es/guides/apps/secrets/) de solo lectura para proporcionar credenciales.
+
 ## Montar y comprobar
 
 Crea o selecciona el volumen en el servidor correcto y monta el directorio donde la imagen escribe realmente. Un montaje en otra ruta puede quedar vacío mientras los datos se escriben fuera.
@@ -29,5 +31,3 @@ Escribe datos de prueba, reinicia y comprueba su permanencia. Prueba también un
 Un volumen con el mismo nombre en otra máquina contiene otros datos. Las etiquetas no replican almacenamiento. Eliminar una aplicación conserva volúmenes; eliminarlos es una operación separada. Revertir una imagen no deshace migraciones.
 
 Continúa con [aplicaciones con estado](/docs/es/guides/apps/persistence/stateful/) y [volúmenes](/docs/es/administration/nodes/volumes/).
-
-[Secretos](/docs/es/guides/apps/secrets/).

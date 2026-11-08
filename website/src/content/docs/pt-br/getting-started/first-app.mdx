@@ -1,15 +1,15 @@
 ---
 title: "Publicar a primeira aplicação"
-description: "Publique Nginx por uma porta e confirme uma resposta HTTP real."
+description: "Publique Hello por uma porta e confirme uma resposta HTTP real."
 sidebar:
   order: 4
 ---
 
-Publique Nginx por uma porta e confirme uma resposta HTTP real.
+Publique Hello por uma porta e confirme uma resposta HTTP real.
 
 ## Preparar
 
-Use uma instalação funcionando. Admin cria o grupo; Operator ou Admin publica a aplicação. O servidor deve conseguir baixar a imagem pública do Nginx do Docker Hub. A porta TCP 8080 deve estar livre e acessível pelo seu computador.
+Use uma instalação funcionando. Admin cria o grupo; Operator ou Admin publica a aplicação. O servidor deve conseguir baixar a imagem pública do Hello do GHCR. A porta TCP 8080 deve estar livre e acessível pelo seu computador.
 
 Para acessar por SSH, execute este comando no seu computador e mantenha a sessão aberta:
 
@@ -29,7 +29,7 @@ Crie um grupo chamado `demo`.
 
 <Step title="Configurar a aplicação">
 
-Crie a aplicação `hello-web` nesse grupo com a imagem `nginx:stable-alpine`. Mantenha o comando padrão da imagem e uma réplica fixa.
+Crie a aplicação `hello-web` nesse grupo com a imagem `ghcr.io/cdelivery-dev/hello:1.0.0`. Mantenha o comando padrão da imagem e uma réplica fixa.
 
 </Step>
 
@@ -47,7 +47,7 @@ Salve a aplicação e aguarde a réplica entrar em execução.
 
 </Steps>
 
-Não é preciso domínio, volume ou comando personalizado. A [imagem oficial](https://hub.docker.com/_/nginx) já inicia o processo em primeiro plano.
+Não é preciso domínio, volume ou comando personalizado. Hello usa BusyBox httpd e inicia em primeiro plano por padrão.
 
 ## Conferir
 
@@ -63,7 +63,7 @@ Se usar o túnel SSH, mantenha a sessão aberta e execute este comando no seu co
 curl -i http://localhost:8080
 ```
 
-Espere HTTP 200 e a página Nginx. Confira também tarefas e logs.
+Espere HTTP 200 e uma resposta em texto simples com `Hostname`, `IP`, `Method`, `URI` e cabeçalhos da requisição. Confira também tarefas e logs.
 
 Se não baixa, verifique registro e arquitetura. Se encerra, restaure comando padrão e leia logs. Se não conecta, confira mapeamento, IP, firewall e túnel. Uma rota de domínio usaria a porta interna 80.
 

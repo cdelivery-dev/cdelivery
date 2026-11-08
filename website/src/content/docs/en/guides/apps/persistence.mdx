@@ -18,6 +18,8 @@ A container's writable layer is not a durable place for business data. Replaceme
 
 Local-volume mode is selected when creating the application. It runs one replica on a fixed server and cannot be enabled by simply toggling an existing ordinary application.
 
+Local-volume applications can still mount read-only File secrets from [Secrets](/docs/guides/apps/secrets/) to provide credential files.
+
 ## Mount and verify
 
 Create or select the volume on the target server, then mount it at the path the image actually writes. A volume mounted at the wrong path can remain empty while the application writes elsewhere.
@@ -31,5 +33,3 @@ Volumes are local. The same name on another server identifies different data, an
 Deleting an application preserves volumes. Deleting a volume removes its data and requires a separate decision. Image rollback does not reverse database migrations or restore old files.
 
 Continue with [stateful applications](/docs/guides/apps/persistence/stateful/) and [volume management](/docs/administration/nodes/volumes/).
-
-[Secrets](/docs/guides/apps/secrets/).

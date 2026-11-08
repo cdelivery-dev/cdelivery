@@ -13,6 +13,8 @@ Prüfe, ob das alte Image aktuelle Daten versteht. Migration kann Datenwiederher
 
 Rollback manuell bei vorhandener Vorgängerkonfiguration oder automatisch durch Strategie starten. Er ersetzt parallel mit Continue bei eigenen Fehlern; relevante Reihenfolge, Beobachtung und Fehlerquote bleiben erhalten.
 
+Ein Rollback stellt die Auswahl aus [Secrets](/docs/de/guides/apps/secrets/) der vorherigen Konfiguration wieder her. Ein altes Secret lässt sich nicht löschen, solange eine verfügbare Rollback-Konfiguration es verwendet.
+
 ## Verifizieren
 
 Konfiguration/Image, Replikate, Logs, Anfrage, Daten, XHealth und Ereignisse prüfen.
@@ -24,5 +26,3 @@ Ohne Vorgänger eine bekannte Konfiguration rekonstruieren. Gleicher neuer Name 
 Kapazität, Registry, Zugangsdaten, Speicher und Kompatibilität kontrollieren. Wiederholen repariert keine unerreichbare Abhängigkeit.
 
 [Guardian-Aktionen](/docs/de/guides/release-safety/guardian/) betreffen Kandidaten; [Plattformupdates](/docs/de/administration/platform/upgrades/) sind separat.
-
-[Geheimnisse](/docs/de/guides/apps/secrets/): Erstellen Sie zum Ersetzen einen neuen Namen, aktualisieren Sie die Verweise aller Anwendungen und prüfen Sie die Bereitstellung. Löschen Sie den alten Eintrag erst, wenn laufende Aufgaben und verfügbare Rollback-Konfigurationen ihn nicht mehr benötigen. Verweise enthalten Name und ID; eine Neuerstellung unter demselben Namen ersetzt alte Verweise nicht.

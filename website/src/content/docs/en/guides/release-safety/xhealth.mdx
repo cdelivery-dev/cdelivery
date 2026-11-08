@@ -7,6 +7,8 @@ sidebar:
 
 XHealth runs an application's check in a separate task. Operators and Admins configure it; Readers can inspect shared results.
 
+Check tasks use the application's configured [Secrets](/docs/guides/apps/secrets/) environment variables and file mounts.
+
 ## Run now
 
 Operators and Admins can select **Run now** on the XHealth page, call `POST /api/apps/{name}/xhealth/run` without a request body, or use the MCP/Agent tool `xhealth_run` with `app`. The check must already be enabled and uses the saved configuration against the current app. Pending or running checks reject another request with `409`; the next interval starts from the new round's start. Guardian candidate checks remain separate.
@@ -17,12 +19,16 @@ The API returns `202` with `{"ok":true}` when the request is accepted, without w
 
 Choose a target application port and an interval of at least one minute. Upload a Hurl file with assertions:
 
+For the Hello example, select internal port `80` and check `/`:
+
 ```hurl
-GET {{TARGET_URL}}/health
+GET {{TARGET_URL}}/
 HTTP 200
 ```
 
 The task runs `hurl --test /xhealth.hurl`. Its target variable is provided through `HURL_VARIABLE_TARGET_URL`. The URL uses internal HTTP to the application port, even when you selected a domain as the target. It does not test public DNS or the external TLS certificate. See [Hurl requests](https://hurl.dev/docs/request.html).
+
+For a check that needs a token, bind a Text secret to the application variable `HURL_VARIABLE_API_TOKEN` and use `{{API_TOKEN}}` in the Hurl file. The platform supplies `TARGET_URL`; keep its `HURL_VARIABLE_TARGET_URL` variable and the check file's `/xhealth.hurl` path reserved.
 
 ## Custom commands
 
@@ -30,12 +36,14 @@ A custom check uses the application's image and relevant environment/configurati
 
 Exit code zero means success. Ensure the image contains the required executable and that the command finishes within its configured runtime. A successful command without a meaningful assertion is a weak health check.
 
+Hello includes `sh` and `wget`, so it supports this custom check:
+
+```sh
+sh -c 'wget -q -O /dev/null "http://$TARGET_HOST:$TARGET_PORT/"'
+```
+
 ## Verify
 
 Run a check, inspect its status and logs, and deliberately verify that an invalid response fails in a controlled test. When a selected route or published port maps to an internal target, confirm that target is unambiguous.
 
 Read [check status](/docs/guides/release-safety/xhealth/status/) for failures and [Guardian](/docs/guides/release-safety/guardian/) to use validation during releases.
-
-XJob, XHealth, Hurl and Guardian inherit the application's secret bindings. Hurl variables can use Text secrets bound as `HURL_VARIABLE_NAME`, referenced as `{{NAME}}` in the script. `HURL_VARIABLE_TARGET_URL`, `TARGET_HOST` and `TARGET_PORT` are reserved by their respective check methods; mounts must not cover `/xhealth.hurl` for Hurl checks.
-
-[Secrets](/docs/guides/apps/secrets/).

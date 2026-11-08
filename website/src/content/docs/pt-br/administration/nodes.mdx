@@ -15,7 +15,7 @@ Worker executa cargas; Manager também participa da gestão. Credencial dura 30 
 
 ## Estados
 
-Ready/Down/Disconnected: conexão. Active aceita tarefas; Pause não aceita novas; Drain indica esvaziamento. Reachable/Unreachable refere-se ao Manager. Alerta do coletor indica observações antigas, não necessariamente máquina caída.
+Ready, Down e Disconnected indicam o estado da conexão. Active aceita novas tarefas. Pause suspende novas alocações e mantém as tarefas existentes em execução. Drain ativa o modo de drenagem, que impede novas alocações e retira as tarefas existentes do servidor; não confirma que a migração terminou. Reachable e Unreachable indicam a acessibilidade do servidor de gerenciamento. Um alerta do coletor indica observações desatualizadas, não necessariamente uma falha do servidor.
 
 Confira a capacidade disponível nas [métricas do servidor](/docs/pt-br/guides/observability/metrics/server/).
 

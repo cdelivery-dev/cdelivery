@@ -20,6 +20,8 @@ Guardian 在相关应用配置更新时先部署候选实例，使用 XHealth �
 
 启用 Guardian 后，镜像、容器运行参数、XConfig 或分组变更会触发候选验证。分组变更通过 API 操作。
 
+修改[机密数据](/docs/zh-cn/guides/apps/secrets/)选择也会随应用配置进入验证；候选实例及其检查使用本次提交选择的机密数据。
+
 ## 发布过程
 
 1. 编辑相关应用配置并保存。
@@ -50,5 +52,3 @@ Guardian 在相关应用配置更新时先部署候选实例，使用 XHealth �
 查看[应用日志](/docs/zh-cn/guides/observability/logs/application/)时区分正式应用、Guardian 候选应用和 Guardian 检查来源。候选镜像无法运行、检查工具缺失、目标端口错误和资源不足需要分别处理。
 
 存在未完成候选发布时，后续配置修改可能被拒绝。先处理当前发布，再提交下一次变更。需要恢复已推广的配置时，阅读[回滚与失败处理](/docs/zh-cn/guides/release-safety/rollback/)。
-
-[机密](/docs/zh-cn/guides/apps/secrets/).

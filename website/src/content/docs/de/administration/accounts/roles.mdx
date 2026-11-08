@@ -11,6 +11,8 @@ Reader, Operator und Admin gewähren aufsteigende Rechte für die gesamte Plattf
 
 | Fähigkeit | Reader | Operator | Admin |
 | --- | --- | --- | --- |
+| Namen, Typen und Beschreibungen unter [Secrets](/docs/de/guides/apps/secrets/) lesen | Ja | Ja | Ja |
+| Secrets erstellen, löschen und zuordnen | Nein | Ja | Ja |
 | Geteilte Informationen | Ja | Ja | Ja |
 | Eigenes Konto/Schlüssel | Ja | Ja | Ja |
 | Anwendungen, XHealth, XJob, Guardian | Nein | Ja | Ja |
@@ -18,7 +20,7 @@ Reader, Operator und Admin gewähren aufsteigende Rechte für die gesamte Plattf
 | Nutzer/Servereinladungen | Nein | Nein | Ja |
 | Sensible Modellabfrage | Nein | Nein | Ja |
 
-Nur erkannte Geheimnisse werden verborgen. Beliebige Logs/Dateien/Variablen können geteilt sein; Reader muss vertrauenswürdig sein.
+Nur erkannte Secrets werden verborgen. Beliebige Logs/Dateien/Variablen können geteilt sein; Reader muss vertrauenswürdig sein.
 
 ## Wirksame Rechte
 
@@ -29,5 +31,3 @@ Konsole, REST, MCP und KI-Werkzeuge teilen Regeln. Nachrichten nutzen zugeordnet
 ## Prüfen
 
 Mit Zielkonto testen. Admin kann sich nicht selbst löschen/herabstufen. Passwortänderung beendet Sessions, nicht Schlüssel. Siehe [Nutzerverwaltung](/docs/de/administration/accounts/users/).
-
-[Geheimnisse](/docs/de/guides/apps/secrets/): Reader dürfen Metadaten auflisten. Operator und Admin dürfen Geheimnisse erstellen, löschen und zuordnen. Inhalte lassen sich weder zurücklesen noch herunterladen oder bearbeiten.

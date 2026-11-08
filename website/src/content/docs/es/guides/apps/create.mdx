@@ -22,6 +22,8 @@ Crea una aplicación desde una imagen o plantilla y comprueba su primera ejecuci
 
 La descripción admite 500 caracteres. El nombre es único en toda la plataforma. La consola no cambia después nombre ni grupo.
 
+Crea las contraseñas, tokens y archivos de credenciales en [Secretos](/docs/es/guides/apps/secrets/) antes de seleccionarlos en las variables de entorno o los archivos de configuración.
+
 ## Plantillas y datos
 
 Las plantillas PostgreSQL 18 y MariaDB 12 obtienen sus imágenes del catálogo remoto de versiones. Si no hay una copia del catálogo cargada correctamente, crea la aplicación manualmente. Las actualizaciones del catálogo afectan a los formularios que se abran después, no a las aplicaciones existentes.
@@ -32,12 +34,10 @@ Las plantillas aportan valores iniciales, no copias de seguridad. Revisa credenc
 
 El formulario vacío usa una réplica fija, comando de imagen y registros del host, sin reservas ni etiqueta adicional. La actualización predeterminada sustituye todas las réplicas en paralelo, detiene primero las antiguas, observa 60 segundos, tolera cero fallos y revierte al fallar.
 
-Revisa la [estrategia](/docs/es/guides/release-safety/update-strategy/) si necesitas continuidad. Guardar sin cambios no fuerza un despliegue. Variables y archivos arbitrarios no se ocultan automáticamente. Verifica réplicas, registros y petición real; añade [XHealth](/docs/es/guides/release-safety/xhealth/) o [Guardian](/docs/es/guides/release-safety/guardian/) según la necesidad.
+Revisa la [estrategia](/docs/es/guides/release-safety/update-strategy/) si necesitas continuidad. Guardar sin cambios no fuerza un despliegue. Los valores normales de variables y las cargas de configuración no se ocultan automáticamente. Verifica réplicas, registros y petición real; añade [XHealth](/docs/es/guides/release-safety/xhealth/) o [Guardian](/docs/es/guides/release-safety/guardian/) según la necesidad.
 
 ## Verificación
 
 Espera la réplica, lee registros y prueba el servicio. Un error de descarga exige revisar referencia, credenciales, red y arquitectura. Una tarea pendiente puede carecer de servidor elegible o recursos. Un proceso que termina requiere revisar comando y configuración.
 
-Sigue el [ejemplo de Nginx](/docs/es/getting-started/first-app/) para una comprobación completa y consulta [imágenes](/docs/es/guides/apps/images/) para registros privados.
-
-[Secretos](/docs/es/guides/apps/secrets/).
+Sigue el [ejemplo de Hello](/docs/es/getting-started/first-app/) para una comprobación completa y consulta [imágenes](/docs/es/guides/apps/images/) para registros privados.

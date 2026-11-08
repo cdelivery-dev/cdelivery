@@ -30,14 +30,9 @@ Atualizações usam patch: omitir preserva; `null` limpa apenas campos compatív
 
 Configure o cliente HTTP remoto com `/mcp` e `Authorization: Bearer YOUR_API_KEY`. Liste as ferramentas e teste uma leitura para verificar a conta e as permissões antes de escrever.
 
-## Diagnóstico
+## Usar segredos
 
-401: credencial inválida/expirada/revogada ou usuário indisponível. 403: permissão. 422: campos/requisitos. Conexão: URL, TLS e proxy.
-
-Após revogar, confirme recusa da chave. Veja [perfis](/docs/pt-br/administration/accounts/roles/).
-
-[Segredos](/docs/pt-br/guides/apps/secrets/): Reader pode listar metadados. Operator e Admin podem criar, excluir e vincular segredos. O conteúdo não pode ser consultado novamente, baixado ou editado.
-
+Para gerenciar [Segredos](/docs/pt-br/guides/apps/secrets/) por REST ou MCP, crie o segredo, consulte seu nome e ID e então vincule-o ao aplicativo. Criar, excluir e vincular exige Operator ou Admin.
 
 | REST | MCP / Agent |
 | --- | --- |
@@ -45,13 +40,27 @@ Após revogar, confirme recusa da chave. Veja [perfis](/docs/pt-br/administratio
 | `GET /api/secrets?kind=Text` | `secret_list` |
 | `DELETE /api/secrets/{name}` | `secret_delete` |
 
-`POST /api/secrets`:
+Por exemplo, crie um segredo de texto enviando este corpo a `POST /api/secrets`:
 
 ```json
-{"name":"api-token","content":{"Text":"REPLACE_LOCALLY"}}
+{
+  "name": "api-token",
+  "content": { "Text": "REPLACE_LOCALLY" }
+}
 ```
 
-- `content.File`: Base64.
-- `container_options.env`: `[{"name":"TOKEN","value":{"name":"api-token","id":"SECRET_ID"}}]`.
-- `POST /api/apps` → `xconfigs`: `[{"target":"/app/credentials","secret":{"name":"api-file","id":"SECRET_ID"}}]`.
-- `PATCH /api/apps/{name}` → `xconfigs`: `[{"Secret":{"target":"/app/credentials","secret":{"name":"api-file","id":"SECRET_ID"}}}]`.
+Para um segredo de arquivo, use `content.File` com o conteúdo codificado em Base64.
+
+Após criar, chame `GET /api/secrets?kind=Text`. Encontre o nome na lista `secrets` retornada e obtenha `name` e `id`. Para arquivos, use `kind=File`.
+
+Use o nome e o ID retornados na requisição do aplicativo, substituindo `SECRET_ID` abaixo. Estes são trechos de campos de vínculo; preencha os demais campos exigidos para criar ou atualizar o aplicativo.
+
+- Variáveis de ambiente (`container_options.env`): `[{"name":"API_TOKEN","value":{"name":"api-token","id":"SECRET_ID"}}]`.
+- Montagens ao criar um aplicativo (`POST /api/apps` → `xconfigs`): `[{"target":"/etc/app/credentials.json","secret":{"name":"api-file","id":"SECRET_ID"}}]`.
+- Montagens ao atualizar um aplicativo (`PATCH /api/apps/{name}` → `xconfigs`): `[{"Secret":{"target":"/etc/app/credentials.json","secret":{"name":"api-file","id":"SECRET_ID"}}}]`.
+
+## Diagnóstico
+
+401: credencial inválida/expirada/revogada ou usuário indisponível. 403: permissão. 422: campos/requisitos. Conexão: URL, TLS e proxy.
+
+Após revogar, confirme recusa da chave. Veja [perfis](/docs/pt-br/administration/accounts/roles/).

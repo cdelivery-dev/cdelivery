@@ -1,15 +1,15 @@
 ---
 title: "Desplegar la primera aplicación"
-description: "Despliega Nginx mediante un puerto publicado y comprueba una respuesta HTTP real."
+description: "Despliega Hello mediante un puerto publicado y comprueba una respuesta HTTP real."
 sidebar:
   order: 4
 ---
 
-Despliega Nginx mediante un puerto publicado y comprueba una respuesta HTTP real.
+Despliega Hello mediante un puerto publicado y comprueba una respuesta HTTP real.
 
 ## Preparar
 
-Necesitas una instalación operativa. Admin crea el grupo; Operator o Admin despliega la aplicación. El servidor debe poder descargar la imagen pública de Nginx desde Docker Hub. TCP 8080 debe estar disponible y ser accesible desde tu equipo.
+Necesitas una instalación operativa. Admin crea el grupo; Operator o Admin despliega la aplicación. El servidor debe poder descargar la imagen pública de Hello desde GHCR. TCP 8080 debe estar disponible y ser accesible desde tu equipo.
 
 Para acceder por SSH, ejecuta este comando en tu equipo y mantén abierta la sesión:
 
@@ -29,7 +29,7 @@ Crea un grupo llamado `demo`.
 
 <Step title="Configurar la aplicación">
 
-Crea la aplicación `hello-web` en ese grupo con la imagen `nginx:stable-alpine`. Conserva el comando de la imagen y una réplica fija.
+Crea la aplicación `hello-web` en ese grupo con la imagen `ghcr.io/cdelivery-dev/hello:1.0.0`. Conserva el comando de la imagen y una réplica fija.
 
 </Step>
 
@@ -47,7 +47,7 @@ Guarda la aplicación y espera a que la réplica se ejecute.
 
 </Steps>
 
-No hacen falta dominio, volumen ni comando personalizado. La [imagen oficial](https://hub.docker.com/_/nginx) ya inicia Nginx en primer plano.
+No hacen falta dominio, volumen ni comando personalizado. Hello usa BusyBox httpd y se inicia en primer plano de forma predeterminada.
 
 ## Verificar
 
@@ -63,7 +63,7 @@ Si usas el túnel SSH, mantén abierta la sesión y ejecuta en tu equipo este co
 curl -i http://localhost:8080
 ```
 
-Espera HTTP 200 y la bienvenida de Nginx. Comprueba también réplicas y registros.
+Espera HTTP 200 y una respuesta de texto plano con `Hostname`, `IP`, `Method`, `URI` y cabeceras de la solicitud. Comprueba también réplicas y registros.
 
 Si falla la descarga, revisa registro y arquitectura. Si termina el contenedor, restaura el comando predeterminado y lee los registros. Si no conecta, revisa mapeo, IP y cortafuegos. Una ruta de dominio usaría el puerto interno 80.
 

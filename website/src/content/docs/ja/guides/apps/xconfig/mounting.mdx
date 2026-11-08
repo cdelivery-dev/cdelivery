@@ -5,9 +5,9 @@ sidebar:
   order: 13
 ---
 
-以下のアップロードとダウンロードの説明は通常の設定ファイルが対象です。ファイルシークレットは同じダイアログで別のソースを選択します。ダウンロードはできず、上限は 511,999 バイトです。
-
 内容とファイルパスを関連付け、新しいタスクが使用することを確認します。
+
+以下の例は通常の XConfig アップロードを使います。ファイルシークレットを置き換える場合は、[シークレット](/docs/ja/guides/apps/secrets/) で新しく作成し、既存のマウント項目で選び直してアプリ設定を保存します。
 
 ## 手順
 
@@ -17,7 +17,17 @@ sidebar:
 
 ## 調査
 
-Nginx の `/etc/nginx/conf.d/default.conf` は適切な構文と参照先が必要です。ダウンロードは保存内容の確認であり、実行時利用の証明ではありません。
+Hello の例（`ghcr.io/cdelivery-dev/hello:1.0.0`）では、次の内容を `index.html` として保存し、XConfig で `/www/index.html` にアップロードします。
+
+```html
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>CDelivery Hello</title></head>
+<body><h1>Hello from XConfig</h1></body>
+</html>
+```
+
+標準コマンドと TCP 80 → 8080 の割り当てを維持します。更新後に `/` を開くと、リクエスト情報の代わりに `Hello from XConfig` が表示されます。マウントを削除すると、新しいコンテナで標準の応答に戻ります。
 
 取り外す前に、そのファイルなしで起動できるか確認します。構文、パス、起動ログを調べてください。
 
@@ -26,5 +36,3 @@ Nginx の `/etc/nginx/conf.d/default.conf` は適切な構文と参照先が必�
 使用中表示はそのアプリに関するもので、共通ファイルカタログではありません。孤立した古い内容は清掃され得るため、バックアップ履歴として使えません。
 
 原本を自分の管理先に保存し、[XConfig の制限](/docs/ja/guides/apps/xconfig/)を確認します。
-
-[シークレット](/docs/ja/guides/apps/secrets/).

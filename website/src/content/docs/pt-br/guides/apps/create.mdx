@@ -22,6 +22,8 @@ Crie uma aplicação a partir de imagem ou modelo e confira sua primeira execuç
 
 Descrição aceita 500 caracteres. Nomes são únicos na plataforma. O console não altera posteriormente nome ou grupo.
 
+Crie senhas, tokens e arquivos de credenciais em [Segredos](/docs/pt-br/guides/apps/secrets/) antes de selecioná-los nas variáveis de ambiente ou nos arquivos de configuração.
+
 ## Modelos
 
 Os modelos PostgreSQL 18 e MariaDB 12 obtêm suas imagens do catálogo remoto de versões. Sem um catálogo carregado com sucesso, crie a aplicação manualmente. Atualizações do catálogo afetam os formulários abertos depois, não as aplicações existentes.
@@ -32,12 +34,10 @@ Modelos fornecem valores iniciais, não backup. Revise senha gerada, versão e d
 
 Formulário vazio: uma réplica, comando da imagem, logs do host, sem reservas ou rótulo adicional. Atualização: todas em paralelo, StopFirst, observação de 60 segundos, tolerância zero e Rollback.
 
-Reveja [estratégia](/docs/pt-br/guides/release-safety/update-strategy/) para continuidade. Salvar sem alterações não reinicia. Variáveis e arquivos arbitrários não são ocultados automaticamente. Confira réplicas, logs e requisição; acrescente XHealth ou Guardian conforme necessário.
+Reveja [estratégia](/docs/pt-br/guides/release-safety/update-strategy/) para continuidade. Salvar sem alterações não reinicia. Valores comuns de variáveis e uploads de configuração não são ocultados automaticamente. Confira réplicas, logs e requisição; acrescente XHealth ou Guardian conforme necessário.
 
 ## Verificação
 
 Espere a réplica, leia logs e teste o serviço. Falha de download pede revisão de referência, credenciais, rede e arquitetura. Tarefa pendente pode indicar falta de máquina elegível ou recursos. Processo encerrando exige revisar comando e configuração.
 
-Use o [exemplo Nginx](/docs/pt-br/getting-started/first-app/) e consulte [registros privados](/docs/pt-br/guides/apps/images/).
-
-[Segredos](/docs/pt-br/guides/apps/secrets/).
+Use o [exemplo Hello](/docs/pt-br/getting-started/first-app/) e consulte [registros privados](/docs/pt-br/guides/apps/images/).

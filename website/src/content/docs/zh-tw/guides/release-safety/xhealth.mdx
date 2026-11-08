@@ -7,6 +7,8 @@ sidebar:
 
 XHealth 定期執行一個檢查任務，驗證應用程式是否滿足你定義的條件。它獨立於容器執行狀態；設定和修改需要 Operator 或 Admin。
 
+檢查任務會使用應用程式已設定的[機密資料](/docs/zh-tw/guides/apps/secrets/)環境變數和檔案掛載。
+
 ## 立即執行
 
 Operator 或 Admin 可以在 XHealth 頁面點選 **立即執行**，呼叫不帶請求本文的 `POST /api/apps/{name}/xhealth/run`，或使用 MCP／Agent 工具 `xhealth_run` 並傳入 `app`。檢查必須已啟用，使用已儲存的設定對目前應用程式執行。等待啟動或執行中再次觸發會回傳 `409`；下次定時間隔從新一輪開始時起算。Guardian 的候選檢查獨立執行。
@@ -29,18 +31,20 @@ API 接受請求後回傳 `202` 和 `{"ok":true}`，不等待檢查結果。重�
 
 ## Hurl 示例
 
-為 Nginx 入門應用程式建立一個文字檔案：
+為 Hello 入門應用程式建立一個文字檔案：
 
 ```hurl
 GET {{TARGET_URL}}/
 HTTP 200
 ```
 
-上傳該檔案，選擇可用的 Hurl 版本，將目標設定為內部連接埠 `80`，間隔設為 `1 分鐘`。檔案格式見 [Hurl 請求文件](https://hurl.dev/docs/request.html)。
+上傳該檔案，選擇可用的 Hurl 版本，將目標設定為內部連接埠 `80`，間隔設為 `1 分鐘`。檔案格式見[Hurl 請求文件](https://hurl.dev/docs/request.html)。
 
 CDelivery 通過 `HURL_VARIABLE_TARGET_URL` 提供 `TARGET_URL`。預設值使用內部 HTTP 地址和所選目標連接埠，因此這個示例檢查應用程式回應，不等同於檢查公網 DNS、外部 HTTPS 憑證或完整用戶端連線路徑。
 
 檔案必須非空，大小不超過 1,023,999 位元組。之後只調整間隔等設定時，可保留已使用的檔案。
+
+檢查需要權杖時，可將文字機密資料綁定為應用程式環境變數 `HURL_VARIABLE_API_TOKEN`，在 Hurl 檔案中透過 `{{API_TOKEN}}` 使用。`TARGET_URL` 由平台提供，請保留對應的 `HURL_VARIABLE_TARGET_URL`；檢查檔案使用的 `/xhealth.hurl` 路徑也應保留。
 
 ## 自訂指令
 
@@ -53,20 +57,16 @@ CDelivery 通過 `HURL_VARIABLE_TARGET_URL` 提供 `TARGET_URL`。預設值使�
 
 指令應以結束代碼 0 表示成功，非 0 表示失敗。需要變數替換或管道時，顯式使用映像檔內存在的 shell；不要把檢查任務中的 `localhost` 當作正在執行的業務容器。
 
-例如映像檔確實包含 `curl` 和 `sh` 時：
+Hello 映像檔內建 `wget` 和 `sh`，可使用：
 
 ```text
-sh -c 'curl --fail --silent --show-error "http://$TARGET_HOST:$TARGET_PORT/health"'
+sh -c 'wget -q -O /dev/null "http://$TARGET_HOST:$TARGET_PORT/"'
 ```
 
 檢查應盡量唯讀，避免週期性檢查重複建立訂單或修改業務資料。
 
 ## 與 Guardian 的關係
 
-驗證檢查穩定可靠後，可以在同一頁面開啟 Guardian，讓相關設定更新先通過候選驗證。本地資料應用程式不支援 Guardian。完整流程見[發佈驗證](/docs/zh-tw/guides/release-safety/guardian/)。
+驗證檢查穩定可靠後，可以在同一頁面開啟 Guardian，讓相關設定更新先通過候選驗證。本機資料應用程式不支援 Guardian。完整流程見[發佈驗證](/docs/zh-tw/guides/release-safety/guardian/)。
 
 刪除檢查會停止後續週期性驗證，並影響依賴它的發佈保護。修改目標、網域或連接埠時，應同時核對檢查仍能解析到正確目標。
-
-XJob、XHealth、Hurl 和 Guardian 繼承應用的機密綁定。Hurl 可將文字機密綁定為 `HURL_VARIABLE_NAME`，在指令碼中使用 `{{NAME}}`。對應檢查方式保留 `HURL_VARIABLE_TARGET_URL`、`TARGET_HOST` 和 `TARGET_PORT`；Hurl 檢查的掛載不能覆蓋 `/xhealth.hurl`。
-
-[機密](/docs/zh-tw/guides/apps/secrets/).

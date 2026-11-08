@@ -13,6 +13,8 @@ Guardian validiert eine Kandidatenkonfiguration vor Übernahme in den laufenden 
 
 Bei aktiviertem Guardian lösen Änderungen am Image, an Container-Laufzeitoptionen, an XConfig oder an der Gruppe eine Kandidatenvalidierung aus. Gruppenänderungen erfolgen über die API. Anwendungen mit lokalen Volumes unterstützen Guardian nicht.
 
+Auch eine geänderte Auswahl unter [Secrets](/docs/de/guides/apps/secrets/) wird mit der Anwendungskonfiguration geprüft. Kandidat und Prüfungen verwenden die Secrets aus dieser eingereichten Konfiguration.
+
 ## Phasen
 
 Deploying: Planung/Start. Validating: Prüfungen. Failed: Fehler. Promoting: Übernahme.
@@ -24,5 +26,3 @@ Wiederholen, überspringen oder abbrechen hängt von Phase ab. Überspringen akz
 GuardianApp- und GuardianCheck-Logs trennen. Ports, Werkzeuge, Umgebung, Kapazität und Assertions prüfen. Nach Übernahme aktive Replikate und Dienst testen.
 
 Siehe [Strategie](/docs/de/guides/release-safety/update-strategy/) und [Rollback](/docs/de/guides/release-safety/rollback/).
-
-[Geheimnisse](/docs/de/guides/apps/secrets/).

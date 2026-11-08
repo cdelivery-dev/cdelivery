@@ -15,6 +15,8 @@ Usa la acción de reversión cuando exista configuración anterior. También pue
 
 La reversión sustituye tareas en paralelo y usa Continue ante sus propios fallos; conserva ajustes relevantes de orden, observación y proporción.
 
+El rollback restaura la selección de [Secretos](/docs/es/guides/apps/secrets/) de la configuración anterior. No se puede eliminar un secreto antiguo mientras lo use una configuración disponible para rollback.
+
 ## Verificar
 
 1. Comprueba configuración e imagen resultantes.
@@ -30,5 +32,3 @@ Si no existe configuración previa, reconstruye una versión conocida con tus re
 Comprueba capacidad, registro, credenciales, almacenamiento y compatibilidad. Repetir la acción no arregla un registro inaccesible.
 
 Las acciones de [Guardian](/docs/es/guides/release-safety/guardian/) controlan el candidato. Las [actualizaciones de plataforma](/docs/es/administration/platform/upgrades/) son independientes.
-
-[Secretos](/docs/es/guides/apps/secrets/): Para sustituir un secreto, créelo con otro nombre, actualice las referencias de cada aplicación y verifique el despliegue. Elimine el anterior cuando las tareas y las configuraciones de reversión dejen de necesitarlo. Las referencias incluyen nombre e ID; recrear un nombre no sustituye las referencias antiguas.

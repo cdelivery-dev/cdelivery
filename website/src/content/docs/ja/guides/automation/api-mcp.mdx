@@ -30,14 +30,9 @@ patch は省略で維持、対応項目のみ `null` で削除、空 patch も�
 
 リモート HTTP 対応クライアントに `/mcp` と `Authorization: Bearer YOUR_API_KEY` を設定します。ツール一覧と読み取り操作でアカウントと権限を確認します。
 
-## 調査
+## シークレットを使う
 
-401 は認証・期限・失効・ユーザー、403 は権限、422 は項目と前提条件を確認します。接続は URL、TLS、プロキシを調べます。
-
-失効後に古いキーが拒否されることを確認し、[役割](/docs/ja/administration/accounts/roles/)を参照します。
-
-[シークレット](/docs/ja/guides/apps/secrets/): Reader はメタデータを一覧できます。Operator と Admin は作成、削除、関連付けができます。内容の読み戻し、ダウンロード、編集はできません。
-
+REST または MCP で [シークレット](/docs/ja/guides/apps/secrets/) を使うには、作成後に名前と ID を取得し、アプリに関連付けます。作成、削除、関連付けには Operator または Admin が必要です。
 
 | REST | MCP / Agent |
 | --- | --- |
@@ -45,13 +40,27 @@ patch は省略で維持、対応項目のみ `null` で削除、空 patch も�
 | `GET /api/secrets?kind=Text` | `secret_list` |
 | `DELETE /api/secrets/{name}` | `secret_delete` |
 
-`POST /api/secrets`:
+テキストシークレットを作成するには、たとえば `POST /api/secrets` に次の本文を送信します。
 
 ```json
-{"name":"api-token","content":{"Text":"REPLACE_LOCALLY"}}
+{
+  "name": "api-token",
+  "content": { "Text": "REPLACE_LOCALLY" }
+}
 ```
 
-- `content.File`: Base64.
-- `container_options.env`: `[{"name":"TOKEN","value":{"name":"api-token","id":"SECRET_ID"}}]`.
-- `POST /api/apps` → `xconfigs`: `[{"target":"/app/credentials","secret":{"name":"api-file","id":"SECRET_ID"}}]`.
-- `PATCH /api/apps/{name}` → `xconfigs`: `[{"Secret":{"target":"/app/credentials","secret":{"name":"api-file","id":"SECRET_ID"}}}]`.
+ファイルの場合は `content.File` を使い、ファイルの内容を Base64 でエンコードして渡します。
+
+作成後に `GET /api/secrets?kind=Text` を呼び、返された `secrets` 一覧から名前で探して `name` と `id` を取得します。ファイルは `kind=File` で取得します。
+
+取得した名前と ID をアプリのリクエストに使い、以下の `SECRET_ID` を置き換えます。以下は関連付けフィールドの断片です。アプリの作成や更新に必要な他のフィールドも指定してください。
+
+- 環境変数 (`container_options.env`): `[{"name":"API_TOKEN","value":{"name":"api-token","id":"SECRET_ID"}}]`.
+- アプリ作成時のファイルマウント (`POST /api/apps` → `xconfigs`): `[{"target":"/etc/app/credentials.json","secret":{"name":"api-file","id":"SECRET_ID"}}]`.
+- アプリ更新時のファイルマウント (`PATCH /api/apps/{name}` → `xconfigs`): `[{"Secret":{"target":"/etc/app/credentials.json","secret":{"name":"api-file","id":"SECRET_ID"}}}]`.
+
+## 調査
+
+401 は認証・期限・失効・ユーザー、403 は権限、422 は項目と前提条件を確認します。接続は URL、TLS、プロキシを調べます。
+
+失効後に古いキーが拒否されることを確認し、[役割](/docs/ja/administration/accounts/roles/)を参照します。

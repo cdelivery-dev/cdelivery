@@ -1,25 +1,25 @@
 ---
 title: "飛書接入"
-description: "設定飛書應用程式機器人、長連接事件訂閱和使用者身份綁定。"
+description: "設定飛書應用程式機器人、長連線事件訂閱和使用者身份綁定。"
 sidebar:
   order: 50
 ---
 
-飛書渠道使用自建應用程式機器人的 App ID、App Secret，以及長連接事件訂閱。管理者負責平台渠道設定，每位使用者在個人帳戶中填寫自己的身份。
+飛書渠道使用自建應用程式機器人的 App ID、App Secret，以及長連線事件訂閱。管理者負責平台渠道設定，每位使用者在個人帳戶中填寫自己的身份。
 
 ## 設定機器人
 
 <Steps>
 
 1. 在飛書開放平台建立自建應用程式，開啟機器人能力。
-2. 授予發送消息、接收使用者單聊消息的權限；需要群聊時再授予接收群聊 @ 消息的權限。
-3. 在事件訂閱中選擇長連接模式，添加 `im.message.receive_v1` 接收消息事件。
+2. 授予發送訊息、接收使用者單聊訊息的權限；需要群聊時再授予接收群聊 @ 訊息的權限。
+3. 在事件訂閱中選擇長連線模式，添加 `im.message.receive_v1` 接收訊息事件。
 4. 發佈應用程式，把使用者加入可用範圍；新增權限後完成相應審批和發佈。
 5. 以 Admin 在 CDelivery 的 **飛書** 渠道填寫 App ID 與 App Secret，儲存設定。
 
 </Steps>
 
-這裡需要應用程式機器人，不能使用只有 Webhook 的群機器人。長連接由 CDelivery 主動連接飛書，不需要設定公網事件回調 URL。參閱[飛書事件訂閱文件](https://open.feishu.cn/document/server-docs/event-subscription-guide/event-subscription-configure-/request-url-configuration-case)。海外 Lark 應用程式請使用 [Lark 渠道](/docs/zh-tw/guides/automation/im/lark/)。
+這裡需要應用程式機器人，不能使用只有 Webhook 的群機器人。長連線由 CDelivery 主動連接飛書，不需要設定公網事件回呼 URL。參閱[飛書事件訂閱文件](https://open.feishu.cn/document/server-docs/event-subscription-guide/event-subscription-configure-/request-url-configuration-case)。海外 Lark 應用程式請使用 [Lark 渠道](/docs/zh-tw/guides/automation/im/lark/)。
 
 ## 獲取並綁定 open_id
 
@@ -36,8 +36,8 @@ sidebar:
 | 現象 | 檢查 |
 | --- | --- |
 | 找不到機器人 | 應用程式是否發佈、本人是否在可用範圍 |
-| 能發送但收不到回復 | 接收消息權限、事件訂閱、長連接網路、模型 |
-| 收到消息卻無法識別帳戶 | 是否使用當前應用程式下本人的 open_id |
+| 能發送但收不到回覆 | 接收訊息權限、事件訂閱、長連線網路、模型 |
+| 收到訊息卻無法識別帳戶 | 是否使用當前應用程式下本人的 open_id |
 | 個人資料無法顯示 | 通訊錄權限和使用者可見範圍 |
 | 更換憑證後失效 | App ID/Secret 是否成對、綁定是否屬於新應用程式 |
 

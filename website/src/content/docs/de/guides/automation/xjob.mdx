@@ -17,10 +17,10 @@ Kein exec im Anwendungscontainer: temporäre Dateien und beschreibbare Daten nic
 
 ## Entwerfen und prüfen
 
+XJob verwendet auch die in der Anwendung konfigurierten Umgebungsvariablen und Dateieinbindungen aus [Secrets](/docs/de/guides/apps/secrets/). Der Inhalt muss im Task nicht erneut eingegeben werden.
+
 Externe Wirkungen müssen Wiederholung sinnvoll behandeln. Planung erzeugt keine übergreifende Transaktion.
 
 Exitcode null soll echten Geschäftserfolg ausdrücken. Wirkung und XJob-Logs des richtigen Namens prüfen.
 
 Siehe [Zeitplan](/docs/de/guides/automation/xjob/schedule/) und [Ergebnisse](/docs/de/guides/automation/xjob/results/).
-
-[Geheimnisse](/docs/de/guides/apps/secrets/).

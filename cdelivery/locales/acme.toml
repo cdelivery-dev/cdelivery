@@ -1,14 +1,14 @@
 _version = 2
 
 [acme.NoAuthorization]
-en = "order for %{domain} has no authorization"
-zh-CN = "%{domain} 的订单无授权记录"
-zh-TW = "%{domain} 的訂單沒有授權記錄"
+en = "certificate order for %{domain} has no authorization"
+zh-CN = "%{domain} 的证书申请无授权记录"
+zh-TW = "%{domain} 的憑證申請沒有授權記錄"
 ja = "%{domain} の ACME オーダーに認可情報がありません。"
-pt-BR = "o pedido para %{domain} não tem autorização"
-es = "la orden para %{domain} no tiene autorización"
+pt-BR = "o pedido de certificado para %{domain} não tem autorização"
+es = "la solicitud de certificado para %{domain} no tiene autorización"
 fr = "La commande de certificat pour %{domain} ne contient aucune autorisation"
-de = "Dem Auftrag für %{domain} fehlt die Autorisierung"
+de = "Dem Zertifikatsauftrag für %{domain} fehlt die Autorisierung"
 
 [acme.ChallengeNotOffered]
 en = "CA did not offer challenge %{kind}"
@@ -21,14 +21,14 @@ fr = "L’autorité de certification ne propose pas le défi %{kind}"
 de = "Die Zertifizierungsstelle hat keine Challenge vom Typ %{kind} angeboten"
 
 [acme.OrderNotReady]
-en = "order not ready: %{status}"
-zh-CN = "订单未就绪：%{status}"
-zh-TW = "訂單尚未就緒：%{status}"
+en = "certificate order not ready: %{status}"
+zh-CN = "证书申请未就绪：%{status}"
+zh-TW = "憑證申請尚未就緒：%{status}"
 ja = "ACME オーダーの準備が整っていません：%{status}"
-pt-BR = "pedido ainda não está pronto: %{status}"
-es = "la orden no está lista: %{status}"
+pt-BR = "pedido de certificado ainda não está pronto: %{status}"
+es = "la solicitud de certificado no está lista: %{status}"
 fr = "Commande de certificat non prête : %{status}"
-de = "Auftrag noch nicht bereit: %{status}"
+de = "Zertifikatsauftrag noch nicht bereit: %{status}"
 
 [acme.RenewalStartOutOfRange]
 en = "suggested renewal start is out of range: %{second}"

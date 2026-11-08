@@ -24,10 +24,10 @@ No es exec dentro del contenedor de la aplicación. No presupongas acceso a sus 
 
 ## Diseñar y comprobar
 
+XJob también usa las variables de entorno y los montajes de [Secretos](/docs/es/guides/apps/secrets/) configurados en la aplicación. No hace falta volver a introducir su contenido en la tarea.
+
 Los comandos con efectos externos deben manejar ejecuciones repetidas. El planificador no convierte escrituras o llamadas externas en transacciones.
 
 Código cero debe representar éxito real del negocio. Lee los registros XJob del nombre correcto y verifica la operación realizada.
 
 Consulta [programación](/docs/es/guides/automation/xjob/schedule/) y [resultados](/docs/es/guides/automation/xjob/results/) para intervalos, errores y reintentos.
-
-[Secretos](/docs/es/guides/apps/secrets/).

@@ -13,6 +13,8 @@ Verifique se a imagem anterior aceita os dados atuais. Migrações podem exigir 
 
 Use reversão quando houver configuração anterior; a estratégia também pode acioná-la automaticamente. A reversão substitui tarefas em paralelo e usa Continue diante de suas falhas, preservando ajustes relevantes de ordem, monitoramento e proporção.
 
+O rollback restaura as seleções de [Segredos](/docs/pt-br/guides/apps/secrets/) da configuração anterior. Um segredo antigo não pode ser excluído enquanto uma configuração disponível para rollback ainda o utiliza.
+
 ## Verificar
 
 Confira configuração/imagem, réplicas, logs, requisição, dados, XHealth e eventos.
@@ -24,5 +26,3 @@ Sem configuração anterior, reconstrua uma conhecida a partir dos seus registro
 Confira capacidade, registro, credenciais, armazenamento e compatibilidade. Repetir rollback não corrige uma dependência inacessível.
 
 Ações do [Guardian](/docs/pt-br/guides/release-safety/guardian/) tratam o candidato. [Atualização da plataforma](/docs/pt-br/administration/platform/upgrades/) é outro fluxo.
-
-[Segredos](/docs/pt-br/guides/apps/secrets/): Para substituir um segredo, crie outro nome, atualize as referências de cada aplicativo e verifique a implantação. Exclua o antigo somente quando tarefas e configurações de rollback não precisarem mais dele. Referências contêm nome e ID; recriar o mesmo nome não substitui referências antigas.

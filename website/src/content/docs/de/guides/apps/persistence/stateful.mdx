@@ -22,6 +22,8 @@ Lokale Daten bedeuten ein Replikat auf einem festen, bei Erstellung gewählten S
 
 Keine dynamische Platzierung, automatische Skalierung, gewöhnliche XConfig-Uploads oder Guardian in diesem Modus. Die PostgreSQL-18-Vorlage bindet `/var/lib/postgresql` ein und verwendet den `PGDATA`-Standard des Images. MariaDB 12 bindet `/var/lib/mysql` ein. Nach Änderungen am Image oder an den Umgebungsvariablen das Datenverzeichnis und die Initialisierungsregeln prüfen.
 
+Auch Anwendungen mit lokalen Volumes können Datei-Secrets aus [Secrets](/docs/de/guides/apps/secrets/) schreibgeschützt einbinden, um Zugangsdaten bereitzustellen.
+
 Generierte Passwörter sind Anwendungskonfiguration; nicht alle Umgebungswerte werden verborgen.
 
 ## Aktualisieren
@@ -35,5 +37,3 @@ Vor Formatänderung konsistent sichern. [Rollback](/docs/de/guides/release-safet
 ## Ausfall
 
 Anderer Server mit gleichnamigem Volume ist kein Restore. Daten migrieren/wiederherstellen und prüfen. Löschen erhält das Volume; Server und Name vor Bereinigung notieren.
-
-[Geheimnisse](/docs/de/guides/apps/secrets/): Dateien werden schreibgeschützt mit Modus 0444 eingebunden. Anwendungen mit lokalen Datenvolumes unterstützen Dateigeheimnisse, jedoch keine gewöhnlichen XConfig-Uploads. XJob, XHealth, Hurl und Guardian übernehmen die Zuordnungen; Kandidatenprüfungen verwenden die Kandidatenverweise. Normale exec-Sitzungen erben beim Start injizierte Variablen nicht automatisch.

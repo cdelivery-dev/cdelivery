@@ -36,14 +36,9 @@ Authorization: Bearer YOUR_API_KEY
 
 Follow the client's configuration format. List tools and perform a read-only call to verify the account and permissions before allowing writes.
 
-## Diagnose and revoke
+## Use secrets
 
-401 indicates missing or invalid credentials, expiry, revocation, or an unavailable user. 403 indicates insufficient effective permissions. 422 indicates invalid fields or unmet input requirements. For connection failures, check URL, TLS, proxy, and path.
-
-After revoking a key, verify that it no longer authenticates. See [roles](/docs/administration/accounts/roles/).
-
-[Secrets](/docs/guides/apps/secrets/): Reader can list metadata. Operator and Admin can create, delete and bind secrets. Content cannot be read back, downloaded or edited.
-
+To manage [Secrets](/docs/guides/apps/secrets/) through REST or MCP, create the secret, look up its name and ID, then bind it to an application. Creating, deleting and binding requires Operator or Admin.
 
 | REST | MCP / Agent |
 | --- | --- |
@@ -51,13 +46,27 @@ After revoking a key, verify that it no longer authenticates. See [roles](/docs/
 | `GET /api/secrets?kind=Text` | `secret_list` |
 | `DELETE /api/secrets/{name}` | `secret_delete` |
 
-`POST /api/secrets`:
+For example, create a Text secret by sending this body to `POST /api/secrets`:
 
 ```json
-{"name":"api-token","content":{"Text":"REPLACE_LOCALLY"}}
+{
+  "name": "api-token",
+  "content": { "Text": "REPLACE_LOCALLY" }
+}
 ```
 
-- `content.File`: Base64.
-- `container_options.env`: `[{"name":"TOKEN","value":{"name":"api-token","id":"SECRET_ID"}}]`.
-- `POST /api/apps` → `xconfigs`: `[{"target":"/app/credentials","secret":{"name":"api-file","id":"SECRET_ID"}}]`.
-- `PATCH /api/apps/{name}` → `xconfigs`: `[{"Secret":{"target":"/app/credentials","secret":{"name":"api-file","id":"SECRET_ID"}}}]`.
+For a File secret, use `content.File` with the file bytes encoded as Base64.
+
+After creation, call `GET /api/secrets?kind=Text`. Find the entry by name in the returned `secrets` list and take its `name` and `id`. Use `kind=File` for File secrets.
+
+Use the returned name and ID in the application request, replacing `SECRET_ID` below. These are binding field fragments; supply other fields as required for creating or updating the application.
+
+- Environment variables (`container_options.env`): `[{"name":"API_TOKEN","value":{"name":"api-token","id":"SECRET_ID"}}]`.
+- File mounts when creating an application (`POST /api/apps` → `xconfigs`): `[{"target":"/etc/app/credentials.json","secret":{"name":"api-file","id":"SECRET_ID"}}]`.
+- File mounts when updating an application (`PATCH /api/apps/{name}` → `xconfigs`): `[{"Secret":{"target":"/etc/app/credentials.json","secret":{"name":"api-file","id":"SECRET_ID"}}}]`.
+
+## Diagnose and revoke
+
+401 indicates missing or invalid credentials, expiry, revocation, or an unavailable user. 403 indicates insufficient effective permissions. 422 indicates invalid fields or unmet input requirements. For connection failures, check URL, TLS, proxy, and path.
+
+After revoking a key, verify that it no longer authenticates. See [roles](/docs/administration/accounts/roles/).

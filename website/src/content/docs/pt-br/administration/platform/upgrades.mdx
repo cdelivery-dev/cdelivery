@@ -19,10 +19,10 @@ Escolha versão em Configurações → CDelivery, confirme e espere reinício. R
 
 Atualize componentes separadamente. Teste HTTPS após Pingress, amostras após Insight/coletores e lista de volumes após agente. Gere novas credenciais de entrada após reinício.
 
+Aplicativos com segredos de texto adotam o runtime incluído na plataforma na próxima alteração de configuração de deploy. Atualizar apenas a plataforma não os reinicia. Salvar sem alterações, editar a descrição, ajustar réplicas ou reiniciar normalmente mantém o runtime existente; o rollback do aplicativo restaura a versão anterior.
+
 ## Resolver
 
 Metadados indisponíveis não significam versão atualizada. Confira rede para publicações. Em pull falho, confira imagem, arquitetura e tarefas.
 
 [Rollback de aplicação](/docs/pt-br/guides/release-safety/rollback/) não restaura plataforma/dados. Veja [recuperação](/docs/pt-br/administration/platform/recovery/) para login.
-
-Segredos de texto usam o runtime incluído quando há uma mudança efetiva na implantação. Atualizar apenas a plataforma não reinicia aplicativos. Salvar sem alterações, mudar a descrição, escalar e reiniciar normalmente preserva as referências; o rollback restaura as anteriores.

@@ -5,21 +5,21 @@ sidebar:
   order: 12
 ---
 
-Las instrucciones de carga y descarga siguientes se refieren a archivos ordinarios. Los secretos de archivo usan otra fuente en el mismo diálogo, no se pueden descargar y admiten hasta 511.999 bytes.
-
 XConfig monta contenido de configuración como archivo; utiliza volúmenes para datos modificables.
+
+Para archivos de credenciales, elige un secreto de archivo en [Secretos](/docs/es/guides/apps/secrets/) y cambia el origen a **Secreto** al añadir la configuración. Las instrucciones de carga y descarga siguientes se aplican a archivos de configuración normales.
 
 ## Cargar
 
 Abre los archivos de una aplicación compatible, selecciona un archivo y una ruta absoluta dentro del contenedor. Debe tener contenido y no superar 1,023,999 bytes. La ruta admite 2–255 caracteres y no termina en `/`.
 
-Ejemplo para Nginx:
+Para personalizar la página de inicio de la aplicación Hello:
 
 ```text
-/etc/nginx/conf.d/default.conf
+/www/index.html
 ```
 
-Comprueba que la imagen lea esa ubicación y que la sintaxis corresponda a su versión.
+Sube un archivo HTML para sustituir la información de la solicitud por tu página de inicio. Consulta el ejemplo de [montaje y actualización](/docs/es/guides/apps/xconfig/mounting/).
 
 ## Acceso y actualización
 
@@ -32,5 +32,3 @@ Reemplazar contenido crea una nueva configuración y actualiza el montaje; no ed
 Comprueba tareas, registros y comportamiento dependiente del archivo. Un archivo almacenado correctamente puede estar en una ruta que el programa no utiliza.
 
 Consulta [montaje y actualización](/docs/es/guides/apps/xconfig/mounting/) para cambiar rutas y [persistencia](/docs/es/guides/apps/persistence/) para datos de negocio.
-
-[Secretos](/docs/es/guides/apps/secrets/): Los archivos se montan en modo de solo lectura 0444. Las aplicaciones con volúmenes locales admiten secretos de archivo, pero no cargas XConfig ordinarias. XJob, XHealth, Hurl y Guardian heredan los vínculos; las comprobaciones del candidato usan sus referencias. Las sesiones exec normales no heredan automáticamente las variables inyectadas al iniciar.

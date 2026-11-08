@@ -12,7 +12,7 @@
   {% when crate::locale::Locale::ZhCn %}
   <p>使用镜像{{ image_input() }}，{{ auth_action() }}访问凭据。</p>
   {% when crate::locale::Locale::ZhTw %}
-  <p>使用映像檔{{ image_input() }}，{{ auth_action() }}存取憑證。</p>
+  <p>使用映像檔{{ image_input() }}，{{ auth_action() }}驗證資訊。</p>
   {% when crate::locale::Locale::Ja %}
   <p>イメージ{{ image_input() }}を使用。認証情報は{{ auth_action() }}。</p>
   {% when crate::locale::Locale::PtBr %}
@@ -78,7 +78,7 @@ document.addEventListener("alpine:init", () => {
 {% when crate::locale::Locale::ZhCn %}
 <p>使用镜像<span translate="no">{{ image }}</span>，{% if image_auth.is_some() %}{{ tt!("ui.app.image.auth.configured") }}{% else %}{{ tt!("ui.app.image.auth.unconfigured") }}{% endif %}访问凭据。</p>
 {% when crate::locale::Locale::ZhTw %}
-<p>使用映像檔<span translate="no">{{ image }}</span>，{% if image_auth.is_some() %}{{ tt!("ui.app.image.auth.configured") }}{% else %}{{ tt!("ui.app.image.auth.unconfigured") }}{% endif %}存取憑證。</p>
+<p>使用映像檔<span translate="no">{{ image }}</span>，{% if image_auth.is_some() %}{{ tt!("ui.app.image.auth.configured") }}{% else %}{{ tt!("ui.app.image.auth.unconfigured") }}{% endif %}驗證資訊。</p>
 {% when crate::locale::Locale::Ja %}
 <p>イメージ<span translate="no">{{ image }}</span>を使用。認証情報は{% if image_auth.is_some() %}{{ tt!("ui.app.image.auth.configured") }}{% else %}{{ tt!("ui.app.image.auth.unconfigured") }}{% endif %}。</p>
 {% when crate::locale::Locale::PtBr %}

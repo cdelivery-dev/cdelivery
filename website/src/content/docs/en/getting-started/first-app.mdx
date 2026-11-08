@@ -1,15 +1,15 @@
 ---
 title: "Deploy your first application"
-description: "Deploy Nginx with a published port and verify its response from a client."
+description: "Deploy Hello with a published port and verify its response from a client."
 sidebar:
   order: 4
 ---
 
-This example uses a public Nginx image and a published port. It needs a working installation, an Admin to create the group, and an Operator or Admin to deploy.
+This example uses a public Hello image and a published port. It needs a working installation, an Admin to create the group, and an Operator or Admin to deploy.
 
 ## Prepare access
 
-Use a working installation. An Admin creates the group; an Operator or Admin can deploy the application. Ensure the server can pull the public Nginx image from Docker Hub. TCP port 8080 must be available and reachable from your computer.
+Use a working installation. An Admin creates the group; an Operator or Admin can deploy the application. Ensure the server can pull the public Hello image from GHCR. TCP port 8080 must be available and reachable from your computer.
 
 For SSH access, run this on your computer and keep the session open:
 
@@ -29,7 +29,7 @@ Create a group named `demo`.
 
 <Step title="Configure the application">
 
-Create an application named `hello-web` in that group, using `nginx:stable-alpine`. Keep the image’s default startup command and one fixed replica.
+Create an application named `hello-web` in that group, using `ghcr.io/cdelivery-dev/hello:1.0.0`. Keep the image’s default startup command and one fixed replica.
 
 </Step>
 
@@ -47,7 +47,7 @@ Save and wait for the replica to run.
 
 </Steps>
 
-No domain, custom command, configuration file, or persistent volume is needed. The [official Nginx image](https://hub.docker.com/_/nginx) already starts its web server in the foreground.
+No domain, custom command, configuration file, or persistent volume is needed. Hello uses BusyBox httpd and starts in the foreground by default.
 
 ## Verify a request
 
@@ -63,7 +63,7 @@ If you use the SSH tunnel, keep its session open and run this on your computer i
 curl -i http://localhost:8080
 ```
 
-Expect HTTP 200 and the Nginx page.
+Expect HTTP 200 and a plain-text response containing `Hostname`, `IP`, `Method`, `URI`, and request headers.
 
 If pulling fails, inspect registry access and image architecture. If the container exits, restore the default command and inspect logs. If access times out, check port mapping, firewall, server address, and tunnel. A domain route targets container port 80, not published port 8080.
 

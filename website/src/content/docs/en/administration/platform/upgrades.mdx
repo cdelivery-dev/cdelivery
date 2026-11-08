@@ -29,10 +29,10 @@ After Pingress updates, test real domains and HTTPS. After Insight or collector 
 
 Obtain fresh server join credentials after a platform restart.
 
+Applications using Text secrets adopt the platform's bundled runtime on their next deployment configuration change. Upgrading the platform alone does not restart them. Unchanged saves, description edits, scaling and ordinary restarts keep the existing runtime; application rollback restores the previous version.
+
 ## Troubleshoot
 
 Unavailable release metadata does not mean the installation is current. Check connectivity to the release service. For failed image pulls, inspect network, architecture, and task errors.
 
 [Application rollback](/docs/guides/release-safety/rollback/) does not restore platform versions or business data. Use [access recovery](/docs/administration/platform/recovery/) for login problems.
-
-Text secrets use the runtime bundled with the platform when an actual deployment changes. A platform upgrade alone does not restart applications. Unchanged saves, description changes, scaling and ordinary restarts retain the existing runtime references; rollback restores the previous references.

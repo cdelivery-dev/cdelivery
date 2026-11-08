@@ -11,22 +11,26 @@ Configura el proceso principal y sus variables sin confundir argumentos con ejec
 
 Conserva el comando predeterminado salvo que la imagen requiera otro. La entrada se divide en argumentos con comillas; expansión, tuberías y redirecciones necesitan una shell explícita:
 
+En la imagen Hello (`ghcr.io/cdelivery-dev/hello:1.0.0`), este comando escribe el valor de `GREETING` en el registro de inicio y arranca el servidor HTTP:
+
 ```sh
-sh -c 'exec ./server --port "$PORT"'
+sh -c 'printf "%s\n" "$GREETING"; exec httpd -f -v -p 80 -h /www'
 ```
+
+Configura `GREETING=Hello` para probar el ejemplo. Esta variable cambia la salida del registro.
 
 La imagen debe contener shell y ejecutable. Mantén el proceso en primer plano: si termina el comando principal, termina el contenedor.
 
 ## Entorno
 
-Los nombres admiten 1–128 caracteres y no contienen `=`; cada valor admite hasta 4096. Usa las variables que realmente entiende el programa. `PORT=8080` no publica ese puerto ni obliga al proceso a escucharlo.
+Una variable de entorno puede usar un valor normal o un secreto de texto. Para usar [Secretos](/docs/es/guides/apps/secrets/), introduce el nombre de la variable, cambia el origen a **Secreto**, selecciona uno existente y confirma; después guarda la configuración de la aplicación.
 
-Variables arbitrarias son configuración compartida y no se ocultan automáticamente. Para archivos mayores, considera [XConfig](/docs/es/guides/apps/xconfig/) cuando esté disponible.
+Los nombres admiten 1–128 caracteres y no contienen `=`; cada valor normal admite hasta 4096. Usa las variables que realmente entiende el programa. `PORT=8080` no publica ese puerto ni obliga al proceso a escucharlo.
+
+Los valores normales de variables son configuración compartida y no se ocultan automáticamente. Para archivos mayores, considera [XConfig](/docs/es/guides/apps/xconfig/) cuando esté disponible.
 
 ## Verificar
 
 Guarda, inspecciona tareas nuevas y registros. Guardar sin cambios no reinicia. Si faltan ejecutables, revisa rutas e imagen; si la expansión aparece literal, invoca una shell.
 
 El proceso debe escuchar en una interfaz accesible dentro del contenedor, no solamente loopback. Configura [red y puertos](/docs/es/guides/networking/connectivity/) por separado.
-
-[Secretos](/docs/es/guides/apps/secrets/): Cree un secreto de texto o archivo en Secretos y selecciónelo en la configuración de la aplicación. El texto se usa en variables de entorno y el archivo en montajes XConfig.

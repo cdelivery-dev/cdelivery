@@ -41,7 +41,7 @@ pub(crate) fn scan(root: &Path) -> Result<Report, Error> {
     let locale_dir = cdelivery.join("locales");
     let mut translations = BTreeMap::<String, BTreeMap<String, String>>::new();
     let mut violations = Vec::new();
-    for namespace in ["ui", "validation"]
+    for namespace in ["ui", "validation", "secret"]
         .into_iter()
         .chain(ENUM_LOCALES.map(|(_, _, namespace)| namespace))
     {
@@ -233,7 +233,7 @@ impl syn::visit::Visit<'_> for RustVisitor<'_> {
 impl RustVisitor<'_> {
     fn reference(&mut self, literal: &syn::LitStr) {
         let key = literal.value();
-        if key.starts_with("ui.") || key.starts_with("validation.") {
+        if key.starts_with("ui.") || key.starts_with("validation.") || key.starts_with("secret.") {
             self.references.push(Reference {
                 path: self.path.to_path_buf(),
                 line: literal.span().start().line,
@@ -271,7 +271,7 @@ fn template_references(path: &Path, source: &str) -> Vec<Reference> {
             let Some((key, tail)) = tail.split_once('"') else {
                 break;
             };
-            if key.starts_with("ui.") {
+            if key.starts_with("ui.") || key.starts_with("secret.") {
                 references.push(Reference {
                     path: path.to_path_buf(),
                     line: index + 1,

@@ -11,6 +11,8 @@ Reader, Operator e Admin concedem capacidades crescentes em toda a plataforma.
 
 | Capacidade | Reader | Operator | Admin |
 | --- | --- | --- | --- |
+| Consultar nomes, tipos e descrições de [Segredos](/docs/pt-br/guides/apps/secrets/) | Sim | Sim | Sim |
+| Criar, excluir e vincular segredos | Não | Sim | Sim |
 | Ler informações compartilhadas | Sim | Sim | Sim |
 | Gerenciar própria conta/chaves | Sim | Sim | Sim |
 | Aplicações, XHealth, XJob, Guardian | Não | Sim | Sim |
@@ -29,5 +31,3 @@ Console, REST, MCP e ferramentas IA compartilham regras. Mensagens usam conta vi
 ## Verificar
 
 Reader observa, Operator opera aplicações, Admin administra. Teste com a conta real. Admin não pode excluir/rebaixar a si mesmo. Senha invalida sessões, não chaves. Veja [usuários](/docs/pt-br/administration/accounts/users/).
-
-[Segredos](/docs/pt-br/guides/apps/secrets/): Reader pode listar metadados. Operator e Admin podem criar, excluir e vincular segredos. O conteúdo não pode ser consultado novamente, baixado ou editado.

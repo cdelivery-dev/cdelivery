@@ -2,23 +2,23 @@ _version = 2
 
 [event.SecretCreated]
 en = "Secret created"
-zh-CN = "创建机密"
-zh-TW = "建立機密"
+zh-CN = "创建机密数据"
+zh-TW = "建立機密資料"
 ja = "シークレットを作成"
 pt-BR = "Segredo criado"
 es = "Secreto creado"
 fr = "Secret créé"
-de = "Geheimnis erstellt"
+de = "Secret erstellt"
 
 [event.SecretDeleted]
 en = "Secret deleted"
-zh-CN = "删除机密"
-zh-TW = "刪除機密"
+zh-CN = "删除机密数据"
+zh-TW = "刪除機密資料"
 ja = "シークレットを削除"
 pt-BR = "Segredo excluído"
 es = "Secreto eliminado"
 fr = "Secret supprimé"
-de = "Geheimnis gelöscht"
+de = "Secret gelöscht"
 
 
 [event.AppCreated]
@@ -382,23 +382,23 @@ fr = "XJob rétabli"
 de = "XJob wieder erfolgreich"
 
 [event.GuardianSubmitted]
-en = "Guardian submitted"
-zh-CN = "Guardian 已提交"
-zh-TW = "Guardian 已提交"
+en = "Update submitted to Guardian"
+zh-CN = "更新已提交至 Guardian"
+zh-TW = "更新已提交至 Guardian"
 ja = "Guardian に更新を登録"
 pt-BR = "Atualização enviada ao Guardian"
 es = "Actualización enviada a Guardian"
-fr = "Guardian soumis"
-de = "Guardian eingereicht"
+fr = "Mise à jour soumise à Guardian"
+de = "Update bei Guardian eingereicht"
 
 [event.GuardianPromoted]
-en = "Guardian promoted"
-zh-CN = "Guardian 已发布"
-zh-TW = "Guardian 已發布"
+en = "Update released by Guardian"
+zh-CN = "Guardian 已发布更新"
+zh-TW = "Guardian 已發布更新"
 ja = "Guardian が更新を適用"
 pt-BR = "Atualização aplicada pelo Guardian"
-es = "Actualización publicada por Guardian"
-fr = "Guardian publié"
+es = "Actualización aplicada por Guardian"
+fr = "Mise à jour déployée par Guardian"
 de = "Guardian-Update übernommen"
 
 [event.GuardianRetried]

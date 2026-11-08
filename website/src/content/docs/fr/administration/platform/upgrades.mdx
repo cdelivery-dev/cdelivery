@@ -19,10 +19,10 @@ Choisissez la version dans Paramètres → CDelivery, confirmez et attendez le r
 
 Actualisez chaque composant séparément. Testez HTTPS après Pingress, nouvelles mesures après Insight/collecteurs, volumes après l’agent. Renouvelez invitations serveur après redémarrage.
 
+Les applications utilisant des secrets texte adoptent le runtime fourni avec la plateforme lors du prochain changement de configuration de déploiement. La mise à jour de la plateforme seule ne les redémarre pas. Enregistrer sans changement, modifier la description, ajuster les répliques ou redémarrer normalement conserve le runtime existant ; le retour arrière de l’application restaure la version précédente.
+
 ## Diagnostic
 
 Métadonnées indisponibles ne signifient pas à jour. Vérifiez accès au service de publication. Pull échoué : image, architecture, tâches.
 
 [Rollback applicatif](/docs/fr/guides/release-safety/rollback/) ne restaure ni plateforme ni données. Voir [récupération](/docs/fr/administration/platform/recovery/) pour login.
-
-Les secrets texte utilisent le runtime fourni lors d’un changement effectif de déploiement. Une mise à jour de la plateforme seule ne redémarre pas les applications. Une sauvegarde sans changement, la description, la mise à l’échelle et un redémarrage ordinaire conservent les références ; un retour arrière restaure les précédentes.

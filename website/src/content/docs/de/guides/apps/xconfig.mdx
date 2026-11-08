@@ -5,25 +5,25 @@ sidebar:
   order: 12
 ---
 
-Die folgenden Upload- und Download-Anweisungen gelten für gewöhnliche Konfigurationsdateien. Dateigeheimnisse haben eine eigene Quelle im selben Dialog, können nicht heruntergeladen werden und sind auf 511.999 Bytes begrenzt.
-
 XConfig liefert Konfigurationsdateien; veränderliche Geschäftsdaten gehören in Volumes.
+
+Für Dateien mit Zugangsdaten wählst du ein Datei-Secret unter [Secrets](/docs/de/guides/apps/secrets/) und beim Hinzufügen die Quelle **Secret**. Die folgenden Hinweise zu Upload und Download gelten für gewöhnliche Konfigurationsdateien.
 
 ## Hochladen
 
 Bei unterstützter Anwendung eine nicht leere Datei bis 1,023,999 Bytes und absoluten Zielpfad mit 2–255 Zeichen wählen. Kein abschließender `/`.
 
-Nginx-Beispiel:
+Für eine eigene Startseite der Hello-Anwendung:
 
 ```text
-/etc/nginx/conf.d/default.conf
+/www/index.html
 ```
 
-Prüfe, ob das Image diesen Pfad liest und die Syntax unterstützt.
+Lade eine HTML-Datei hoch, um die Anfrageinformationen durch deine Startseite zu ersetzen. Ein vollständiges Beispiel steht unter [Mounts aktualisieren](/docs/de/guides/apps/xconfig/mounting/).
 
 ## Zugriff und Änderung
 
-Leseberechtigte können Inhalte herunterladen. Beliebige Geheimnisse werden nicht automatisch verborgen.
+Leseberechtigte können Inhalte herunterladen. Beliebige Secrets werden nicht automatisch verborgen.
 
 Ersetzen erzeugt neue Konfiguration und Mount-Referenz, keine Änderung einer beschreibbaren Datei im laufenden Container. Lokaler Volume-Modus unterstützt gewöhnliche XConfig-Uploads nicht.
 
@@ -32,5 +32,3 @@ Ersetzen erzeugt neue Konfiguration und Mount-Referenz, keine Änderung einer be
 Aufgaben, Logs und abhängige Funktion testen. Erfolgreich gespeichert kann trotzdem der falsche Pfad sein.
 
 Siehe [Mounts aktualisieren](/docs/de/guides/apps/xconfig/mounting/) und [Datenhaltung](/docs/de/guides/apps/persistence/).
-
-[Geheimnisse](/docs/de/guides/apps/secrets/): Dateien werden schreibgeschützt mit Modus 0444 eingebunden. Anwendungen mit lokalen Datenvolumes unterstützen Dateigeheimnisse, jedoch keine gewöhnlichen XConfig-Uploads. XJob, XHealth, Hurl und Guardian übernehmen die Zuordnungen; Kandidatenprüfungen verwenden die Kandidatenverweise. Normale exec-Sitzungen erben beim Start injizierte Variablen nicht automatisch.

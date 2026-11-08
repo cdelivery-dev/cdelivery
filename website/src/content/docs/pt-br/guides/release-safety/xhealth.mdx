@@ -7,6 +7,8 @@ sidebar:
 
 XHealth executa verificações em tarefas separadas dos contêineres de negócio.
 
+As tarefas de verificação usam as variáveis de ambiente e montagens de [Segredos](/docs/pt-br/guides/apps/secrets/) configuradas no aplicativo.
+
 ## Executar agora
 
 Operator/Admin pode selecionar **Executar agora**, chamar `POST /api/apps/{name}/xhealth/run` sem corpo ou usar a ferramenta MCP/Agent `xhealth_run` com `app`. A verificação deve estar ativada e usa a configuração salva na aplicação atual. Solicitações durante a espera ou execução retornam `409`; o próximo intervalo é contado desde o início da nova execução. As verificações de candidatos do Guardian são independentes.
@@ -17,12 +19,16 @@ A API retorna `202` com `{"ok":true}` ao aceitar a solicitação, sem esperar o 
 
 Operator/Admin escolhe porta e intervalo mínimo de um minuto e carrega:
 
+No exemplo Hello, selecione a porta interna `80` e verifique `/`:
+
 ```hurl
-GET {{TARGET_URL}}/health
+GET {{TARGET_URL}}/
 HTTP 200
 ```
 
 A execução usa `hurl --test /xhealth.hurl` e `HURL_VARIABLE_TARGET_URL`. Mesmo escolhendo domínio, o destino é HTTP interno; não testa DNS público nem TLS externo. Veja [Hurl](https://hurl.dev/docs/request.html).
+
+Se a verificação exigir um token, vincule um segredo de texto à variável `HURL_VARIABLE_API_TOKEN` do aplicativo e use `{{API_TOKEN}}` no arquivo Hurl. A plataforma fornece `TARGET_URL`; reserve sua variável `HURL_VARIABLE_TARGET_URL` e o caminho `/xhealth.hurl` do arquivo de verificação.
 
 ## Comando próprio
 
@@ -30,12 +36,14 @@ Usa imagem e configurações pertinentes da aplicação em outro contêiner, nã
 
 Código zero é sucesso. Verifique executável disponível, asserções úteis e término no prazo. Um comando que sempre termina com zero não comprova saúde.
 
+Hello inclui `sh` e `wget`, permitindo esta verificação personalizada:
+
+```sh
+sh -c 'wget -q -O /dev/null "http://$TARGET_HOST:$TARGET_PORT/"'
+```
+
 ## Verificar
 
 Execute, leia status/logs e confirme em teste controlado que resposta inválida falha. O destino selecionado precisa identificar uma porta interna inequívoca.
 
 Veja [estados](/docs/pt-br/guides/release-safety/xhealth/status/) e [Guardian](/docs/pt-br/guides/release-safety/guardian/).
-
-XJob, XHealth, Hurl e Guardian herdam os vínculos de segredos. Hurl usa `HURL_VARIABLE_NAME` para um segredo de texto e `{{NAME}}` no script. `HURL_VARIABLE_TARGET_URL`, `TARGET_HOST` e `TARGET_PORT` são reservados aos respectivos métodos de verificação. Montagens não podem ocultar `/xhealth.hurl` no Hurl.
-
-[Segredos](/docs/pt-br/guides/apps/secrets/).
