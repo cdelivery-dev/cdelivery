@@ -16,7 +16,8 @@ die() {
 usage() {
     cat <<'EOF'
 Usage: install.sh [--advertise-addr IPv4] [--no-ipv6]
-       install.sh --join URL --token INVITATION [--advertise-addr IPv4] [--no-ipv6]
+       install.sh --zfs [--zfs-partition PATH]
+       install.sh --join URL --token INVITATION [--zfs] [--advertise-addr IPv4] [--no-ipv6]
 
 Install CDelivery, or join this server to an existing CDelivery instance.
 
@@ -25,6 +26,10 @@ Install CDelivery, or join this server to an existing CDelivery instance.
                          127.0.0.1 is for a single server only.
   --join URL             Join the CDelivery instance at this HTTP(S) origin.
   --token INVITATION     Use its join invitation.
+  --zfs                 Prepare partition-backed ZFS storage; without --join,
+                         only prepare storage on this server.
+  --zfs-partition PATH   Use this unused partition without prompting (implies --zfs).
+                         An existing cdelivery pool is reused instead.
   --no-ipv6              Keep an IPv4-only gateway. Pingress then sees IPv6
                          clients as the gateway address.
   --help                 Show this help.
@@ -322,28 +327,175 @@ show_dashboard() {
     ipv6_reminder
 }
 
+zfs_unused() {
+    device=$1
+    [ "$(lsblk -nrpo PATH "$device" | wc -l)" -eq 1 ] || return 1
+    mounts=$(lsblk -dnro MOUNTPOINTS "$device") || return 1
+    signatures=$(root wipefs --no-act --noheadings --output TYPE "$device") || return 1
+    holders=$(ls -A "/sys/class/block/$(basename "$device")/holders") || return 1
+    [ -z "$mounts$signatures$holders" ] || return 1
+    awk -v device="$device" 'NR > 1 && $1 == device { found = 1 } END { exit found }' /proc/swaps || return 1
+    partition_type=$(lsblk -dnro PARTTYPE "$device") || return 1
+    case "$partition_type" in
+        ''|0x83|0fc63daf-8483-4772-8e79-3d69d8477de4|6a898cc3-1dd2-11b2-99a6-080020736631) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+zfs_candidates() {
+    lsblk -nrbo PATH,TYPE,SIZE | while read -r path kind bytes; do
+        case "$kind" in
+            part)
+                if [ "$bytes" -ge 67108864 ] && zfs_unused "$path"; then
+                    printf 'partition|%s|0|%s\n' "$path" "$((bytes / 1048576))"
+                fi ;;
+            disk)
+                if [ "$bytes" -ge 69206016 ] && zfs_unused "$path"; then
+                    printf 'disk|%s|1|%s\n' "$path" "$((bytes / 1048576 - 2))"
+                else
+                    table=$(lsblk -dnro PTTYPE "$path")
+                    case "$table" in gpt|dos) ;; *) continue ;; esac
+                    root parted --machine --script "$path" unit MiB print free | awk -F: -v disk="$path" '
+                        $NF == "free;" {
+                            start = int($2 + 0.999999); end = int($3)
+                            if (start < 1) start = 1
+                            if (end - start >= 64) printf "space|%s|%d|%d\n", disk, start, end - start
+                        }'
+                fi ;;
+        esac
+    done
+}
+
+prepare_zfs() {
+    [ "$os" = Linux ] && [ -d /run/systemd/system ] || die "ZFS requires Linux with systemd."
+    . /etc/os-release
+    case "$ID" in ubuntu|debian) ;; *) die "Automatic ZFS preparation supports Ubuntu and Debian." ;; esac
+    case "$(dk info --format '{{json .SecurityOptions}}')" in *rootless*) die "ZFS requires rootful Docker." ;; esac
+    if ! command -v zfs >/dev/null 2>&1 || ! command -v parted >/dev/null 2>&1; then
+        if [ "$ID" = debian ]; then
+            printf 'Types: deb\nURIs: https://deb.debian.org/debian\nSuites: %s\nComponents: contrib\nSigned-By: /usr/share/keyrings/debian-archive-keyring.gpg\n' "$VERSION_CODENAME" |
+                root tee /etc/apt/sources.list.d/cdelivery-zfs.sources >/dev/null
+        fi
+        root apt-get update
+        root env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-remove zfsutils-linux parted
+    fi
+    if ! root modprobe zfs; then
+        root env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-remove "linux-headers-$(uname -r)" zfs-dkms
+        root modprobe zfs || die "Cannot load ZFS for the running kernel. Resolve the module error and rerun."
+    fi
+    pools=$(root zpool list -H -o name)
+    if ! printf '%s\n' "$pools" | awk '$0 == "cdelivery" { found = 1 } END { exit !found }'; then
+        imports=$(root zpool import)
+        if printf '%s\n' "$imports" | awk '$1 == "pool:" && $2 == "cdelivery" { found = 1 } END { exit !found }'; then
+            root zpool import -N cdelivery
+        else
+            lsblk --bytes --output PATH,TYPE,SIZE,FSTYPE,FSAVAIL,MOUNTPOINTS >&2
+            say "Choose an unused partition or unpartitioned space. FSAVAIL is space inside a filesystem, not available for partitioning."
+            candidates=$(zfs_candidates)
+            [ -n "$candidates" ] || die "No unused partition or unpartitioned space. Add storage or free a partition; existing filesystems are not shrunk."
+            if [ -n "$zfs_partition" ]; then
+                zfs_partition=$(readlink -f -- "$zfs_partition") || die "Cannot resolve --zfs-partition."
+                row=$(printf '%s\n' "$candidates" | awk -F'|' -v path="$zfs_partition" '$1 == "partition" && $2 == path')
+                [ -n "$row" ] || die "--zfs-partition must select an unused partition of at least 64 MiB. See https://cdelivery.dev/zfs.md."
+            else
+                menu=$(printf '%s\n' "$candidates" | awk -F'|' '{ printf "%s: %s, %s MiB available, start %s MiB\n", $2, $1, $4, $3 }')
+                selected=$(choose "Select storage for ZFS:" 1 "$menu") || {
+                    say "$menu"
+                    die "Selection stopped. Use a terminal or --zfs-partition PATH for an unused partition. See https://cdelivery.dev/zfs.md."
+                }
+                row=$(printf '%s\n' "$candidates" | awk -v n="$selected" 'NR == n')
+            fi
+            action=$(printf '%s\n' "$row" | cut -d'|' -f1)
+            disk=$(printf '%s\n' "$row" | cut -d'|' -f2)
+            start=$(printf '%s\n' "$row" | cut -d'|' -f3)
+            size=$(printf '%s\n' "$row" | cut -d'|' -f4)
+            if [ "$action" != partition ]; then
+                { exec 3<>/dev/tty; } 2>/dev/null || die "A terminal is required to choose the new partition size."
+                printf 'Partition size in MiB [%s]: ' "$size" >&3
+                IFS= read -r requested <&3 || die "Storage selection stopped."
+                requested=${requested:-$size}
+                case "$requested" in *[!0-9]*|'') die "Enter an integer size in MiB." ;; esac
+                [ "$requested" -ge 64 ] && [ "$requested" -le "$size" ] || die "Size must be at least 64 MiB and within the selected free extent."
+                size=$requested
+            fi
+            if [ -z "$zfs_partition" ]; then
+                { exec 3<>/dev/tty; } 2>/dev/null || die "A terminal is required to confirm storage creation."
+                printf 'Create ZFS storage on %s (%s MiB, %s)? Type YES: ' "$disk" "$size" "$action" >&3
+                IFS= read -r confirmation <&3 || die "Storage preparation stopped."
+                exec 3>&-
+                [ "$confirmation" = YES ] || die "Storage preparation cancelled."
+            fi
+            case "$action" in
+                partition) partition=$disk ;;
+                disk|space)
+                    if [ "$action" = disk ]; then
+                        zfs_unused "$disk" || die "Disk is no longer unused."
+                        root parted --script "$disk" mklabel gpt
+                        table=gpt
+                    else
+                        table=$(lsblk -dnro PTTYPE "$disk")
+                    fi
+                    case "$table" in gpt) label=cdelivery ;; dos) label=primary ;; *) die "Unsupported partition table." ;; esac
+                    root parted --script --align optimal "$disk" mkpart "$label" "${start}MiB" "$((start + size))MiB"
+                    root partprobe "$disk" || die "Partition created, but the kernel could not reload it. Reboot, then select the new partition."
+                    root udevadm settle
+                    number=$(root parted --machine --script "$disk" unit MiB print | awk -F: -v start="$start" '$1 ~ /^[0-9]+$/ && $2 + 0 == start { print $1 }')
+                    partition=$(lsblk -nrpo PATH,TYPE "$disk" | while read -r path kind; do
+                        [ "$kind" = part ] || continue
+                        [ "$(cat "/sys/class/block/$(basename "$path")/partition")" = "$number" ] && printf '%s\n' "$path"
+                    done)
+                    [ -n "$partition" ] || die "New partition could not be identified. Inspect the disk before retrying." ;;
+            esac
+            zfs_unused "$partition" || die "Partition is no longer empty or unused."
+            root zpool create -m none cdelivery "$partition"
+        fi
+    fi
+    root zpool status -LP cdelivery >&2
+    datasets=$(root zfs list -H -o name -r cdelivery)
+    for dataset in cdelivery/volumes cdelivery/guardian; do
+        if printf '%s\n' "$datasets" | awk -v name="$dataset" '$0 == name { found = 1 } END { exit !found }'; then
+            [ "$(root zfs get -H -o value mountpoint "$dataset")" = none ] || die "$dataset must have mountpoint=none; existing properties were not changed."
+        else
+            root zfs create -u -o mountpoint=none "$dataset"
+        fi
+    done
+    root install -d -m 0755 /etc/zfs /etc/modules-load.d /etc/systemd/system/docker.service.d
+    root zpool set cachefile=/etc/zfs/zpool.cache cdelivery
+    printf 'zfs\n' | root tee /etc/modules-load.d/cdelivery-zfs.conf >/dev/null
+    printf '[Unit]\nWants=zfs-import-cache.service\nAfter=zfs-import-cache.service\n' |
+        root tee /etc/systemd/system/docker.service.d/cdelivery-zfs.conf >/dev/null
+    root systemctl daemon-reload
+    root systemctl enable zfs-import-cache.service
+    say "ZFS ready: cdelivery/volumes and cdelivery/guardian."
+}
+
 main() {
     addr=
     join_url=
     token=
     ipv6=yes
+    zfs_enabled=no
+    zfs_partition=
     while [ "$#" -gt 0 ]; do
         case "$1" in
-            --advertise-addr|--join|--token)
-                [ "$#" -ge 2 ] || die "$1 requires a value."
+            --advertise-addr|--join|--token|--zfs-partition)
+                [ "$#" -ge 2 ] && [ -n "$2" ] || die "$1 requires a value."
                 case "$1" in
                     --advertise-addr) addr=$2 ;;
                     --join) join_url=${2%/} ;;
                     --token) token=$2 ;;
+                    --zfs-partition) zfs_enabled=yes; zfs_partition=$2 ;;
                 esac
                 shift ;;
             --no-ipv6) ipv6=no ;;
+            --zfs) zfs_enabled=yes ;;
             --help) usage; return ;;
             *) die "Unknown argument: $1. Use --help." ;;
         esac
         shift
     done
     case "$addr" in *[!0-9.]*) die "--advertise-addr requires an IPv4 address." ;; esac
+    case "$zfs_partition" in ''|/dev/?*) ;; *) die "--zfs-partition requires an absolute /dev/ partition path." ;; esac
     case "$join_url" in ''|http://?*|https://?*) ;; *) die "--join requires an HTTP(S) URL." ;; esac
     case "$token" in ''|cdj_*) ;; *) die "--token requires a join invitation." ;; esac
     case "$token" in *[!A-Za-z0-9_=-]*) die "--token contains invalid characters." ;; esac
@@ -358,6 +510,10 @@ main() {
         install_docker
     fi
     connect_docker
+    if [ "$zfs_enabled" = yes ]; then
+        prepare_zfs
+        [ -n "$join_url" ] || return 0
+    fi
     state=$(dk info --format '{{.Swarm.LocalNodeState}}')
 
     if [ -n "$join_url" ]; then

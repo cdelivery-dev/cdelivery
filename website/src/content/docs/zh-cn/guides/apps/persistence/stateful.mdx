@@ -33,7 +33,7 @@ PostgreSQL 18 模板挂载 `/var/lib/postgresql`，保留镜像默认的 `PGDATA
 | 自动扩缩容 | 不使用 |
 | 普通 XConfig 文件上传 | 不能同时使用 |
 | [文件机密数据](/docs/zh-cn/guides/apps/secrets/) | 支持只读挂载 |
-| Guardian | 不支持 |
+| Guardian | 全部挂载使用 ZFS 数据卷时支持 |
 | 数据复制与自动接管 | 不由本地数据挂载自动提供 |
 
 业务检查可用于观察数据库或应用状态。

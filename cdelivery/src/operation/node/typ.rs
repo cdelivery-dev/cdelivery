@@ -121,6 +121,8 @@ pub(crate) struct JoinInvitation {
     pub(crate) invitation: String,
     pub(crate) expires_at: Timestamp,
     pub(crate) join_url: String,
+    /// Include --zfs in the installer command when true.
+    pub(crate) zfs_enabled: bool,
 }
 
 const _: () = assert!(LABELS_MAX == 32);

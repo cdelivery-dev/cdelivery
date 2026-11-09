@@ -40,8 +40,8 @@
       <label for="mount-volume">{{ tt!("ui.app.mounts.volume.label") }}:</label>
       <select id="mount-volume" class="text" x-model="tempMount.volume" :disabled="!isOpen" required>
         <option value="" disabled>{{ tt!("ui.volume.select") }}</option>
-        <template x-for="volume in volumeOptions" :key="volume">
-          <option :value="volume" x-text="volume" :selected="volume === tempMount.volume"></option>
+        <template x-for="volume in volumes" :key="volume.name">
+          <option :value="volume.name" data-local='{{ tt!("ui.volume.local") }}' x-text="volume.name + ' (' + (volume.backend === 'Zfs' ? 'ZFS' : $el.dataset.local) + ')'" :selected="volume.name === tempMount.volume"></option>
         </template>
       </select>
       <small class="block muted" x-cloak x-show="status === 'loading'">{{ tt!("ui.app.mounts.loading") }}</small>
@@ -83,12 +83,6 @@ document.addEventListener("alpine:init", () => {
     get nodeId() {
       return node();
     },
-    get volumeOptions() {
-      const value = this.tempMount.volume;
-      return value && !reserved.includes(value) && !this.volumes.includes(value)
-        ? [...this.volumes, value]
-        : this.volumes;
-    },
     init() {
       this.$watch("nodeId", () => {
         this.rows.splice(0);
@@ -128,7 +122,7 @@ document.addEventListener("alpine:init", () => {
         if (!response.ok) throw new Error();
         const report = await response.json();
         if (requestId !== this.requestId) return;
-        this.volumes = report.volumes.map(volume => volume.name).filter(name => !reserved.includes(name));
+        this.volumes = report.volumes.filter(volume => volume.ready && !reserved.includes(volume.name));
         this.status = this.volumes.length ? "ready" : "empty";
       } catch (_) {
         if (requestId === this.requestId) this.status = "failed";

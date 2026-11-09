@@ -7,6 +7,24 @@ use crate::error::{ErrorKind, Result};
 use crate::infra;
 use crate::locale::Locale;
 
+static BUSY: std::sync::LazyLock<parking_lot::Mutex<std::collections::HashSet<String>>> =
+    std::sync::LazyLock::new(|| parking_lot::Mutex::new(std::collections::HashSet::new()));
+
+pub(crate) struct Guard(String);
+
+pub(crate) fn acquire(name: &concept::name::Name) -> Result<Guard> {
+    if !BUSY.lock().insert(name.to_string()) {
+        return Err(ErrorKind::GuardianPending.into());
+    }
+    Ok(Guard(name.to_string()))
+}
+
+impl Drop for Guard {
+    fn drop(&mut self) {
+        BUSY.lock().remove(&self.0);
+    }
+}
+
 async fn health_config(
     docker: &infra::docker::Docker,
     name: &concept::name::Name,
@@ -85,6 +103,9 @@ async fn tick(
     name: &concept::name::Name,
     now: Timestamp,
 ) -> Result<()> {
+    let Ok(_guard) = acquire(name) else {
+        return Ok(());
+    };
     let Some(mut guardian) = infra::app::guardian::load(docker, key, name).await? else {
         infra::app::guardian::delete_check(docker, name).await?;
         return Ok(());
@@ -166,14 +187,14 @@ async fn promote(
 ) -> Result<()> {
     let name = pending.name().clone();
     let Some(mut live) = infra::app::load(docker, key, &name).await? else {
-        return infra::app::guardian::delete(docker, &name).await;
+        return infra::app::guardian::delete(docker, key, &name).await;
     };
     pending.changes().apply(live.get_mut())?;
     if live.changed() {
         live.get_mut().record_operator(pending.initiator());
     }
     infra::app::save(docker, key, &live).await?;
-    infra::app::guardian::delete(docker, &name).await?;
+    infra::app::guardian::delete(docker, key, &name).await?;
     infra::event::HUB.clear(Kind::GuardianFailed, name.as_str(), "");
     let note = match pending.verdict() {
         Some(concept::guardian::Verdict::Skipped { .. }) => "check skipped by operator",
@@ -188,6 +209,7 @@ pub(crate) async fn retry(
     key: &MasterKey,
     name: &concept::name::Name,
 ) -> Result<()> {
+    let _guard = acquire(name)?;
     let mut guardian = infra::app::guardian::load(docker, key, name)
         .await?
         .ok_or(ErrorKind::GuardianNotFound)?;
@@ -204,6 +226,7 @@ pub(crate) async fn skip(
     name: &concept::name::Name,
     now: Timestamp,
 ) -> Result<()> {
+    let _guard = acquire(name)?;
     let mut guardian = infra::app::guardian::load(docker, key, name)
         .await?
         .ok_or(ErrorKind::GuardianNotFound)?;
@@ -220,6 +243,7 @@ pub(crate) async fn cancel(
     name: &concept::name::Name,
     now: Timestamp,
 ) -> Result<()> {
+    let _guard = acquire(name)?;
     match infra::app::guardian::load(docker, key, name).await {
         Ok(None) => return Ok(()),
         Ok(Some(guardian)) => guardian.get().cancel(now)?,
@@ -228,7 +252,7 @@ pub(crate) async fn cancel(
         }
         Err(e) => return Err(e),
     }
-    infra::app::guardian::delete(docker, name).await?;
+    infra::app::guardian::delete(docker, key, name).await?;
     infra::event::emit(Kind::GuardianCancelled, name.as_str(), "");
     infra::event::HUB.dismiss(Kind::GuardianFailed, name.as_str());
     Ok(())

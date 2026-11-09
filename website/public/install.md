@@ -32,6 +32,8 @@ If CDelivery is already initialized, preserve its accounts. Ask which existing a
 
 Confirm the optional platform configuration together with these installation choices: a domain for secure HTTPS access, and whether to enable Insight for logs and metrics. Recommend Insight with local storage and 90-day retention; the domain can be skipped. Reuse choices already supplied. Existing configuration takes precedence over these defaults unless the user requests a change.
 
+ZFS is optional and configured when enabling Volumes, not during initial installation. If requested, follow [ZFS preparation](https://cdelivery.dev/zfs.md) on each server.
+
 ## 2. Inspect and prepare the target
 
 Read-only checks should establish:

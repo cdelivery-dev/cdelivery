@@ -56,11 +56,23 @@ pub(crate) async fn describe(
 
 pub(crate) async fn observe(
     docker: &super::docker::Docker,
-) -> Result<Option<concept::image::Reference>> {
+) -> Result<Option<(concept::image::Reference, bool)>> {
     docker
         .service_inspect(config::VOLUME_AGENT_SERVICE_NAME)
         .await?
-        .map(|service| service.spec.task_template.container_spec.image.parse())
+        .map(|service| {
+            let container = &service.spec.task_template.container_spec;
+            let enabled = container
+                .env
+                .iter()
+                .find_map(|value| {
+                    value.strip_prefix(&format!("{}=", cdelivery_wire::ZFS_ENABLED_ENV))
+                })
+                .ok_or_else(|| std::io::Error::other("Volume agent is missing its ZFS setting"))?
+                .parse::<bool>()
+                .map_err(std::io::Error::other)?;
+            Ok((container.image.parse()?, enabled))
+        })
         .transpose()
 }
 
@@ -68,6 +80,7 @@ async fn create_agent(
     docker: &super::docker::Docker,
     key: &cipher::MasterKey,
     image: &concept::image::Reference,
+    zfs_enabled: bool,
 ) -> Result<()> {
     let secret = key_secret(docker, key).await?;
     let mut spec = ServiceSpec {
@@ -77,7 +90,10 @@ async fn create_agent(
             container_spec: ContainerSpec {
                 image: image.to_string(),
                 stop_grace_period: Some(NanoDuration::from_secs(30)),
-                env: vec![format!("{}={{{{.Node.ID}}}}", cdelivery_wire::NODE_ID_ENV)],
+                env: vec![
+                    format!("{}={{{{.Node.ID}}}}", cdelivery_wire::NODE_ID_ENV),
+                    format!("{}={zfs_enabled}", cdelivery_wire::ZFS_ENABLED_ENV),
+                ],
                 secrets: vec![secret],
                 mounts: vec![
                     Mount {
@@ -86,6 +102,7 @@ async fn create_agent(
                         target: docker::DEFAULT_SOCKET_PATH.to_owned(),
                         read_only: true,
                         bind_options: None,
+                        volume_options: None,
                     },
                     Mount {
                         kind: MountType::Volume,
@@ -93,6 +110,7 @@ async fn create_agent(
                         target: cdelivery_wire::DISK_PATH.to_owned(),
                         read_only: true,
                         bind_options: None,
+                        volume_options: None,
                     },
                 ],
                 ..ContainerSpec::default()
@@ -125,14 +143,31 @@ pub(crate) async fn configure(
     docker: &super::docker::Docker,
     key: &cipher::MasterKey,
     image: Option<&concept::image::Reference>,
+    zfs_enabled: Option<bool>,
 ) -> Result<()> {
     let Some(mut service) = docker
         .service_inspect(config::VOLUME_AGENT_SERVICE_NAME)
         .await?
     else {
         let image = error::required(image, "version")?;
-        return create_agent(docker, key, image).await;
+        return create_agent(
+            docker,
+            key,
+            image,
+            error::required(zfs_enabled, "zfs_enabled")?,
+        )
+        .await;
     };
+    if let Some(enabled) = zfs_enabled
+        && !service
+            .spec
+            .task_template
+            .container_spec
+            .env
+            .contains(&format!("{}={enabled}", cdelivery_wire::ZFS_ENABLED_ENV))
+    {
+        return Err(ErrorKind::FieldUnsupported("zfs_enabled".to_owned()).into());
+    }
     let secrets = vec![key_secret(docker, key).await?];
     let container = &mut service.spec.task_template.container_spec;
     let mut changed = container.secrets != secrets;
@@ -216,11 +251,15 @@ pub(crate) async fn request<T: DeserializeOwned>(
     let request = cdelivery_wire::Request { node_id, command };
     let body = key.cipher_for(cipher::Domain::Volume).seal(&request)?;
     let response = reqwest::Client::builder()
+        .timeout(std::time::Duration::from_secs(180))
         .build()?
         .post(format!("http://{address}/"))
         .body(body)
         .send()
         .await?;
+    if response.status() == reqwest::StatusCode::LOCKED {
+        return Err(ErrorKind::Conflict.into());
+    }
     let conflict = response.status() == reqwest::StatusCode::CONFLICT;
     if conflict && matches!(&request.command, cdelivery_wire::Command::Create { .. }) {
         return Err(ErrorKind::VolumeExists.into());

@@ -16,6 +16,7 @@ struct Page {
     target_version: Option<String>,
     latest_unavailable: bool,
     can_manage: bool,
+    zfs_enabled: bool,
 }
 
 pub(super) fn routes() -> axum::Router<Arc<App>> {
@@ -52,7 +53,9 @@ async fn get(
             [concept::release::Component::CdeliveryAgent],
         ),
     );
-    let image = current?.image;
+    let current = current?;
+    let zfs_enabled = current.zfs_enabled.unwrap_or(true);
+    let image = current.image;
     let current_version = image.as_ref().map(|image| image.tag().clone());
     let latest_unavailable = latest.is_none();
     let target_version = super::target_version(current_version.as_deref(), latest)?;
@@ -63,6 +66,7 @@ async fn get(
             target_version,
             latest_unavailable,
             can_manage,
+            zfs_enabled,
         },
         StatusCode::OK,
     )

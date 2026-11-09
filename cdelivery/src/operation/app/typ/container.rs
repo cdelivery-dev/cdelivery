@@ -21,11 +21,24 @@ pub(crate) struct Mount {
     pub(crate) read_only: bool,
 }
 
-super::super::super::typ::mirror_struct! {
-    Mount(m: &Mount) <-> concept::app::Mount(c: &concept::app::Mount) {
-        target: m.target.clone() => c.target().clone(),
-        volume: m.volume.clone() => c.volume().clone(),
-        read_only: m.read_only => c.read_only(),
+impl From<&Mount> for concept::app::Mount {
+    fn from(mount: &Mount) -> Self {
+        Self::new(
+            mount.target.clone(),
+            mount.volume.clone(),
+            mount.read_only,
+            cdelivery_wire::Backend::Local,
+        )
+    }
+}
+
+impl From<&concept::app::Mount> for Mount {
+    fn from(mount: &concept::app::Mount) -> Self {
+        Self {
+            target: mount.target().clone(),
+            volume: mount.volume().clone(),
+            read_only: mount.read_only(),
+        }
     }
 }
 

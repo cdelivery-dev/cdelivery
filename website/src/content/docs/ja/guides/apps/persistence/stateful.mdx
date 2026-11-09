@@ -20,7 +20,7 @@ sidebar:
 
 </Steps>
 
-動的配置、自動拡縮、通常の XConfig アップロード、Guardian は使えません。PostgreSQL 18 テンプレートは `/var/lib/postgresql` をマウントし、`PGDATA` はイメージの既定値を使います。MariaDB 12 は `/var/lib/mysql` をマウントします。イメージや環境変数を変更した場合は、データの保存先と初期化のルールを再確認してください。
+動的配置、自動拡縮、通常の XConfig アップロードは使えません。Guardian には ZFS ボリュームが必要です。PostgreSQL 18 テンプレートは `/var/lib/postgresql` をマウントし、`PGDATA` はイメージの既定値を使います。MariaDB 12 は `/var/lib/mysql` をマウントします。イメージや環境変数を変更した場合は、データの保存先と初期化のルールを再確認してください。
 
 ローカルボリュームを使うアプリでも、認証情報ファイルとして読み取り専用のファイル [シークレット](/docs/ja/guides/apps/secrets/) をマウントできます。
 

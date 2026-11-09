@@ -20,7 +20,7 @@ Lokale Daten bedeuten ein Replikat auf einem festen, bei Erstellung gewählten S
 
 </Steps>
 
-Keine dynamische Platzierung, automatische Skalierung, gewöhnliche XConfig-Uploads oder Guardian in diesem Modus. Die PostgreSQL-18-Vorlage bindet `/var/lib/postgresql` ein und verwendet den `PGDATA`-Standard des Images. MariaDB 12 bindet `/var/lib/mysql` ein. Nach Änderungen am Image oder an den Umgebungsvariablen das Datenverzeichnis und die Initialisierungsregeln prüfen.
+Keine dynamische Platzierung, automatische Skalierung, gewöhnliche XConfig-Uploads in diesem Modus. Guardian erfordert ZFS-Volumes. Die PostgreSQL-18-Vorlage bindet `/var/lib/postgresql` ein und verwendet den `PGDATA`-Standard des Images. MariaDB 12 bindet `/var/lib/mysql` ein. Nach Änderungen am Image oder an den Umgebungsvariablen das Datenverzeichnis und die Initialisierungsregeln prüfen.
 
 Auch Anwendungen mit lokalen Volumes können Datei-Secrets aus [Secrets](/docs/de/guides/apps/secrets/) schreibgeschützt einbinden, um Zugangsdaten bereitzustellen.
 

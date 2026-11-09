@@ -11,7 +11,9 @@ Guardian validiert eine Kandidatenkonfiguration vor Übernahme in den laufenden 
 
 [XHealth](/docs/de/guides/release-safety/xhealth/) sinnvoll konfigurieren, Guardian aktivieren und Kapazität für Kandidat plus Bestand einplanen.
 
-Bei aktiviertem Guardian lösen Änderungen am Image, an Container-Laufzeitoptionen, an XConfig oder an der Gruppe eine Kandidatenvalidierung aus. Gruppenänderungen erfolgen über die API. Anwendungen mit lokalen Volumes unterstützen Guardian nicht.
+Bei aktiviertem Guardian lösen Änderungen am Image, an Laufzeitoptionen, Mounts, XConfig oder der Gruppe eine Kandidatenvalidierung aus. Gruppenänderungen erfolgen über die API. Zustandsbehaftete Apps werden unterstützt, wenn alle Mounts ZFS-Volumes auf dem festgelegten Server verwenden.
+
+Der Kandidat verwendet Klone neuer Snapshots. Seine Schreibvorgänge werden verworfen; die Veröffentlichung verwendet die ursprünglichen Volumes. Snapshots ersetzen keine anwendungskonsistenten Backups. Klone teilen den Speicher ohne Quoten; die Vorbereitung erfordert mindestens 10 % freien Pool-Speicher. Wiederholen erstellt die Kopien neu. Bestehenden Guardian abbrechen, bevor Reste auf der Volumes-Seite des Servers gelöscht werden.
 
 Auch eine geänderte Auswahl unter [Secrets](/docs/de/guides/apps/secrets/) wird mit der Anwendungskonfiguration geprüft. Kandidat und Prüfungen verwenden die Secrets aus dieser eingereichten Konfiguration.
 

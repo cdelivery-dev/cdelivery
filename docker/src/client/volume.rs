@@ -33,9 +33,19 @@ impl Volumes<'_> {
     }
 
     pub async fn create(&self, name: &str) -> Result<()> {
-        let body = serde_json::json!({"Name": name, "Driver": "local"}).to_string();
+        self.create_with_options(name, &HashMap::new()).await?;
+        Ok(())
+    }
+
+    pub async fn create_with_options(
+        &self,
+        name: &str,
+        options: &HashMap<String, String>,
+    ) -> Result<Volume> {
+        let body =
+            serde_json::json!({"Name": name, "Driver": "local", "DriverOpts": options}).to_string();
         self.0
-            .post_discard("/volumes/create", &[], Some(body), None)
+            .post_json("/volumes/create", &[], Some(body), None)
             .await
     }
 

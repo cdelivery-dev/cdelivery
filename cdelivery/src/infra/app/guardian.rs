@@ -4,7 +4,7 @@ use jiff::Timestamp;
 use serde::{Deserialize, Serialize};
 
 use crate::concept;
-use crate::error::{Error, ErrorKind, Result};
+use crate::error::{Error, ErrorKind, Result, SpecProblem};
 
 const LABEL_STATE: &str = "dev.cdelivery.guardian_state";
 const LABEL_CHECK_SHADOW_VERSION: &str = "dev.cdelivery.check_shadow_version";
@@ -34,6 +34,22 @@ fn shadow_spec(
     let mut spec = candidate_spec.clone();
     spec.name = shadow_name(app);
     spec.labels = super::unit::labels(app, super::unit::Kind::GuardianApp);
+    spec.task_template.container_spec.labels =
+        super::unit::labels(app, super::unit::Kind::GuardianApp);
+    for mount in &mut spec.task_template.container_spec.mounts {
+        if matches!(mount.kind, docker::types::MountType::Volume)
+            && let Some(name) = mount.source.strip_prefix(cdelivery_wire::VOLUME_PREFIX)
+        {
+            let dataset = format!("cdelivery/guardian/{app}/{name}");
+            mount.source = cdelivery_wire::guardian_volume(app.as_str(), name);
+            if let Some(options) = &mut mount.volume_options {
+                options
+                    .driver_config
+                    .options
+                    .insert("device".to_owned(), dataset);
+            }
+        }
+    }
     if let Some(scaling) = candidate_spec.labels.get(super::LABEL_SCALING) {
         spec.labels
             .insert(super::LABEL_SCALING.to_owned(), scaling.clone());
@@ -54,6 +70,7 @@ pub(crate) async fn create(
 ) -> Result<()> {
     let candidate_spec = super::build_spec(key, candidate)?;
     let sealed_state = seal_state(key, changes, initiator, None)?;
+    prepare(docker, key, candidate).await?;
     let spec = shadow_spec(candidate.name(), &candidate_spec, sealed_state);
     docker
         .service_create_unique(
@@ -62,6 +79,30 @@ pub(crate) async fn create(
             ErrorKind::GuardianPending,
         )
         .await
+}
+
+async fn prepare(
+    docker: &super::super::docker::Docker,
+    key: &MasterKey,
+    candidate: &concept::app::App,
+) -> Result<()> {
+    if let Some(mounts) = candidate.mounts() {
+        super::super::volume::request::<()>(
+            docker,
+            key,
+            mounts.node_id().clone(),
+            cdelivery_wire::Command::PrepareGuardian {
+                app: candidate.name().to_string(),
+                names: mounts
+                    .mounts()
+                    .iter()
+                    .map(|mount| mount.volume().clone())
+                    .collect(),
+            },
+        )
+        .await?;
+    }
+    Ok(())
 }
 
 pub(crate) async fn exists(
@@ -163,6 +204,17 @@ pub(crate) async fn redeploy(
     let current = find(docker, guardian.get().name())
         .await?
         .ok_or(ErrorKind::GuardianNotFound)?;
+    if current.version.index != guardian.version() {
+        return Err(ErrorKind::Conflict.into());
+    }
+    if candidate.mounts().is_some() {
+        super::runner::stop(docker, current, guardian.version()).await?;
+        delete_check(docker, guardian.get().name()).await?;
+        prepare(docker, key, candidate).await?;
+    }
+    let current = find(docker, guardian.get().name())
+        .await?
+        .ok_or(ErrorKind::GuardianNotFound)?;
     let candidate_spec = super::build_spec(key, candidate)?;
     let sealed_state = seal_guardian(key, guardian.get())?;
     let mut spec = shadow_spec(guardian.get().name(), &candidate_spec, sealed_state);
@@ -170,7 +222,7 @@ pub(crate) async fn redeploy(
     docker
         .service_update(
             &name,
-            guardian.version(),
+            current.version.index,
             &spec,
             Some(&super::registry_auth(candidate)),
         )
@@ -179,10 +231,38 @@ pub(crate) async fn redeploy(
 
 pub(crate) async fn delete(
     docker: &super::super::docker::Docker,
+    key: &MasterKey,
     app: &concept::name::Name,
 ) -> Result<()> {
+    let shadow = find(docker, app).await?;
     docker.service_delete(&check_name(app)).await?;
     docker.service_delete(&shadow_name(app)).await?;
+    if let Some(shadow) = shadow
+        && !shadow.spec.task_template.container_spec.mounts.is_empty()
+    {
+        let cleanup: Result<()> = async {
+            let concept::node::Selector::NodeId(node) = super::super::node::decode_selector(
+                shadow.spec.task_template.placement.as_ref(),
+                &shadow.spec.name,
+            )?
+            else {
+                return Err(SpecProblem::NotPinned(shadow.spec.name).into());
+            };
+            super::super::volume::request::<()>(
+                docker,
+                key,
+                node,
+                cdelivery_wire::Command::DeleteGuardian {
+                    app: app.to_string(),
+                },
+            )
+            .await
+        }
+        .await;
+        if let Err(error) = cleanup {
+            tracing::warn!(error = ?error, "Guardian storage cleanup failed for {app}; remove remnants from node Volumes");
+        }
+    }
     Ok(())
 }
 
@@ -219,7 +299,7 @@ fn check_spec(
         LABEL_CHECK_SHADOW_VERSION.to_owned(),
         shadow_version.to_string(),
     );
-    Ok(super::runner::Spec {
+    let mut spec = super::runner::Spec {
         name: check_name(app),
         labels,
         image,
@@ -230,7 +310,10 @@ fn check_spec(
         log_driver: super::encode_log_driver(candidate.log_driver()),
         replicas: 1,
     }
-    .build(candidate))
+    .build(candidate);
+    spec.task_template.container_spec.labels =
+        super::unit::labels(app, super::unit::Kind::GuardianCheck);
+    Ok(spec)
 }
 
 pub(crate) async fn run_check(

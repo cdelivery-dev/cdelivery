@@ -522,14 +522,14 @@ fr = "Une décision a déjà été prise pour cette mise à jour protégée"
 de = "Abgesichertes Update bereits entschieden"
 
 [error.GuardianStatefulUnsupported]
-en = "apps with mounts do not support guarded updates"
-zh-CN = "带挂载的应用不支持更新保护"
-zh-TW = "具有掛載的應用程式不支援更新保護"
-ja = "マウントを持つアプリでは Guardian による更新を利用できません。"
-pt-BR = "aplicações com montagens não permitem atualizações pelo Guardian"
-es = "las aplicaciones con montajes no admiten actualizaciones protegidas"
-fr = "Les applications avec des montages ne prennent pas en charge les mises à jour protégées"
-de = "Apps mit Mounts unterstützen keine abgesicherten Updates"
+en = "guarded updates for apps with mounts require ZFS Volumes"
+zh-CN = "带挂载的应用需要 ZFS 数据卷才能使用更新保护"
+zh-TW = "具有掛載的應用程式需要 ZFS 資料卷才能使用更新保護"
+ja = "マウントを持つアプリの Guardian 更新には ZFS ボリュームが必要です。"
+pt-BR = "atualizações pelo Guardian de aplicações com montagens exigem volumes ZFS"
+es = "las actualizaciones protegidas de aplicaciones con montajes requieren volúmenes ZFS"
+fr = "Les mises à jour protégées des applications avec des montages nécessitent des volumes ZFS"
+de = "Abgesicherte Updates für Apps mit Mounts erfordern ZFS-Volumes"
 
 [error.XJobNotFound]
 en = "scheduled job not found"

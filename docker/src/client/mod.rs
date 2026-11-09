@@ -200,6 +200,19 @@ impl Client {
         body: Option<String>,
         auth: Option<&RegistryAuth>,
     ) -> Result<Bytes> {
+        self.request_timeout(method, path, query, body, auth, DEFAULT_TIMEOUT)
+            .await
+    }
+
+    async fn request_timeout(
+        &self,
+        method: Method,
+        path: &str,
+        query: &[(&str, String)],
+        body: Option<String>,
+        auth: Option<&RegistryAuth>,
+        timeout: Duration,
+    ) -> Result<Bytes> {
         let full_path = if path == VERSION_PATH {
             path.to_owned()
         } else {
@@ -209,6 +222,7 @@ impl Client {
         let mut req = self
             .http
             .request(method, url)
+            .timeout(timeout)
             .header("Accept", "application/json")
             .header("User-Agent", USER_AGENT);
         if !query.is_empty() {

@@ -11,7 +11,9 @@ Guardian vérifie un candidat avant de promouvoir une nouvelle configuration.
 
 Configurez [XHealth](/docs/fr/guides/release-safety/xhealth/), activez Guardian pour une application compatible et prévoyez la capacité du candidat et de l’application active.
 
-Lorsque Guardian est activé, les changements d’image, d’options d’exécution du conteneur, de XConfig ou de groupe déclenchent la validation du candidat. Le groupe se modifie via l’API. Le mode volume local ne prend pas Guardian en charge.
+Lorsque Guardian est activé, les changements d’image, d’options d’exécution, de montages, de XConfig ou de groupe déclenchent la validation. Le groupe se modifie via l’API. Les applications avec état sont prises en charge si tous les montages utilisent ZFS sur le serveur fixé.
+
+Le candidat utilise des clones de nouveaux instantanés ; ses écritures sont abandonnées et la publication utilise les volumes d’origine. Les instantanés ne remplacent pas les sauvegardes cohérentes de l’application. Les clones partagent l’espace sans quota ; la préparation exige au moins 10 % d’espace libre dans le pool. Réessayer recrée les copies. Annuler le Guardian existant avant de supprimer les résidus dans la page Volumes du serveur.
 
 Modifier la sélection de [Secrets](/docs/fr/guides/apps/secrets/) déclenche aussi la validation de la configuration. Le candidat et ses vérifications utilisent les secrets sélectionnés dans cette soumission.
 

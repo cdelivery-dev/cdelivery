@@ -20,7 +20,7 @@ Le mode volume local impose un serveur fixe et une réplique, choisis à la cré
 
 </Steps>
 
-Ce mode n’utilise ni placement dynamique, ni adaptation automatique, ni les téléversements XConfig ordinaires, ni Guardian. Le modèle PostgreSQL 18 monte `/var/lib/postgresql` et conserve le `PGDATA` par défaut de l’image. MariaDB 12 monte `/var/lib/mysql`. Après toute modification de l’image ou des variables d’environnement, vérifiez le répertoire de données et les règles d’initialisation.
+Ce mode n’utilise ni placement dynamique, ni adaptation automatique, ni les téléversements XConfig ordinaires. Guardian nécessite des volumes ZFS. Le modèle PostgreSQL 18 monte `/var/lib/postgresql` et conserve le `PGDATA` par défaut de l’image. MariaDB 12 monte `/var/lib/mysql`. Après toute modification de l’image ou des variables d’environnement, vérifiez le répertoire de données et les règles d’initialisation.
 
 Les applications avec volumes locaux peuvent aussi monter des fichiers de [Secrets](/docs/fr/guides/apps/secrets/) en lecture seule pour fournir des identifiants.
 

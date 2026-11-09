@@ -35,7 +35,7 @@ pub(crate) struct CreateAppRequest {
     #[garde(dive)]
     #[serde(default)]
     pub(crate) xconfigs: Vec<super::xconfig::CreateXConfig>,
-    /// Pins the app to one node and one replica; only Secret `XConfig` mounts are allowed, with no placement or guarded updates. Cannot be added later.
+    /// Pins the app to one node and one replica with `StopFirst` updates and no placement; only Secret `XConfig` mounts are allowed. Guardian requires ZFS volumes. Cannot be added later.
     #[garde(dive)]
     #[serde(default)]
     pub(crate) mounts: Option<super::container::NodeMounts>,

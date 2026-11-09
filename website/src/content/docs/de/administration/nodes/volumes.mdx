@@ -5,24 +5,26 @@ sidebar:
   order: 55
 ---
 
-Volumes sind lokal; gleichnamige Volumes auf anderen Maschinen enthalten andere Daten.
+Volumes gehören zu einem Server. Derselbe Name auf einem anderen Server bezeichnet andere Daten.
 
-## Erstellen
+## ZFS vorbereiten (optional)
 
-Admin aktiviert cdelivery-agent. Servervolumes öffnen, gültigen Namen und optional Beschreibung bis 256 Zeichen anlegen. In [zustandsbehafteter Anwendung](/docs/de/guides/apps/persistence/stateful/) desselben Servers mounten und Datenerhalt testen.
+ZFS wird empfohlen. Die [ZFS-Installationsanleitung](https://cdelivery.dev/zfs.md) auf jedem Ubuntu/Debian-Server befolgen oder einem KI-Tool übergeben. Sie beschreibt Partitionsauswahl und Befehle ohne Rückfragen.
 
-## Anzeigen
+Der Modus gilt für neue Volumes. Vorhandene lokale und ZFS-Volumes bleiben nutzbar. Zum Wechsel deaktivieren und erneut aktivieren; Daten bleiben erhalten.
 
-Größenberechnung durchsucht Daten und kann dauern. Fehlende Größe ist nicht leer. Gesamt/frei beschreibt Host; reservierte Plattformvolumes sind keine gewöhnlichen Anwendungsvolumes.
+## Erstellen und verwenden
 
-## Löschen/Diagnose
+1. Als Admin Volumes aktivieren.
+2. Im Tab Volumes des Servers ein Volume erstellen. Die Beschreibung ist optional und auf 256 Zeichen begrenzt.
+3. Eine [zustandsbehaftete Anwendung](/docs/de/guides/apps/persistence/stateful/) auf demselben Server erstellen und das Volume im Datenverzeichnis einbinden. Datenerhalt nach einem Neustart prüfen.
 
-<Aside type="caution">
-Das Löschen eines Volumes entfernt seine lokalen Daten. Beim Löschen der Anwendung bleibt das Volume erhalten.
-</Aside>
+## Kapazität und Bereinigung
 
-Falls die Beschreibung nicht gespeichert wurde, aktualisiere die Liste und bearbeite die Beschreibung des erstellten Volumes.
+Kapazität und freier Speicher beziehen sich auf neue Volumes. Größenabfragen gewöhnlicher Volumes durchlaufen die Daten; ZFS verwendet native Statistiken. Eine unbekannte Größe bedeutet nicht leer.
 
-Referenzen und wiederherstellbare Sicherung prüfen. Belegt: Aufgabenende abwarten oder Verwendung klären. Komponente deaktivieren löscht keine Daten.
+**Das Löschen eines Volumes löscht seine Daten.** Beim Löschen der Anwendung oder Deaktivieren von Volumes bleiben sie erhalten. Vor dem Löschen Containerreferenzen lösen und Sicherungen prüfen.
 
-Ladefehler: Server und Agent prüfen. Volume fehlt: ID/Name; anderswo neu anlegen ist kein Restore. Siehe [Persistenz](/docs/de/guides/apps/persistence/).
+Unvollständige Zuordnungen und Guardian-Reste lassen sich hier löschen. Einen vorhandenen Guardian zuerst abbrechen und fehlgeschlagene Bereinigung erneut versuchen. Wurde nur die Beschreibung nicht gespeichert, Liste aktualisieren und bearbeiten.
+
+Bei Ladefehlern Server und Volume-Komponente prüfen. Fehlt ein Volume, Server und Namen prüfen. Migration und konsistente Sicherungen: [Persistenz](/docs/de/guides/apps/persistence/).

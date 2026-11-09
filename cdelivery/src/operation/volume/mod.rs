@@ -30,19 +30,18 @@ super::define!(
     "volume_get", "Get the Volume agent image; null means disabled.", Shared,
     super::Effect::Read, Standard, super::Media::Json;
     |app, _access, _input| {
-        Ok(typ::Settings {
-            image: usecase::volume::get(&app.docker).await?,
-        })
+        let settings = usecase::volume::get(&app.docker).await?;
+        Ok(typ::Settings { zfs_enabled: settings.as_ref().map(|(_, enabled)| *enabled), image: settings.map(|(image, _)| image) })
     }
 );
 
 super::define!(
     Enable, typ::Changes => super::Done,
-    "volume_enable", "Deploy or update the Volume agent; version is required for creation and omission preserves an existing image.", Admin,
+    "volume_enable", "Deploy or update the Volume agent. Creation requires version and zfs_enabled; updates preserve the storage mode.", Admin,
     super::Effect::Write { destructive: true, idempotent: true },
     Standard, super::Media::Json;
     |app, _access, input| {
-        usecase::volume::enable(&app.docker, &app.key, &app.releases, input.version.as_deref()).await?;
+        usecase::volume::enable(&app.docker, &app.key, &app.releases, input.version.as_deref(), input.zfs_enabled).await?;
         Ok(super::Done::new())
     }
 );
@@ -66,11 +65,15 @@ super::define!(
         let (report, mut descriptions) =
             usecase::volume::list(&app.docker, &app.key, input.id, input.query.sizes).await?;
         Ok(typ::Report {
-            volumes: report.volumes.into_iter().map(|(name, size_bytes)| typ::Volume {
+            volumes: report.volumes.into_iter().map(|(name, volume)| typ::Volume {
                 description: descriptions.remove(&name),
                 name,
-                size_bytes,
+                size_bytes: volume.size_bytes,
+                backend: volume.backend.map(Into::into),
+                ready: volume.ready,
             }).collect(),
+            guardians: report.guardians,
+            zfs_enabled: report.zfs_enabled,
             total_bytes: report.total_bytes,
             available_bytes: report.available_bytes,
         })
@@ -110,6 +113,17 @@ super::define!(
     Standard, super::Media::Json;
     |app, _access, input| {
         usecase::volume::delete(&app.docker, &app.key, input.id, input.name).await?;
+        Ok(super::Done::new())
+    }
+);
+
+super::define!(
+    DeleteGuardian, typ::GuardianTarget => super::Done,
+    "node_volume_delete_guardian", "Delete an app's leftover Guardian volumes, clones and snapshots on this node. Cancel any existing Guardian first. Deletion never forces resources in use.", Admin,
+    super::Effect::Write { destructive: true, idempotent: true },
+    Extended, super::Media::Json;
+    |app, _access, input| {
+        usecase::volume::delete_guardian(&app.docker, &app.key, input.id, &input.name.parse()?).await?;
         Ok(super::Done::new())
     }
 );

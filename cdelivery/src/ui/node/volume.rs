@@ -31,6 +31,29 @@ pub(super) fn routes() -> axum::Router<Arc<App>> {
         .route("/nodes/{id}/volumes/create", axum::routing::post(create))
         .route("/nodes/{id}/volumes/update", axum::routing::post(update))
         .route("/nodes/{id}/volumes/delete", axum::routing::post(delete))
+        .route(
+            "/nodes/{id}/volumes/delete-guardian",
+            axum::routing::post(delete_guardian),
+        )
+}
+
+async fn delete_guardian(
+    authorized: super::super::auth::Authorized<operation::volume::DeleteGuardian>,
+    State(app): State<Arc<App>>,
+    Path(id): Path<String>,
+    super::super::command::Payload(form): super::super::command::Payload<operation::input::Name>,
+) -> super::super::response::Result<Response> {
+    let destination = format!("/nodes/{id}/volumes");
+    authorized
+        .execute(
+            &app,
+            operation::volume::typ::GuardianTarget {
+                id,
+                name: form.name,
+            },
+        )
+        .await?;
+    Ok(super::super::router::redirect(&destination))
 }
 
 async fn get(

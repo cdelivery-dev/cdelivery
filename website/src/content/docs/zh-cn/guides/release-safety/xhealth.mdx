@@ -67,6 +67,6 @@ sh -c 'wget -q -O /dev/null "http://$TARGET_HOST:$TARGET_PORT/"'
 
 ## 与 Guardian 的关系
 
-验证检查稳定可靠后，可以在同一页面开启 Guardian，让相关配置更新先通过候选验证。本地数据应用不支持 Guardian。完整流程见[发布验证](/docs/zh-cn/guides/release-safety/guardian/)。
+验证检查稳定可靠后，可以在同一页面开启 Guardian，让相关配置更新先通过候选验证。本地数据应用需要全部挂载使用 ZFS 数据卷。完整流程见[发布验证](/docs/zh-cn/guides/release-safety/guardian/)。
 
 删除检查会停止后续周期性验证，并影响依赖它的发布保护。修改目标、域名或端口时，应同时核对检查仍能解析到正确目标。

@@ -802,7 +802,7 @@ fn initialize(environment: &Environment, credentials: &Credentials) -> Result<()
         key,
         "PUT",
         "/api/volume",
-        Some(&json!({"version":environment.images["cdelivery-agent"].version})),
+        Some(&json!({"version":environment.images["cdelivery-agent"].version,"zfs_enabled":false})),
     )?;
     let storage = if environment.profile == "single" {
         json!("Local")

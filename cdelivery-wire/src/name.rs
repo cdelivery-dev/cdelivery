@@ -16,3 +16,7 @@ pub fn platform(s: &str) -> bool {
 pub fn volume_reserved(s: &str) -> bool {
     matches!(s, AGENT_VOLUME | INSIGHT_VOLUME)
 }
+
+pub fn volume(s: &str) -> bool {
+    shape_ok(s) && !platform(s) && !volume_reserved(s)
+}

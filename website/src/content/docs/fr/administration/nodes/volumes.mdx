@@ -5,24 +5,26 @@ sidebar:
   order: 55
 ---
 
-Les volumes sont locaux ; un nom identique sur une autre machine désigne d’autres données.
+Un volume appartient à un serveur. Un nom identique sur un autre serveur désigne d’autres données.
 
-## Créer
+## Préparer ZFS (facultatif)
 
-Admin active cdelivery-agent. Ouvrez les volumes du serveur, créez un nom valide et une description facultative de 256 caractères maximum. Montez dans une [application avec état](/docs/fr/guides/apps/persistence/stateful/) sur la même machine, puis testez.
+ZFS est recommandé. Suivre le [guide d’installation ZFS](https://cdelivery.dev/zfs.md) sur chaque serveur Ubuntu/Debian ou le partager avec votre outil IA. Il décrit le choix de partition et les commandes sans interaction.
 
-## Inspecter
+Le mode s’applique aux nouveaux volumes. Les volumes locaux et ZFS existants restent utilisables. Pour changer de mode, désactiver puis réactiver Volumes ; les données sont conservées.
 
-Le calcul de taille parcourt les données et peut être long. Taille absente ne signifie pas vide. Total/disponible décrit le serveur. Les volumes réservés ne se gèrent pas comme volumes métier.
+## Créer et utiliser
 
-## Supprimer
+1. En tant qu’Admin, activer Volumes.
+2. Créer un volume dans l’onglet Volumes du serveur. La description est facultative, jusqu’à 256 caractères.
+3. Créer une [application avec état](/docs/fr/guides/apps/persistence/stateful/) sur le même serveur et monter le volume dans son répertoire de données. Vérifier la persistance après redémarrage.
 
-<Aside type="caution">
-Supprimer un volume efface ses données locales. Supprimer l’application conserve le volume.
-</Aside>
+## Capacité et nettoyage
 
-Si l’enregistrement de la description échoue, actualisez la liste et modifiez la description du volume créé.
+La capacité et l’espace disponible concernent les nouveaux volumes. Le calcul de taille des volumes ordinaires parcourt les données ; ZFS utilise ses statistiques natives. Une taille indisponible ne signifie pas vide.
 
-Vérifiez références et sauvegarde restaurable. Si occupé, attendez l’arrêt ou résolvez l’usage. Désactiver le composant ne supprime pas les données.
+**Supprimer un volume efface ses données.** Supprimer l’application ou désactiver Volumes les conserve. Libérer les références des conteneurs et vérifier les sauvegardes avant la suppression.
 
-Liste inaccessible : serveur/agent. Volume absent : ID/nom ; recréer ailleurs ne restaure rien. Réplication et cohérence des sauvegardes relèvent du stockage. Voir [persistance](/docs/fr/guides/apps/persistence/).
+Les correspondances incomplètes et les résidus de Guardian se suppriment ici. Annuler d’abord le Guardian, puis réessayer si le nettoyage échoue. Si seule la description n’a pas été enregistrée, actualiser la liste et la modifier.
+
+Si la liste échoue, vérifier le serveur et le composant de volumes. Si un volume manque, vérifier son serveur et son nom. Pour la migration et les sauvegardes cohérentes, voir [persistance](/docs/fr/guides/apps/persistence/).

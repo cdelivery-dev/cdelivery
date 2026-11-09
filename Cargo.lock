@@ -1038,10 +1038,14 @@ dependencies = [
  "docker",
  "logging",
  "macros",
+ "reqwest 0.13.5",
  "rustix",
+ "serde_json",
+ "shlex 2.0.1",
  "thiserror 2.0.21",
  "tokio",
  "tracing",
+ "uuid",
  "zeroize",
 ]
 

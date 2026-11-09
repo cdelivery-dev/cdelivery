@@ -11,7 +11,9 @@ Guardian adds candidate deployment and validation before a new configuration is 
 
 Prepare a meaningful [XHealth check](/docs/guides/release-safety/xhealth/), enable Guardian for a supported application, and review resources for the candidate as well as the current application.
 
-With Guardian enabled, changes to the image, container runtime options, XConfig, or group trigger candidate validation. Group changes are available through the API. Local-volume stateful applications do not support Guardian.
+With Guardian enabled, changes to the image, container runtime options, mounts, XConfig, or group trigger candidate validation. Group changes are available through the API. Stateful applications are supported when every mounted volume uses ZFS on the pinned server.
+
+Guardian creates fresh snapshot clones for the candidate. Candidate writes are discarded; promotion uses the original volumes. Snapshots are filesystem-consistent, not application-aware backups. Clones share pool capacity without quotas; preparation requires at least 10% available space. Retry rebuilds the copies. Cancel an existing Guardian before deleting leftover data from the server's Volumes page.
 
 After saving a change, follow the release phase on the application overview.
 

@@ -107,7 +107,7 @@ pub(crate) async fn default_log_driver(
 pub(crate) async fn create(
     docker: &infra::docker::Docker,
     key: &MasterKey,
-    desired: concept::app::Desired,
+    mut desired: concept::app::Desired,
     uploads: Vec<XConfigParams>,
     operator: concept::app::Operator,
     now: Timestamp,
@@ -116,6 +116,12 @@ pub(crate) async fn create(
         super::insight::require_collection(docker).await?;
     }
     ensure_group(docker, &desired.group).await?;
+    if let Some(mounts) = &mut desired.mounts {
+        *mounts = concept::app::NodeMounts::new(
+            mounts.node_id().clone(),
+            super::volume::resolve_mounts(docker, key, mounts.node_id(), mounts.mounts()).await?,
+        );
+    }
     let mut app = concept::app::App::new(desired, operator, now)?;
     infra::app::check_image(docker, &app).await?;
     validate_text_secrets(docker, &app).await?;
@@ -173,10 +179,11 @@ pub(crate) async fn update(
     docker: &infra::docker::Docker,
     key: &MasterKey,
     name: &concept::name::Name,
-    changes: concept::app::Changes,
+    mut changes: concept::app::Changes,
     xconfigs: Option<Vec<XConfigParams>>,
     operator: concept::app::Operator,
 ) -> Result<concept::app::UpdateOutcome> {
+    let _guard = super::guardian::acquire(name)?;
     let mut app =
         super::require(infra::app::load(docker, key, name), ErrorKind::AppNotFound).await?;
     let name = app.get().name().clone();
@@ -195,6 +202,15 @@ pub(crate) async fn update(
     }
     let domains_touched = changes.domains().is_some();
     let env_touched = changes.container_options().is_some();
+    if let Some(mounts) = changes.mounts() {
+        let node = app
+            .get()
+            .mounts()
+            .as_ref()
+            .ok_or(ErrorKind::MountsRequireStateful)?
+            .node_id();
+        changes.replace_mounts(super::volume::resolve_mounts(docker, key, node, mounts).await?);
+    }
     changes.apply(app.get_mut())?;
     if env_touched {
         validate_text_secrets(docker, app.get()).await?;
@@ -237,9 +253,7 @@ pub(crate) async fn update(
         spec.validate_app(app.get())?;
     }
     if guardian_relevant && health.is_some_and(|spec| spec.guardian()) {
-        if app.get().mounts().is_some() {
-            return Err(ErrorKind::GuardianStatefulUnsupported.into());
-        }
+        super::volume::require_guardian(docker, app.get()).await?;
         infra::app::guardian::create(docker, key, app.get(), &delta, operator).await?;
         infra::event::emit(Kind::GuardianSubmitted, name.as_str(), &note);
         return Ok(concept::app::UpdateOutcome::Guarded);
@@ -258,9 +272,11 @@ pub(crate) async fn update(
 
 pub(crate) async fn delete(
     docker: &infra::docker::Docker,
+    key: &MasterKey,
     name: &concept::name::Name,
 ) -> Result<()> {
-    infra::app::guardian::delete(docker, name).await?;
+    let _guard = super::guardian::acquire(name)?;
+    infra::app::guardian::delete(docker, key, name).await?;
     infra::app::xhealth::delete(docker, name).await?;
     infra::app::xjob::delete_all(docker, name).await?;
     if infra::app::delete(docker, name).await? {
@@ -290,6 +306,10 @@ pub(crate) async fn rollback(
         }
     }
     super::guardian::cancel(docker, key, name, now).await?;
+    let _guard = super::guardian::acquire(name)?;
+    if infra::app::guardian::exists(docker, name).await? {
+        return Err(ErrorKind::GuardianPending.into());
+    }
     infra::app::rollback(docker, name, app.version()).await?;
     let app = get(docker, key, name).await?;
     infra::event::emit(
@@ -304,6 +324,7 @@ pub(crate) async fn restart(
     docker: &infra::docker::Docker,
     name: &concept::name::Name,
 ) -> Result<()> {
+    let _guard = super::guardian::acquire(name)?;
     infra::app::restart(docker, name).await?;
     infra::event::emit(Kind::AppRestarted, name.as_str(), "");
     Ok(())

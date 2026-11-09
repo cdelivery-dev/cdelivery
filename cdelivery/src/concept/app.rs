@@ -31,6 +31,8 @@ pub(crate) struct Mount {
     volume: String,
     #[getset(get_copy = "pub(crate)")]
     read_only: bool,
+    #[getset(get_copy = "pub(crate)")]
+    backend: cdelivery_wire::Backend,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Getters, macros_derive::Ctor)]
@@ -317,12 +319,17 @@ pub(crate) struct Changes {
 }
 
 impl Changes {
+    pub(crate) fn replace_mounts(&mut self, mounts: Vec<Mount>) {
+        self.mounts = Some(mounts);
+    }
+
     pub(crate) fn replace_xconfigs(&mut self, xconfigs: Vec<XConfig>) {
         self.xconfigs = Some(xconfigs);
     }
 
     pub(crate) fn guardian_relevant(&self) -> bool {
         self.group.is_some()
+            || self.mounts.is_some()
             || self.image.is_some()
             || self.container_options.is_some()
             || self.xconfigs.is_some()
@@ -331,7 +338,6 @@ impl Changes {
 
     pub(crate) fn runtime_changed(&self) -> bool {
         self.guardian_relevant()
-            || self.mounts.is_some()
             || self.resources.is_some()
             || self.placement.is_some()
             || self.log_driver.is_some()
@@ -600,6 +606,9 @@ impl App {
     pub(crate) fn validate(&self) -> Result<()> {
         if self.mounts.is_some() && (self.scaling.is_some() || self.replicas != 1) {
             return Err(ErrorKind::StatefulReplicasPinned.into());
+        }
+        if self.mounts.is_some() && self.update_config.order() != UpdateOrder::StopFirst {
+            return Err(ErrorKind::FieldUnsupported("update_config.order".to_owned()).into());
         }
         if let Some(scaling) = self.scaling {
             Dynamic::new(scaling.min, scaling.max)?;

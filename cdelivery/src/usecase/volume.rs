@@ -8,7 +8,7 @@ use crate::{concept, infra};
 
 pub(crate) async fn get(
     docker: &infra::docker::Docker,
-) -> Result<Option<concept::image::Reference>> {
+) -> Result<Option<(concept::image::Reference, bool)>> {
     infra::volume::observe(docker).await
 }
 
@@ -17,6 +17,7 @@ pub(crate) async fn enable(
     key: &MasterKey,
     releases: &infra::release::Catalog,
     version: Option<&str>,
+    zfs_enabled: Option<bool>,
 ) -> Result<()> {
     let image = version
         .map(|version| {
@@ -28,11 +29,76 @@ pub(crate) async fn enable(
             )
         })
         .transpose()?;
-    infra::volume::configure(docker, key, image.as_ref()).await
+    infra::volume::configure(docker, key, image.as_ref(), zfs_enabled).await
 }
 
 pub(crate) async fn disable(docker: &infra::docker::Docker) -> Result<()> {
     infra::volume::delete_agent(docker).await
+}
+
+pub(crate) async fn resolve_mounts(
+    docker: &infra::docker::Docker,
+    key: &MasterKey,
+    node: &str,
+    mounts: &[concept::app::Mount],
+) -> Result<Vec<concept::app::Mount>> {
+    let report: cdelivery_wire::Report =
+        infra::volume::request(docker, key, node.to_owned(), Command::List { sizes: false })
+            .await?;
+    mounts
+        .iter()
+        .map(|mount| {
+            let backend = report
+                .volumes
+                .get(mount.volume())
+                .filter(|volume| volume.ready)
+                .and_then(|volume| volume.backend)
+                .ok_or(ErrorKind::VolumeNotFound)?;
+            Ok(concept::app::Mount::new(
+                mount.target().clone(),
+                mount.volume().clone(),
+                mount.read_only(),
+                backend,
+            ))
+        })
+        .collect()
+}
+
+pub(crate) async fn require_guardian(
+    docker: &infra::docker::Docker,
+    app: &concept::app::App,
+) -> Result<()> {
+    if let Some(mounts) = app.mounts()
+        && (!get(docker).await?.is_some_and(|(_, enabled)| enabled)
+            || mounts
+                .mounts()
+                .iter()
+                .any(|mount| mount.backend() != cdelivery_wire::Backend::Zfs))
+    {
+        return Err(ErrorKind::GuardianStatefulUnsupported.into());
+    }
+    Ok(())
+}
+
+pub(crate) async fn delete_guardian(
+    docker: &infra::docker::Docker,
+    key: &MasterKey,
+    id: String,
+    name: &concept::name::Name,
+) -> Result<()> {
+    let _guard = super::guardian::acquire(name)?;
+    if infra::app::guardian::exists(docker, name).await? {
+        return Err(ErrorKind::GuardianPending.into());
+    }
+    infra::volume::request::<()>(
+        docker,
+        key,
+        id,
+        Command::DeleteGuardian {
+            app: name.to_string(),
+        },
+    )
+    .await
 }
 
 pub(crate) async fn list(
@@ -79,7 +145,7 @@ pub(crate) async fn update(
 ) -> Result<()> {
     let report: cdelivery_wire::Report =
         infra::volume::request(docker, key, id.clone(), Command::List { sizes: false }).await?;
-    if !report.volumes.contains_key(&name) {
+    if !report.volumes.get(&name).is_some_and(|volume| volume.ready) {
         return Err(ErrorKind::VolumeNotFound.into());
     }
     if let Some(description) = description {

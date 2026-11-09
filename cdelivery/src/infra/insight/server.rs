@@ -168,6 +168,7 @@ fn build_spec(
                     source: config::INSIGHT_VOLUME.to_owned(),
                     read_only: false,
                     bind_options: None,
+                    volume_options: None,
                 }],
                 secrets: vec![ServiceSecret {
                     file: ServiceFileTarget {

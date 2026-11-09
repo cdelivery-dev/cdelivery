@@ -5,24 +5,26 @@ sidebar:
   order: 55
 ---
 
-Los volúmenes pertenecen a un servidor; nombres iguales en máquinas distintas no comparten datos.
+Los volúmenes pertenecen a un servidor. El mismo nombre en otro servidor corresponde a datos distintos.
 
-## Crear
+## Preparar ZFS (opcional)
 
-Admin habilita gestión de volúmenes mediante cdelivery-agent. Abre volúmenes del servidor, crea nombre válido y descripción opcional de hasta 256 caracteres. Monta en una [aplicación con estado](/docs/es/guides/apps/persistence/stateful/) del mismo servidor y comprueba persistencia.
+Se recomienda ZFS. Sigue la [guía de instalación de ZFS](https://cdelivery.dev/zfs.md) en cada servidor Ubuntu/Debian o compártela con tu herramienta de IA. Incluye selección de partición y comandos sin interacción.
 
-## Capacidad
+El modo se aplica a los volúmenes nuevos. Los volúmenes locales y ZFS existentes siguen disponibles. Para cambiarlo, desactiva y reactiva Volúmenes; los datos se conservan.
 
-Consultar tamaño recorre datos y puede tardar; tamaño ausente no significa vacío. Espacio total/disponible describe el host. Volúmenes reservados de plataforma no se gestionan como datos ordinarios.
+## Crear y usar
 
-## Eliminar y diagnosticar
+1. Como Admin, activa Volúmenes.
+2. Crea un volumen en la pestaña Volúmenes del servidor. La descripción es opcional, hasta 256 caracteres.
+3. Crea una [aplicación con estado](/docs/es/guides/apps/persistence/stateful/) en el mismo servidor y monta el volumen en su directorio de datos. Comprueba la persistencia tras reiniciar.
 
-<Aside type="caution">
-Eliminar un volumen borra sus datos locales. Eliminar la aplicación conserva el volumen.
-</Aside>
+## Capacidad y limpieza
 
-Si falla el guardado de la descripción, actualiza la lista y edita la descripción del volumen creado.
+La capacidad y el espacio disponible corresponden al almacenamiento para nuevos volúmenes. Consultar el tamaño de volúmenes normales recorre los datos; ZFS usa estadísticas nativas. Un tamaño no disponible no significa vacío.
 
-Comprueba usuarios del volumen y copia recuperable. Si sigue ocupado, espera salida de contenedores o resuelve referencias. Desactivar componente no borra datos.
+**Eliminar un volumen borra sus datos.** Eliminar la aplicación o desactivar Volúmenes los conserva. Libera referencias de contenedores y comprueba las copias de seguridad antes de eliminarlo.
 
-Si falla lista, revisa servidor y componente. Si falta volumen, comprueba ID y nombre: crear uno homónimo en otra máquina no recupera nada. Replicación y copias consistentes corresponden al almacenamiento. Consulta [persistencia](/docs/es/guides/apps/persistence/).
+Las asignaciones incompletas y los residuos de Guardian se eliminan aquí. Cancela primero el Guardian y reintenta si falla la limpieza. Si solo falla el guardado de la descripción, actualiza la lista y edítala.
+
+Si falla la lista, revisa el servidor y el componente de volúmenes. Si falta un volumen, comprueba servidor y nombre. Para migración y copias consistentes, consulta [persistencia](/docs/es/guides/apps/persistence/).

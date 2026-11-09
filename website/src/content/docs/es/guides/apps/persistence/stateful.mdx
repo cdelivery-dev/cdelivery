@@ -20,7 +20,7 @@ El modo con datos locales fija una réplica a un servidor y se selecciona durant
 
 </Steps>
 
-Este modo no utiliza ubicación dinámica, escalado automático, cargas XConfig normales ni Guardian. La plantilla de PostgreSQL 18 monta `/var/lib/postgresql` y conserva el `PGDATA` predeterminado de la imagen. MariaDB 12 monta `/var/lib/mysql`. Al cambiar la imagen o las variables de entorno, comprueba el directorio de datos y las reglas de inicialización.
+Este modo no utiliza ubicación dinámica, escalado automático, cargas XConfig normales. Guardian requiere volúmenes ZFS. La plantilla de PostgreSQL 18 monta `/var/lib/postgresql` y conserva el `PGDATA` predeterminado de la imagen. MariaDB 12 monta `/var/lib/mysql`. Al cambiar la imagen o las variables de entorno, comprueba el directorio de datos y las reglas de inicialización.
 
 Las aplicaciones con volúmenes locales también pueden montar archivos de [Secretos](/docs/es/guides/apps/secrets/) de solo lectura para proporcionar credenciales.
 

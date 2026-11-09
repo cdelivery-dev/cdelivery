@@ -21,7 +21,7 @@ pub(crate) async fn restore(context: &Context) -> Result<()> {
         .api(
             "PUT",
             "/api/volume",
-            Some(json!({"version":context.environment.images["cdelivery-agent"].version})),
+            Some(json!({"version":context.environment.images["cdelivery-agent"].version,"zfs_enabled":saved["volume"]["zfs_enabled"]})),
         )
         .await?;
     let response = context.request("GET", "/api/pingress")?.send().await?;

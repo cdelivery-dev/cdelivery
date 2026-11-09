@@ -5,7 +5,7 @@ sidebar:
   order: 15
 ---
 
-Choose stateful mode during creation when an application needs a local data volume. This mode fixes one replica to one server. It does not use dynamic placement, automatic scaling, ordinary XConfig uploads, or Guardian.
+Choose stateful mode during creation when an application needs a local data volume. This mode fixes one replica to one server. It does not use dynamic placement, automatic scaling, ordinary XConfig uploads. Guardian requires ZFS volumes.
 
 Local-volume applications can still mount read-only File secrets from [Secrets](/docs/guides/apps/secrets/) to provide credential files.
 

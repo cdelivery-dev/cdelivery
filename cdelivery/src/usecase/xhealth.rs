@@ -25,8 +25,8 @@ async fn gate(
     if infra::app::guardian::exists(docker, name).await? {
         return Err(ErrorKind::GuardianPending.into());
     }
-    if guardian && app.mounts().is_some() {
-        return Err(ErrorKind::GuardianStatefulUnsupported.into());
+    if guardian {
+        super::volume::require_guardian(docker, &app).await?;
     }
     Ok(app)
 }

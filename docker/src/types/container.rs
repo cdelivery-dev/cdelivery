@@ -17,7 +17,20 @@ pub struct Container {
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct ContainerDetail {
+    #[serde(rename = "Id")]
+    pub id: String,
+    pub image: String,
+    pub config: ContainerConfig,
     pub state: ContainerState,
+}
+
+#[serde_as]
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct ContainerConfig {
+    #[serde_as(deserialize_as = "DefaultOnNull")]
+    #[serde(default)]
+    pub labels: HashMap<String, String>,
 }
 
 #[derive(Debug, Deserialize)]

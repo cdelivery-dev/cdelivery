@@ -112,6 +112,7 @@ fn bind(source: &str, target: &str, read_only: bool, bind_options: Option<BindOp
         source: source.to_owned(),
         read_only,
         bind_options,
+        volume_options: None,
     }
 }
 

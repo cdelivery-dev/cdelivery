@@ -142,7 +142,7 @@ super::define!(
     Update, UpdateInput => Updated,
     "app_update", "Patch an app; omitted fields stay unchanged, nullable fields clear with null. Guarded updates return Guarded instead of Applied; while one is pending, further updates fail. Platform routes override app routes on the same hostname, leaving those app routes configured but unreachable.", Operator,
     super::Effect::Write { destructive: true, idempotent: false },
-    Standard, super::Media::Json;
+    Extended, super::Media::Json;
     |app, access, input, now| {
         let name: concept::name::Name = input.name.parse()?;
         let changes = concept::app::Changes::try_from(&input.changes)?;
@@ -181,9 +181,9 @@ super::define!(
     Delete, super::input::Name => super::Done,
     "app_delete", "Delete an app and its runtime resources.", Operator,
     super::Effect::Write { destructive: true, idempotent: true },
-    Standard, super::Media::Json;
+    Extended, super::Media::Json;
     |app, _access, input| {
-        usecase::app::delete(&app.docker, &input.name.parse()?).await?;
+        usecase::app::delete(&app.docker, &app.key, &input.name.parse()?).await?;
         Ok(super::Done::new())
     }
 );
@@ -192,7 +192,7 @@ super::define!(
     Rollback, super::input::Name => typ::view::AppSpec,
     "app_rollback", "Roll an app back to its previous spec.", Operator,
     super::Effect::Write { destructive: true, idempotent: true },
-    Standard, super::Media::Json;
+    Extended, super::Media::Json;
     |app, _access, input, now| {
         let spec = usecase::app::rollback(&app.docker, &app.key, &input.name.parse()?, now).await?;
         view(app, spec).await

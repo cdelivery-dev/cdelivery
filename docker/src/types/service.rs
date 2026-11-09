@@ -101,6 +101,20 @@ pub struct Mount {
     #[serde(default)]
     pub read_only: bool,
     pub bind_options: Option<BindOptions>,
+    pub volume_options: Option<VolumeOptions>,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct VolumeOptions {
+    pub driver_config: VolumeDriver,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct VolumeDriver {
+    pub name: String,
+    pub options: HashMap<String, String>,
 }
 
 #[skip_serializing_none]

@@ -11,7 +11,9 @@ Guardian despliega y comprueba un candidato antes de promover cambios compatible
 
 Configura una [comprobación XHealth](/docs/es/guides/release-safety/xhealth/) significativa, habilita Guardian y reserva capacidad para candidato y aplicación actual.
 
-Con Guardian habilitado, los cambios de imagen, opciones de ejecución del contenedor, XConfig o grupo inician la validación del candidato. El grupo se cambia mediante la API. Las aplicaciones con volúmenes locales no admiten Guardian.
+Con Guardian habilitado, los cambios de imagen, opciones de ejecución, montajes, XConfig o grupo inician la validación. El grupo se cambia mediante la API. Se admiten aplicaciones con estado si todos los montajes usan volúmenes ZFS en el servidor fijado.
+
+El candidato usa clones de instantáneas nuevas; sus escrituras se descartan y la publicación usa los volúmenes originales. Las instantáneas no sustituyen las copias coherentes de la aplicación. Los clones comparten espacio sin cuotas; la preparación exige al menos un 10% libre en el pool. Reintentar recrea las copias. Cancela el Guardian existente antes de eliminar residuos en la página Volúmenes del servidor.
 
 Cambiar la selección de [Secretos](/docs/es/guides/apps/secrets/) también pasa por la validación de la configuración. El candidato y sus comprobaciones usan los secretos seleccionados en ese envío.
 

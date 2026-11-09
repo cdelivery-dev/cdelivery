@@ -13,18 +13,24 @@
 <p>{{ tt!("ui.volume.disabled") }}</p>
 {% endif %}
 {% if current_version.is_some() || can_manage %}
-<div x-data="{ submitting: false, version: '' }" x-init="version = $refs.version.value">
+<div x-data="{ submitting: false, version: '', zfsEnabled: {{ zfs_enabled }} }" x-init="version = $refs.version.value">
 <form
   id="volume-enable-form"
   method="post"
   action="/volume/enable"
-  @submit="if (submitting || !version) { $event.preventDefault(); return } $refs.payload.value = JSON.stringify({ version }); submitting = true"
+  @submit="if (submitting || !version) { $event.preventDefault(); return } $refs.payload.value = JSON.stringify({ version, zfs_enabled: zfsEnabled }); submitting = true"
 >
   <input x-ref="payload" type="hidden" name="payload" />
   <div class="fields">
     {% call versions::field("volume-version", tt!("ui.version.label"), current_version, target_version, latest_unavailable, can_manage, "submitting") %}
       x-ref="version" x-model="version"
     {% endcall %}
+  </div>
+  <label><input type="checkbox" x-model="zfsEnabled" {% if current_version.is_some() || !can_manage %}disabled{% endif %} /> {{ tt!("ui.volume.zfs") }}</label>
+  <div x-show="zfsEnabled">
+    <p><small>{{ tt!("ui.volume.zfsPrepare") }}</small></p>
+    <pre translate="no"><code>curl -fsSL https://cdelivery.dev/install.sh | sh -s -- --zfs</code></pre>
+    <p><small><a href="https://cdelivery.dev/zfs.md" target="_blank" rel="noopener noreferrer">{{ tt!("ui.volume.zfsGuide") }}</a></small></p>
   </div>
   {% if can_manage %}
   <div class="actions mt-2">

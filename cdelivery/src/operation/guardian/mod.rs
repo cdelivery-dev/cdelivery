@@ -13,7 +13,7 @@ super::define!(
     Retry, super::input::Name => super::Done,
     "guardian_retry", "Retry the failed guarded update check.", Operator,
     super::Effect::Write { destructive: true, idempotent: false },
-    Standard, super::Media::Json;
+    Extended, super::Media::Json;
     |app, _access, input| {
         crate::usecase::guardian::retry(&app.docker, &app.key, &input.name.parse()?).await?;
         Ok(super::Done::new())
@@ -35,7 +35,7 @@ super::define!(
     Cancel, super::input::Name => super::Done,
     "guardian_cancel", "Cancel a guarded update and discard its changes.", Operator,
     super::Effect::Write { destructive: true, idempotent: true },
-    Standard, super::Media::Json;
+    Extended, super::Media::Json;
     |app, _access, input, now| {
         crate::usecase::guardian::cancel(&app.docker, &app.key, &input.name.parse()?, now).await?;
         Ok(super::Done::new())

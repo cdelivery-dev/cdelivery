@@ -509,6 +509,18 @@ fn encode_mounts(mounts: &concept::app::NodeMounts) -> Vec<docker::types::Mount>
             source: format!("{}{}", cdelivery_wire::VOLUME_PREFIX, m.volume()),
             read_only: m.read_only(),
             bind_options: None,
+            volume_options: match m.backend() {
+                cdelivery_wire::Backend::Local => None,
+                cdelivery_wire::Backend::Zfs => Some(docker::types::VolumeOptions {
+                    driver_config: docker::types::VolumeDriver {
+                        name: "local".to_owned(),
+                        options: cdelivery_wire::zfs_options(&format!(
+                            "cdelivery/volumes/{}",
+                            m.volume()
+                        )),
+                    },
+                }),
+            },
         })
         .collect()
 }
@@ -529,10 +541,24 @@ fn decode_mounts(spec: &ServiceSpec) -> Result<Option<concept::app::NodeMounts>>
                         && name.parse::<concept::name::Name>().is_ok()
                 })
                 .ok_or_else(|| SpecProblem::UnsupportedMount(spec.name.clone()))?;
+            let backend = match &m.volume_options {
+                None => cdelivery_wire::Backend::Local,
+                Some(options)
+                    if options.driver_config.name == "local"
+                        && options.driver_config.options
+                            == cdelivery_wire::zfs_options(&format!(
+                                "cdelivery/volumes/{volume}"
+                            )) =>
+                {
+                    cdelivery_wire::Backend::Zfs
+                }
+                Some(_) => return Err(SpecProblem::UnsupportedMount(spec.name.clone()).into()),
+            };
             Ok(concept::app::Mount::new(
                 m.target.clone(),
                 volume.to_owned(),
                 m.read_only,
+                backend,
             ))
         })
         .collect::<Result<Vec<_>>>()?;

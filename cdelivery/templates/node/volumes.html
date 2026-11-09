@@ -44,21 +44,46 @@
     <tbody>
       {% for volume in report.volumes %}
       <tr>
-        <th scope="row" translate="no">{{ volume.name }}</th>
-        <td>{% if let Some(description) = volume.description %}{{ description }}{% endif %}</td>
+        <th scope="row"><span translate="no">{{ volume.name }}</span>
+          {% match volume.backend %}{% when Some(crate::operation::volume::typ::Backend::Zfs) %}<small>ZFS</small>{% when Some(crate::operation::volume::typ::Backend::Local) %}<small>{{ tt!("ui.volume.local") }}</small>{% when None %}{% endmatch %}
+        </th>
+        <td>{% if !volume.ready %}{{ tt!("ui.volume.residual") }}{% else if let Some(description) = volume.description %}{{ description }}{% endif %}</td>
         <td>{% match volume.size_bytes %}{% when Some(bytes) %}{{ crate::ui::bytes_text(**bytes) }}{% when None %}{{ tt!("ui.volume.sizeUnavailable") }}{% endmatch %}</td>
         {% if can_write %}
         <td>
+          {% if volume.ready %}
           <button class="row-action" type="button"
             data-name="{{ volume.name }}"
             data-description="{% if let Some(description) = volume.description %}{{ description }}{% endif %}"
             data-confirm='{{ tt!("ui.volume.deleteConfirm", name = volume.name) }}'
             @click="openVolume($el)" :disabled="submitting">{{ tt!("ui.common.edit") }}</button>
+          {% else %}
+          <form method="post" action="/nodes/{{ id }}/volumes/delete" data-confirm='{{ tt!("ui.volume.deleteConfirm", name = volume.name) }}'
+            @submit="if (submitting || !confirm($el.dataset.confirm)) { $event.preventDefault(); return } submitting = true">
+            <input type="hidden" name="payload" value='{"name":"{{ volume.name }}"}' />
+            <button class="row-action" type="submit" :disabled="submitting">{{ tt!("ui.common.delete") }}</button>
+          </form>
+          {% endif %}
         </td>
         {% endif %}
       </tr>
       {% else %}
+      {% if report.guardians.is_empty() %}
       <tr><td colspan="{% if can_write %}4{% else %}3{% endif %}"><span class="muted">{{ tt!("ui.volume.empty") }}</span></td></tr>
+      {% endif %}
+      {% endfor %}
+      {% for name in report.guardians %}
+      <tr>
+        <th scope="row" translate="no">Guardian / {{ name }}</th>
+        <td>{{ tt!("ui.volume.guardianData") }}</td><td></td>
+        {% if can_write %}
+        <td><form method="post" action="/nodes/{{ id }}/volumes/delete-guardian" data-confirm='{{ tt!("ui.volume.deleteConfirm", name = name) }}'
+          @submit="if (submitting || !confirm($el.dataset.confirm)) { $event.preventDefault(); return } submitting = true">
+          <input type="hidden" name="payload" value='{"name":"{{ name }}"}' />
+          <button class="row-action" type="submit" :disabled="submitting">{{ tt!("ui.common.delete") }}</button>
+        </form></td>
+        {% endif %}
+      </tr>
       {% endfor %}
     </tbody>
   </table>

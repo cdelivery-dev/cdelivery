@@ -26,6 +26,9 @@ pub(crate) enum ErrorKind {
 
     #[error("data is too large: {size} bytes, maximum is {max}")]
     DataTooLarge { size: usize, max: usize },
+
+    #[error("invalid Docker log frame")]
+    LogFrame,
 }
 
 located_error! {

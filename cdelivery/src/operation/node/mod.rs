@@ -77,6 +77,7 @@ super::define!(
             invitation,
             expires_at,
             join_url: format!("http://{address}"),
+            zfs_enabled: usecase::volume::get(&app.docker).await?.is_some_and(|(_, enabled)| enabled),
         })
     }
 );

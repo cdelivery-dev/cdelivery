@@ -5,24 +5,26 @@ sidebar:
   order: 55
 ---
 
-Volumes são locais; nomes iguais em máquinas diferentes não identificam os mesmos dados.
+Volumes pertencem a um servidor. O mesmo nome em outro servidor representa dados diferentes.
 
-## Criar
+## Preparar ZFS (opcional)
 
-Admin habilita cdelivery-agent para gestão. Abra volumes do servidor, crie nome válido e descrição opcional de até 256 caracteres. Monte numa [aplicação com estado](/docs/pt-br/guides/apps/persistence/stateful/) do mesmo servidor e teste persistência.
+ZFS é recomendado. Siga o [guia de instalação do ZFS](https://cdelivery.dev/zfs.md) em cada servidor Ubuntu/Debian ou compartilhe-o com sua ferramenta de IA. Ele cobre a escolha da partição e os comandos sem interação.
 
-## Inspecionar
+O modo vale para novos volumes. Volumes locais e ZFS existentes continuam disponíveis. Para trocar o modo, desative e reative Volumes; os dados são mantidos.
 
-Consultar tamanho percorre arquivos e pode demorar. Ausência de tamanho não significa vazio. Total/disponível pertence ao host; volumes reservados não são dados ordinários gerenciáveis.
+## Criar e usar
 
-## Excluir e diagnosticar
+1. Como Admin, ative Volumes.
+2. Crie um volume na aba Volumes do servidor. A descrição é opcional, com até 256 caracteres.
+3. Crie uma [aplicação com estado](/docs/pt-br/guides/apps/persistence/stateful/) no mesmo servidor e monte o volume no diretório de dados. Verifique a persistência após reiniciar.
 
-<Aside type="caution">
-Excluir um volume remove seus dados locais. Excluir a aplicação mantém o volume.
-</Aside>
+## Capacidade e limpeza
 
-Se a descrição não for salva, atualize a lista e edite a descrição do volume criado.
+Capacidade e espaço disponível indicam o armazenamento dos novos volumes. O tamanho de volumes comuns exige varrer os dados; ZFS usa estatísticas nativas. Tamanho indisponível não significa vazio.
 
-Confira referências e backup restaurável. Se ocupado, aguarde contêineres ou resolva uso. Desabilitar componente não apaga dados.
+**Excluir um volume apaga seus dados.** Excluir a aplicação ou desativar Volumes os mantém. Libere referências de contêineres e confira os backups antes de excluir.
 
-Se lista falha, confira máquina e agente. Se volume falta, confira ID/nome; outro volume homônimo não recupera conteúdo. Replicação e backup consistente dependem do armazenamento. Veja [persistência](/docs/pt-br/guides/apps/persistence/).
+Mapeamentos incompletos e resíduos do Guardian podem ser excluídos aqui. Cancele o Guardian primeiro e repita a exclusão se a limpeza falhar. Se apenas a descrição não foi salva, atualize a lista e edite-a.
+
+Se a lista falhar, confira o servidor e o componente de volumes. Se faltar um volume, confira servidor e nome. Para migração e backups consistentes, veja [persistência](/docs/pt-br/guides/apps/persistence/).

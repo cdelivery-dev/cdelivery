@@ -97,6 +97,33 @@ Multi-instance queries require the current S3 inventory and fail during an outag
 
 `Cargo.lock` selects `boring` and `boring-sys` 5.4.0 for Pingora. Their bundled BoringSSL includes [the certificate callback fix](https://github.com/google/boringssl/commit/2752c13d111a7849d7396d964ecae9c4cda7f05b); HTTP/HTTPS acceptance passed on single and cluster with this version. Pingora 0.9.1 includes [the zero-capacity buffer fix](https://github.com/cloudflare/pingora/commit/572e04440b05e4437c3f0dc828c8db2e7c45be6a), so Tokio uses the normal 1.x version requirement. Builds and acceptance use `--locked`; dependency updates require HTTP/HTTPS acceptance on single and cluster. Production polling intervals remain unchanged.
 
+ZFS acceptance uses a disposable Linux host with a real partition-backed `cdelivery` pool prepared by `website/public/install.sh --zfs`. Load the current Agent image, `busybox:1.37.0-musl` and `postgres:18-alpine` into its Docker daemon, then run:
+
+```sh
+CDELIVERY_TEST_AGENT_IMAGE=cdelivery-zfs-agent:verify \
+CDELIVERY_TEST_AGENT_URL=http://127.0.0.1:15011/ \
+cargo test --locked -p cdelivery-agent --test storage -- --test-threads=1
+```
+
+For a remote host, set `CDELIVERY_TEST_REMOTE` to a JSON array such as `["ssh","test-host"]` and use its forwarded port in `CDELIVERY_TEST_AGENT_URL`. The command prefix must accept a final shell command and allow `sudo docker` without a prompt. The test creates uniquely named resources and covers mixed volume types, overlapping writes, multi-volume snapshots in one ZFS transaction, PostgreSQL recovery, clone write isolation, fresh retry copies, created/running execution containers across Agent restart, partial deletion and repeated residual cleanup. To verify native clone failure after snapshots succeed, it temporarily renames the Guardian parent and replaces it with a ZFS volume, then restores the parent before retrying. It also exports and imports the test pool to verify unavailable storage; run only on a disposable host. It does not create a pool or modify partitions. Interrupted cases can leave resources, including the renamed Guardian parent, for inspection and restoration.
+
+Controller acceptance uses the same host with the current controller and Agent images advertised by its release catalog and an existing test administrator:
+
+```sh
+CDELIVERY_TEST_CONTROLLER_URL=http://127.0.0.1:19031 \
+CDELIVERY_TEST_AGENT_IMAGE=cdelivery-zfs-agent:verify \
+CDELIVERY_TEST_ACCOUNT_EMAIL=zfs@example.test \
+node tests/zfs.mjs
+```
+
+Use the same `CDELIVERY_TEST_REMOTE` prefix for remote Docker access. This test checks recreation of a missing Docker mapping, failure when its dataset is missing, mount options through update/rollback/restart, Guardian promotion and isolated failures, retry/manual cleanup, cleanup when the original app is undecodable or missing, and existing-volume management after mode changes. Set `CDELIVERY_TEST_CASE=guardian` to rerun only Guardian and mode-change acceptance with fresh resources. Preparation and deletion retry after residual references are released, matching explicit operator retries; the application does not run a cleanup worker. The test restores the original enabled mode and revokes its temporary API key; failed cases retain their named resources for inspection.
+
+Set `CDELIVERY_TEST_APP_IMAGE` to a BusyBox image hosted by a reachable real registry when Docker Hub is unavailable. Application creation still exercises the normal registry access check.
+
+OrbStack machines share their kernel and cannot use stock Ubuntu ZFS modules directly. Verification can use an independent-kernel QEMU guest inside an OrbStack machine; this checks storage behavior but is not a performance benchmark. Keep heavy builds separate from this emulated test to avoid Docker request timeouts.
+
+The ZFS implementation was verified on Ubuntu 24.04 with kernel 6.8 and a partition on a disposable virtual disk. Installation reruns and reboot preserved data; the pool imported before Docker and named-volume reads resumed. Agent acceptance passed with PostgreSQL 18 recovery and write isolation, multi-volume snapshots, native clone failure and retry, concurrent requests, helper recovery, unavailable-pool handling and repeated cleanup. Controller mount recovery, missing-dataset failure, update, rollback and restart passed. Guardian promotion, isolated failure, retry, cleanup with an undecodable or missing original app, and mode changes also passed in an independent run after correcting the fixture's restoration of an absent label. Controller verification used a real local registry after Docker Hub access validation failed. These checks do not establish performance or multi-node failover behavior.
+
 Duty acceptance runs model and SMTP endpoints inside the Rust test process on system-assigned ports, reached through the manager's `host.orb.internal` address. It uses shared memory for scenario controls and observations, with real HTTP, SMTP and STARTTLS traffic from the controller. Its temporary CA is mounted only in the test controller; restoration removes model/email settings and the trust mount. Fixture tasks stop with the test, and successful cases verify that both listening ports are released. No Python runtime, external model or notification account is needed.
 
 Before submitting changes:
@@ -105,6 +132,7 @@ Before submitting changes:
 cargo fmt --all --check
 cargo clippy --locked --workspace --all-targets -- -D warnings
 cargo clippy --locked -p tests --test system -p insight --test storage -- -D warnings
+cargo clippy --locked -p cdelivery-agent --test storage -- -D warnings
 cargo xtask comments
 cargo xtask imports
 cargo xtask locale

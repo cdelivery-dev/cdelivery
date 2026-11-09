@@ -67,6 +67,6 @@ sh -c 'wget -q -O /dev/null "http://$TARGET_HOST:$TARGET_PORT/"'
 
 ## 與 Guardian 的關係
 
-驗證檢查穩定可靠後，可以在同一頁面開啟 Guardian，讓相關設定更新先通過候選驗證。本機資料應用程式不支援 Guardian。完整流程見[發佈驗證](/docs/zh-tw/guides/release-safety/guardian/)。
+驗證檢查穩定可靠後，可以在同一頁面開啟 Guardian，讓相關設定更新先通過候選驗證。本機資料應用程式需要所有掛載使用 ZFS 資料卷。完整流程見[發佈驗證](/docs/zh-tw/guides/release-safety/guardian/)。
 
 刪除檢查會停止後續週期性驗證，並影響依賴它的發佈保護。修改目標、網域或連接埠時，應同時核對檢查仍能解析到正確目標。

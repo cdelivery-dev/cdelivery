@@ -84,4 +84,17 @@ pub(crate) fn routes() -> OpenApiRouter<Arc<App>> {
         .routes(routes!(get, enable, disable))
         .routes(routes!(list, create))
         .routes(routes!(update, delete))
+        .routes(routes!(delete_guardian))
+}
+
+#[route(
+    delete,
+    "/nodes/{id:node id}/guardian-volumes/{name:app name}",
+    ok(operation::Done)
+)]
+async fn delete_guardian(
+    State(state): State<Arc<App>>,
+    authorized: super::extract::Authorized<operation::volume::DeleteGuardian>,
+    super::extract::Path((id, name)): super::extract::Path<(String, String)>,
+) -> Result<Json<operation::Done>> {
 }

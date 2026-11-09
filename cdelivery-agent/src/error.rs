@@ -19,6 +19,14 @@ pub(crate) enum ErrorKind {
     Docker(#[source] docker::Error),
     #[error("runtime error: {0}")]
     Runtime(#[source] logging::Error),
+    #[error("ZFS is not enabled on this agent")]
+    ZfsDisabled,
+    #[error("node storage is busy; retry after the current operation finishes")]
+    Busy,
+    #[error("volume {0} is missing or its storage mapping is invalid")]
+    InvalidVolume(String),
+    #[error("ZFS operation failed: {0}")]
+    Zfs(String),
 }
 
 located_error! {
@@ -34,6 +42,9 @@ located_error! {
 
 impl IntoResponse for Error {
     fn into_response(self) -> Response {
+        if matches!(self.kind, ErrorKind::Busy) {
+            return (StatusCode::LOCKED, self.to_string()).into_response();
+        }
         if matches!(
             self.kind,
             ErrorKind::VolumeExists(_) | ErrorKind::VolumeInUse(_)

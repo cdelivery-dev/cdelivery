@@ -146,6 +146,7 @@ macro_rules! operations {
             crate::operation::volume::Create,
             crate::operation::volume::Update,
             crate::operation::volume::Delete,
+            crate::operation::volume::DeleteGuardian,
             crate::operation::xhealth::Get,
             crate::operation::xhealth::Create,
             crate::operation::xhealth::Update,
