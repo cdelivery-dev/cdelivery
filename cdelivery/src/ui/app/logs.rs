@@ -109,8 +109,7 @@ impl Page {
             .query
             .source
             .as_ref()
-            .map(ToString::to_string)
-            .unwrap_or_default();
+            .map_or_default(ToString::to_string);
         super::super::pages(self.query.skip, len, PAGE_SIZE, |skip| {
             super::super::page_url(
                 &format!("/apps/{}/logs", self.name),

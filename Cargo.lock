@@ -3566,7 +3566,6 @@ dependencies = [
  "jiff",
  "macros",
  "pingress-wire",
- "serde_json",
  "strum 0.28.0",
  "thiserror 2.0.21",
 ]
@@ -3578,7 +3577,6 @@ dependencies = [
  "cipher 0.1.0",
  "jiff",
  "serde",
- "serde_with",
  "strum 0.28.0",
  "utoipa",
  "uuid",

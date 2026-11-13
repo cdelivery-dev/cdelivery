@@ -335,17 +335,6 @@ fn merge_candidate(
     }
 }
 
-struct SyncingGuard<'a> {
-    set: &'a scc::HashSet<Path>,
-    path: &'a Path,
-}
-
-impl Drop for SyncingGuard<'_> {
-    fn drop(&mut self) {
-        self.set.remove_sync(self.path);
-    }
-}
-
 #[derive(Debug)]
 struct TargetStorage {
     os: Arc<dyn object_store::ObjectStore>,
@@ -1320,10 +1309,9 @@ impl Store {
             let Some(path) = path else {
                 return;
             };
-            let _syncing_guard = SyncingGuard {
-                set: &self.syncing,
-                path: &path,
-            };
+            let _syncing_guard = std::mem::DropGuard::new(&path, |path| {
+                self.syncing.remove_sync(path);
+            });
             let result = tokio::select! {
                 biased;
                 () = cancel.cancelled() => return,

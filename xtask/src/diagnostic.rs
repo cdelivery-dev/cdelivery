@@ -9,7 +9,7 @@ pub(crate) struct Violation {
 
 pub(crate) fn print(root: &Path, violations: &[Violation]) {
     for violation in violations {
-        let path = violation.path.strip_prefix(root).unwrap_or(&violation.path);
+        let path = violation.path.trim_prefix(root);
         println!("{}:{}: {}", path.display(), violation.line, violation.text);
     }
 }

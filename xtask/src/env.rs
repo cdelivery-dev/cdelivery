@@ -862,7 +862,7 @@ fn api(
     command.arg(format!("{}{path}", environment.base_url));
     execute(
         &mut command,
-        body.map(Value::to_string).unwrap_or_default().as_bytes(),
+        body.map_or_default(Value::to_string).as_bytes(),
         COMMAND_TIMEOUT,
     )
 }

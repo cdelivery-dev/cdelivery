@@ -12,7 +12,7 @@ impl std::str::FromStr for DomainName {
     type Err = Error;
 
     fn from_str(input: &str) -> Result<Self> {
-        let unrooted = input.strip_suffix('.').unwrap_or(input);
+        let unrooted = input.trim_suffix('.');
         let normalized = unrooted.to_ascii_lowercase();
         let err = || Error::from(ErrorKind::InvalidDomain(input.to_owned()));
         if normalized.is_empty() || normalized.len() > MAX_DOMAIN_LEN {

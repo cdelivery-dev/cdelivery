@@ -187,13 +187,7 @@ async fn gemini_models(web: &reqwest::Client, api_key: Option<&str>) -> Result<V
                         .iter()
                         .any(|method| method == "generateContent")
                 })
-                .map(|model| {
-                    model
-                        .name
-                        .strip_prefix("models/")
-                        .unwrap_or(&model.name)
-                        .to_owned()
-                }),
+                .map(|model| model.name.trim_prefix("models/").to_owned()),
         );
         let Some(next) = page.next_page_token.filter(|token| !token.is_empty()) else {
             return Ok(models);

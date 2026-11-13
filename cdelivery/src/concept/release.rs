@@ -7,10 +7,7 @@ use crate::error::{ErrorKind, Result};
 
 pub(crate) fn parse_version(version: &str) -> Result<semver::Version> {
     let trimmed = version.trim();
-    let normalized = trimmed
-        .strip_prefix('v')
-        .or_else(|| trimmed.strip_prefix('V'))
-        .unwrap_or(trimmed);
+    let normalized = trimmed.trim_prefix(['v', 'V']);
     semver::Version::parse(normalized)
         .map_err(|_| ErrorKind::TagNotSemver(version.to_owned()).into())
 }

@@ -681,8 +681,7 @@ impl App {
                 target
                     .mounts
                     .as_ref()
-                    .map(|m| m.mounts().clone())
-                    .unwrap_or_default()
+                    .map_or_default(|m| m.mounts().clone())
             }),
             container_options: (self.container_options != target.container_options)
                 .then(|| target.container_options.clone()),

@@ -283,10 +283,7 @@ fn canonical_api_version(version: &semver::Version) -> String {
 
 fn normalize_api_version(input: &str) -> String {
     let trimmed = input.trim();
-    let trimmed = trimmed
-        .strip_prefix('v')
-        .or_else(|| trimmed.strip_prefix('V'))
-        .unwrap_or(trimmed);
+    let trimmed = trimmed.trim_prefix(['v', 'V']);
     match trimmed.matches('.').count() {
         0 => format!("{trimmed}.0.0"),
         1 => format!("{trimmed}.0"),

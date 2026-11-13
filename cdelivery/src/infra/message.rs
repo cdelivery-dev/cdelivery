@@ -70,8 +70,7 @@ impl Hub {
         state
             .rings
             .get(timeline)
-            .map(|ring| ring.iter().cloned().collect())
-            .unwrap_or_default()
+            .map_or_default(|ring| ring.iter().cloned().collect())
     }
 
     pub(crate) fn claim(&self, limit: usize) -> Vec<concept::message::Timeline> {

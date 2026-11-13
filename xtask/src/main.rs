@@ -54,7 +54,7 @@ fn run(root: &Path, args: &[&str]) -> Result<ExitCode, Box<dyn std::error::Error
             let report = imports::scan(root)?;
             diagnostic::print(root, &report.violations);
             for path in &report.parse_failures {
-                let path = path.strip_prefix(root).unwrap_or(path);
+                let path = path.trim_prefix(root);
                 println!("{}: failed to parse", path.display());
             }
             let clean = report.violations.is_empty() && report.parse_failures.is_empty();
@@ -73,7 +73,7 @@ fn run(root: &Path, args: &[&str]) -> Result<ExitCode, Box<dyn std::error::Error
             let report = comments::scan(root)?;
             diagnostic::print(root, &report.violations);
             for path in &report.lex_failures {
-                let path = path.strip_prefix(root).unwrap_or(path);
+                let path = path.trim_prefix(root);
                 println!("{}: failed to lex", path.display());
             }
             let clean = report.violations.is_empty() && report.lex_failures.is_empty();

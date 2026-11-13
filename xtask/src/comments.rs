@@ -126,8 +126,7 @@ fn doc_findings(source: &str) -> Vec<Finding> {
             text: source
                 .lines()
                 .nth(line.saturating_sub(1))
-                .map(str::trim)
-                .unwrap_or_default()
+                .map_or_default(str::trim)
                 .to_owned(),
         })
         .collect()
@@ -246,8 +245,7 @@ fn extract_comments(
 fn make_finding(chars: &[char], starts: &[usize], start: usize, end: usize) -> Finding {
     let text: String = chars
         .get(start..end)
-        .map(|seg| seg.iter().collect())
-        .unwrap_or_default();
+        .map_or_default(|seg| seg.iter().collect());
     Finding {
         line: line_of(starts, start),
         text: text.lines().next().unwrap_or_default().trim().to_owned(),

@@ -108,7 +108,7 @@ impl Host {
             }
             None => raw,
         };
-        let name = name.strip_suffix('.').unwrap_or(name);
+        let name = name.trim_suffix('.');
         if name.is_empty() || name.len() > HOST_MAX_BYTES {
             return None;
         }

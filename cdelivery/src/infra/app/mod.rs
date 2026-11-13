@@ -322,10 +322,9 @@ pub(crate) fn build_spec(key: &MasterKey, app: &concept::app::App) -> Result<Ser
                 command: app
                     .container_options()
                     .as_ref()
-                    .map(|o| o.command().clone())
-                    .unwrap_or_default(),
+                    .map_or_default(|o| o.command().clone()),
                 env: runner_env(app),
-                mounts: app.mounts().as_ref().map(encode_mounts).unwrap_or_default(),
+                mounts: app.mounts().as_ref().map_or_default(encode_mounts),
                 configs: user_configs(app),
                 ..ContainerSpec::default()
             },
@@ -433,18 +432,15 @@ fn user_configs(app: &concept::app::App) -> Vec<docker::types::ServiceConfig> {
 }
 
 fn runner_env(app: &concept::app::App) -> Vec<String> {
-    app.container_options()
-        .as_ref()
-        .map(|o| {
-            o.env()
-                .iter()
-                .filter_map(|(k, v)| match v {
-                    concept::app::EnvValue::Plain(value) => Some(format!("{k}={value}")),
-                    concept::app::EnvValue::Secret(_) => None,
-                })
-                .collect()
-        })
-        .unwrap_or_default()
+    app.container_options().as_ref().map_or_default(|o| {
+        o.env()
+            .iter()
+            .filter_map(|(k, v)| match v {
+                concept::app::EnvValue::Plain(value) => Some(format!("{k}={value}")),
+                concept::app::EnvValue::Secret(_) => None,
+            })
+            .collect()
+    })
 }
 
 pub(crate) fn registry_auth(app: &concept::app::App) -> RegistryAuth {
