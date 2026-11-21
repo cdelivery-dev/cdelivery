@@ -1,0 +1,81 @@
+{% import "version.html" as versions %}
+{% let can_manage = dashboard.can_manage_settings.to_owned() %}
+
+<details id="volume-management" class="node-section">
+<summary>{{ tt!("ui.volume.management") }} <span class="muted">({% if current_version.is_some() %}{% if zfs_enabled %}{{ tt!("ui.volume.enabled", mode = "ZFS") }}{% else %}{% let mode = tt!("ui.volume.localMode") %}{{ tt!("ui.volume.enabled", mode = mode) }}{% endif %}{% else %}{{ tt!("ui.volume.disabled") }}{% endif %})</span></summary>
+<div class="node-section-body">
+<p><small>{{ tt!("ui.volume.settingsHelp") }}</small></p>
+{% if current_version.is_some() || can_manage %}
+<div x-data="{ submitting: false, version: '', zfsEnabled: {{ zfs_enabled }} }" x-init="version = $refs.version.value">
+<form
+  id="volume-enable-form"
+  method="post"
+  action="/volume/enable"
+  @submit="if (submitting || !version) { $event.preventDefault(); return } $refs.payload.value = JSON.stringify({ version, zfs_enabled: zfsEnabled }); submitting = true"
+>
+  <input x-ref="payload" type="hidden" name="payload" />
+  <div class="fields">
+    {% call versions::field("volume-version", tt!("ui.version.label"), current_version, target_version, latest_unavailable, can_manage, "submitting") %}
+      x-ref="version" x-model="version"
+    {% endcall %}
+  </div>
+  {% if current_version.is_some() %}
+  {% if zfs_enabled %}
+  <p>
+    {% match crate::locale::current() %}
+    {% when crate::locale::Locale::ZhCn %}
+    新建数据卷使用 ZFS，<a href="https://cdelivery.dev/zfs.md" target="_blank" rel="noopener noreferrer">安装说明</a>可交给 AI 工具参考。
+    {% when crate::locale::Locale::ZhTw %}
+    新建資料卷使用 ZFS，<a href="https://cdelivery.dev/zfs.md" target="_blank" rel="noopener noreferrer">安裝說明</a>可交給 AI 工具參考。
+    {% when crate::locale::Locale::En %}
+    New volumes use ZFS; you can share the <a href="https://cdelivery.dev/zfs.md" target="_blank" rel="noopener noreferrer">setup guide</a> with your AI tool.
+    {% when crate::locale::Locale::De %}
+    Neue Volumes verwenden ZFS; Sie können die <a href="https://cdelivery.dev/zfs.md" target="_blank" rel="noopener noreferrer">Installationsanleitung</a> an Ihr KI-Tool weitergeben.
+    {% when crate::locale::Locale::Ja %}
+    新規ボリュームで使用する ZFS の<a href="https://cdelivery.dev/zfs.md" target="_blank" rel="noopener noreferrer">セットアップ手順</a>は、AI ツールにも共有できます。
+    {% when crate::locale::Locale::PtBr %}
+    Os novos volumes usam ZFS; você pode compartilhar o <a href="https://cdelivery.dev/zfs.md" target="_blank" rel="noopener noreferrer">guia de instalação</a> com sua ferramenta de IA.
+    {% when crate::locale::Locale::Es %}
+    Los volúmenes nuevos usan ZFS; puedes compartir la <a href="https://cdelivery.dev/zfs.md" target="_blank" rel="noopener noreferrer">guía de instalación</a> con tu herramienta de IA.
+    {% when crate::locale::Locale::Fr %}
+    Les nouveaux volumes utilisent ZFS ; vous pouvez partager le <a href="https://cdelivery.dev/zfs.md" target="_blank" rel="noopener noreferrer">guide d’installation</a> avec votre outil d’IA.
+    {% endmatch %}
+  </p>
+  {% else %}
+  <p>{{ tt!("ui.volume.localStorage") }}</p>
+  {% endif %}
+  {% else %}
+  <label><input type="checkbox" x-model="zfsEnabled" /> {{ tt!("ui.volume.zfs") }}</label>
+  <div x-show="zfsEnabled">
+    <p><small>{{ tt!("ui.volume.zfsPrepare") }}</small></p>
+    <pre translate="no"><code>curl -fsSL https://cdelivery.dev/install.sh | sh -s -- --zfs</code></pre>
+    <p><small><a href="https://cdelivery.dev/zfs.md" target="_blank" rel="noopener noreferrer">{{ tt!("ui.volume.zfsGuide") }}</a></small></p>
+  </div>
+  {% endif %}
+  {% if can_manage %}
+  <div class="actions mt-2">
+    {% if current_version.is_some() %}
+    <input type="submit" form="volume-disable-form" class="button danger" value='{{ tt!("ui.common.disable") }}' :disabled="submitting" />
+    {% endif %}
+    <input class="button" type="submit" value='{% if current_version.is_some() %}{{ tt!("ui.common.update") }}{% else %}{{ tt!("ui.common.enable") }}{% endif %}' :disabled="submitting || !version" />
+  </div>
+  {% endif %}
+</form>
+
+{% if can_manage && current_version.is_some() %}
+<form
+  id="volume-disable-form"
+  method="post"
+  action="/volume/disable"
+  data-confirm='{{ tt!("ui.volume.disableConfirm") }}'
+  @submit="if (submitting || !confirm($el.dataset.confirm)) { $event.preventDefault(); return } submitting = true"
+>
+  <input type="hidden" name="payload" value="{}" />
+</form>
+{% endif %}
+</div>
+{% else %}
+<p>{{ tt!("ui.volume.enableByAdmin") }}</p>
+{% endif %}
+</div>
+</details>

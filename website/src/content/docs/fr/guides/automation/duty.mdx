@@ -1,0 +1,30 @@
+---
+title: "Astreinte"
+description: "L’astreinte analyse les événements et effectue des rondes avec un rôle explicite."
+sidebar:
+  order: 45
+---
+
+L’astreinte analyse les alertes et les rétablissements et effectue des rondes avec un rôle explicite. Les changements courants, comme la création, la mise à jour ou le redémarrage d’une application, restent dans l’historique des événements pour le diagnostic et ne déclenchent pas d’analyse IA.
+
+## Configurer
+
+Préparez [modèle](/docs/fr/guides/automation/models/), rôle, politique, intervalle, langue et destinataires.
+
+Par défaut : Operator, NearCritical, 30 minutes, anglais. Intervalle autorisé : 15 minutes–24 heures. L’analyse d’événements n’attend pas la prochaine ronde.
+
+EarlyRisk, NearCritical et LimitOrFailure décrivent la réponse au risque, pas un seuil numérique universel.
+
+## Autorisations
+
+Reader observe ; Operator/Admin peuvent modifier sans supervision dans leurs droits. Aucun périmètre de compte personnel.
+
+Les abonnés dont le rôle est au moins égal à celui de l’astreinte reçoivent l’analyse IA ; les autres reçoivent l’alerte d’origine. Les comptes rendus d’opérations suivent la même restriction de rôle.
+
+L’astreinte analyse les alertes avant de les notifier ; faute d’analyse exploitable, elle envoie l’alerte d’origine. Consultez les [règles de notification](/docs/fr/guides/automation/im/notifications/).
+
+## Vérifier
+
+Examinez événements, analyses, actions et état final. Si rien n’arrive, contrôlez modèle, canal, abonnement et rôle.
+
+Désactiver l’astreinte ne coupe pas les alertes ordinaires. Les notifications suivent la langue configurée, les conversations celle du dialogue. Voir [notifications](/docs/fr/guides/automation/im/notifications/).

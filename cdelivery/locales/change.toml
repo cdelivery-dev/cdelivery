@@ -1,0 +1,432 @@
+_version = 2
+
+[change.current]
+en = "Current change"
+zh-CN = "当前修改"
+zh-TW = "目前修改"
+ja = "現在の変更"
+pt-BR = "Alteração atual"
+es = "Cambio actual"
+fr = "Changement en cours"
+de = "Aktuelle Änderung"
+
+[change.target]
+en = "Change target"
+zh-CN = "修改对象"
+zh-TW = "修改對象"
+ja = "変更対象"
+pt-BR = "Alvo da alteração"
+es = "Objeto del cambio"
+fr = "Objet du changement"
+de = "Änderungsziel"
+
+[change.shared]
+en = "These actions apply to the entire change."
+zh-CN = "以下操作针对整条修改。"
+zh-TW = "以下操作適用於整項修改。"
+ja = "以下の操作は変更全体に適用されます。"
+pt-BR = "Estas ações se aplicam à alteração inteira."
+es = "Estas acciones se aplican al cambio completo."
+fr = "Ces actions s’appliquent à l’ensemble du changement."
+de = "Diese Aktionen gelten für die gesamte Änderung."
+
+[change.title]
+en = "Change"
+zh-CN = "变更"
+zh-TW = "變更"
+ja = "変更"
+pt-BR = "Alteração"
+es = "Cambio"
+fr = "Changement"
+de = "Änderung"
+
+[change.create]
+en = "New change"
+zh-CN = "新建变更"
+zh-TW = "新增變更"
+ja = "変更を作成"
+pt-BR = "Nova alteração"
+es = "Nuevo cambio"
+fr = "Nouveau changement"
+de = "Neue Änderung"
+
+[change.pending]
+en = "Awaiting action"
+zh-CN = "待处理"
+zh-TW = "待處理"
+ja = "操作待ち"
+pt-BR = "Aguardando ação"
+es = "Pendiente de acción"
+fr = "En attente d’action"
+de = "Aktion erforderlich"
+
+[change.completedTitle]
+en = "Change (completed)"
+zh-CN = "变更（已完成）"
+zh-TW = "變更（已完成）"
+ja = "変更（完了）"
+pt-BR = "Alteração (concluída)"
+es = "Cambio (completado)"
+fr = "Changement (terminé)"
+de = "Änderung (abgeschlossen)"
+
+[change.closedTitle]
+en = "Change (cancelled)"
+zh-CN = "变更（已取消）"
+zh-TW = "變更（已取消）"
+ja = "変更（キャンセル済み）"
+pt-BR = "Alteração (cancelada)"
+es = "Cambio (cancelado)"
+fr = "Changement (annulé)"
+de = "Änderung (abgebrochen)"
+
+[change.empty]
+en = "No changes yet."
+zh-CN = "暂无变更。"
+zh-TW = "暫無變更。"
+ja = "変更はまだありません。"
+pt-BR = "Nenhuma alteração ainda."
+es = "Aún no hay cambios."
+fr = "Aucun changement pour le moment."
+de = "Noch keine Änderungen."
+
+[change.processing]
+en = "Processing"
+zh-CN = "处理中"
+zh-TW = "處理中"
+ja = "処理中"
+pt-BR = "Processando"
+es = "Procesando"
+fr = "Traitement en cours"
+de = "In Bearbeitung"
+
+[change.size]
+en = "Rehearsal size"
+zh-CN = "演练规格"
+zh-TW = "演練規格"
+ja = "検証用サイズ"
+pt-BR = "Tamanho do ensaio"
+es = "Tamaño del ensayo"
+fr = "Taille du test"
+de = "Testgröße"
+
+[change.sourceSize]
+en = "Default"
+zh-CN = "默认"
+zh-TW = "預設"
+ja = "既定"
+pt-BR = "Padrão"
+es = "Predeterminado"
+fr = "Par défaut"
+de = "Standard"
+
+[change.neonSize]
+en = "Compute units (CU)"
+zh-CN = "计算单元（CU）"
+zh-TW = "運算單元（CU）"
+ja = "コンピュートユニット（CU）"
+pt-BR = "Unidades de computação (CU)"
+es = "Unidades de cómputo (CU)"
+fr = "Unités de calcul (CU)"
+de = "Recheneinheiten (CU)"
+
+[change.neonSizeHint]
+en = "Leave empty to use the source branch’s minimum compute size."
+zh-CN = "留空时使用源分支的最小计算规格。"
+zh-TW = "留空時使用來源分支的最小運算規格。"
+ja = "空欄の場合、元ブランチの最小サイズを使用します。"
+pt-BR = "Deixe vazio para usar o tamanho mínimo da origem."
+es = "Déjalo vacío para usar el tamaño mínimo de la rama de origen."
+fr = "Laissez vide pour utiliser la taille minimale de la branche source."
+de = "Leer lassen, um die minimale Größe des Quellzweigs zu verwenden."
+
+[change.planetscaleSizeHint]
+en = "Uses a single node with network storage. Metal sources default to PS-5."
+zh-CN = "使用单节点网络存储；Metal 源分支默认使用 PS-5。"
+zh-TW = "使用單節點網路儲存；Metal 來源分支預設使用 PS-5。"
+ja = "ネットワークストレージの単一ノードを使用します。Metal の場合、既定は PS-5 です。"
+pt-BR = "Usa um único nó com armazenamento de rede. Origens Metal usam PS-5 por padrão."
+es = "Usa un nodo con almacenamiento de red. Las fuentes Metal usan PS-5 por defecto."
+fr = "Utilise un nœud unique avec stockage réseau. Les sources Metal utilisent PS-5 par défaut."
+de = "Verwendet einen einzelnen Knoten mit Netzwerkspeicher. Metal-Quellen verwenden standardmäßig PS-5."
+
+[change.sqlHint]
+en = "SQL runs as entered, without an added transaction. Production execution is never retried automatically."
+zh-CN = "SQL 按原文执行，不自动包裹事务；生产执行不会自动重试。"
+zh-TW = "SQL 按原文執行，不自動包裹交易；正式執行不會自動重試。"
+ja = "SQL は追加のトランザクションなしでそのまま実行されます。本番実行は自動再試行されません。"
+pt-BR = "O SQL é executado como informado, sem transação adicional. A execução em produção nunca é repetida automaticamente."
+es = "El SQL se ejecuta tal cual, sin transacción añadida. La ejecución en producción no se reintenta automáticamente."
+fr = "Le SQL est exécuté tel quel, sans transaction ajoutée. L’exécution en production n’est jamais relancée automatiquement."
+de = "SQL wird unverändert ohne zusätzliche Transaktion ausgeführt. Die Produktionsausführung wird nicht automatisch wiederholt."
+
+[change.submit]
+en = "Submit"
+zh-CN = "提交"
+zh-TW = "提交"
+ja = "送信"
+pt-BR = "Enviar"
+es = "Enviar"
+fr = "Soumettre"
+de = "Einreichen"
+
+[change.payload]
+en = "Requested changes"
+zh-CN = "变更内容"
+zh-TW = "變更內容"
+ja = "変更内容"
+pt-BR = "Alterações solicitadas"
+es = "Cambios solicitados"
+fr = "Changements demandés"
+de = "Angeforderte Änderungen"
+
+[change.checkPassed]
+en = "Check passed"
+zh-CN = "检查通过"
+zh-TW = "檢查通過"
+ja = "検証に成功"
+pt-BR = "Verificação aprovada"
+es = "Comprobación superada"
+fr = "Vérification réussie"
+de = "Prüfung bestanden"
+
+[change.checkNotPassed]
+en = "Check failed"
+zh-CN = "检查未通过"
+zh-TW = "檢查未通過"
+ja = "検証に失敗"
+pt-BR = "Verificação reprovada"
+es = "Comprobación fallida"
+fr = "Échec de la vérification"
+de = "Prüfung fehlgeschlagen"
+
+[change.awaitingCheck]
+en = "Waiting for check"
+zh-CN = "等待检查"
+zh-TW = "等待檢查"
+ja = "検証待ち"
+pt-BR = "Aguardando verificação"
+es = "Esperando comprobación"
+fr = "En attente de vérification"
+de = "Warten auf Prüfung"
+
+[change.awaitingResult]
+en = "Waiting for check result"
+zh-CN = "等待检查结果"
+zh-TW = "等待檢查結果"
+ja = "検証結果待ち"
+pt-BR = "Aguardando resultado da verificação"
+es = "Esperando resultado de la comprobación"
+fr = "En attente du résultat de la vérification"
+de = "Warten auf Prüfergebnis"
+
+[change.noResult]
+en = "No check result"
+zh-CN = "无检查结果"
+zh-TW = "無檢查結果"
+ja = "検証結果なし"
+pt-BR = "Sem resultado de verificação"
+es = "Sin resultado de comprobación"
+fr = "Aucun résultat de vérification"
+de = "Kein Prüfergebnis"
+
+[change.noChecks]
+en = "No apps participate in release checks."
+zh-CN = "无应用参与发布检查。"
+zh-TW = "無應用程式參與發佈檢查。"
+ja = "リリース検証に参加するアプリはありません。"
+pt-BR = "Nenhuma aplicação participa das verificações de publicação."
+es = "Ninguna aplicación participa en las comprobaciones de publicación."
+fr = "Aucune application ne participe aux vérifications de publication."
+de = "Keine Apps nehmen an Veröffentlichungsprüfungen teil."
+
+[change.productionUnknown]
+en = "Verify the production result before choosing an action."
+zh-CN = "请先核实生产执行结果，再选择操作。"
+zh-TW = "請先核實正式環境執行結果，再選擇操作。"
+ja = "操作を選ぶ前に本番の実行結果を確認してください。"
+pt-BR = "Verifique o resultado em produção antes de escolher uma ação."
+es = "Verifica el resultado en producción antes de elegir una acción."
+fr = "Vérifiez le résultat en production avant de choisir une action."
+de = "Prüfen Sie das Produktionsergebnis, bevor Sie eine Aktion wählen."
+
+[change.completeAction]
+en = "Confirm completion"
+zh-CN = "确认完成"
+zh-TW = "確認完成"
+ja = "完了を確認"
+pt-BR = "Confirmar conclusão"
+es = "Confirmar finalización"
+fr = "Confirmer la fin"
+de = "Abschluss bestätigen"
+
+[change.applyAction]
+en = "Skip checks and apply"
+zh-CN = "跳过检查并上线"
+zh-TW = "略過檢查並上線"
+ja = "検証を省略して適用"
+pt-BR = "Pular verificações e aplicar"
+es = "Omitir comprobaciones y aplicar"
+fr = "Ignorer les vérifications et appliquer"
+de = "Prüfungen überspringen und anwenden"
+
+[change.closeConfirm]
+en = "Cancel this change and clean up temporary resources? Production changes remain."
+zh-CN = "取消变更并清理临时资源？已执行的生产变更会保留。"
+zh-TW = "取消變更並清理暫存資源？已執行的正式變更會保留。"
+ja = "変更をキャンセルし、一時リソースを削除しますか？本番に適用した変更は維持されます。"
+pt-BR = "Cancelar esta alteração e limpar recursos temporários? Alterações em produção serão mantidas."
+es = "¿Cancelar este cambio y limpiar los recursos temporales? Los cambios en producción se conservan."
+fr = "Annuler ce changement et nettoyer les ressources temporaires ? Les changements en production sont conservés."
+de = "Diese Änderung abbrechen und temporäre Ressourcen bereinigen? Produktionsänderungen bleiben bestehen."
+
+[change.applyConfirm]
+en = "Clean up rehearsal resources and apply this change to production without completing rehearsal?"
+zh-CN = "清理演练资源后，跳过演练直接上线此变更？"
+zh-TW = "清理演練資源後，略過演練直接上線此變更？"
+ja = "検証リソースを削除し、検証を完了せずに本番へ適用しますか？"
+pt-BR = "Limpar os recursos de ensaio e aplicar em produção sem concluir o ensaio?"
+es = "¿Limpiar los recursos de ensayo y aplicar en producción sin completar el ensayo?"
+fr = "Nettoyer les ressources de test et appliquer en production sans terminer le test ?"
+de = "Testressourcen bereinigen und ohne abgeschlossenen Test in Produktion anwenden?"
+
+[change.reapplyConfirm]
+en = "Execute the production change again, including the original SQL? It may already have changed data; verify the previous result first."
+zh-CN = "再次执行生产变更（含原始 SQL）？此前可能已修改数据，请先核实结果。"
+zh-TW = "再次執行正式變更（含原始 SQL）？先前可能已修改資料，請先核實結果。"
+ja = "元の SQL を含む本番変更を再実行しますか？すでにデータが変更されている可能性があるため、先に前回の結果を確認してください。"
+pt-BR = "Executar a alteração em produção novamente, incluindo o SQL original? Ela pode já ter alterado dados; verifique primeiro o resultado anterior."
+es = "¿Ejecutar de nuevo el cambio en producción, incluido el SQL original? Puede haber modificado datos; verifica primero el resultado anterior."
+fr = "Réexécuter le changement en production, y compris le SQL d’origine ? Il a peut-être déjà modifié les données ; vérifiez d’abord le résultat précédent."
+de = "Die Produktionsänderung einschließlich des ursprünglichen SQL erneut ausführen? Sie könnte bereits Daten geändert haben; prüfen Sie zuerst das vorherige Ergebnis."
+
+[change.completeConfirm]
+en = "Confirm the production result and complete this change? This only cleans up temporary resources; it does not execute the production change."
+zh-CN = "确认生产结果并完成变更？仅清理临时资源，不执行生产变更。"
+zh-TW = "確認正式環境結果並完成變更？僅清理暫存資源，不執行正式變更。"
+ja = "本番の結果を確認し、変更を完了しますか？一時リソースのみ削除し、本番変更は実行しません。"
+pt-BR = "Confirmar o resultado em produção e concluir esta alteração? Isso apenas limpa recursos temporários; não executa a alteração em produção."
+es = "¿Confirmar el resultado en producción y completar este cambio? Solo limpia recursos temporales; no ejecuta el cambio en producción."
+fr = "Confirmer le résultat en production et terminer ce changement ? Seules les ressources temporaires sont nettoyées ; le changement en production n’est pas exécuté."
+de = "Produktionsergebnis bestätigen und diese Änderung abschließen? Dabei werden nur temporäre Ressourcen bereinigt; die Produktionsänderung wird nicht ausgeführt."
+
+[change.participate]
+en = "Participate in release checks"
+zh-CN = "参与发布检查"
+zh-TW = "參與發布檢查"
+ja = "リリース検証に参加"
+pt-BR = "Participar das verificações de publicação"
+es = "Participar en comprobaciones de publicación"
+fr = "Participer aux vérifications de publication"
+de = "An Release-Prüfungen teilnehmen"
+
+[change.participateHint]
+en = "Before updates to this app or its direct dependencies, check its preview service at the internal port. Hurl and domain checks use HTTP."
+zh-CN = "本应用或其直接依赖更新时，先通过内部端口检查本应用的预览服务。Hurl 和域名检查使用 HTTP。"
+zh-TW = "本應用程式或其直接依賴更新時，先透過內部連接埠檢查本應用程式的預覽服務。Hurl 和網域檢查使用 HTTP。"
+ja = "アプリ自身または直接の依存先を更新する前に、プレビューサービスの内部ポートで検証します。Hurl とドメイン指定のチェックは HTTP を使用します。"
+pt-BR = "Antes de atualizar esta aplicação ou suas dependências diretas, verifica seu serviço de prévia pela porta interna. Hurl e verificações por domínio usam HTTP."
+es = "Antes de actualizar esta aplicación o sus dependencias directas, comprueba su servicio de vista previa por el puerto interno. Hurl y las comprobaciones por dominio usan HTTP."
+fr = "Avant de mettre à jour cette application ou ses dépendances directes, vérifier son service de prévisualisation sur le port interne. Hurl et les contrôles par domaine utilisent HTTP."
+de = "Vor Updates dieser App oder ihrer direkten Abhängigkeiten den Vorschaudienst am internen Port prüfen. Hurl- und Domainprüfungen verwenden HTTP."
+
+[change.unavailable]
+en = "Change status unavailable"
+zh-CN = "无法读取变更状态"
+zh-TW = "無法讀取變更狀態"
+ja = "変更状態を取得できません"
+pt-BR = "Estado da alteração indisponível"
+es = "Estado del cambio no disponible"
+fr = "État du changement indisponible"
+de = "Änderungsstatus nicht verfügbar"
+
+[change.reserved]
+en = "Resolve the current change before updating, restarting or rolling back this app."
+zh-CN = "请先处理当前修改，再更新、重启或回滚本应用。"
+zh-TW = "請先處理目前修改，再更新、重新啟動或回復本應用程式。"
+ja = "このアプリを更新、再起動、ロールバックする前に、現在の変更を解決してください。"
+pt-BR = "Resolva a alteração atual antes de atualizar, reiniciar ou reverter esta aplicação."
+es = "Resuelve el cambio actual antes de actualizar, reiniciar o revertir esta aplicación."
+fr = "Résolvez le changement en cours avant de mettre à jour, redémarrer ou rétablir cette application."
+de = "Schließen Sie die aktuelle Änderung ab, bevor Sie diese App aktualisieren, neu starten oder zurücksetzen."
+
+[change.prepareFailed]
+en = "Preparation failed"
+zh-CN = "准备失败"
+zh-TW = "準備失敗"
+ja = "準備に失敗"
+pt-BR = "Falha na preparação"
+es = "Error de preparación"
+fr = "Échec de la préparation"
+de = "Vorbereitung fehlgeschlagen"
+
+[change.checkFailed]
+en = "Checks failed"
+zh-CN = "检查失败"
+zh-TW = "檢查失敗"
+ja = "検証に失敗"
+pt-BR = "Falha nas verificações"
+es = "Error en las comprobaciones"
+fr = "Échec des vérifications"
+de = "Prüfungen fehlgeschlagen"
+
+[change.cleanPending]
+en = "Cleanup incomplete"
+zh-CN = "清理未完成"
+zh-TW = "清理未完成"
+ja = "削除が未完了"
+pt-BR = "Limpeza incompleta"
+es = "Limpieza incompleta"
+fr = "Nettoyage incomplet"
+de = "Bereinigung unvollständig"
+
+[change.applyPending]
+en = "Production result needs confirmation"
+zh-CN = "生产结果待确认"
+zh-TW = "正式環境結果待確認"
+ja = "本番の結果を要確認"
+pt-BR = "Resultado em produção aguardando confirmação"
+es = "Resultado en producción pendiente de confirmación"
+fr = "Résultat en production à confirmer"
+de = "Produktionsergebnis muss bestätigt werden"
+
+[change.finishPending]
+en = "Awaiting final cleanup"
+zh-CN = "待完成收尾"
+zh-TW = "待完成收尾"
+ja = "後処理待ち"
+pt-BR = "Aguardando limpeza final"
+es = "Pendiente de limpieza final"
+fr = "En attente du nettoyage final"
+de = "Abschließende Bereinigung ausstehend"
+
+[change.submitted]
+en = "Submitted"
+zh-CN = "提交于"
+zh-TW = "提交於"
+ja = "送信日時"
+pt-BR = "Enviado em"
+es = "Enviado"
+fr = "Soumis"
+de = "Eingereicht"
+
+[change.diagnostics]
+en = "Diagnostics"
+zh-CN = "诊断信息"
+zh-TW = "診斷資訊"
+ja = "診断情報"
+pt-BR = "Diagnóstico"
+es = "Diagnóstico"
+fr = "Diagnostic"
+de = "Diagnose"
+
+[change.reapplyAction]
+en = "Execute again"
+zh-CN = "再次执行"
+zh-TW = "再次執行"
+ja = "再実行"
+pt-BR = "Executar novamente"
+es = "Ejecutar de nuevo"
+fr = "Exécuter à nouveau"
+de = "Erneut ausführen"
+

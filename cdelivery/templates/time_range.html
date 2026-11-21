@@ -1,0 +1,32 @@
+{%- macro fields(initial_range) -%}
+<span class="tab-list" role="group" aria-label='{{ tt!("ui.timeRange.range.label") }}'>
+  <button type="button" @click="preset('15m')" :aria-pressed="range === '15m'">{{ tt!("ui.metrics.range.m15") }}</button>
+  <button type="button" @click="preset('1h')" :aria-pressed="range === '1h'">{{ tt!("ui.metrics.range.h1") }}</button>
+  <button type="button" @click="preset('6h')" :aria-pressed="range === '6h'">{{ tt!("ui.metrics.range.h6") }}</button>
+  <button type="button" @click="preset('24h')" :aria-pressed="range === '24h'">{{ tt!("ui.metrics.range.h24") }}</button>
+  <button type="button" @click="preset('7d')" :aria-pressed="range === '7d'">{{ tt!("ui.metrics.range.d7") }}</button>
+  <button type="button" @click="preset('31d')" :aria-pressed="range === '31d'">{{ tt!("ui.metrics.range.d31") }}</button>
+  <button type="button" @click="range = null" :aria-pressed="!range">{{ tt!("ui.metrics.range.custom") }}</button>
+</span>
+<input type="hidden" name="range" :value="range" :disabled="!range" />
+<span class="time-range-custom" x-show="!range" x-cloak{% if initial_range.is_none() %} data-cloak-layout{% endif %}>
+  <input class="text" type="datetime-local" required x-model="start" @change="custom()" :disabled="range" aria-label='{{ tt!("ui.timeRange.start.label") }}' />
+  <input type="hidden" name="start" :value="instant(start)" :disabled="range" />
+  <span class="muted sep" aria-hidden="true">–</span>
+  <input class="text" type="datetime-local" required x-model="end" @change="custom()" :disabled="range" aria-label='{{ tt!("ui.timeRange.end.label") }}' />
+  <input type="hidden" name="end" :value="instant(end)" :disabled="range" />
+</span>
+<span class="sep" aria-hidden="true">|</span>
+<select
+  class="text"
+  data-observability-timezone
+  x-init="CDelivery.initTimezone($el)"
+  @focus="CDelivery.zoneOptions($event.target)"
+  @change="CDelivery.saveTimezone($event.target)"
+  aria-label='{{ tt!("ui.timeRange.timezone.label") }}'
+>
+  <option value="">{{ tt!("ui.timeRange.timezone.local") }}</option>
+  <option value="UTC" translate="no">+00:00 UTC</option>
+  <hr />
+</select>
+{%- endmacro -%}

@@ -1,0 +1,30 @@
+---
+title: "Volume management"
+description: "Enable the volume component and manage persistent data on a particular server."
+sidebar:
+  order: 55
+---
+
+Volumes belong to one server. The same name on another server refers to different data.
+
+## Prepare ZFS (optional)
+
+ZFS is recommended. Follow the [ZFS setup guide](https://cdelivery.dev/zfs.md) on each Ubuntu/Debian server, or share it with your AI tool. It covers partition selection and unattended commands.
+
+Storage mode applies to new volumes. Existing Local and ZFS volumes remain usable. To change modes, disable Volumes and enable it again; data is kept.
+
+## Create and use
+
+1. As an Admin, enable Volumes.
+2. Open the target server's Volumes tab and create a volume. The description is optional, up to 256 characters.
+3. Create a [stateful application](/docs/guides/apps/persistence/stateful/) on the same server and mount the volume at its data directory. Verify data survives a restart.
+
+## Capacity and cleanup
+
+Capacity and available space describe the storage for new volumes. Ordinary volume size queries scan data; ZFS uses native accounting. An unavailable size does not mean empty.
+
+**Deleting a volume deletes its data.** Deleting an application or disabling Volumes keeps it. Release container references before deleting; check that backups are usable.
+
+Clean up rehearsal resources by completing or cancelling their change first. Use this page for incomplete mappings or leftover data no longer reserved by a change. If only the description failed to save, refresh and edit it.
+
+If listing fails, check the server and volume component. If a volume is missing, verify its server and name. For migration and consistent backups, see [persistence](/docs/guides/apps/persistence/).

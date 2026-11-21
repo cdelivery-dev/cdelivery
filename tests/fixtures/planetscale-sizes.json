@@ -1,0 +1,10 @@
+{
+  "sizes": [
+    { "name": "fixture-ps20-aws-arm", "size": "PS-20", "memory_bytes": 2147483648, "provider": "AWS", "architecture": "arm64", "metal": false },
+    { "name": "fixture-metal-aws-arm", "size": "M-40", "memory_bytes": 4294967296, "provider": "AWS", "architecture": "arm64", "metal": true },
+    { "name": "fixture-ps10-gcp-x86", "size": "PS-10", "memory_bytes": 2147483648, "provider": "GCP", "architecture": "x86_64", "metal": false },
+    { "name": "fixture-ps5-aws-arm", "size": "PS-5", "memory_bytes": 536870912, "provider": "AWS", "architecture": "arm64", "metal": false },
+    { "name": "fixture-ps10-aws-arm", "size": "PS-10", "memory_bytes": 1073741824, "provider": "AWS", "architecture": "arm64", "metal": false },
+    { "name": "fixture-ps5-gcp-x86", "size": "PS-5", "memory_bytes": 536870912, "provider": "GCP", "architecture": "x86_64", "metal": false }
+  ]
+}

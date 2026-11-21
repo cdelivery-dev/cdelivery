@@ -1,0 +1,36 @@
+---
+title: "Startbefehl und Umgebungsvariablen"
+description: "Konfiguriere den Hauptprozess und unterscheide Argumente von Shell-Auswertung."
+sidebar:
+  order: 10
+---
+
+Konfiguriere den Hauptprozess und unterscheide Argumente von Shell-Auswertung.
+
+## Befehl
+
+Image-Standard beibehalten, sofern kein anderer Befehl nötig ist. Anführungszeichen werden verarbeitet; Variablen, Pipes und Umleitungen benötigen explizite Shell:
+
+Mit dem Hello-Image (`ghcr.io/cdelivery-dev/hello:1.0.0`) schreibt dieser Befehl den Wert von `GREETING` ins Startlog und startet den HTTP-Server:
+
+```sh
+sh -c 'printf "%s\n" "$GREETING"; exec httpd -f -v -p 80 -h /www'
+```
+
+Setze `GREETING=Hello`, um das Beispiel zu testen. Diese Variable verändert die Logausgabe.
+
+Image muss Shell und Programm enthalten. Hauptprozess im Vordergrund ausführen; sein Ende beendet den Container.
+
+## Umgebung
+
+Eine Umgebungsvariable kann einen normalen Wert, ein [Text-Secret](/docs/de/guides/apps/secrets/) oder eine [Ausgabe einer Abhängigkeit](/docs/de/guides/apps/dependencies/) verwenden. Gib den Namen ein, wähle Quelle und Wert oder Ausgabefeld, bestätige und speichere die gesamte Anwendungskonfiguration.
+
+Namen: 1–128 Zeichen, kein `=`. Normale Werte: bis 4096 Zeichen. Nur vom Programm verstandene Variablen verwenden. `PORT=8080` veröffentlicht keinen Port und erzwingt keinen Listener.
+
+Normal eingegebene Werte sind geteilte Konfiguration ohne automatische Erkennung vertraulicher Werte. Für Dateien siehe [XConfig](/docs/de/guides/apps/xconfig/).
+
+## Prüfen
+
+Speichern, neue Aufgaben und Logs kontrollieren. Ohne Änderung kein Neustart. Pfade, Werkzeuge und Quotes prüfen; wörtliche Expansion deutet auf fehlende Shell.
+
+Nur internes Loopback verhindert externe Containerzugriffe. [Netzwerk/Ports](/docs/de/guides/networking/connectivity/) getrennt konfigurieren.

@@ -1,0 +1,40 @@
+---
+title: "XHealth status and troubleshooting"
+description: "Distinguish waiting, execution, success, failure, and checks that finished without a result."
+sidebar:
+  order: 27
+---
+
+## States
+
+| State | Meaning |
+| --- | --- |
+| Pending | Waiting to execute |
+| Running | Check in progress |
+| Passed | Check passed |
+| Failed | Check failed; inspect its error and logs |
+| Settled | Finished without a usable success/failure result |
+
+Only Passed confirms success. Check the completion time; an old result does not describe the current app.
+
+## Diagnose a failure
+
+Open the latest [application logs](/docs/guides/observability/logs/application/) and select XHealth. For pending tasks, check server resources and image pulls. For long-running tasks, check timeouts and blocked commands. For failures, check the executable, variables and Hurl assertions.
+
+For connection errors, follow the selected target:
+
+| Target | Check |
+| --- | --- |
+| Domain | DNS from the check container, proxy routes, HTTP/HTTPS and certificate trust |
+| Published port | Server IP reachability, published-port mapping and firewall |
+| Internal port | App's internal address, group network, listening port and startup |
+
+Missing or ambiguous targets require matching app configuration and one internal port. Results reflect access from the check container; external clients may have a different network path.
+
+## After a change
+
+Run again and confirm a new Passed result. Validate application behavior, not just process existence.
+
+For release failures, inspect the preview service and its check logs separately from live XHealth. Configure alerts through [notifications](/docs/guides/automation/im/notifications/).
+
+See [XHealth configuration](/docs/guides/release-safety/xhealth/) for target and command rules.

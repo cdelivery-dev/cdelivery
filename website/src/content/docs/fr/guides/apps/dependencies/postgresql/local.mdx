@@ -1,0 +1,18 @@
+---
+title: "PostgreSQL local"
+description: "Enregistrez une application PostgreSQL existante et testez les changements avec des clones de ses volumes ZFS."
+sidebar:
+  order: 3
+---
+
+## Enregistrer une base
+
+En tant qu’Admin, ouvrez **Dépendances → Nouvelle dépendance → PostgreSQL**. Indiquez un nom, choisissez l’application source et renseignez son DSN PostgreSQL. L’application doit être affectée à un serveur fixe où la gestion des volumes est activée, avec des volumes ZFS pour tous les montages. Les applications du même groupe peuvent ensuite utiliser cette dépendance.
+
+## Le clone de test
+
+Elles utilisent des clones de nouveaux instantanés, abandonnent leurs écritures et laissent la production sur les volumes d’origine. Les clones partagent l’espace sans quota et exigent au moins 10 % d’espace libre à la préparation. Consultez [persistance](/docs/fr/guides/apps/persistence/) pour les limites de sauvegarde et de restauration.
+
+Une mise à jour de l’application source peut également déclencher les vérifications des applications participantes qui référencent directement l’une de ses dépendances PostgreSQL enregistrées.
+
+Passez à la [connexion d’une application et au test d’une modification SQL](/docs/fr/guides/apps/dependencies/postgresql/).

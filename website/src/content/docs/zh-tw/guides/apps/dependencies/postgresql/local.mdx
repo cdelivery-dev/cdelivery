@@ -1,0 +1,18 @@
+---
+title: "本機 PostgreSQL"
+description: "將既有的 PostgreSQL 應用程式登記為依賴，使用 ZFS 資料卷複本測試變更。"
+sidebar:
+  order: 3
+---
+
+## 登記資料庫
+
+Admin 開啟**依賴 → 新增依賴 → PostgreSQL**，填寫名稱、選取來源應用程式並提供其 PostgreSQL DSN。來源應用程式必須固定在已啟用資料卷管理的伺服器上，所有掛載均使用 ZFS 資料卷。登記後，同分組的應用程式可綁定此依賴。
+
+## 測試資料卷
+
+預覽使用新的快照複本，寫入會捨棄，正式環境繼續使用原卷。複本共用儲存池且不設配額，準備時至少需要 10% 可用空間。備份和復原界線見[資料持久化](/docs/zh-tw/guides/apps/persistence/)。
+
+更新資料庫的來源應用程式時，CDelivery 也會檢查直接綁定其已登記 PostgreSQL 依賴且參與發布檢查的應用程式。
+
+接下來可以[綁定應用程式並驗證 SQL 變更](/docs/zh-tw/guides/apps/dependencies/postgresql/)。

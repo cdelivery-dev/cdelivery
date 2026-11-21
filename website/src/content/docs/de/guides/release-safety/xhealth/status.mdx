@@ -1,0 +1,40 @@
+---
+title: "XHealth-Zustände und Fehlersuche"
+description: "Unterscheide Warten, Ausführung, Erfolg, Fehler und Ende ohne verwertbares Ergebnis."
+sidebar:
+  order: 27
+---
+
+## Zustände
+
+| Zustand | Bedeutung |
+| --- | --- |
+| Pending | Wartet auf Ausführung |
+| Running | Prüfung läuft |
+| Passed | Prüfung bestanden |
+| Failed | Prüfung fehlgeschlagen; Fehler und Logs prüfen |
+| Settled | Beendet ohne verwertbares Erfolgs- oder Fehlerergebnis |
+
+Nur Passed bestätigt Erfolg. Prüfe den Abschlusszeitpunkt; ein altes Ergebnis beschreibt nicht den aktuellen Zustand.
+
+## Fehler untersuchen
+
+Öffne die aktuellen [Anwendungslogs](/docs/de/guides/observability/logs/application/) und wähle XHealth. Bei wartenden Aufgaben Serverressourcen und Image-Download prüfen. Bei langer Ausführung Timeouts und blockierte Befehle prüfen. Bei Fehlern Werkzeuge, Variablen und Hurl-Assertions kontrollieren.
+
+Untersuche Verbindungsfehler anhand des gewählten Ziels:
+
+| Ziel | Prüfen |
+| --- | --- |
+| Domain | DNS im Prüfcontainer, Proxy-Routen, HTTP/HTTPS und Zertifikatsvertrauen |
+| Veröffentlichter Port | Erreichbarkeit der Server-IP, Portzuordnung und Firewall |
+| Interner Port | Interne App-Adresse, Gruppennetzwerk, Listen-Port und Startzustand |
+
+Fehlende oder mehrdeutige Ziele erfordern eine passende App-Konfiguration und genau einen internen Port. Ergebnisse beschreiben den Zugriff aus dem Prüfcontainer; externe Clients können einen anderen Netzwerkpfad verwenden.
+
+## Nach Änderungen
+
+Erneut ausführen und ein neues Passed-Ergebnis bestätigen. Prüfe die Nutzbarkeit der Anwendung, nicht nur die Existenz des Prozesses.
+
+Bei Release-Fehlern den Vorschaudienst und seine Prüflogs getrennt vom XHealth der laufenden App untersuchen. Alarme lassen sich unter [Benachrichtigungen](/docs/de/guides/automation/im/notifications/) konfigurieren.
+
+Ziel- und Befehlsregeln stehen in der [XHealth-Konfiguration](/docs/de/guides/release-safety/xhealth/).

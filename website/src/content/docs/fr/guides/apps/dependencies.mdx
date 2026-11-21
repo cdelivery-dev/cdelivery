@@ -1,0 +1,19 @@
+---
+title: "Dépendances"
+description: "Reliez une application à un service ou à une base PostgreSQL et choisissez les parcours à vérifier avant publication."
+sidebar:
+  order: 12.6
+---
+
+Les dépendances permettent de référencer l’hôte d’une autre application ou une connexion PostgreSQL par les [variables d’environnement](/docs/fr/guides/apps/container/). Ces références identifient aussi les consommatrices pour les [vérifications de publication](/docs/fr/guides/release-safety/guardian/). Un hôte ou un DSN saisi comme valeur ordinaire ne crée pas cette relation.
+
+- [Dépendances entre applications](/docs/fr/guides/apps/dependencies/app/) — Reliez le service de commandes au service utilisateurs et vérifiez que les deux restent compatibles lorsque l’un change.
+- [Dépendances PostgreSQL](/docs/fr/guides/apps/dependencies/postgresql/) — Reliez les applications à une base et testez vos modifications SQL sur leurs parcours métier avant la mise en production.
+
+## Référencer depuis une application
+
+Operator et Admin peuvent modifier la configuration de l’application :
+
+1. Ajoutez une variable d’environnement et choisissez **Dépendance** comme source.
+2. Sélectionnez la dépendance et le champ de sortie.
+3. Confirmez la sélection, puis enregistrez toute la configuration de l’application.

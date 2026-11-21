@@ -1,0 +1,30 @@
+---
+title: "Gerenciamento de volumes"
+description: "Volumes são locais; nomes iguais em máquinas diferentes não identificam os mesmos dados."
+sidebar:
+  order: 55
+---
+
+Volumes pertencem a um servidor. O mesmo nome em outro servidor representa dados diferentes.
+
+## Preparar ZFS (opcional)
+
+ZFS é recomendado. Siga o [guia de instalação do ZFS](https://cdelivery.dev/zfs.md) em cada servidor Ubuntu/Debian ou compartilhe-o com sua ferramenta de IA. Ele cobre a escolha da partição e os comandos sem interação.
+
+O modo vale para novos volumes. Volumes locais e ZFS existentes continuam disponíveis. Para trocar o modo, desative e reative Volumes; os dados são mantidos.
+
+## Criar e usar
+
+1. Como Admin, ative Volumes.
+2. Crie um volume na aba Volumes do servidor. A descrição é opcional, com até 256 caracteres.
+3. Crie uma [aplicação com estado](/docs/pt-br/guides/apps/persistence/stateful/) no mesmo servidor e monte o volume no diretório de dados. Verifique a persistência após reiniciar.
+
+## Capacidade e limpeza
+
+Capacidade e espaço disponível indicam o armazenamento dos novos volumes. O tamanho de volumes comuns exige varrer os dados; ZFS usa estatísticas nativas. Tamanho indisponível não significa vazio.
+
+**Excluir um volume apaga seus dados.** Excluir a aplicação ou desativar Volumes os mantém. Libere referências de contêineres e confira os backups antes de excluir.
+
+Limpe os recursos de ensaio concluindo ou cancelando sua alteração primeiro. Use esta página para mapeamentos incompletos ou dados residuais não reservados por alterações. Se apenas a descrição não foi salva, atualize a lista e edite-a.
+
+Se a lista falhar, confira o servidor e o componente de volumes. Se faltar um volume, confira servidor e nome. Para migração e backups consistentes, veja [persistência](/docs/pt-br/guides/apps/persistence/).

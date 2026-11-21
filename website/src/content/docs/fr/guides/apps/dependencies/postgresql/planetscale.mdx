@@ -1,0 +1,16 @@
+---
+title: "PlanetScale"
+description: "Enregistrez une connexion PostgreSQL PlanetScale et identifiez la taille et le point de restauration de la branche de test."
+sidebar:
+  order: 2
+---
+
+## Enregistrer une base
+
+En tant qu’Admin, ouvrez **Dépendances → Nouvelle dépendance → PlanetScale**. Indiquez un nom, le DSN PostgreSQL fourni par PlanetScale et un jeton de service. Conservez le suffixe de routage de branche dans le nom d’utilisateur du DSN. La connexion est accessible à tous les groupes.
+
+## La branche de test
+
+CDelivery restaure une branche temporaire à l’état d’environ cinq minutes avant sa préparation. Utilisez des données de test qui existaient déjà à cet instant. La branche utilise un seul nœud avec stockage réseau. Par défaut, elle reprend la taille de la source, ou PS-5 pour une source Metal.
+
+Passez à la [connexion d’une application et au test d’une modification SQL](/docs/fr/guides/apps/dependencies/postgresql/).

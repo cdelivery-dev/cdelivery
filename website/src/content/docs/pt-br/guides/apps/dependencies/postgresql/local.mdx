@@ -1,0 +1,18 @@
+---
+title: "PostgreSQL local"
+description: "Cadastre uma aplicação PostgreSQL existente e ensaie alterações com clones dos volumes ZFS."
+sidebar:
+  order: 3
+---
+
+## Cadastrar um banco
+
+Como Admin, abra **Dependências → Nova dependência → PostgreSQL**. Informe um nome, selecione a aplicação de origem e insira o DSN PostgreSQL dela. A aplicação deve estar fixada em um servidor com gerenciamento de volumes habilitado e usar ZFS em todas as montagens. As aplicações do mesmo grupo podem usar a dependência.
+
+## O clone de ensaio
+
+Usam clones de novos snapshots, descartam as gravações da prévia e mantêm a produção nos volumes originais. Clones compartilham espaço sem cotas e exigem pelo menos 10% livre na preparação. Consulte [persistência](/docs/pt-br/guides/apps/persistence/) para os limites de backup e recuperação.
+
+Atualizar a aplicação de origem também pode acionar verificações nas aplicações participantes que referenciam diretamente uma das dependências PostgreSQL cadastradas para essa origem.
+
+Continue com a [vinculação da aplicação e o teste de uma alteração SQL](/docs/pt-br/guides/apps/dependencies/postgresql/).

@@ -1,0 +1,16 @@
+---
+title: "PlanetScale"
+description: "Eine PlanetScale-PostgreSQL-Verbindung registrieren und Größe und Datenstand des Test-Branches bestimmen."
+sidebar:
+  order: 2
+---
+
+## Datenbank registrieren
+
+Öffnen Sie als Admin **Abhängigkeiten → Neue Abhängigkeit → PlanetScale**. Geben Sie einen Namen, den vom Anbieter erzeugten PostgreSQL-DSN und ein Service-Token ein. Behalten Sie das Branch-Routing-Suffix im Benutzernamen des DSN bei. Die Verbindung ist für alle Gruppen verfügbar.
+
+## Der Test-Branch
+
+CDelivery stellt den temporären Branch mit dem Datenstand von etwa fünf Minuten vor Testbeginn wieder her. Verwenden Sie Testdaten, die zu diesem Zeitpunkt bereits existierten. Der Branch nutzt einen einzelnen Knoten mit Netzwerkspeicher. Standard ist die Größe der Quelle, bei Metal-Quellen PS-5.
+
+Weiter mit [App anbinden und SQL-Änderung testen](/docs/de/guides/apps/dependencies/postgresql/).

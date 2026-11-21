@@ -1,0 +1,45 @@
+{% extends "dashboard.html" %}
+{% import "change/status.html" as status %}
+
+{% block title %}{{ dependency.name }} - {{ tt!("dependency.title") }} | {{ super() }}{% endblock title %}
+{% block main %}
+{% let available = !self.active() && changes_error.is_none() %}
+<header class="dependency-header">
+  <h1 translate="no">{{ dependency.name }}</h1>
+  {% if let Some(description) = dependency.description %}<p class="muted" translate="no">{{ description }}</p>{% endif %}
+  <dl class="dependency-meta">
+    <dt>{{ tt!("secret.type") }}</dt>
+    <dd translate="no">{% match dependency.provider %}{% when crate::operation::dependency::typ::Provider::Neon %}Neon{% when crate::operation::dependency::typ::Provider::PlanetScale %}PlanetScale{% when crate::operation::dependency::typ::Provider::Local %}PostgreSQL{% endmatch %}</dd>
+    {% if let Some(app) = dependency.app %}<dt>{{ tt!("dependency.sourceApp") }}</dt><dd><a href="/apps/{{ app }}" translate="no">{{ app }}</a></dd>{% endif %}
+  </dl>
+</header>
+<h2 class="section-title">
+{% if let Some(change) = latest %}{% match change.state %}
+{% when crate::operation::change::typ::State::Completed %}{{ tt!("change.completedTitle") }}
+{% when crate::operation::change::typ::State::Closed %}{{ tt!("change.closedTitle") }}
+{% when crate::operation::change::typ::State::Open %}{{ tt!("change.title") }}
+{% endmatch %}{% else %}{{ tt!("change.title") }}{% endif %}
+</h2>
+<section class="dependency-change" x-data>
+  {% if let Some(error) = changes_error %}
+  <div class="change-record stack"><p>{{ tt!("change.unavailable") }}</p><details class="change-diagnostics" open><summary>{{ tt!("change.diagnostics") }}</summary><pre class="diagnostic" translate="no">{{ error }}</pre></details></div>
+  {% else if let Some(change) = latest %}
+  {% let can_edit = dashboard.can_create_app %}
+  {% let current_app = "" %}
+  {% let show_check_names = true %}
+  {% include "change/content.html" %}
+  {% else %}<p class="muted">{{ tt!("change.empty") }}</p>{% endif %}
+  {% if available && dashboard.can_create_app %}
+  <div class="actions">
+    {% if dashboard.can_manage_settings %}
+    <form method="post" action="/dependencies/{{ dependency.name }}/delete" data-confirm='{{ tt!("dependency.deleteConfirm") }}' x-data="{ submitting: false }" @submit="if (submitting || !confirm($el.dataset.confirm)) { $event.preventDefault(); return; } submitting = true"><input type="hidden" name="payload" value="{}" /><button class="button danger" type="submit" :disabled="submitting">{{ tt!("ui.common.delete") }}</button></form>
+    {% endif %}
+    <button class="button" type="button" @click="CDelivery.openDialog($refs.sql)">{{ tt!("change.create") }}</button>
+  </div>
+  <dialog class="binding-dialog" x-ref="sql" aria-labelledby="change-create-title">
+    <h2 id="change-create-title">{{ tt!("change.create") }}</h2>
+    {% include "change/form.html" %}
+  </dialog>
+  {% endif %}
+</section>
+{% endblock main %}

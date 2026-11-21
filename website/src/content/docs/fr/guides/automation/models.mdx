@@ -1,0 +1,28 @@
+---
+title: "Configuration des modèles"
+description: "Admin choisit fournisseur, identifiants et modèle capable d’utiliser les outils opérationnels."
+sidebar:
+  order: 42
+---
+
+Admin choisit fournisseur, identifiants et modèle capable d’utiliser les outils opérationnels.
+
+## Fournisseurs
+
+OpenAI, Anthropic, Gemini, DeepSeek, OpenRouter, Ollama et OpenAI-compatible sont disponibles.
+
+Fournisseur intégré : endpoint imposé, clé requise. OpenAI-compatible : endpoint et clé requis. Ollama : endpoint requis, champ clé refusé.
+
+Le serveur doit atteindre l’adresse ; l’accès depuis votre navigateur seul ne suffit pas.
+
+## Configurer
+
+Renseignez les identifiants, découvrez les modèles si cette fonction est disponible et choisissez-en un. La découverte exige Admin.
+
+Une clé omise est conservée uniquement à fournisseur/endpoint inchangés. Elle n’est pas retournée en clair. Changer de périmètre exige des identifiants adaptés.
+
+Testez une question en lecture et les résultats d’outils.
+
+## Diagnostic
+
+Vérifiez fournisseur, URL, modèle, clé, quota, réseau et capacités. Configurez l’[astreinte](/docs/fr/guides/automation/duty/) séparément.

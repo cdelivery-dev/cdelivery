@@ -1,0 +1,50 @@
+---
+title: "メッセージと通知"
+description: "Admin がチャネルを接続し、各ユーザーが本人の ID と購読を設定します。"
+sidebar:
+  order: 44
+---
+
+Admin がチャネルを接続し、各ユーザーが本人の ID と購読を設定します。
+
+## チャネル
+
+<CardGrid>
+
+<Card title="メール" href="/docs/ja/guides/automation/im/email/" icon="ph:envelope-simple">
+  管理用認証: SMTP、任意の IMAP. 個人の識別子: アカウントのメール.
+</Card>
+
+<Card title="Slack" href="/docs/ja/guides/automation/im/slack/" icon="ph:slack-logo">
+  管理用認証: bot/app token. 個人の識別子: Member ID.
+</Card>
+
+<Card title="Telegram" href="/docs/ja/guides/automation/im/telegram/" icon="ph:telegram-logo">
+  管理用認証: bot token. 個人の識別子: 数値 user ID.
+</Card>
+
+<Card title="Discord" href="/docs/ja/guides/automation/im/discord/" icon="ph:discord-logo">
+  管理用認証: bot token. 個人の識別子: User ID.
+</Card>
+
+<Card title="Lark" href="/docs/ja/guides/automation/im/lark/" icon="ph:chat-circle-dots">
+  管理用認証: App ID/Secret. 個人の識別子: open_id.
+</Card>
+
+<Card title="Feishu" href="/docs/ja/guides/automation/im/feishu/" icon="ph:chat-circle-dots">
+  管理用認証: App ID/Secret. 個人の識別子: open_id.
+</Card>
+
+</CardGrid>
+
+表示名、グループ、bot の ID は本人 ID の代わりになりません。
+
+## 設定と確認
+
+作成、権限、公開、イベント受信を設定し、認証と本人 ID を保存します。新しい紐付けは既定で通知を受け取り、後から無効にできます。会話には[モデル](/docs/ja/guides/automation/models/)が必要で、読み取り質問から確認します。
+
+他人の ID を入れると、その人物に自分の通知や操作権限を渡す可能性があります。
+
+## 調査
+
+認証、通信、イベント、紐付け、購読、モデルを分けて確認します。アバターだけでは配信や本人の正しさは証明できません。[通知設定](/docs/ja/guides/automation/im/notifications/)を参照してください。

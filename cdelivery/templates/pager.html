@@ -1,0 +1,8 @@
+{% macro links(previous, next) %}
+{% if previous.is_some() || next.is_some() %}
+<nav class="actions" aria-label='{{ tt!("ui.common.pagination") }}'>
+  {% if let Some(previous) = previous %}<a href="{{ previous }}">{{ tt!("ui.common.prev") }}</a>{% endif %}
+  {% if let Some(next) = next %}<a href="{{ next }}">{{ tt!("ui.common.next") }}</a>{% endif %}
+</nav>
+{% endif %}
+{% endmacro %}

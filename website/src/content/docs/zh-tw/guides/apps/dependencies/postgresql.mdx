@@ -1,0 +1,36 @@
+---
+title: "PostgreSQL 資料庫依賴"
+description: "先在測試資料庫執行 SQL，透過應用程式的業務檢查確認變更結果，再套用到正式資料庫。"
+sidebar:
+  order: 2
+---
+
+透過依賴綁定連到這個資料庫的應用程式，可以在 [XHealth](/docs/zh-tw/guides/release-safety/xhealth/) 中開啟**參與發布檢查**。例如，訂單服務可以查詢一筆訂單，確認資料庫變更後仍能讀到預期的資料。
+
+## 登記資料庫
+
+- [Neon](/docs/zh-tw/guides/apps/dependencies/postgresql/neon/) — 登記 Neon 連線，並為 SQL 測試分支選擇運算規格。
+- [PlanetScale](/docs/zh-tw/guides/apps/dependencies/postgresql/planetscale/) — 登記 PlanetScale PostgreSQL 連線，瞭解測試分支的資料復原時間點與規格。
+- [本機 PostgreSQL](/docs/zh-tw/guides/apps/dependencies/postgresql/local/) — 將既有的 PostgreSQL 應用程式登記為依賴，使用 ZFS 資料卷複本測試變更。
+
+## 引用依賴
+
+Admin 先依提供者指南登記既有的正式資料庫。接著，Operator 或 Admin 在應用程式環境變數中將 `DATABASE_URL` 綁定至該依賴的 `dsn`，確認後儲存。若映像檔分別讀取連線參數，可為各變數選擇 `host`、`port`、`database`、`username` 或 `password`。
+
+## 驗證 SQL 變更
+
+開啟 PostgreSQL 依賴，選擇**新增變更**並輸入 SQL。雲端資料庫也可以選擇測試規格。CDelivery 會依原樣執行 SQL，不會自動加上交易。
+
+**如果沒有應用程式參與檢查，送出的 SQL 會直接在正式資料庫執行。**
+
+有應用程式參與時，CDelivery 先在測試資料庫執行 SQL，再將各應用程式的預覽執行個體連到測試資料庫，執行各自的業務檢查。只要有一項失敗，變更就會停在測試階段，正式環境中的應用程式會繼續使用原來的資料庫。全部通過後，CDelivery 會清理測試資源，再到正式資料庫執行同一段 SQL。
+
+<ReleaseDiagram kind="database">圖中是雲端資料庫的暫存分支。本機 PostgreSQL 使用 ZFS 快照複本完成相同的驗證。</ReleaseDiagram>
+
+變更遭攔截時，可在[發布檢查](/docs/zh-tw/guides/release-safety/guardian/)中查看日誌入口和後續處理方式。
+
+## 替換或刪除
+
+資料庫依賴設定不可編輯，已儲存的憑證和 DSN 不能透過平台查看或下載。修改連線或憑證時，新增依賴，再更新應用程式中的選擇。
+
+Admin 可刪除未使用的依賴。目前應用程式引用、仍可用的回復設定和未完成變更都可能阻止刪除。刪除只移除登記及憑證，不刪除資料庫。本機資料庫依賴仍存在時，不能刪除其來源應用程式或將來源應用程式移到其他分組。

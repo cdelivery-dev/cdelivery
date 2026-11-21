@@ -1,0 +1,85 @@
+---
+import { translate } from '../i18n';
+
+const t = translate(Astro.currentLocale);
+const marks = { yes: '✓', partial: '—', no: '×' } as const;
+const columns = [
+  { key: 'lightweight', label: t('site.comparison.column.lightweight') },
+  { key: 'kubernetes', label: t('site.comparison.column.kubernetes') },
+  { key: 'cdelivery', label: 'CDelivery' },
+] as const;
+const rows = [
+  { id: 'workflow', status: { lightweight: 'no', kubernetes: 'partial', cdelivery: 'yes' } },
+  { id: 'database', status: { lightweight: 'no', kubernetes: 'no', cdelivery: 'yes' } },
+  { id: 'observability', status: { lightweight: 'no', kubernetes: 'partial', cdelivery: 'yes' } },
+  { id: 'ha', status: { lightweight: 'partial', kubernetes: 'partial', cdelivery: 'yes' } },
+  { id: 'footprint', status: { lightweight: 'partial', kubernetes: 'no', cdelivery: 'yes' } },
+  { id: 'ai', status: { lightweight: 'no', kubernetes: 'no', cdelivery: 'yes' } },
+  { id: 'ownership', status: { lightweight: 'yes', kubernetes: 'yes', cdelivery: 'yes' } },
+] as const;
+---
+<section class="comparison home-section container" id="comparison" aria-labelledby="comparison-title">
+  <header class="comparison-heading section-copy">
+    <h2 class="section-title" id="comparison-title">{t('site.comparison.title')}</h2>
+    <p>{t('site.comparison.intro')}</p>
+  </header>
+  <table class="comparison-table" aria-labelledby="comparison-title">
+    <thead>
+      <tr>
+        <th scope="col"><span class="visually-hidden">{t('site.comparison.title')}</span></th>
+        {columns.map(({ key, label }) => <th scope="col" class:list={{ cdelivery: key === 'cdelivery' }}>{label}</th>)}
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map(({ id, status }) => (
+        <tr>
+          <th scope="row">{t(`site.comparison.rows.${id}.title`)}</th>
+          {columns.map(({ key, label }) => (
+            <td class:list={{ cdelivery: key === 'cdelivery' }} data-label={label}>
+              <span class="cell">
+                <span class="mark" data-status={status[key]} aria-hidden="true">{marks[status[key]]}</span>
+                <span>{t(`site.comparison.rows.${id}.${key}`)}</span>
+              </span>
+            </td>
+          ))}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+  <p class="footnote">{t('site.comparison.footnote')}</p>
+</section>
+<style>
+  .comparison-heading { max-width: 720px; margin-inline: auto; text-align: center; }
+  .comparison-table { width: 100%; margin-top: 48px; border: 1px solid var(--color-border); border-radius: 8px; border-collapse: separate; border-spacing: 0; overflow: hidden; table-layout: fixed; font-size: .875rem; line-height: var(--body-leading); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; hyphens: manual; }
+  .comparison-table:lang(de) { hyphens: auto; }
+  thead th { padding: 18px 20px; border-bottom: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-muted); font-size: .8125rem; font-weight: var(--weight-control); line-height: 1.45; text-align: start; vertical-align: bottom; }
+  thead th:first-child { width: 24%; padding-inline-start: 24px; }
+  thead th:not(:first-child) { width: 25.333%; }
+  thead th:last-child { padding-inline-end: 24px; }
+  thead th.cdelivery { border-inline-start: 1px solid #dfc6b6; background: color-mix(in srgb, var(--color-accent) 10%, #fff); color: #946849; font-weight: var(--weight-strong); }
+  tbody th, tbody td { padding: 20px; border-bottom: 1px solid var(--color-border); background: #fff; text-align: start; vertical-align: top; }
+  tbody th { padding-inline-start: 24px; color: var(--color-text); font-weight: var(--weight-strong); }
+  tbody td { color: var(--color-muted); }
+  tbody td.cdelivery { border-inline-start: 1px solid #dfc6b6; background: color-mix(in srgb, var(--color-accent) 4%, #fff); color: var(--color-text); }
+  tbody td:last-child { padding-inline-end: 24px; }
+  tbody tr:last-child :is(th, td) { border-bottom: 0; }
+  .cell { display: grid; grid-template-columns: 1rem minmax(0, 1fr); gap: 8px; }
+  .mark { color: var(--color-muted); text-align: center; }
+  .mark[data-status="yes"] { color: #946849; font-weight: var(--weight-strong); }
+  .footnote { margin-top: 16px; color: var(--color-muted); font-size: .75rem; line-height: 1.6; text-align: center; }
+  @media (width < 960px) {
+    .comparison-table { display: block; margin-top: 32px; border: 0; border-radius: 0; overflow: visible; }
+    thead { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+    tbody { display: grid; gap: 16px; }
+    tbody tr { display: grid; border: 1px solid var(--color-border); border-radius: 8px; overflow: hidden; background: #fff; }
+    tbody th, tbody td { display: block; padding: 14px 18px; border-bottom: 1px solid var(--color-border); }
+    tbody th { padding: 16px 18px; background: var(--color-surface); }
+    tbody td.cdelivery { border-inline-start: 0; }
+    tbody td:last-child { padding-inline-end: 18px; border-bottom: 0; }
+    tbody tr:last-child :is(th, td) { border-bottom: 1px solid var(--color-border); }
+    tbody tr:last-child td:last-child { border-bottom: 0; }
+    tbody td::before { content: attr(data-label); display: block; margin-bottom: 6px; color: var(--color-muted); font-size: .75rem; font-weight: var(--weight-control); line-height: 1.4; }
+    tbody td.cdelivery::before { color: #946849; font-weight: var(--weight-strong); }
+    .footnote { text-align: start; }
+  }
+</style>

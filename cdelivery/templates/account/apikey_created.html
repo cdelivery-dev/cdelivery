@@ -1,0 +1,74 @@
+{% extends "account.html" %}
+
+{% import "account/nav.html" as nav %}
+
+{% block title %}{{ tt!("ui.account.apikeys.created.title") }} - {{ tt!("ui.account.nav.account") }} | {{ super() }}{% endblock title %}
+
+{% block account_navigation %}{{ nav::nav("apikeys") }}{% endblock account_navigation %}
+
+{% block main %}
+<header>
+  <h1>{{ tt!("ui.account.apikeys.created.title") }}</h1>
+  <p>{{ tt!("ui.account.apikeys.created.notice") }}</p>
+</header>
+
+<div x-data="{ copied: false, async copy() { try { await navigator.clipboard.writeText(this.$refs.key.textContent.trim()); this.copied = true } catch (_) { this.copied = false } } }">
+  <pre x-ref="key" translate="no">{{ issued.key }}</pre>
+  <button class="button" type="button" @click="copy()"><span x-show="!copied">{{ tt!("ui.common.copy") }}</span><span x-show="copied" x-cloak>{{ tt!("ui.common.copied") }}</span></button>
+</div>
+
+<fieldset class="mt-4" x-data="mcpSetup" data-key="{{ issued.key }}" @change="copied = ''" x-cloak>
+  <legend><h2>{{ tt!("ui.account.apikeys.mcp.title") }}</h2></legend>
+  <div class="chips">
+    <label class="choice" translate="no"><input type="radio" name="mcp-client" value="claude" x-model="client" /> Claude Code</label>
+    <label class="choice" translate="no"><input type="radio" name="mcp-client" value="codex" x-model="client" /> Codex</label>
+    <label class="choice" translate="no"><input type="radio" name="mcp-client" value="opencode" x-model="client" /> OpenCode v2</label>
+    <label class="choice" translate="no"><input type="radio" name="mcp-client" value="pi" x-model="client" /> Pi</label>
+  </div>
+  <p class="mt-2" x-show="client === 'codex'">{{ tt!("ui.account.apikeys.mcp.config", path = "~/.codex/config.toml") }}</p>
+  <p class="mt-2" x-show="client === 'opencode'">{{ tt!("ui.account.apikeys.mcp.config", path = "~/.config/opencode/opencode.json(c)") }}</p>
+  <pre translate="no"><code x-ref="content" x-text="content"></code></pre>
+  <button class="button" type="button" @click="copy(content)" aria-live="polite"><span x-show="copied !== content">{{ tt!("ui.common.copy") }}</span><span x-show="copied === content">{{ tt!("ui.common.copied") }}</span></button>
+</fieldset>
+
+<script>
+document.addEventListener("alpine:init", () => {
+  Alpine.data("mcpSetup", () => ({
+    client: "claude",
+    copied: "",
+    async copy(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        this.copied = text;
+      } catch (_) {
+        this.copied = "";
+      }
+    },
+    get content() {
+      const url = `${window.location.origin}/mcp`;
+      const bearer = `Bearer ${this.$root.dataset.key}`;
+      const quote = value => "'" + value.replaceAll("'", "'\\''") + "'";
+      return {
+        claude: `claude mcp add --scope user --transport http cdelivery ${quote(url)} --header ${quote(`Authorization: ${bearer}`)}`,
+        codex: `[mcp_servers.cdelivery]\nurl = ${JSON.stringify(url)}\nhttp_headers = { Authorization = ${JSON.stringify(bearer)} }`,
+        opencode: JSON.stringify({
+          mcp: {
+            servers: {
+              cdelivery: {
+                type: "remote",
+                url,
+                headers: { Authorization: bearer },
+                protocol: "2026-07-28",
+                oauth: false
+              }
+            }
+          }
+        }, null, 2),
+        pi: `pi mcp add cdelivery --url ${quote(url)} --header ${quote(`Authorization=${bearer}`)}`,
+      }[this.client];
+    }
+  }));
+});
+</script>
+
+{% endblock main %}

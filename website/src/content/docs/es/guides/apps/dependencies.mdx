@@ -1,0 +1,19 @@
+---
+title: "Dependencias"
+description: "Conecta una aplicación a otro servicio o a una base PostgreSQL y elige qué flujos comprobar antes de publicar."
+sidebar:
+  order: 12.6
+---
+
+Las dependencias permiten referenciar el host de otra aplicación o una conexión PostgreSQL mediante [variables de entorno](/docs/es/guides/apps/container/). Estas referencias también identifican consumidoras para las [comprobaciones de publicación](/docs/es/guides/release-safety/guardian/). Un host o DSN introducido como valor normal no establece esa relación.
+
+- [Dependencias entre aplicaciones](/docs/es/guides/apps/dependencies/app/) — Conecta el servicio de pedidos con el de usuarios y comprueba que ambos siguen funcionando juntos cuando cambia uno de ellos.
+- [Dependencias PostgreSQL](/docs/es/guides/apps/dependencies/postgresql/) — Conecta las aplicaciones a la base de datos y prueba los cambios SQL con sus flujos de negocio antes de aplicarlos en producción.
+
+## Referenciar desde una aplicación
+
+Operator y Admin pueden editar la configuración de la aplicación:
+
+1. Añade una variable de entorno y elige **Dependencia** como origen.
+2. Selecciona la dependencia y el campo de salida.
+3. Confirma la selección y guarda toda la configuración de la aplicación.

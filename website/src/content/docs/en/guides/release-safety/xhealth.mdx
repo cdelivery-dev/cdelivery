@@ -1,0 +1,59 @@
+---
+title: "Configure XHealth checks"
+description: "Create Hurl or custom-command checks and understand what the check target actually tests."
+sidebar:
+  order: 26
+---
+
+XHealth checks an app in a separate container using its environment and file mounts, including [Secrets](/docs/guides/apps/secrets/). Operators and Admins configure checks; Readers can view shared results.
+
+## Choose a target
+
+On the app's **XHealth** page, choose Hurl or a custom command, a target, and an interval of at least one minute. Scheduled checks and **Run now** use the same target:
+
+| Target | Address | Port | Protocol |
+| --- | --- | --- | --- |
+| Domain | Domain resolved through DNS | 80 or 443 | HTTP, or HTTPS when enabled for the domain |
+| Published port | Server IP | Selected published port | HTTP for Hurl; chosen by the custom command |
+| Internal port | App's internal address | Specified container port | HTTP for Hurl; chosen by the custom command |
+
+HTTPS applies if any route for the domain enables it. Domain and published-port targets must belong to this app and map to one internal port, even with release checks off. Multiple routes to the same port are valid. Hurl accepts TCP port mappings only. For non-HTTP services, use a custom command with a port target.
+
+## Hurl
+
+For Hello, select internal port `80` and upload:
+
+```hurl
+GET {{TARGET_URL}}/
+HTTP 200
+```
+
+`{{TARGET_URL}}` receives the target URL through `HURL_VARIABLE_TARGET_URL`. Files must be nonempty and at most 1,023,999 bytes; leave the upload empty to keep the current file. See [Hurl syntax](https://hurl.dev/docs/request.html).
+
+For authentication, bind a Text secret as `HURL_VARIABLE_API_TOKEN` and reference `{{API_TOKEN}}`.
+
+## Custom commands
+
+The App image must contain the tools used. Exit code 0 means success; other codes mean failure. `localhost` refers to the check container.
+
+`TARGET_HOST` and `TARGET_PORT` identify the target. Domain targets also receive `TARGET_SCHEME` (`http` or `https`). Use an explicit shell for variable expansion or pipes; command arguments support shell-style quoting and escaping.
+
+With `sh` and `wget` in the image:
+
+```sh
+sh -c 'wget -q -O /dev/null "${TARGET_SCHEME:-http}://${TARGET_HOST}:${TARGET_PORT}/"'
+```
+
+Platform-injected target variables override plain values and cannot use Secret or Dependency bindings. Reserve `/xhealth.hurl` for Hurl. Keep checks read-only and test meaningful application behavior.
+
+## Run now
+
+For an enabled check, select **Run now**, call `POST /api/apps/{name}/xhealth/run` without a body, or use `xhealth_run` with `app`. The saved configuration is used; the next interval starts from this round's start.
+
+The API returns `202` with `{"ok":true}`, or `409` if a check is pending or running. Inspect [status and logs](/docs/guides/release-safety/xhealth/status/) or use `xhealth_get` for results. After a lost response, check the state before retrying: a request after completion starts another round.
+
+## Release checks
+
+Enable **Participate in release checks** to validate this app when it or its direct dependencies are updated. These checks access the preview service's internal port. Hurl uses HTTP; custom domain checks receive `TARGET_SCHEME=http`. Scheduled live checks continue independently.
+
+For setup and examples, see [app dependencies](/docs/guides/apps/dependencies/app/) and [PostgreSQL database dependencies](/docs/guides/apps/dependencies/postgresql/).

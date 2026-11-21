@@ -1,0 +1,127 @@
+---
+import Icon from '@cloudflare/nimbus-docs/components/Icon.astro';
+import type { Breadcrumb, PrevNext, SidebarItem, TOCItem } from '@cloudflare/nimbus-docs/types';
+import BaseLayout from './DocsBaseLayout.astro';
+import Header from '../components/docs/Header.astro';
+import Brand from '../components/docs/Brand.astro';
+import AiResources from '../components/docs/AiResources.astro';
+import { Sidebar, SidebarFilter } from '../components/ui/sidebar';
+import { TOC, MobileTOC } from '../components/ui/toc';
+import { Breadcrumbs } from '../components/ui/breadcrumbs';
+import { Pagination } from '../components/ui/pagination';
+import { PageActions } from '../components/ui/page-actions';
+import { site, type Locale } from '../config';
+import { translate } from '../i18n';
+
+interface Props {
+  title: string;
+  description?: string;
+  locale: Locale;
+  slug?: string;
+  markdownUrl?: string;
+  noindex?: boolean;
+  sidebar?: SidebarItem[];
+  headings?: TOCItem[];
+  breadcrumbs?: Breadcrumb[];
+  prevNext?: PrevNext;
+}
+const { title, description, locale, slug, markdownUrl, noindex, sidebar = [], headings = [], breadcrumbs = [], prevNext } = Astro.props;
+Astro.locals.docsLocale = locale;
+const t = translate(locale);
+const showSidebar = sidebar.length > 0;
+const showToc = headings.length > 0;
+---
+<BaseLayout {title} {description} {locale} {slug} {markdownUrl} {noindex}>
+  <div class="flex min-h-screen flex-col">
+    <Header {slug} {showSidebar} />
+    <div class="mx-auto w-full flex-1">
+      <div class="flex">
+        {showSidebar && <aside id="desktop-sidebar" aria-label={t('docs.navigation')} data-nb-desktop-sidebar class="sticky top-14 hidden h-[calc(100vh-3.5rem)] w-60 shrink-0 flex-col border-e border-border bg-background md:flex lg:w-(--nb-sidebar-width)">
+          <div data-nb-sidebar-tree class="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+            <nav class="px-4 pb-12 pt-5">
+              <SidebarFilter />
+              <Sidebar items={sidebar} persist />
+              <AiResources {locale} />
+            </nav>
+          </div>
+          <div class="pointer-events-none sticky bottom-0 h-8 bg-gradient-to-t from-background to-transparent" />
+        </aside>}
+        {showSidebar && <script is:inline aria-hidden="true">
+          (() => {
+            function centerActive(sidebar, active) {
+              const rail = sidebar.getBoundingClientRect();
+              const item = active.getBoundingClientRect();
+              sidebar.scrollTop += item.top - rail.top - rail.height / 2 + item.height / 2;
+            }
+            try {
+              const sidebar = document.querySelector('[data-nb-sidebar-tree]');
+              const content = sidebar?.querySelector('[data-nb-sidebar]');
+              if (!content) return;
+              const raw = JSON.parse(sessionStorage.getItem('sidebar-state') || 'null');
+              const state = raw && content.dataset.nbSidebarHash === raw.hash ? raw : null;
+              if (state) {
+                content.querySelectorAll('details').forEach((group, index) => {
+                  if (typeof state.open[index] === 'boolean') group.open = state.open[index];
+                });
+              }
+              const active = content.querySelector('[aria-current="page"]');
+              if (active) {
+                let group = active.closest('details');
+                while (group) {
+                  group.open = true;
+                  group = group.parentElement?.closest('details');
+                }
+              }
+              if (sidebar.clientHeight === 0) return;
+              if (state && typeof state.scroll === 'number') {
+                sidebar.scrollTop = state.scroll;
+                if (active) {
+                  const rail = sidebar.getBoundingClientRect();
+                  const item = active.getBoundingClientRect();
+                  if (item.top < rail.top || item.bottom > rail.bottom) centerActive(sidebar, active);
+                }
+              } else if (active) centerActive(sidebar, active);
+            } catch {}
+          })();
+        </script>}
+        <main id="main-content" tabindex="-1" class="min-w-0 flex-1">
+          <div class="mx-auto max-w-(--nb-content-max) px-4 pb-12 pt-6 md:px-6">
+            <Breadcrumbs items={breadcrumbs} class="pb-2" />
+            <div data-pagefind-body={noindex ? undefined : ''} data-pagefind-ignore={noindex ? '' : undefined}>
+              <div data-slot="page-header" class="mt-6">
+                <h1 data-pagefind-meta="title" class="mb-0 text-foreground [overflow-wrap:anywhere] [text-wrap:balance]" style="font-size:var(--nb-h1-size);line-height:var(--nb-h1-leading);font-weight:var(--nb-h1-weight);letter-spacing:var(--nb-h1-tracking)">{title}</h1>
+                {description && <p class="mb-2 mt-2 text-base leading-7 text-muted-foreground [text-wrap:pretty] sm:text-lg sm:leading-7">{description}</p>}
+                <PageActions {markdownUrl} class={description ? undefined : 'mt-3'} />
+              </div>
+              {showToc && <div class="sticky top-(--nb-header-height) z-20 -mx-4 mb-6 mt-3 border-y border-border bg-background/95 px-4 py-2 backdrop-blur md:-mx-6 md:px-6 xl:hidden">
+                <MobileTOC {headings} />
+              </div>}
+              <div class:list={['mb-6 mt-3 h-px w-full bg-border', showToc && 'hidden xl:block']} />
+              <article class="docs-content max-w-none"><slot /></article>
+            </div>
+            <Pagination {prevNext} />
+            <footer class="mt-12 flex items-center justify-between border-t border-border pt-5 text-xs text-muted-foreground">
+              <span>© {new Date().getFullYear()} {site.name}</span>
+              <a href={site.github} target="_blank" rel="noopener" class="text-muted-foreground hover:text-foreground">GitHub</a>
+            </footer>
+          </div>
+        </main>
+        {showToc && <aside aria-label={t('docs.toc')} data-nb-toc-scroll-host class="sticky top-14 hidden h-[calc(100vh-3.5rem)] w-(--nb-toc-width) shrink-0 overflow-y-auto xl:block">
+          <div class="pb-8 pe-6 ps-8 pt-6"><TOC {headings} /></div>
+        </aside>}
+      </div>
+    </div>
+  </div>
+  {showSidebar && <dialog data-mobile-sidebar data-state="closed" aria-label={t('docs.navigation')} class="group fixed inset-0 m-0 h-full max-h-full w-full max-w-full border-0 bg-transparent p-0 transition-[background-color] duration-250 ease-out data-[state=open]:bg-black/40 motion-reduce:transition-none [&::backdrop]:bg-transparent">
+    <div data-mobile-sidebar-panel class="flex h-full w-(--nb-sidebar-width) max-w-[85vw] -translate-x-full flex-col border-e border-border bg-card transition-transform duration-250 ease-out group-data-[state=open]:translate-x-0 motion-reduce:transition-none">
+      <div class="sticky top-0 z-[1] flex items-center justify-between border-b border-border bg-card px-4 py-3">
+        <Brand />
+        <button data-close-sidebar class="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground" aria-label={t('docs.close')}><Icon name="ph:x" class="h-5 w-5" /></button>
+      </div>
+      <div data-nb-sidebar-drawer-slot class="flex min-h-0 flex-1 flex-col [&>[data-nb-sidebar-tree]]:min-h-0 [&>[data-nb-sidebar-tree]]:flex-1 [&>[data-nb-sidebar-tree]]:overflow-y-auto [&>[data-nb-sidebar-tree]]:overscroll-contain" />
+    </div>
+  </dialog>}
+  <script>
+    import '../docs/sidebar';
+  </script>
+</BaseLayout>

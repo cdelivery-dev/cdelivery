@@ -1,0 +1,152 @@
+{% extends "dashboard.html" %}
+
+{% import "node/tabs.html" as tab %}
+
+{% block title %}{{ tt!("ui.volume.title") }} - {{ node.hostname }} | {{ super() }}{% endblock title %}
+
+{% block main %}
+{% let id = node.id %}
+{% let hostname = node.hostname %}
+{{ tab::page_header(id, hostname, "volumes") }}
+
+{% match report %}
+{% when Ok(Some(report)) %}
+<dl>
+  <dt>{{ tt!("ui.volume.capacity") }}</dt>
+  <dd>{{ crate::ui::bytes_text(*report.total_bytes) }}</dd>
+  <dt>{{ tt!("ui.volume.available") }}</dt>
+  <dd>{{ crate::ui::bytes_text(*report.available_bytes) }}</dd>
+</dl>
+
+<div x-data="{
+  submitting: false,
+  editing: false,
+  openVolume(button) {
+    this.editing = !!button;
+    this.$refs.volumeForm.reset();
+    if (button) {
+      this.$refs.name.value = button.dataset.name;
+      this.$refs.description.value = button.dataset.description;
+      this.$refs.deletePayload.value = JSON.stringify({ name: button.dataset.name });
+      this.$refs.deleteForm.dataset.confirm = button.dataset.confirm;
+    }
+    CDelivery.openDialog(this.$refs.volumeModal);
+  }
+}">
+<div class="table-scroll">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">{{ tt!("ui.volume.name") }}</th>
+        <th scope="col">{{ tt!("ui.volume.size") }}</th>
+        <th scope="col">{{ tt!("ui.volume.description") }}</th>
+        {% if can_write %}<th scope="col" aria-label='{{ tt!("ui.common.actions") }}'></th>{% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for volume in report.volumes %}
+      <tr>
+        <th scope="row"><span translate="no">{{ volume.name }}</span>
+          {% match volume.backend %}{% when Some(crate::operation::volume::typ::Backend::Zfs) %}<small>ZFS</small>{% when Some(crate::operation::volume::typ::Backend::Local) %}<small>{{ tt!("ui.volume.local") }}</small>{% when None %}{% endmatch %}
+        </th>
+        <td>{% match volume.size_bytes %}{% when Some(bytes) %}{{ crate::ui::bytes_text(**bytes) }}{% when None %}{{ tt!("ui.volume.sizeUnavailable") }}{% endmatch %}</td>
+        <td>{% if !volume.ready %}{{ tt!("ui.volume.residual") }}{% else if let Some(description) = volume.description %}{{ description }}{% endif %}</td>
+        {% if can_write %}
+        <td>
+          {% if volume.ready %}
+          <button class="row-action" type="button"
+            data-name="{{ volume.name }}"
+            data-description="{% if let Some(description) = volume.description %}{{ description }}{% endif %}"
+            data-confirm='{{ tt!("ui.volume.deleteConfirm", name = volume.name) }}'
+            @click="openVolume($el)" :disabled="submitting">{{ tt!("ui.common.edit") }}</button>
+          {% else %}
+          <form method="post" action="/nodes/{{ id }}/volumes/delete" data-confirm='{{ tt!("ui.volume.deleteConfirm", name = volume.name) }}'
+            @submit="if (submitting || !confirm($el.dataset.confirm)) { $event.preventDefault(); return } submitting = true">
+            <input type="hidden" name="payload" value='{"name":"{{ volume.name }}"}' />
+            <button class="row-action" type="submit" :disabled="submitting">{{ tt!("ui.common.delete") }}</button>
+          </form>
+          {% endif %}
+        </td>
+        {% endif %}
+      </tr>
+      {% else %}
+      {% if report.previews.is_empty() %}
+      <tr><td colspan="{% if can_write %}4{% else %}3{% endif %}"><span class="muted">{{ tt!("ui.volume.empty") }}</span></td></tr>
+      {% endif %}
+      {% endfor %}
+      {% for name in report.previews %}
+      <tr>
+        <th scope="row" translate="no">Preview / {{ name }}</th>
+        <td></td><td>{{ tt!("ui.volume.previewData") }}</td>
+        {% if can_write %}
+        <td><form method="post" action="/nodes/{{ id }}/volumes/delete-preview" data-confirm='{{ tt!("ui.volume.deleteConfirm", name = name) }}'
+          @submit="if (submitting || !confirm($el.dataset.confirm)) { $event.preventDefault(); return } submitting = true">
+          <input type="hidden" name="payload" value='{"name":"{{ name }}"}' />
+          <button class="row-action" type="submit" :disabled="submitting">{{ tt!("ui.common.delete") }}</button>
+        </form></td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if can_write %}
+  <div class="end"><button class="row-action" type="button" @click="openVolume()" :disabled="submitting">{{ tt!("ui.common.create") }}</button></div>
+  <dialog
+    x-ref="volumeModal"
+    aria-labelledby="volume-dialog-title"
+    @click.self="const rect = $el.getBoundingClientRect(); if ($event.clientX < rect.left || $event.clientX > rect.right || $event.clientY < rect.top || $event.clientY > rect.bottom) $el.close()"
+  >
+    <h2 id="volume-dialog-title" data-create='{{ tt!("ui.common.create") }}' data-edit='{{ tt!("ui.common.edit") }}' x-text="editing ? $el.dataset.edit : $el.dataset.create"></h2>
+    <form
+      x-ref="volumeForm"
+      method="post"
+      action="/nodes/{{ id }}/volumes/create"
+      :action="editing ? '/nodes/{{ id }}/volumes/update' : '/nodes/{{ id }}/volumes/create'"
+      @submit="
+        if (submitting) { $event.preventDefault(); return }
+        const description = $refs.description.value;
+        $refs.payload.value = JSON.stringify(editing
+          ? { name: $refs.name.value, changes: { description: description || null } }
+          : { name: $refs.name.value, description: description || undefined });
+        submitting = true
+      "
+    >
+      <input x-ref="payload" type="hidden" name="payload" />
+      <div class="field">
+        <label for="volume-name">{{ tt!("ui.volume.name") }}</label>
+        <input x-ref="name" id="volume-name" class="text" type="text" required minlength="1" maxlength="{{ crate::concept::name::MAX }}"
+          pattern="^(?!(?:{{ cdelivery_wire::name::AGENT_VOLUME }}|{{ cdelivery_wire::name::INSIGHT_VOLUME }})$)[a-z0-9](?:[a-z0-9\-]*[a-z0-9])?$" title='{{ tt!("ui.volume.nameValidation") }}'
+          spellcheck="false" :readonly="editing" :disabled="submitting" />
+      </div>
+      <div class="field">
+        <label for="volume-description">{{ tt!("ui.volume.description") }}</label>
+        <input x-ref="description" id="volume-description" class="text" type="text" maxlength="256" :disabled="submitting" />
+      </div>
+      <p x-show="!editing"><small>{{ tt!("ui.volume.createHelp") }}</small></p>
+      <div class="actions">
+        <button class="button danger" type="submit" form="delete_volume_form" x-show="editing" :disabled="submitting">{{ tt!("ui.common.delete") }}</button>
+        <input class="button secondary" type="button" value='{{ tt!("ui.common.cancel") }}' @click="$refs.volumeModal.close()" :disabled="submitting" />
+        <input class="button" type="submit" data-create='{{ tt!("ui.common.create") }}' data-save='{{ tt!("ui.common.save") }}' :value="editing ? $el.dataset.save : $el.dataset.create" :disabled="submitting" />
+      </div>
+    </form>
+    <form x-ref="deleteForm" id="delete_volume_form" method="post" action="/nodes/{{ id }}/volumes/delete"
+      @submit="if (submitting || !confirm($el.dataset.confirm)) { $event.preventDefault(); return } submitting = true">
+      <input x-ref="deletePayload" type="hidden" name="payload" />
+    </form>
+  </dialog>
+{% endif %}
+</div>
+{% when Ok(None) %}
+<p>{{ tt!("ui.volume.disabledHelp") }}</p>
+{% if can_write %}
+<p><a href="/nodes#volume-management">{{ tt!("ui.volume.settings") }}</a></p>
+{% else %}
+<p>{{ tt!("ui.volume.enableByAdmin") }}</p>
+{% endif %}
+{% when Err(detail) %}
+<p role="alert">{{ detail }}</p>
+<p><a href="/nodes/{{ id }}/volumes">{{ tt!("ui.common.retry") }}</a></p>
+{% endmatch %}
+{% endblock main %}

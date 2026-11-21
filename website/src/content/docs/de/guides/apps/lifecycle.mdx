@@ -1,0 +1,26 @@
+---
+title: "Aktualisieren und neu starten"
+description: "Updates ändern die Konfiguration, Neustarts ersetzen Aufgaben mit vorhandener Konfiguration."
+sidebar:
+  order: 18
+---
+
+Updates ändern die Konfiguration, Neustarts ersetzen Aufgaben mit vorhandener Konfiguration.
+
+## Update
+
+Gezielt ändern und speichern. Image, Umgebung, Ressourcen, Netzwerk und Dateien können Aufgaben ersetzen. [Strategie](/docs/de/guides/release-safety/update-strategy/) und [Release-Prüfungen](/docs/de/guides/release-safety/guardian/) prüfen.
+
+Gleiche Werte starten nicht neu; extern geänderte Tags lösen keine automatische Bereitstellung aus.
+
+## Neustart
+
+Ein Neustart folgt der Update-Strategie der Anwendung. Standardmäßig werden alle Replikate parallel ersetzt und die alten zuerst gestoppt (StopFirst). Dadurch können alle Replikate gleichzeitig ausfallen.
+
+Korrekt eingebundene Volumes werden nicht gelöscht; ungültige Befehle nicht repariert. Wiederholte Fehler in Logs untersuchen.
+
+## Verifizieren
+
+Image, Replikate, Logs, Ereignisse, Anfrage und Daten prüfen. Anfrage kann vor Aufgabenende fertig sein; nicht während laufender Ersetzung erneut ändern.
+
+[Rollback](/docs/de/guides/release-safety/rollback/) nutzt vorherige Konfiguration ohne Datenmigration zurückzusetzen. [Löschen](/docs/de/guides/apps/delete/) ist separat und erhält Volumes.

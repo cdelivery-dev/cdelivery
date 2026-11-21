@@ -1,0 +1,38 @@
+---
+title: "Monter et modifier la configuration"
+description: "Associez le contenu à un chemin et vérifiez sa consommation par les nouvelles tâches."
+sidebar:
+  order: 13
+---
+
+Associez le contenu à un chemin et vérifiez sa consommation par les nouvelles tâches.
+
+Les exemples suivants utilisent des téléversements XConfig ordinaires. Pour remplacer un secret fichier, créez-en un nouveau dans [Secrets](/docs/fr/guides/apps/secrets/), sélectionnez-le dans le montage existant et enregistrez la configuration.
+
+## Procédure
+
+Chargez un fichier valide, choisissez un chemin absolu, enregistrez, puis inspectez tâches, journaux et une fonction affectée. Selon les paramètres, le changement passe par les [vérifications de publication](/docs/fr/guides/release-safety/guardian/).
+
+Le chemin d’un montage existant n’est pas directement modifiable : retirez-le puis ajoutez le nouveau. Vérifiez d’abord que l’image utilise cette destination.
+
+## Exemple
+
+Pour l’exemple Hello (`ghcr.io/cdelivery-dev/hello:1.0.0`), enregistrez ce contenu dans `index.html` et téléversez-le avec XConfig vers `/www/index.html` :
+
+```html
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>CDelivery Hello</title></head>
+<body><h1>Hello from XConfig</h1></body>
+</html>
+```
+
+Conservez la commande par défaut et le mappage TCP 80 → 8080. Après la mise à jour, ouvrez `/` et vérifiez que `Hello from XConfig` remplace les informations de la requête. Retirer ce montage restaure la réponse par défaut dans les nouveaux conteneurs.
+
+Avant suppression, assurez-vous que l’application démarre sans le fichier. En cas d’échec, lisez les erreurs de syntaxe et de chemin.
+
+## Conservation
+
+L’indication d’utilisation concerne l’application, pas une bibliothèque globale. Le contenu orphelin peut être nettoyé ; il ne constitue pas un historique de sauvegarde.
+
+Conservez la source dans votre propre système. Voir les [limites XConfig](/docs/fr/guides/apps/xconfig/).

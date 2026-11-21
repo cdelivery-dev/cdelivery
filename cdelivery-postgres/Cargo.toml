@@ -1,0 +1,28 @@
+[package]
+name = "cdelivery-postgres"
+version = "0.2.0"
+edition = "2024"
+publish = false
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+
+[dependencies]
+axum = { workspace = true }
+cdelivery-wire = { workspace = true }
+cipher = { workspace = true }
+jiff = { workspace = true }
+libpq = { workspace = true }
+logging = { workspace = true }
+macros = { workspace = true }
+reqwest = { workspace = true, features = ["json", "rustls"] }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+url = { workspace = true }
+zeroize = { workspace = true }
+
+[lints]
+workspace = true

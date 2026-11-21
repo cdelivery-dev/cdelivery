@@ -1,0 +1,19 @@
+---
+title: "Dependencies"
+description: "Connect an app to another app or a PostgreSQL database and choose which business flows to check before release."
+sidebar:
+  order: 12.6
+---
+
+Dependencies let applications reference another application's host or a PostgreSQL connection through [environment variables](/docs/guides/apps/container/). These explicit bindings also identify consumers for [release checks](/docs/guides/release-safety/guardian/). A host or DSN entered as an ordinary value does not establish that relationship.
+
+- [App dependencies](/docs/guides/apps/dependencies/app/) — Bind the order service to the user service and check that they still work together when either app changes.
+- [PostgreSQL database dependencies](/docs/guides/apps/dependencies/postgresql/) — Connect apps to a database and test SQL changes against their business flows before applying them in production.
+
+## Bind an application
+
+Operators and Admins can edit application configuration:
+
+1. Add an environment variable and choose **Dependency** as its source.
+2. Select the dependency and output field.
+3. Confirm the selection, then save the whole application configuration.

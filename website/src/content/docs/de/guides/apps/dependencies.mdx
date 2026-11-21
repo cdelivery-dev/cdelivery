@@ -1,0 +1,19 @@
+---
+title: "Abhängigkeiten"
+description: "Verbinden Sie eine App mit einer anderen App oder einer PostgreSQL-Datenbank und legen Sie fest, welche Abläufe vor dem Release geprüft werden."
+sidebar:
+  order: 12.6
+---
+
+Abhängigkeiten stellen den Host einer anderen App oder eine PostgreSQL-Verbindung über [Umgebungsvariablen](/docs/de/guides/apps/container/) bereit. Diese expliziten Bindungen bestimmen auch die Verbraucher für [Release-Prüfungen](/docs/de/guides/release-safety/guardian/). Ein als normaler Wert eingegebener Host oder DSN stellt diese Beziehung nicht her.
+
+- [App-Abhängigkeiten](/docs/de/guides/apps/dependencies/app/) — Binden Sie den Benutzerdienst an den Bestelldienst und prüfen Sie, ob beide nach einem Update weiterhin zusammenarbeiten.
+- [PostgreSQL-Abhängigkeiten](/docs/de/guides/apps/dependencies/postgresql/) — Verbinden Sie Apps mit der Datenbank und prüfen Sie SQL-Änderungen vor der Ausführung in Produktion anhand Ihrer Geschäftsabläufe.
+
+## In einer App verwenden
+
+Operator und Admin können die App-Konfiguration bearbeiten:
+
+1. Fügen Sie eine Umgebungsvariable hinzu und wählen Sie **Abhängigkeit** als Quelle.
+2. Wählen Sie die Abhängigkeit und das Ausgabefeld.
+3. Bestätigen Sie die Auswahl und speichern Sie die gesamte App-Konfiguration.

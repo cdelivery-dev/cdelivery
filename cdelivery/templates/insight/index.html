@@ -1,0 +1,60 @@
+{% extends "dashboard.html" %}
+
+{% import "insight/tabs.html" as tab %}
+
+{% block title %}Insight | {{ super() }}{% endblock title %}
+
+{% block main %}
+{{ tab::header("spec") }}
+{% let deployed = insight.server.is_some() || insight.agent.is_some() %}
+
+{% if form.is_none() %}
+<h2>{{ tt!("ui.insight.status.label") }}</h2>
+{% endif %}
+{% match insight.status %}
+{% when crate::operation::insight::typ::InsightStatus::Enabled %}
+{% if form.is_none() %}
+<p>{{ tt!("ui.insight.status.enabled") }}</p>
+{% endif %}
+{% when crate::operation::insight::typ::InsightStatus::Disabled %}
+{% if form.is_none() %}
+<p class="muted">{{ tt!("ui.insight.status.disabled") }}</p>
+{% endif %}
+{% when crate::operation::insight::typ::InsightStatus::Degraded %}
+{% if insight.server.is_some() %}
+<p><strong>{{ tt!("ui.insight.status.serverOnly") }}</strong></p>
+{% else %}
+<p><strong>{{ tt!("ui.insight.status.agentOnly") }}</strong></p>
+{% endif %}
+{% endmatch %}
+
+{% if form.is_none() && deployed %}
+<dl>
+  {% if let Some(server) = insight.server %}
+  <dt>{{ tt!("ui.insight.version.server") }}</dt>
+  <dd translate="no">{{ server.version }}</dd>
+  {% endif %}
+  {% if let Some(agent) = insight.agent %}
+  <dt>{{ tt!("ui.insight.version.agent") }}</dt>
+  <dd translate="no">{{ agent.version }}</dd>
+  {% endif %}
+  {% if let Some(server) = insight.server %}
+  <dt>{{ tt!("ui.insight.section.placement") }}</dt>
+  <dd>{% match server.placement %}{% when crate::operation::node::typ::NodeSelector::NodeId(id) %}{{ tt!("ui.insight.placement.node") }}: {{ id }}{% when crate::operation::node::typ::NodeSelector::Label(label) %}{{ tt!("ui.insight.placement.label") }}: {{ label }}{% endmatch %}</dd>
+  <dt>{{ tt!("ui.insight.section.storage") }}</dt>
+  <dd>{% match server.storage %}{% when crate::operation::insight::typ::StorageConfig::Local %}{{ tt!("ui.insight.storage.local") }}{% when crate::operation::insight::typ::StorageConfig::S3 { .. } %}{{ tt!("ui.insight.storage.s3") }}{% when crate::operation::insight::typ::StorageConfig::S3Compatible { .. } %}{{ tt!("ui.insight.storage.s3Compatible") }}{% when crate::operation::insight::typ::StorageConfig::Gcs { .. } %}{{ tt!("ui.insight.storage.gcs") }}{% when crate::operation::insight::typ::StorageConfig::Azure { .. } %}{{ tt!("ui.insight.storage.azure") }}{% endmatch %}</dd>
+  <dt>{{ tt!("ui.insight.section.dataRetention") }}</dt>
+  <dd>{{ crate::locale::current().quantity(u64::from(*server.retention_days), tt!("ui.insight.retention.summaryOne", days = server.retention_days), tt!("ui.insight.retention.summary", days = server.retention_days)) }}</dd>
+  <dt>{{ tt!("ui.insight.section.flush") }}</dt>
+  <dd>{% match server.flush_interval %}{% when crate::operation::typ::Duration::Seconds(value) %}{{ crate::locale::current().quantity(**value, tt!("ui.insight.flush.summary.secondsOne", value = value), tt!("ui.insight.flush.summary.seconds", value = value)) }}{% when crate::operation::typ::Duration::Minutes(value) %}{{ crate::locale::current().quantity(**value, tt!("ui.insight.flush.summary.minutesOne", value = value), tt!("ui.insight.flush.summary.minutes", value = value)) }}{% when crate::operation::typ::Duration::Hours(value) %}{{ crate::locale::current().quantity(**value, tt!("ui.insight.flush.summary.hoursOne", value = value), tt!("ui.insight.flush.summary.hours", value = value)) }}{% endmatch %}</dd>
+  {% endif %}
+  {% if let Some(agent) = insight.agent %}
+  <dt>{{ tt!("ui.insight.section.sampling") }}</dt>
+  <dd>{{ tt!("ui.insight.sampling.summary", secs = agent.sample_interval_secs) }}</dd>
+  {% endif %}
+</dl>
+{% endif %}
+
+{% let initial_setup = false %}
+{% include "insight/form.html" %}
+{% endblock main %}

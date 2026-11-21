@@ -1,0 +1,183 @@
+{% extends "dashboard.html" %}
+
+{% import "app/tabs.html" as tab %}
+{% import "time_range.html" as time_range %}
+{% import "pager.html" as pager %}
+
+{% macro opt(current, value) %}<option value="{{ value }}"{% if current == value %} selected{% endif %}>{{ value }}</option>{% endmacro %}
+
+{% block title %}{{ tt!("ui.app.tab.logs") }} - {{ self.name }} | {{ super() }}{% endblock title %}
+
+{% block main %}
+{{ tab::page_header(name, description, "logs", can_edit) }}
+{% let range = window.preset %}
+{% let start = window.range.0 %}
+{% let end = window.range.1 %}
+
+<form
+  method="get"
+  action="/apps/{{ name }}/logs"
+  class="row query-bar"
+  role="search"
+  x-data='CDelivery.timeRange({{ start|json }}, {{ end|json }}, {{ range|json }})'
+>
+  {{ time_range::fields(range) }}
+  <span class="sep" aria-hidden="true">|</span>
+  <select class="text" name="source" @change="$root.requestSubmit()" aria-label='{{ tt!("ui.logs.source.label") }}'>
+    {% if query.source.is_none() %}<option value="" disabled selected>{{ tt!("ui.logs.source.label") }}</option>{% endif %}
+    {% for option in sources %}
+    <option value="{{ option }}"{% if self.selected(option) %} selected{% endif %}>{{ option.title() }}</option>
+    {% endfor %}
+  </select>
+  {% if self.access_selected() %}
+  <input type="hidden" name="text" value="{{ query.text }}" />
+  <span class="sep" aria-hidden="true">|</span>
+  {% let method = query.method.as_str() %}
+  {% let status_class = query.status_class.as_str() %}
+  <select class="text" name="method" aria-label='{{ tt!("ui.logs.access.header.method") }}'>
+    <option value="">{{ tt!("ui.logs.access.header.method") }}</option>
+    {{ opt(method, "GET") }}{{ opt(method, "HEAD") }}{{ opt(method, "POST") }}{{ opt(method, "PUT") }}{{ opt(method, "DELETE") }}{{ opt(method, "PATCH") }}{{ opt(method, "OPTIONS") }}{{ opt(method, "TRACE") }}{{ opt(method, "CONNECT") }}{{ opt(method, "OTHER") }}
+  </select>
+  <span class="sep" aria-hidden="true">|</span>
+  <select class="text" name="status_class" aria-label='{{ tt!("ui.logs.access.header.status") }}'>
+    <option value="">{{ tt!("ui.logs.access.header.status") }}</option>
+    {{ opt(status_class, "Informational") }}{{ opt(status_class, "Success") }}{{ opt(status_class, "Redirection") }}{{ opt(status_class, "ClientError") }}{{ opt(status_class, "ServerError") }}{{ opt(status_class, "NoResponse") }}
+  </select>
+  <div class="row query-search">
+    <input class="text" type="search" name="search_path" value="{{ query.search_path }}" maxlength="2048" placeholder='{{ tt!("ui.logs.access.search.path") }}' aria-label='{{ tt!("ui.logs.access.search.path") }}' />
+    <input class="text" type="search" name="search_client_ip" value="{{ query.search_client_ip }}" maxlength="64" placeholder='{{ tt!("ui.logs.access.search.client") }}' aria-label='{{ tt!("ui.logs.access.search.client") }}' />
+    <input class="button" type="submit" value='{{ tt!("ui.logs.search.button") }}' />
+  </div>
+  {% else %}
+  <input type="hidden" name="search_path" value="{{ query.search_path }}" />
+  <input type="hidden" name="search_client_ip" value="{{ query.search_client_ip }}" />
+  <input type="hidden" name="method" value="{{ query.method }}" />
+  <input type="hidden" name="status_class" value="{{ query.status_class }}" />
+  <div class="row query-search">
+    <input
+      class="text"
+      type="search"
+      name="text"
+      value="{{ query.text }}"
+      maxlength="2079"
+      placeholder='{{ tt!("ui.logs.search.placeholder") }}'
+      aria-label='{{ tt!("ui.logs.search.label") }}'
+    />
+    <input class="button" type="submit" value='{{ tt!("ui.logs.search.button") }}' />
+  </div>
+  {% endif %}
+</form>
+
+{% if let Some(error) = source_error %}
+<p class="abnormal">{{ tt!("ui.logs.source.label") }}</p>
+<pre class="diagnostic">{{ error }}</pre>
+{% endif %}
+
+{% match state %}
+{% when LogsState::InsightDisabled %}
+<p class="muted mt-4">{{ tt!("ui.insight.query.disabled") }} <a href="/insight">{{ tt!("ui.insight.query.open") }}</a></p>
+{% when LogsState::NoSources %}
+<p class="muted mt-4">{{ tt!("ui.logs.source.none") }}</p>
+{% when LogsState::Unavailable %}
+<p class="muted mt-4">{{ tt!("ui.logs.unavailable") }}</p>
+{% when LogsState::Failed(error) %}
+<p class="abnormal">{{ tt!("ui.logs.queryFailed") }}</p>
+<pre class="diagnostic">{{ error }}</pre>
+{% when LogsState::Logs(records) %}
+<div class="table-scroll">
+  <table class="logs">
+    <thead>
+      <tr>
+        <th class="log-ts" scope="col">{{ tt!("ui.logs.header.time") }}</th>
+        <th class="log-source" scope="col">{{ tt!("ui.logs.header.source") }}</th>
+        <th scope="col">{{ tt!("ui.logs.header.log") }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if records.is_empty() %}<tr><td class="muted log-empty" colspan="3">{{ tt!("ui.logs.empty") }}</td></tr>{% endif %}
+      {% for record in records %}
+      <tr>
+        <td class="log-ts">
+          <time datetime="{{ record.timestamp }}" x-init="$el.textContent = CDelivery.formatInstant($el.dateTime)">{{ record.timestamp }}</time>
+        </td>
+        <td class="log-source" title="{{ record.source }}" translate="no">{{ record.source }}</td>
+        <td class="log-text" translate="no">{{ record.log }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% let (previous, next) = self.pages(records.len()) %}
+{{ pager::links(previous, next) }}
+{% when LogsState::Access(rows) %}
+
+<div class="table-scroll">
+  <table class="access" x-data>
+    <thead>
+      <tr>
+        <th scope="col"></th>
+        <th class="log-ts" scope="col">{{ tt!("ui.logs.header.time") }}</th>
+        <th scope="col">{{ tt!("ui.logs.access.header.method") }}</th>
+        <th scope="col">{{ tt!("ui.logs.access.header.path") }}</th>
+        <th scope="col">{{ tt!("ui.logs.access.header.status") }}</th>
+        <th scope="col">{{ tt!("ui.logs.access.header.duration") }}</th>
+        <th scope="col">{{ tt!("ui.logs.access.header.client") }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if rows.is_empty() %}<tr><td class="muted log-empty" colspan="7">{{ tt!("ui.logs.empty") }}</td></tr>{% endif %}
+      {% for row in rows %}
+      <tr>
+        <td>
+          <button
+            type="button"
+            class="row-action row-toggle"
+            aria-expanded="false"
+            aria-controls="access-detail-{{ loop.index }}"
+            aria-label='{{ tt!("ui.logs.access.detail.toggle") }}'
+            @click="const detail = $el.closest('tr').nextElementSibling; detail.hidden = !detail.hidden; $el.setAttribute('aria-expanded', String(!detail.hidden))"
+          ></button>
+        </td>
+        <td class="log-ts">
+          <time datetime="{{ row.time }}" x-init="$el.textContent = CDelivery.formatInstant($el.dateTime)">{{ row.time }}</time>
+        </td>
+        <td translate="no">{{ row.method }}</td>
+        <td class="access-path" translate="no">{{ row.path }}</td>
+        <td translate="no">{{ row.status }}</td>
+        <td translate="no">{{ row.duration }}</td>
+        <td translate="no">{{ row.client_ip }}</td>
+      </tr>
+      <tr id="access-detail-{{ loop.index }}" class="row-detail" hidden>
+        <td colspan="7">
+          <dl>
+            <dt>{{ tt!("ui.logs.access.detail.domain") }}</dt>
+            <dd translate="no">{{ row.detail.domain }}</dd>
+            <dt>{{ tt!("ui.logs.access.detail.outcome") }}</dt>
+            <dd translate="no">{{ row.detail.outcome }}</dd>
+            <dt>{{ tt!("ui.logs.access.detail.node") }}</dt>
+            <dd translate="no">{{ row.detail.node_id }}</dd>
+            <dt>{{ tt!("ui.logs.access.detail.target_port") }}</dt>
+            <dd translate="no">{{ row.detail.target_port }}</dd>
+            <dt>{{ tt!("ui.logs.access.detail.request_bytes") }}</dt>
+            <dd translate="no">{{ row.detail.request_bytes }}</dd>
+            <dt>{{ tt!("ui.logs.access.detail.response_bytes") }}</dt>
+            <dd translate="no">{{ row.detail.response_bytes }}</dd>
+            <dt>{{ tt!("ui.logs.access.detail.ttfb") }}</dt>
+            <dd translate="no">{{ row.detail.upstream_ttfb }}</dd>
+            <dt>{{ tt!("ui.logs.access.detail.service") }}</dt>
+            <dd translate="no">{{ row.detail.service_id }}</dd>
+            <dt>{{ tt!("ui.logs.access.detail.error") }}</dt>
+            <dd translate="no">{{ row.detail.error }}</dd>
+          </dl>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% let (previous, next) = self.pages(rows.len()) %}
+{{ pager::links(previous, next) }}
+{% endmatch %}
+{% endblock main %}

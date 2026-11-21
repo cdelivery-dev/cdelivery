@@ -1,0 +1,26 @@
+---
+title: "Résultats et dépannage XJob"
+description: "La vue expose l’exécution actuelle/récente et la prochaine date, pas un historique illimité."
+sidebar:
+  order: 40
+---
+
+La vue expose l’exécution actuelle/récente et la prochaine date, pas un historique illimité.
+
+Le champ `last_run` de l’API indique la création de la dernière tâche observée, pas sa fin. L’absence d’enregistrement ne prouve pas le succès. Les arrêts pour dépassement produisent des événements `XJobFailed` ; consultez événements et journaux si l’enregistrement a disparu.
+
+## Lire
+
+Vérifiez nom, état, timestamps et résultat ; choisissez la source XJob correspondante. Pending n’est pas terminé, Running n’est pas réussi. Code zéro doit exprimer le résultat métier.
+
+## Dépanner
+
+Sans démarrage : serveurs, ressources, image. Commande absente : outils/chemin. Service inaccessible : groupe, hôte, port, identifiants. Timeout : dépendance/durée. Logs absents : source, période, pilote et conservation. Effets répétés : comportement de la commande.
+
+Le conteneur distinct ne récupère pas automatiquement les fichiers temporaires métier.
+
+## Réessayer
+
+Déterminez si une partie du travail a déjà eu lieu. Un échec ne défait pas les écritures ou appels externes.
+
+Après modification de commande/[horaire](/docs/fr/guides/automation/xjob/schedule/), vérifiez nouvelle exécution et prochaine date. Conservez l’historique métier dans le système métier si nécessaire.

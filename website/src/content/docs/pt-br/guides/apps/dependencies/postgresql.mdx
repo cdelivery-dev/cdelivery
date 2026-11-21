@@ -1,0 +1,36 @@
+---
+title: "Dependências PostgreSQL"
+description: "Conecte as aplicações ao banco e teste alterações SQL com os fluxos de negócio antes de aplicá-las em produção."
+sidebar:
+  order: 2
+---
+
+Em cada aplicação vinculada diretamente a esse banco, você pode ativar **Participar das verificações de publicação** no [XHealth](/docs/pt-br/guides/release-safety/xhealth/). Por exemplo, o serviço de pedidos pode verificar se a consulta de um pedido continua retornando os dados esperados após a alteração no banco.
+
+## Cadastrar um banco
+
+- [Neon](/docs/pt-br/guides/apps/dependencies/postgresql/neon/) — Cadastre uma conexão Neon e escolha a capacidade de processamento da branch de ensaio.
+- [PlanetScale](/docs/pt-br/guides/apps/dependencies/postgresql/planetscale/) — Cadastre uma conexão PostgreSQL do PlanetScale e confira o tamanho e o ponto de restauração da branch de ensaio.
+- [PostgreSQL local](/docs/pt-br/guides/apps/dependencies/postgresql/local/) — Cadastre uma aplicação PostgreSQL existente e ensaie alterações com clones dos volumes ZFS.
+
+## Referenciar na aplicação
+
+Um Admin cadastra o banco de produção existente seguindo o guia do provedor. Em seguida, um Operator ou Admin pode vincular a variável `DATABASE_URL` da aplicação ao campo `dsn` e salvar a configuração. Se a imagem espera parâmetros separados, escolha `host`, `port`, `database`, `username` ou `password` para cada variável correspondente.
+
+## Testar uma alteração SQL
+
+Abra a dependência PostgreSQL, selecione **Nova alteração** e informe o SQL. Em bancos na nuvem, você também pode escolher o tamanho da branch de ensaio. O CDelivery executa o SQL como foi escrito, sem colocá-lo automaticamente em uma transação.
+
+**Se nenhuma aplicação participar, o SQL será executado diretamente no banco de produção quando você enviar a alteração.**
+
+Quando há aplicações participantes, o CDelivery executa o SQL primeiro no banco de ensaio. Depois, conecta a esse banco uma instância de prévia de cada aplicação e executa as verificações de negócio. Se alguma falhar, a alteração fica pendente e as aplicações em produção continuam usando o banco de produção. Quando todas passam, o CDelivery libera os recursos do ensaio e executa o mesmo SQL no banco de produção.
+
+<ReleaseDiagram kind="database">O diagrama mostra uma branch temporária de um banco em nuvem. O PostgreSQL local usa um clone de snapshot ZFS para fazer a mesma verificação.</ReleaseDiagram>
+
+Se a alteração for bloqueada, consulte os logs e as opções de recuperação em [verificações de publicação](/docs/pt-br/guides/release-safety/guardian/).
+
+## Substituir ou remover
+
+A configuração da dependência de banco é imutável. Credenciais e DSNs armazenados não podem ser visualizados ou baixados pela plataforma. Para alterar uma conexão ou credencial, crie outra dependência e atualize as seleções das aplicações.
+
+Um Admin pode excluir uma dependência sem uso. Referências atuais, configurações de rollback ainda disponíveis e alterações inacabadas podem impedir a exclusão. Excluir a dependência remove seu cadastro e credenciais, não o banco. A aplicação de origem local não pode ser excluída ou movida para outro grupo enquanto sua dependência de banco existir.

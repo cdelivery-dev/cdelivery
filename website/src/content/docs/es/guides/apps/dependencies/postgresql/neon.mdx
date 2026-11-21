@@ -1,0 +1,16 @@
+---
+title: "Neon"
+description: "Registra una conexión Neon y elige la capacidad de cómputo de la rama de ensayo."
+sidebar:
+  order: 1
+---
+
+## Registrar una base de datos
+
+Como Admin, abre **Dependencias → Nueva dependencia → Neon**. Introduce un nombre, el DSN PostgreSQL de Neon, una clave de API y el ID del proyecto. El endpoint de cómputo del DSN debe pertenecer a ese proyecto. Tras guardar, todos los grupos pueden usar la dependencia.
+
+## La rama de ensayo
+
+Al ensayar el SQL, CDelivery crea una rama temporal a partir de la rama del DSN y le asigna un endpoint de lectura y escritura. Al enviar el cambio puedes indicar su tamaño en unidades de cómputo (CU). Si lo dejas vacío, se usa el mínimo del endpoint de origen.
+
+Continúa con la [vinculación de una aplicación y la prueba de un cambio SQL](/docs/es/guides/apps/dependencies/postgresql/).

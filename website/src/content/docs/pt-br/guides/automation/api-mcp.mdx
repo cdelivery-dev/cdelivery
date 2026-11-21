@@ -1,0 +1,66 @@
+---
+title: "Acesso por API e MCP"
+description: "REST e MCP compartilham operações e autorização; os caminhos pertencem à sua instância."
+sidebar:
+  order: 60
+---
+
+REST e MCP compartilham operações e autorização; os caminhos pertencem à sua instância.
+
+## Criar chave
+
+Em Conta → MCP/API keys, informe nome de 1–64 bytes UTF-8, teto de perfil e expiração futura opcional. Copie imediatamente: exibição única.
+
+Separe por ferramenta. Perfil não supera o efetivo na criação e continua limitado pelo usuário atual. Troca de senha não revoga; exclusão de usuário invalida.
+
+## REST
+
+Defina URL e chave no ambiente local:
+
+```sh
+curl --fail-with-body "$CDELIVERY_URL/api/me" \
+  -H "Authorization: Bearer $CDELIVERY_API_KEY"
+```
+
+Espere informações da conta. `/scalar` documenta o schema instalado.
+
+Atualizações usam patch: omitir preserva; `null` limpa apenas campos compatíveis; patch vazio é válido. Enums distinguem maiúsculas, como Reader/Operator/Admin.
+
+## MCP
+
+Configure o cliente HTTP remoto com `/mcp` e `Authorization: Bearer YOUR_API_KEY`. Liste as ferramentas e teste uma leitura para verificar a conta e as permissões antes de escrever.
+
+## Usar segredos
+
+Para gerenciar [Segredos](/docs/pt-br/guides/apps/secrets/) por REST ou MCP, crie o segredo, consulte seu nome e ID e então vincule-o ao aplicativo. Criar, excluir e vincular exige Operator ou Admin.
+
+| REST | MCP / Agent |
+| --- | --- |
+| `POST /api/secrets` | `secret_create` |
+| `GET /api/secrets?kind=Text` | `secret_list` |
+| `DELETE /api/secrets/{name}` | `secret_delete` |
+
+Por exemplo, crie um segredo de texto enviando este corpo a `POST /api/secrets`:
+
+```json
+{
+  "name": "api-token",
+  "content": { "Text": "REPLACE_LOCALLY" }
+}
+```
+
+Para um segredo de arquivo, use `content.File` com o conteúdo codificado em Base64.
+
+Após criar, chame `GET /api/secrets?kind=Text`. Encontre o nome na lista `secrets` retornada e obtenha `name` e `id`. Para arquivos, use `kind=File`.
+
+Use o nome e o ID retornados na requisição do aplicativo, substituindo `SECRET_ID` abaixo. Estes são trechos de campos de vínculo; preencha os demais campos exigidos para criar ou atualizar o aplicativo.
+
+- Variáveis de ambiente (`container_options.env`): `[{"name":"API_TOKEN","value":{"name":"api-token","id":"SECRET_ID"}}]`.
+- Montagens ao criar um aplicativo (`POST /api/apps` → `xconfigs`): `[{"target":"/etc/app/credentials.json","secret":{"name":"api-file","id":"SECRET_ID"}}]`.
+- Montagens ao atualizar um aplicativo (`PATCH /api/apps/{name}` → `xconfigs`): `[{"Secret":{"target":"/etc/app/credentials.json","secret":{"name":"api-file","id":"SECRET_ID"}}}]`.
+
+## Diagnóstico
+
+401: credencial inválida/expirada/revogada ou usuário indisponível. 403: permissão. 422: campos/requisitos. Conexão: URL, TLS e proxy.
+
+Após revogar, confirme recusa da chave. Veja [perfis](/docs/pt-br/administration/accounts/roles/).

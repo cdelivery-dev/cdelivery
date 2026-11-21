@@ -1,0 +1,30 @@
+---
+title: "Plantão automático"
+description: "O plantão analisa eventos e realiza rondas com um perfil explícito."
+sidebar:
+  order: 45
+---
+
+O plantão analisa alertas e recuperações e realiza rondas com um perfil explícito. Alterações comuns, como criar, atualizar ou reiniciar um aplicativo, ficam no histórico de eventos para diagnóstico e não iniciam análises de IA.
+
+## Configurar
+
+Prepare [modelo](/docs/pt-br/guides/automation/models/), escolha perfil, política, intervalo e idioma, habilite e configure destinatários.
+
+Padrões: Operator, NearCritical, 30 minutos e inglês. Intervalo: 15 minutos–24 horas. Análise por evento não espera a próxima ronda.
+
+EarlyRisk, NearCritical e LimitOrFailure descrevem quando agir diante de risco, não um único limiar numérico universal.
+
+## Permissões
+
+Reader observa; Operator/Admin podem alterar recursos sem acompanhamento dentro de suas permissões. Não existe escopo de conta pessoal.
+
+Assinantes com perfil igual ou superior ao do plantão recebem a análise por IA; os demais recebem o alerta original. Os registros de operações seguem a mesma restrição de perfil.
+
+O plantão analisa os alertas antes de notificar; se não houver análise útil, envia o alerta original. Veja as [regras de notificação](/docs/pt-br/guides/automation/im/notifications/).
+
+## Conferir
+
+Examine eventos, análises, ações e estado real. Sem aviso, confira modelo, canal, assinatura e perfil.
+
+Desabilitar plantão não desativa alertas comuns. Notificação usa idioma configurado; conversa segue o usuário. Veja [diagnóstico](/docs/pt-br/guides/automation/im/notifications/).

@@ -1,0 +1,12 @@
+{%- macro header(active) -%}
+<header>
+  <h1>Pingress</h1>
+  <p>{{ tt!("ui.pingress.subtitle") }}</p>
+  <nav class="tab-list" aria-label='{{ tt!("ui.pingress.tab.navigation") }}'>
+    <a href="/pingress"{% if active == "spec" %} aria-current="page"{% endif %}>{{ tt!("ui.pingress.tab.spec") }}</a>
+    <a href="/pingress/certificates"{% if active == "certificates" %} aria-current="page"{% endif %}>{{ tt!("ui.pingress.tab.certificates") }}</a>
+    <a href="/pingress/metrics"{% if active == "metrics" %} aria-current="page"{% endif %}>{{ tt!("ui.pingress.tab.metrics") }}</a>
+    <a href="/pingress/events"{% if active == "events" %} aria-current="page"{% endif %}>{{ tt!("ui.events.title") }}</a>
+  </nav>
+</header>
+{%- endmacro -%}

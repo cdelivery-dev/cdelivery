@@ -1,0 +1,16 @@
+---
+title: "PlanetScale"
+description: "登记 PlanetScale 的 PostgreSQL 连接，了解演练分支的数据恢复点和规格。"
+sidebar:
+  order: 2
+---
+
+## 登记数据库
+
+Admin 打开**依赖 → 新建依赖 → PlanetScale**，填写名称、提供方生成的 PostgreSQL DSN 和服务令牌。保留 DSN 用户名中的分支路由后缀。保存后，各分组的 APP 均可引用。
+
+## 演练分支
+
+CDelivery 将临时分支恢复到准备演练前约五分钟的时间点。用于检查的测试数据应当在那之前就已存在。演练分支使用单节点网络存储，规格默认跟随源分支。如果源分支使用 Metal，则默认采用 PS-5。
+
+接下来可以[绑定 APP 并验证 SQL 变更](/docs/zh-cn/guides/apps/dependencies/postgresql/)。

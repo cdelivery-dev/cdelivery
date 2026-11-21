@@ -1,0 +1,18 @@
+---
+title: "Local PostgreSQL"
+description: "Use an existing PostgreSQL app and a clone of its ZFS volumes to rehearse changes."
+sidebar:
+  order: 3
+---
+
+## Register a database
+
+As an Admin, open **Dependencies → New dependency → PostgreSQL**. Enter a name, select the source app and supply its PostgreSQL DSN. The source must be pinned to a server with volume management enabled, and all mounts must use ZFS volumes. Apps in the source group can bind this dependency.
+
+## The rehearsal clone
+
+They use fresh snapshot clones, discard preview writes, and leave production on the original volumes. Clones share pool space without quotas and require at least 10% free space at preparation. See [persistence](/docs/guides/apps/persistence/) for backup and data-recovery boundaries.
+
+Updating the source app can also trigger checks for apps that bind one of its registered PostgreSQL dependencies and participate in release checks.
+
+Continue with [binding an app and testing a SQL change](/docs/guides/apps/dependencies/postgresql/).

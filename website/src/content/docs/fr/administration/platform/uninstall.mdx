@@ -1,0 +1,30 @@
+---
+title: "Désinstallation et nettoyage"
+description: "Le retrait supprime gestion, définitions d’applications, comptes et secrets, mais conserve volumes et descriptions."
+sidebar:
+  order: 64
+---
+
+<Aside type="danger">
+Le retrait supprime gestion, définitions d’applications, comptes et secrets, mais conserve volumes et descriptions.
+</Aside>
+
+## Désinstaller
+
+Utilisez un terminal interactif sur un serveur de gestion avec Docker CLI, jq et le socket Unix local. Notez paramètres/images/volumes, sauvegardez et arrêtez les créations concurrentes.
+
+```sh
+curl -fsSL https://cdelivery.dev/uninstall.sh | sh
+```
+
+Vérifiez le point de connexion Docker et les ressources affichées, puis saisissez `y` ou `Y` et appuyez sur Entrée pour confirmer. Appuyez sur Entrée sans rien saisir, entrez tout autre texte ou utilisez Ctrl+C pour annuler. S’il ne reste aucune ressource à supprimer, le script se termine sans demander confirmation.
+
+Le programme principal est arrêté d’abord, puis les ressources gérées sont supprimées. Avant d’annoncer la fin, le script attend jusqu’à 120 secondes que les réseaux gérés disparaissent de la liste des réseaux Docker locaux. Si ce délai est dépassé, il affiche les réseaux restants et se termine avec une erreur. Docker, volumes, DNS, stockage objet et comptes externes ne sont pas supprimés.
+
+## Vérifier
+
+Confirmez disparition des ressources et présence des volumes. Arrêt asynchrone ; machines hors ligne à vérifier après reconnexion.
+
+En cas d’échec, corrigez connexion/référence/droits puis relancez la même commande pour prévisualiser et confirmer à nouveau. Ne réinstallez ni ne recréez les noms pendant le nettoyage.
+
+Supprimer les données conservées est une décision distincte. Une nouvelle installation crée une gestion neuve ; restaurer le métier nécessite paramètres enregistrés et stockage.

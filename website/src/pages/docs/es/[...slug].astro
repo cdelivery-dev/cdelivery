@@ -1,0 +1,9 @@
+---
+import { getCollectionStaticPaths, getCollectionPage } from '@cloudflare/nimbus-docs/runtime';
+import Page from '../../../components/docs/Page.astro';
+
+export const getStaticPaths = getCollectionStaticPaths('manual_es');
+const page = await getCollectionPage(Astro, 'manual_es');
+if (page instanceof Response) return page;
+---
+<Page page={page} />

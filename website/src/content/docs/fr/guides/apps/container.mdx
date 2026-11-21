@@ -1,0 +1,36 @@
+---
+title: "Commande et variables d’environnement"
+description: "Configurez le processus principal en distinguant arguments et interprétation par un shell."
+sidebar:
+  order: 10
+---
+
+Configurez le processus principal en distinguant arguments et interprétation par un shell.
+
+## Commande
+
+Gardez la commande de l’image sauf nécessité. Guillemets sont reconnus, mais variables, pipes et redirections exigent un shell explicite :
+
+Avec l’image Hello (`ghcr.io/cdelivery-dev/hello:1.0.0`), cette commande écrit la valeur de `GREETING` dans le journal de démarrage puis lance le serveur HTTP :
+
+```sh
+sh -c 'printf "%s\n" "$GREETING"; exec httpd -f -v -p 80 -h /www'
+```
+
+Définissez `GREETING=Hello` pour essayer cet exemple. Cette variable modifie la sortie du journal.
+
+L’image doit contenir shell et exécutable. Le processus principal doit rester au premier plan ; sa fin arrête le conteneur.
+
+## Variables
+
+Une variable d’environnement accepte une valeur ordinaire, un [secret texte](/docs/fr/guides/apps/secrets/) ou une [sortie de dépendance](/docs/fr/guides/apps/dependencies/). Saisissez le nom, choisissez la source et la valeur ou le champ de sortie, confirmez puis enregistrez toute la configuration de l’application.
+
+Noms : 1–128 caractères, sans `=`. Valeurs ordinaires : 4096 caractères maximum. Utilisez les noms compris par le programme. `PORT=8080` ne publie pas de port et ne force pas l’écoute.
+
+Les valeurs ordinaires sont partagées et ne sont pas automatiquement masquées. Pour des fichiers, utilisez [XConfig](/docs/fr/guides/apps/xconfig/) si compatible.
+
+## Vérifier
+
+Enregistrez, inspectez tâches et journaux. Sans changement, aucun redémarrage. Vérifiez chemins, outils et guillemets ; expansion littérale signifie souvent shell manquant.
+
+L’écoute doit être accessible aux autres conteneurs, pas seulement loopback. Configurez [réseau et ports](/docs/fr/guides/networking/connectivity/) séparément.

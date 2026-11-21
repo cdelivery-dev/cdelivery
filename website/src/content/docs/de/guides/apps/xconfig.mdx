@@ -1,0 +1,34 @@
+---
+title: "Konfigurationsdateien mit XConfig"
+description: "XConfig liefert Konfigurationsdateien; veränderliche Geschäftsdaten gehören in Volumes."
+sidebar:
+  order: 12
+---
+
+XConfig liefert Konfigurationsdateien; veränderliche Geschäftsdaten gehören in Volumes.
+
+Für Dateien mit Zugangsdaten wählst du ein Datei-Secret unter [Secrets](/docs/de/guides/apps/secrets/) und beim Hinzufügen die Quelle **Secret**. Die folgenden Hinweise zu Upload und Download gelten für gewöhnliche Konfigurationsdateien.
+
+## Hochladen
+
+Bei unterstützter Anwendung eine nicht leere Datei bis 1,023,999 Bytes und absoluten Zielpfad mit 2–255 Zeichen wählen. Kein abschließender `/`.
+
+Für eine eigene Startseite der Hello-Anwendung:
+
+```text
+/www/index.html
+```
+
+Lade eine HTML-Datei hoch, um die Anfrageinformationen durch deine Startseite zu ersetzen. Ein vollständiges Beispiel steht unter [Mounts aktualisieren](/docs/de/guides/apps/xconfig/mounting/).
+
+## Zugriff und Änderung
+
+Leseberechtigte können Inhalte herunterladen. Beliebige Secrets werden nicht automatisch verborgen.
+
+Ersetzen erzeugt neue Konfiguration und Mount-Referenz, keine Änderung einer beschreibbaren Datei im laufenden Container. Lokaler Volume-Modus unterstützt gewöhnliche XConfig-Uploads nicht.
+
+## Verifizieren
+
+Aufgaben, Logs und abhängige Funktion testen. Erfolgreich gespeichert kann trotzdem der falsche Pfad sein.
+
+Siehe [Mounts aktualisieren](/docs/de/guides/apps/xconfig/mounting/) und [Datenhaltung](/docs/de/guides/apps/persistence/).

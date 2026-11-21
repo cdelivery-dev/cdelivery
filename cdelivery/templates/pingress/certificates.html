@@ -1,0 +1,85 @@
+{% extends "dashboard.html" %}
+
+{% import "pingress/certificate.html" as certificate %}
+{% import "pingress/tabs.html" as chrome %}
+
+{% block title %}{{ tt!("ui.pingress.tab.certificates") }} - Pingress | {{ super() }}{% endblock title %}
+
+{% block main %}
+{{ chrome::header("certificates") }}
+
+{% if let Some(current) = pingress %}
+<section x-data="{ submitting: false }">
+  <div class="row">
+    <h2>{{ tt!("ui.pingress.acme.title") }}</h2>
+    <span class="muted">{% if current.acme_enabled %}{{ tt!("ui.pingress.acme.enabled") }}{% else %}{{ tt!("ui.pingress.acme.disabled") }}{% endif %}</span>
+  </div>
+  {% if current.acme_enabled %}
+    <small class="block">{{ tt!("ui.pingress.acme.enabledHelp") }}</small>
+    {% if can_edit %}<form
+      class="actions mt-2"
+      method="post"
+      action="/pingress/acme/disable"
+      data-confirm='{{ tt!("ui.pingress.acme.disableConfirm") }}'
+      @submit="if (submitting || !confirm($el.dataset.confirm)) { $event.preventDefault(); return } submitting = true"
+    >
+      <input type="hidden" name="payload" value="{}" />
+      <input type="submit" class="button danger" value='{{ tt!("ui.common.disable") }}' :disabled="submitting" />
+    </form>{% endif %}
+  {% else %}
+    <small class="block">{{ tt!("ui.pingress.acme.disabledHelp") }}</small>
+    {% if can_edit %}<form
+      class="actions mt-2"
+      method="post"
+      action="/pingress/acme/enable"
+      @submit="if (submitting) { $event.preventDefault(); return } submitting = true"
+    >
+      <input type="hidden" name="payload" value="{}" />
+      <input class="button" type="submit" value='{{ tt!("ui.common.enable") }}' :disabled="submitting" />
+    </form>{% endif %}
+  {% endif %}
+</section>
+{% else %}
+<p class="muted">{{ tt!("ui.pingress.acme.requiresPingress") }}</p>
+{% endif %}
+
+{% if pingress.is_some() || !certs.certs.is_empty() %}
+<h2 class="mt-4">{{ tt!("ui.pingress.certs.title") }}</h2>
+<small class="block">{{ tt!("ui.pingress.certs.help") }} {{ tt!("ui.pingress.certs.scheduleHelp") }}</small>
+
+{% if certs.certs.is_empty() %}
+<p class="muted">{{ tt!("ui.pingress.certs.empty") }}</p>
+{% else %}
+<div class="table-scroll">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">{{ tt!("ui.pingress.certs.domain") }}</th>
+        <th scope="col">{{ tt!("ui.pingress.certs.apps") }}</th>
+        <th scope="col">{{ tt!("ui.pingress.certs.certificate") }}</th>
+        <th scope="col">{{ tt!("ui.pingress.certs.expires") }}</th>
+        <th scope="col" aria-label='{{ tt!("ui.common.actions") }}'></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for entry in certs.certs %}
+      <tr>
+        <th scope="row" translate="no">{{ entry.domain }}</th>
+        <td>
+          {% if entry.apps.is_empty() %}<span class="muted">{{ tt!("ui.pingress.certs.orphan") }}</span>
+          {% else %}<span translate="no">{% for app in entry.apps %}{{ app }}{% if !loop.last %}, {% endif %}{% endfor %}</span>{% endif %}
+        </td>
+        <td>
+          {% let current_certificate = entry.certificate %}
+          {{ certificate::status(current_certificate) }}
+        </td>
+        <td>{% if let Some(certificate) = entry.certificate %}<relative-time datetime="{{ certificate.not_after }}">{{ certificate.not_after }}</relative-time>{% else %}—{% endif %}</td>
+        <td><a href="/pingress/certificates/{{ entry.domain }}" class="row-action">{% if can_edit %}{{ tt!("ui.common.edit") }}{% else %}{{ tt!("ui.common.view") }}{% endif %}</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+{% endif %}
+{% endblock main %}

@@ -1,0 +1,59 @@
+---
+title: "設定健康檢查"
+description: "使用 Hurl 或自訂指令檢查應用程式回應，設定目標、執行間隔和發佈驗證。"
+sidebar:
+  order: 26
+---
+
+XHealth 在獨立容器中檢查應用程式，使用其環境變數和檔案掛載，包括[機密資料](/docs/zh-tw/guides/apps/secrets/)。Operator 和 Admin 可設定檢查，Reader 可查看共用結果。
+
+## 選擇目標
+
+在應用程式的 **XHealth** 頁面選擇 Hurl 或自訂指令、檢查目標及間隔；間隔至少為 1 分鐘。定期檢查和**立即執行**使用相同的目標：
+
+| 目標 | 位址 | 連接埠 | 通訊協定 |
+| --- | --- | --- | --- |
+| 網域 | 透過 DNS 解析網域 | 80 或 443 | HTTP；網域啟用 HTTPS 時使用 HTTPS |
+| 對外連接埠 | 伺服器 IP | 所選對外連接埠 | Hurl 使用 HTTP；自訂指令自行選擇 |
+| 容器內連接埠 | 應用程式內部位址 | 指定容器連接埠 | Hurl 使用 HTTP；自訂指令自行選擇 |
+
+同一網域任一路由啟用 HTTPS，即使用 HTTPS。網域和對外連接埠必須屬於本應用程式，並對應唯一的內部連接埠，關閉發布檢查也不例外；多條路由指向同一連接埠有效。Hurl 僅支援 TCP 連接埠映射。非 HTTP 服務請選擇自訂指令和連接埠目標。
+
+## Hurl
+
+以 Hello 為例，選擇容器內連接埠 `80`，上傳以下檔案：
+
+```hurl
+GET {{TARGET_URL}}/
+HTTP 200
+```
+
+`{{TARGET_URL}}` 透過 `HURL_VARIABLE_TARGET_URL` 取得目標網址。檔案須非空且不超過 1,023,999 位元組；更新時留空可保留目前檔案。格式見 [Hurl 文件](https://hurl.dev/docs/request.html)。
+
+需要驗證時，可將文字機密資料綁定為 `HURL_VARIABLE_API_TOKEN`，在檔案中使用 `{{API_TOKEN}}`。
+
+## 自訂指令
+
+應用程式映像檔必須包含所用工具。結束代碼 0 表示通過，非 0 表示失敗。`localhost` 指向檢查容器本身。
+
+`TARGET_HOST` 和 `TARGET_PORT` 指向檢查目標；網域目標另提供 `TARGET_SCHEME`（`http` 或 `https`）。變數展開和管線需明確使用 shell；指令參數支援 shell 形式的引號和跳脫字元。
+
+映像檔包含 `sh` 和 `wget` 時，可使用：
+
+```sh
+sh -c 'wget -q -O /dev/null "${TARGET_SCHEME:-http}://${TARGET_HOST}:${TARGET_PORT}/"'
+```
+
+平台注入的目標變數會覆寫同名一般值，不能綁定機密資料或依賴輸出。`/xhealth.hurl` 保留給 Hurl 使用。檢查應唯讀，並驗證實際業務條件。
+
+## 立即執行
+
+啟用檢查後，可點選**立即執行**，呼叫無請求本文的 `POST /api/apps/{name}/xhealth/run`，或使用工具 `xhealth_run` 並傳入 `app`。執行採用已儲存的設定，下次間隔從本輪開始時起算。
+
+API 接受後回傳 `202` 和 `{"ok":true}`；已有檢查等待或執行時回傳 `409`。結果見[狀態與日誌](/docs/zh-tw/guides/release-safety/xhealth/status/)，也可呼叫 `xhealth_get`。回應遺失時先查詢狀態：本輪完成後再次請求會啟動新一輪。
+
+## 發布檢查
+
+開啟**參與發布檢查**後，本應用程式或其直接依賴更新時，會檢查本應用程式的預覽服務內部連接埠。Hurl 使用 HTTP；網域自訂檢查收到 `TARGET_SCHEME=http`。線上定期檢查獨立執行。
+
+設定與範例請見[應用程式依賴](/docs/zh-tw/guides/apps/dependencies/app/)及 [PostgreSQL 資料庫依賴](/docs/zh-tw/guides/apps/dependencies/postgresql/)。

@@ -1,0 +1,36 @@
+---
+title: "PostgreSQL-Abhängigkeiten"
+description: "Verbinden Sie Apps mit der Datenbank und prüfen Sie SQL-Änderungen vor der Ausführung in Produktion anhand Ihrer Geschäftsabläufe."
+sidebar:
+  order: 2
+---
+
+Für jede App, die diese Datenbank direkt als Abhängigkeit nutzt, können Sie in [XHealth](/docs/de/guides/release-safety/xhealth/) die Option **An Release-Prüfungen teilnehmen** aktivieren. Der Bestelldienst kann zum Beispiel prüfen, ob eine Bestellabfrage nach der Datenbankänderung weiterhin die erwarteten Daten liefert.
+
+## Datenbank registrieren
+
+- [Neon](/docs/de/guides/apps/dependencies/postgresql/neon/) — Eine Neon-Verbindung registrieren und die Rechenleistung für den Test-Branch festlegen.
+- [PlanetScale](/docs/de/guides/apps/dependencies/postgresql/planetscale/) — Eine PlanetScale-PostgreSQL-Verbindung registrieren und Größe und Datenstand des Test-Branches bestimmen.
+- [Lokales PostgreSQL](/docs/de/guides/apps/dependencies/postgresql/local/) — Eine vorhandene PostgreSQL-App registrieren und Änderungen mit Klonen ihrer ZFS-Volumes testen.
+
+## In einer App verwenden
+
+Ein Admin registriert die vorhandene Produktionsdatenbank nach der Anleitung für den Anbieter. Als Operator oder Admin binden Sie danach die Umgebungsvariable `DATABASE_URL` der App an `dsn` und speichern die Konfiguration. Erwartet das Image einzelne Werte, wählen Sie für die jeweiligen Variablen `host`, `port`, `database`, `username` oder `password`.
+
+## Eine SQL-Änderung testen
+
+Öffnen Sie die PostgreSQL-Abhängigkeit, wählen Sie **Neue Änderung** und geben Sie die SQL-Anweisungen ein. Bei Cloud-Datenbanken können Sie auch die Größe des Test-Branches wählen. CDelivery führt die Anweisungen wie eingegeben aus, ohne sie in eine Transaktion einzuschließen.
+
+**Nimmt keine App teil, führt CDelivery die eingereichten SQL-Anweisungen direkt auf der Produktionsdatenbank aus.**
+
+Nehmen Apps teil, führt CDelivery die SQL-Anweisungen zunächst auf der Testdatenbank aus. Anschließend verbindet CDelivery die Vorschauinstanzen dieser Apps mit der Testdatenbank und startet die Prüfungen. Schlägt eine Prüfung fehl, stoppt die Änderung an dieser Stelle. Die laufenden Apps greifen weiter auf die bisherige Produktionsdatenbank zu. Sind alle Prüfungen erfolgreich, gibt CDelivery die Testressourcen frei und führt dieselben SQL-Anweisungen auf der Produktionsdatenbank aus.
+
+<ReleaseDiagram kind="database">Die Abbildung zeigt einen temporären Cloud-Branch. Bei lokalem PostgreSQL übernimmt ein ZFS-Snapshot-Klon diese Aufgabe.</ReleaseDiagram>
+
+Bei einer angehaltenen Änderung finden Sie die Logs und die nächsten Schritte unter [Release-Prüfungen](/docs/de/guides/release-safety/guardian/).
+
+## Ersetzen oder entfernen
+
+Die Konfiguration einer Datenbankabhängigkeit ist unveränderlich. Gespeicherte Zugangsdaten und DSNs lassen sich über die Plattform weder anzeigen noch herunterladen. Erstellen Sie für eine geänderte Verbindung oder neue Zugangsdaten eine neue Abhängigkeit und aktualisieren Sie die Auswahl der Apps.
+
+Ein Admin kann eine ungenutzte Abhängigkeit löschen. Aktuelle Referenzen, noch verfügbare Rollback-Konfigurationen und offene Änderungen können dies verhindern. Gelöscht werden Registrierung und Zugangsdaten, nicht die Datenbank. Solange ihre Datenbankabhängigkeit existiert, kann die lokale Quell-App weder gelöscht noch in eine andere Gruppe verschoben werden.

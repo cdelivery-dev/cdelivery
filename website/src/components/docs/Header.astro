@@ -1,0 +1,40 @@
+---
+import Icon from '@cloudflare/nimbus-docs/components/Icon.astro';
+import Brand from './Brand.astro';
+import SearchTrigger from '../ui/search/SearchTrigger.astro';
+import { ThemeToggle } from '../ui/theme-toggle';
+import { Button } from '../ui/button';
+import { LinkButton } from '../ui/link-button';
+import { localeDetails, locales, site } from '../../config';
+import { translate } from '../../i18n';
+import { docsPath } from '../../routes';
+
+interface Props { slug?: string; showSidebar?: boolean }
+const { slug = '', showSidebar = true } = Astro.props;
+const locale = Astro.locals.docsLocale ?? 'en';
+const t = translate(locale);
+---
+<header class="sticky top-0 z-30 border-b border-border bg-card/80 backdrop-blur-lg">
+  <div class="mx-auto flex h-14 items-center justify-between gap-3 px-4 lg:px-6">
+    <Brand />
+    <div class="flex shrink-0 items-center gap-2">
+      <div class="relative flex items-center text-muted-foreground">
+        <Icon name="ph:translate" class="pointer-events-none absolute start-2 h-4 w-4" />
+        <select data-docs-language aria-label={t('site.language.select')} class="w-9 cursor-pointer appearance-none rounded-md border-0 bg-transparent py-2 ps-8 pe-1 text-xs text-foreground hover:bg-accent focus-visible:outline-2 focus-visible:outline-ring sm:w-28 sm:pe-2">
+          {locales.map((value) => <option value={docsPath(value, slug)} selected={locale === value} lang={value}>{localeDetails[value].label}</option>)}
+        </select>
+      </div>
+      <SearchTrigger />
+      <LinkButton href={site.github} variant="minimal" shape="square" size="sm" aria-label="GitHub" target="_blank" rel="noopener" class="hidden text-muted-foreground sm:inline-flex">
+        <Icon name="ph:github-logo" class="h-4 w-4" />
+      </LinkButton>
+      <ThemeToggle />
+      {showSidebar && <Button variant="ghost" shape="square" size="sm" icon="ph:list" aria-label={t('docs.openNavigation')} data-menu-btn class="text-muted-foreground md:hidden" />}
+    </div>
+  </div>
+</header>
+<script>
+  document.querySelector<HTMLSelectElement>('[data-docs-language]')?.addEventListener('change', (event) => {
+    window.location.assign((event.currentTarget as HTMLSelectElement).value);
+  });
+</script>

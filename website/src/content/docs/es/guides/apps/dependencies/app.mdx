@@ -1,0 +1,28 @@
+---
+title: "Dependencias entre aplicaciones"
+description: "Conecta el servicio de pedidos con el de usuarios y comprueba que ambos siguen funcionando juntos cuando cambia uno de ellos."
+sidebar:
+  order: 1
+---
+
+Activa **Participar en comprobaciones de publicación** en [XHealth](/docs/es/guides/release-safety/xhealth/) para cada aplicación que quieras probar. Al actualizar una aplicación, CDelivery ejecuta las comprobaciones habilitadas tanto en esa aplicación como en las que la llaman directamente. Si ninguna participa, la actualización pasa directamente a producción.
+
+## Referenciar desde una aplicación
+
+El servicio de pedidos A llama al servicio de usuarios B. En las variables de entorno de A, elige **Dependencia** como origen de `USER_SERVICE_HOST`. Selecciona B en el mismo grupo y el campo `host`. Confirma y guarda A. Usa el nombre de variable que espera la imagen.
+
+B aparece directamente en el selector. Si tiene estado, debe admitir [vistas previas ZFS](/docs/es/guides/apps/persistence/). La publicación de puertos se configura por separado.
+
+## Qué se comprueba al actualizar A o B
+
+En este ejemplo participan los dos servicios. La comprobación del servicio de pedidos consulta un pedido y verifica que la respuesta incluya los datos que se obtienen del servicio de usuarios.
+
+**Al actualizar el servicio de pedidos (A),** la consulta se ejecuta en una instancia de prueba de la nueva versión. Esa instancia llama al servicio de usuarios en producción.
+
+**Al actualizar el servicio de usuarios (B),** XHealth comprueba la nueva versión. Una instancia de prueba del servicio de pedidos realiza la misma consulta, esta vez con la nueva versión del servicio de usuarios.
+
+Si falla alguna comprobación, se bloquea la publicación. Las versiones actuales de ambos servicios siguen atendiendo las peticiones de producción.
+
+<ReleaseDiagram kind="dependency">La línea continua muestra las peticiones de producción a B v1. La discontinua muestra la comprobación de A que falla con B v2.</ReleaseDiagram>
+
+Si el cambio se detiene, consulta los registros y las opciones de recuperación en [comprobaciones de publicación](/docs/es/guides/release-safety/guardian/).

@@ -1,0 +1,23 @@
+[package]
+name = "logging"
+version = "0.1.0"
+edition = "2024"
+publish = false
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+
+[dependencies]
+macros = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+console-subscriber = { workspace = true, optional = true }
+tokio = { workspace = true }
+tokio-util = { workspace = true }
+
+[features]
+tokio-console = ["dep:console-subscriber", "tokio/tracing"]
+
+[lints]
+workspace = true

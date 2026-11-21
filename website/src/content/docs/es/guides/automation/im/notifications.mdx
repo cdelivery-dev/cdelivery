@@ -1,0 +1,34 @@
+---
+title: "Notificaciones y diagnóstico"
+description: "La entrega depende de canal de plataforma, suscripción personal y elegibilidad del destinatario."
+sidebar:
+  order: 51
+---
+
+La entrega depende de canal de plataforma, suscripción personal y elegibilidad del destinatario.
+
+## Configurar
+
+Admin habilita el canal. Cada usuario confirma su correo o vincula su propio ID. Las cuentas nuevas reciben correos por defecto, y las nuevas vinculaciones reciben notificaciones por defecto. Puedes desactivarlas en tu cuenta.
+
+Desvincular elimina la suscripción; volver a vincular la activa. Guardar de nuevo o sustituir el ID conserva la preferencia, al igual que cambiar el correo de la cuenta. Configurar o eliminar un canal de la plataforma no modifica las preferencias personales.
+
+Añade [guardia automática](/docs/es/guides/automation/duty/) solo para análisis con IA. Las alertas ordinarias no requieren modelo. Desactivar guardia no desactiva todas las alertas; desactivar suscripción no borra identidad.
+
+## Roles e idioma
+
+Los suscriptores con un rol igual o superior al de la guardia reciben el análisis de IA; los demás reciben la alerta original. Los resultados de operaciones tienen la misma restricción de rol.
+
+La guardia con IA espera el análisis y envía una notificación por destinatario y canal. Si falla, se cancela, no devuelve contenido útil o supera el límite de 60 segundos, envía la alerta original. Con la guardia desactivada, envía directamente la alerta original.
+
+Al reactivar la guardia, no se vuelven a analizar los eventos pendientes.
+
+La guardia usa idioma configurado; conversaciones siguen el idioma del usuario.
+
+## Diagnosticar
+
+Comprueba, en orden: evento real, credenciales y permisos del canal, receptor, interruptores personales, rol, restricciones o spam del proveedor y errores del modelo.
+
+Anota hora, canal, cuenta y evento; elimina tokens y contraseñas. No recibir alertas no prueba que el sistema esté sano. Tras cambiar identidad, verifica con conversación de lectura: avatar o nombre no bastan.
+
+Consulta cada [canal](/docs/es/guides/automation/im/) para pasos específicos.

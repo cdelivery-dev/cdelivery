@@ -1,0 +1,28 @@
+---
+title: "Dépendances entre applications"
+description: "Reliez le service de commandes au service utilisateurs et vérifiez que les deux restent compatibles lorsque l’un change."
+sidebar:
+  order: 1
+---
+
+Dans [XHealth](/docs/fr/guides/release-safety/xhealth/), activez **Participer aux vérifications de publication** pour chaque application à tester. Lors d’une mise à jour, CDelivery lance les vérifications activées pour l’application concernée et pour celles qui l’appellent directement. Si aucune ne participe, la mise à jour passe directement en production.
+
+## Référencer depuis une application
+
+Le service de commandes A appelle le service utilisateurs B. Dans les variables d’environnement de A, choisissez **Dépendance** comme source de `USER_SERVICE_HOST`, puis B dans le même groupe et le champ `host`. Confirmez et enregistrez A. Adaptez le nom de la variable à votre image.
+
+B apparaît directement dans le sélecteur. Si B est une application avec état, elle doit permettre les [prévisualisations ZFS](/docs/fr/guides/apps/persistence/). La publication d’un port se configure séparément.
+
+## Que se passe-t-il si A ou B change ?
+
+Dans cet exemple, les deux services participent aux vérifications. Le test du service de commandes consulte une commande et vérifie que la réponse contient les données attendues du service utilisateurs.
+
+**Lors d’une mise à jour du service de commandes (A),** le test s’exécute sur une instance de prévisualisation de la nouvelle version. Cette instance appelle le service utilisateurs en production.
+
+**Lors d’une mise à jour du service utilisateurs (B),** XHealth teste la nouvelle version. Le service de commandes effectue la même consultation depuis une instance de prévisualisation connectée à cette nouvelle version.
+
+Si une vérification échoue, la publication est bloquée. Les versions en production des deux services continuent de traiter les requêtes.
+
+<ReleaseDiagram kind="dependency">Le trait continu suit les requêtes de production vers B v1. Les pointillés montrent l’échec de la vérification de A avec B v2.</ReleaseDiagram>
+
+Si la modification est bloquée, consultez les journaux et les actions disponibles dans les [vérifications de publication](/docs/fr/guides/release-safety/guardian/).

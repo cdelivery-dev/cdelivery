@@ -1,0 +1,37 @@
+---
+title: "Antes de instalar"
+description: "Planifica las direcciones de los servidores, los puertos, el acceso a la consola y el almacenamiento."
+sidebar:
+  order: 2
+---
+
+Un servidor basta para empezar. Varios servidores necesitan direcciones estables que les permitan comunicarse entre sí.
+
+## Direcciones de comunicación entre servidores
+
+La dirección anunciada debe ser accesible entre servidores; puede diferir de la dirección del navegador. Loopback no sirve para otros servidores.
+
+## Red y acceso
+
+| Puerto | Uso | Alcance |
+| --- | --- | --- |
+| TCP 9000 | Consola y API | Red administrativa |
+| TCP 80/443 | Pingress | Clientes |
+| Puertos publicados | Aplicaciones | Clientes previstos |
+| TCP 2377 | Gestión | Entre servidores |
+| TCP/UDP 7946 | Comunicación | Entre servidores |
+| UDP 4789 | Tráfico de aplicaciones | Entre servidores |
+
+Revisa cortafuegos del host y reglas de nube. Restringe los puertos internos a los servidores participantes. Consulta los [requisitos de Docker](https://docs.docker.com/engine/network/drivers/overlay/#requirements).
+
+Para administrar un servidor remoto, puedes usar un túnel SSH:
+
+```sh
+ssh -L 9000:127.0.0.1:9000 your-user@server.example.com
+```
+
+Mantén la sesión abierta y visita localhost:9000. El puerto 8080 del ejemplo necesita otro reenvío.
+
+## Planificación de datos
+
+Elige servidor de almacenamiento y copias antes de crear aplicaciones con estado. El dominio es opcional. Revisa [IPv6](/docs/es/guides/networking/faq/) y continúa con la [instalación](/docs/es/getting-started/installation/).

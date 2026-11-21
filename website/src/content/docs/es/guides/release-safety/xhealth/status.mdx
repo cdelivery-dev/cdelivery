@@ -1,0 +1,40 @@
+---
+title: "Estados y diagnóstico de XHealth"
+description: "Distingue espera, ejecución, resultado y finalización sin un resultado utilizable."
+sidebar:
+  order: 27
+---
+
+## Estados
+
+| Estado | Significado |
+| --- | --- |
+| Pending | Esperando ejecución |
+| Running | Comprobación en curso |
+| Passed | Comprobación correcta |
+| Failed | Comprobación fallida; consulta el error y los registros |
+| Settled | Finalizada sin un resultado utilizable de éxito o fallo |
+
+Solo Passed confirma el éxito. Revisa la hora de finalización; un resultado antiguo no describe el estado actual.
+
+## Diagnosticar fallos
+
+Abre los [registros recientes de la aplicación](/docs/es/guides/observability/logs/application/) y selecciona XHealth. Si está pendiente, revisa recursos del servidor y descarga de la imagen. Si tarda demasiado, revisa tiempos de espera y comandos bloqueados. Si falla, revisa herramientas, variables y aserciones de Hurl.
+
+Para errores de conexión, sigue el destino seleccionado:
+
+| Destino | Revisar |
+| --- | --- |
+| Dominio | DNS desde el contenedor de comprobación, rutas del proxy, HTTP/HTTPS y confianza del certificado |
+| Puerto publicado | Acceso a la IP del servidor, mapeo del puerto publicado y cortafuegos |
+| Puerto interno | Dirección interna de la aplicación, red del grupo, puerto de escucha e inicio |
+
+Los destinos ausentes o ambiguos requieren una configuración coincidente en la aplicación y un único puerto interno. Los resultados reflejan el acceso desde el contenedor de comprobación; los clientes externos pueden seguir otra ruta de red.
+
+## Después de los cambios
+
+Ejecuta de nuevo y confirma un nuevo resultado Passed. Valida el funcionamiento de la aplicación, no solo la existencia del proceso.
+
+En fallos de publicación, revisa el servicio de vista previa y sus registros de comprobación por separado de XHealth en producción. Configura alertas en [notificaciones](/docs/es/guides/automation/im/notifications/).
+
+Consulta las reglas de destino y comando en la [configuración de XHealth](/docs/es/guides/release-safety/xhealth/).

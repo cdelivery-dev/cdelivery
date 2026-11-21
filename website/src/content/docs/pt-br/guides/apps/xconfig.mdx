@@ -1,0 +1,34 @@
+---
+title: "Arquivos de configuração com XConfig"
+description: "XConfig fornece arquivos de configuração; volumes armazenam dados de negócio modificáveis."
+sidebar:
+  order: 12
+---
+
+XConfig fornece arquivos de configuração; volumes armazenam dados de negócio modificáveis.
+
+Para arquivos de credenciais, escolha um segredo de arquivo em [Segredos](/docs/pt-br/guides/apps/secrets/) e mude a origem para **Segredo** ao adicionar a configuração. As instruções de upload e download abaixo se aplicam a arquivos de configuração comuns.
+
+## Carregar
+
+Abra arquivos de uma aplicação compatível e selecione conteúdo não vazio de até 1,023,999 bytes. A montagem usa caminho absoluto de arquivo, com 2–255 caracteres e sem `/` final.
+
+Para uma página inicial personalizada da aplicação Hello:
+
+```text
+/www/index.html
+```
+
+Envie um arquivo HTML para substituir as informações padrão da requisição por sua página inicial. Veja o exemplo em [montagem e atualização](/docs/pt-br/guides/apps/xconfig/mounting/).
+
+## Visibilidade e alterações
+
+Usuários com leitura compartilhada podem baixar o conteúdo; segredos arbitrários não são ocultados automaticamente. Substituir cria nova configuração e atualiza a montagem, não edita um arquivo gravável dentro do contêiner.
+
+Aplicações com volumes locais não usam XConfig.
+
+## Verificar
+
+Confira tarefas, logs e comportamento dependente do arquivo. Conteúdo salvo corretamente pode estar em caminho ignorado pelo programa.
+
+Veja [montagem e atualização](/docs/pt-br/guides/apps/xconfig/mounting/) e [persistência](/docs/pt-br/guides/apps/persistence/) para escolher o mecanismo correto.

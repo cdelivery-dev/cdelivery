@@ -1,0 +1,41 @@
+[package]
+name = "cdelivery-agent"
+version = "0.2.0"
+edition = "2024"
+publish = false
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+
+[dependencies]
+axum = { workspace = true }
+cdelivery-wire = { workspace = true }
+cipher = { workspace = true }
+docker = { workspace = true }
+host-exec = { workspace = true }
+jiff = { workspace = true }
+logging = { workspace = true }
+macros = { workspace = true }
+rustix = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+zeroize = { workspace = true }
+
+[features]
+tokio-console = ["logging/tokio-console"]
+
+[[test]]
+name = "storage"
+path = "tests/storage.rs"
+test = false
+
+[dev-dependencies]
+reqwest = { workspace = true, features = ["json"] }
+rustix = { workspace = true, features = ["process"] }
+shlex = { workspace = true }
+uuid = { workspace = true }
+
+[lints]
+workspace = true

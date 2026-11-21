@@ -1,0 +1,26 @@
+---
+title: "Domínio e acesso da plataforma"
+description: "Admin configura o domínio do console em Configurações → CDelivery."
+sidebar:
+  order: 61
+---
+
+Admin configura o domínio do console em Configurações → CDelivery.
+
+## Configurar
+
+Habilite Pingress em servidores acessíveis, aponte A/AAAA válidos, confira 80/443 e proxies, informe hostname sem protocolo/porta/caminho, escolha HTTPS e salve.
+
+Em nova aba, teste login, páginas e API. HTTPS exige certificado [automático](/docs/pt-br/guides/networking/automatic-certificates/) ou [próprio](/docs/pt-br/guides/networking/custom-certificates/); marcar a opção não prepara DNS.
+
+## Trocar ou remover
+
+Mantenha conexão anterior até validar a nova. Cookies são por host; pode ser necessário novo login. Atualize URLs de MCP e scripts.
+
+Limpar domínio remove rota, não DNS externo. Configurar domínio não fecha 9000; restrinja no host/rede conforme necessário.
+
+## Diagnóstico
+
+Confira resolução, nome/cadeia TLS e serviço principal. Se porta original funciona, use-a para corrigir configurações.
+
+Domínios de negócio ficam em [rotas de aplicação](/docs/pt-br/guides/networking/routing/); evite conflito com hostname administrativo.

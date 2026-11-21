@@ -1,0 +1,41 @@
+---
+import SiteLayout from './SiteLayout.astro';
+import { defaultLocale } from '../config';
+import { translate } from '../i18n';
+
+interface Props {
+  title: string;
+  description: string;
+  updated?: string;
+}
+
+const { title, description, updated } = Astro.props;
+const locale = Astro.currentLocale ?? defaultLocale;
+const t = translate(locale);
+const date = updated && new Intl.DateTimeFormat(locale, { dateStyle: 'long', timeZone: 'UTC' }).format(new Date(`${updated}T00:00:00Z`));
+---
+<SiteLayout title={title} description={description}>
+  <article class="information container">
+    <header>
+      <h1>{title}</h1>
+      <p class="introduction">{description}</p>
+      {updated && <p class="updated"><time datetime={updated}>{t('site.information.updated', { date: date! })}</time></p>}
+    </header>
+    <div class="information-body"><slot /></div>
+  </article>
+</SiteLayout>
+<style>
+  .information { max-width: 720px; padding-block: clamp(48px, 8vw, 96px); overflow-wrap: anywhere; }
+  h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.2; letter-spacing: -.025em; }
+  h1:lang(zh), h1:lang(ja) { line-height: 1.4; letter-spacing: 0; }
+  .introduction { margin-top: 24px; color: var(--color-muted); font-size: 1.125rem; }
+  .updated { margin-top: 16px; color: var(--color-muted); font-size: .875rem; }
+  .information-body { margin-top: 48px; }
+  .information-body :global(section + section) { margin-top: 40px; }
+  .information-body :global(h2) { font-size: 1.375rem; line-height: 1.4; }
+  .information-body :global(p), .information-body :global(ul) { margin-top: 16px; }
+  .information-body :global(ul) { padding-left: 24px; }
+  .information-body :global(li + li) { margin-top: 8px; }
+  .information-body :global(a) { text-decoration: underline; text-underline-offset: 3px; }
+  .information-body :global(a:hover) { color: var(--color-control-hover); }
+</style>

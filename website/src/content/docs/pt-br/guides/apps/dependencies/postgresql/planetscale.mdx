@@ -1,0 +1,16 @@
+---
+title: "PlanetScale"
+description: "Cadastre uma conexão PostgreSQL do PlanetScale e confira o tamanho e o ponto de restauração da branch de ensaio."
+sidebar:
+  order: 2
+---
+
+## Cadastrar um banco
+
+Como Admin, abra **Dependências → Nova dependência → PlanetScale**. Informe um nome, o DSN PostgreSQL gerado pelo provedor e um token de serviço. Mantenha o sufixo de roteamento da branch no nome de usuário do DSN. A conexão fica disponível para todos os grupos.
+
+## A branch de ensaio
+
+O CDelivery restaura uma branch temporária para o estado de aproximadamente cinco minutos antes da preparação. Use dados de teste que já existiam nesse momento. A branch usa um único nó com armazenamento em rede. Por padrão, usa o tamanho da origem, ou PS-5 para uma origem Metal.
+
+Continue com a [vinculação da aplicação e o teste de uma alteração SQL](/docs/pt-br/guides/apps/dependencies/postgresql/).

@@ -1,0 +1,11 @@
+{%- macro form(base, id, title) -%}
+<form
+  id="settings-{{ id }}-clear"
+  method="post"
+  action="{{ base }}/{{ id }}/clear"
+  data-confirm='{{ tt!("ui.settings.clear.confirm", name = title) }}'
+  @submit="if (submitting || !confirm($el.dataset.confirm)) { $event.preventDefault(); return } $refs.clearPayload.value = '{}'; submitting = true"
+>
+  <input x-ref="clearPayload" type="hidden" name="payload" />
+</form>
+{%- endmacro -%}

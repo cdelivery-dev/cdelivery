@@ -1,0 +1,16 @@
+---
+title: "Neon"
+description: "Register a Neon connection and choose the compute size for its temporary branch."
+sidebar:
+  order: 1
+---
+
+## Register a database
+
+As an Admin, open **Dependencies → New dependency → Neon**. Enter a name, the PostgreSQL DSN supplied by Neon, an API key and the project ID. The DSN must identify a compute endpoint in that project. Apps in any group can bind the saved dependency.
+
+## The rehearsal branch
+
+For a SQL rehearsal, CDelivery forks the branch identified by the DSN and creates a read-write compute endpoint for the fork. Specify the size in compute units (CU) when submitting the change, or leave it empty to use the source endpoint’s minimum CU.
+
+Continue with [binding an app and testing a SQL change](/docs/guides/apps/dependencies/postgresql/).

@@ -1,0 +1,38 @@
+---
+title: "Montar e atualizar configuração"
+description: "Associe conteúdo a um caminho e confirme que tarefas novas usam o arquivo esperado."
+sidebar:
+  order: 13
+---
+
+Associe conteúdo a um caminho e confirme que tarefas novas usam o arquivo esperado.
+
+Os exemplos abaixo usam uploads XConfig comuns. Para substituir um segredo de arquivo, crie outro em [Segredos](/docs/pt-br/guides/apps/secrets/), selecione-o na montagem existente e salve a configuração do aplicativo.
+
+## Procedimento
+
+Carregue arquivo válido, selecione caminho absoluto, salve e inspecione tarefas, logs e uma função dependente do conteúdo. Conforme a configuração, a mudança pode passar por [verificações de publicação](/docs/pt-br/guides/release-safety/guardian/).
+
+O console não altera diretamente o caminho de uma montagem existente: remova a antiga e adicione outra. Confirme que a imagem lerá a nova localização.
+
+## Exemplo e diagnóstico
+
+No exemplo Hello (`ghcr.io/cdelivery-dev/hello:1.0.0`), salve este conteúdo como `index.html` e envie com XConfig para `/www/index.html`:
+
+```html
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>CDelivery Hello</title></head>
+<body><h1>Hello from XConfig</h1></body>
+</html>
+```
+
+Mantenha o comando padrão e o mapeamento TCP 80 → 8080. Após a atualização, abra `/` e espere `Hello from XConfig` no lugar das informações da requisição. Remover essa montagem restaura a resposta padrão nos novos contêineres.
+
+Antes de remover, verifique se o programa inicia sem ele. Se falhar, consulte erros de sintaxe, caminhos e inicialização.
+
+## Retenção
+
+A indicação de uso pertence à aplicação, não a um catálogo global. Conteúdo órfão antigo pode ser excluído; não use como histórico de backup.
+
+Mantenha a fonte em seu sistema de controle e faça backup dos dados separadamente. Veja [limites do XConfig](/docs/pt-br/guides/apps/xconfig/).

@@ -1,0 +1,19 @@
+---
+title: "依存関係"
+description: "ほかのアプリや PostgreSQL に接続し、リリース前に検証する業務フローを選びます。"
+sidebar:
+  order: 12.6
+---
+
+依存関係を使うと、[環境変数](/docs/ja/guides/apps/container/)からほかのアプリのホスト名や PostgreSQL 接続を参照できます。この明示的な参照設定で、[リリース検証](/docs/ja/guides/release-safety/guardian/)の利用側アプリも判定します。ホスト名や DSN を通常の値として入力しても、この関係は作成されません。
+
+- [アプリ間の依存関係](/docs/ja/guides/apps/dependencies/app/) — 注文サービスからユーザーサービスを呼び出し、どちらを更新しても連携が機能することを確かめます。
+- [PostgreSQL の依存関係](/docs/ja/guides/apps/dependencies/postgresql/) — アプリをデータベースに接続し、本番で SQL を実行する前に業務フローを検証します。
+
+## アプリから参照
+
+Operator と Admin がアプリ設定を編集できます。
+
+1. 環境変数を追加し、値の取得元に**依存関係**を選びます。
+2. 依存先と出力フィールドを選びます。
+3. 選択を確定し、アプリ設定全体を保存します。

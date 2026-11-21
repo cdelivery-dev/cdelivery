@@ -1,0 +1,36 @@
+---
+title: "Configuration files with XConfig"
+description: "Upload application configuration, mount files, and understand their visibility and update behavior."
+sidebar:
+  order: 12
+---
+
+XConfig delivers a file to an application's container. Use it for configuration such as a web server config or static homepage; use a volume for mutable business data.
+
+For credential files, choose a File secret from [Secrets](/docs/guides/apps/secrets/) by switching the source to **Secret** when adding a configuration file. The upload and download instructions below apply to ordinary configuration files.
+
+## Upload a file
+
+Open a supported application's configuration files, select a local file, and choose an absolute container file path. The file must be nonempty and no larger than 1,023,999 bytes. The target path is 2–255 characters and must not end in `/`.
+
+For example, a custom homepage for the Hello application can target:
+
+```text
+/www/index.html
+```
+
+Upload an HTML file to replace Hello’s default request information with your own homepage. A complete example is in [mounting and updating configuration](/docs/guides/apps/xconfig/mounting/).
+
+## Visibility and lifecycle
+
+File contents can be downloaded by users with the relevant shared-read access. Do not assume arbitrary content is secret or automatically redacted.
+
+Updates create replacement configuration content and update the application mount. They are not an in-place editing service for a writable file. Deleting or replacing configuration can affect subsequent tasks; inspect logs and a real request afterward.
+
+Local-volume stateful applications use a different configuration mode and do not support ordinary XConfig uploads. Choose the mode before creating the application.
+
+## Diagnose and continue
+
+An invalid path, empty file, or oversized upload is rejected. A running container may still fail to use the file if the image expects another path or the configuration is invalid. Check startup logs and the image documentation.
+
+[Mounting and updating configuration](/docs/guides/apps/xconfig/mounting/) explains replacement and target-path changes. [Persistence](/docs/guides/apps/persistence/) explains where to store writable data.

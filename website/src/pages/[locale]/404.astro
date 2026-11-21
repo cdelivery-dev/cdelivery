@@ -1,0 +1,9 @@
+---
+import ErrorLayout from '../../layouts/ErrorLayout.astro';
+import { translate } from '../../i18n';
+import { localePaths } from '../../routes';
+
+export const getStaticPaths = localePaths;
+const t = translate(Astro.currentLocale);
+---
+<ErrorLayout title={t('site.notFound.title')} heading={t('site.notFound.heading')} />

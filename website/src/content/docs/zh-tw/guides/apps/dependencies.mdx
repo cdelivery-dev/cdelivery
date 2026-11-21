@@ -1,0 +1,19 @@
+---
+title: "依賴"
+description: "連接其他應用程式或 PostgreSQL 資料庫，並選擇發布前要驗證的業務流程。"
+sidebar:
+  order: 12.6
+---
+
+依賴讓應用程式透過[環境變數](/docs/zh-tw/guides/apps/container/)引用其他應用程式的主機名稱或 PostgreSQL 連線，也讓[發布檢查](/docs/zh-tw/guides/release-safety/guardian/)識別直接使用它的應用程式。把主機名稱或 DSN 填成一般值，不會建立這種關係。
+
+- [應用程式依賴](/docs/zh-tw/guides/apps/dependencies/app/) — 以訂單服務呼叫使用者服務為例，設定依賴並驗證任一方更新後兩者能否正常運作。
+- [PostgreSQL 資料庫依賴](/docs/zh-tw/guides/apps/dependencies/postgresql/) — 讓應用程式連接資料庫，透過業務檢查驗證 SQL 能否在正式環境執行。
+
+## 引用依賴
+
+Operator 和 Admin 可以編輯應用程式設定：
+
+1. 新增環境變數，將來源切換為**依賴**。
+2. 選擇依賴和輸出欄位。
+3. 確認選擇，再儲存整個應用程式設定。

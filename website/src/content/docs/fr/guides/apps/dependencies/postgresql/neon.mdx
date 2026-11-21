@@ -1,0 +1,16 @@
+---
+title: "Neon"
+description: "Enregistrez une connexion Neon et choisissez la capacité de calcul de la branche de test."
+sidebar:
+  order: 1
+---
+
+## Enregistrer une base
+
+En tant qu’Admin, ouvrez **Dépendances → Nouvelle dépendance → Neon**. Renseignez un nom, le DSN PostgreSQL fourni par Neon, une clé API et l’ID du projet. Le point de terminaison de calcul indiqué par le DSN doit appartenir au projet. La connexion enregistrée est accessible à tous les groupes.
+
+## La branche de test
+
+Pour le test SQL, CDelivery crée une branche temporaire à partir de la branche indiquée par le DSN, avec un point de terminaison en lecture et écriture. Lors de la soumission, indiquez une capacité en unités de calcul (CU) ou laissez le champ vide pour utiliser le minimum du point de terminaison source.
+
+Passez à la [connexion d’une application et au test d’une modification SQL](/docs/fr/guides/apps/dependencies/postgresql/).

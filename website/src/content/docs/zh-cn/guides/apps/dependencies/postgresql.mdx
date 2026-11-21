@@ -1,0 +1,36 @@
+---
+title: "PostgreSQL 数据库依赖"
+description: "在演练库执行 SQL，通过 APP 的业务检查验证数据库变更，再应用到生产库。"
+sidebar:
+  order: 2
+---
+
+如果 APP 通过依赖绑定连接这个数据库，可以在它的 [XHealth](/docs/zh-cn/guides/release-safety/xhealth/) 中开启**参与发布检查**。例如，订单服务可以查询一笔订单，验证数据库变更后能否读到预期的数据。
+
+## 登记数据库
+
+- [Neon](/docs/zh-cn/guides/apps/dependencies/postgresql/neon/) — 登记 Neon 连接，为 SQL 演练创建临时分支并选择计算规格。
+- [PlanetScale](/docs/zh-cn/guides/apps/dependencies/postgresql/planetscale/) — 登记 PlanetScale 的 PostgreSQL 连接，了解演练分支的数据恢复点和规格。
+- [本地 PostgreSQL](/docs/zh-cn/guides/apps/dependencies/postgresql/local/) — 将已有的 PostgreSQL 应用登记为依赖，使用 ZFS 数据卷的克隆演练变更。
+
+## 引用依赖
+
+Admin 先按提供方指南登记已有的生产数据库。随后，Operator 或 Admin 在 APP 环境变量中将 `DATABASE_URL` 绑定到该依赖的 `dsn`，确认后保存 APP。如果镜像需要分别配置连接参数，可为对应变量选择 `host`、`port`、`database`、`username` 或 `password`。
+
+## 验证一条 SQL 变更
+
+打开 PostgreSQL 依赖，选择**新建变更**并填写 SQL。云数据库还可以选择演练规格。CDelivery 按原文执行 SQL，不会自动添加事务。
+
+**如果没有 APP 参与检查，提交的 SQL 会直接在生产数据库执行。**
+
+有 APP 参与时，CDelivery 先在演练库执行 SQL，再将参与检查的 APP 预览实例连到演练库，运行各自的业务检查。任何一项失败，变更就停在演练阶段，线上 APP 继续使用原来的生产库。全部通过后，CDelivery 清理演练资源，再到生产库执行同一份 SQL。
+
+<ReleaseDiagram kind="database">图中演示的是云数据库的临时分支。本地 PostgreSQL 使用 ZFS 快照克隆完成同样的验证。</ReleaseDiagram>
+
+如果变更被拦截，可在[发布检查](/docs/zh-cn/guides/release-safety/guardian/)中查看日志入口和后续处理方式。
+
+## 替换或删除
+
+数据库依赖配置不可编辑，已保存的凭据和 DSN 不能通过平台查看或下载。修改连接或凭据时，新建依赖，再更新应用中的选择。
+
+Admin 可删除未使用的依赖。当前应用引用、仍可用的回滚配置和未完成变更都可能阻止删除。删除只移除登记及凭据，不删除数据库。本地数据库依赖仍存在时，不能删除其源应用或将源应用移到其他分组。

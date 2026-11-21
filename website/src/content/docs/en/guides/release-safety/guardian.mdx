@@ -1,0 +1,43 @@
+---
+title: "Release checks"
+description: "Check application and database changes before production, and resolve interrupted changes."
+sidebar:
+  order: 29
+---
+
+Operators and Admins can submit app updates and PostgreSQL changes and resolve them if they stop. CDelivery runs release checks on preview instances using [XHealth](/docs/guides/release-safety/xhealth/).
+
+## Select checks and submit
+
+For setup and examples, see [app dependencies](/docs/guides/apps/dependencies/app/) and [PostgreSQL database dependencies](/docs/guides/apps/dependencies/postgresql/).
+
+Save an application's deployment configuration to submit an update. Image, environment, mounts, XConfig, resources, placement, networking, group, credentials, logging, restart policy, and update strategy changes can trigger checks. Description or replica-count changes alone do not.
+
+**If no apps participate, app updates go straight to production and SQL runs directly on the production database.**
+
+## Rehearsal and production
+
+CDelivery prepares preview instances. For a database change, it runs the SQL on the rehearsal database before starting the selected checks. Once all checks pass, CDelivery removes the rehearsal resources, including any data written to the rehearsal database. It then applies the app configuration or runs the same SQL on the production database.
+
+Preview instances use a preview connection for bindings to the app or database being changed. Other dependencies keep their existing connections. Allow enough capacity to run the live apps and their previews at the same time.
+
+## Resolve a stopped change
+
+If a check fails or execution stops, the change stays open with its diagnostics and any remaining temporary resources. Production changes are retried manually. Open **Overview → Current change** on the app page or open the dependency page. Check the **Preview app** and **Release check** [logs](/docs/guides/observability/logs/application/) before choosing an action.
+
+The available actions depend on the stage where the change stopped.
+
+| Action | Result |
+| --- | --- |
+| Skip checks and apply | Clean up rehearsal resources, then apply to production without completing checks |
+| Execute again | Reruns the production change. For a database change, this runs the original SQL again. Check what the previous run applied first. |
+| Confirm completion | Confirm the production result and finish cleanup without executing SQL or applying the change again |
+| Cancel | Clean up temporary resources and close the change; production changes already made remain |
+
+Before production execution starts, you can skip the checks or cancel the change. If only cleanup remains, choose **Confirm completion**. To run a fresh rehearsal, cancel the current change and submit it again.
+
+## Finish and verify
+
+An open change reserves all participating applications, including consumers in other groups. Their configuration updates, restarts, rollbacks, deletion, and XHealth changes are blocked, and automatic scaling waits. Resolve the open change before submitting overlapping work or manually deleting its preview volumes.
+
+Each target retains only its latest change. After completion, check live replicas and a real business request. [Application rollback](/docs/guides/release-safety/rollback/) restores configuration; it does not undo SQL or restore database contents.

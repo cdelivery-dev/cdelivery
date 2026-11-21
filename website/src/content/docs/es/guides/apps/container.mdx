@@ -1,0 +1,36 @@
+---
+title: "Comando y variables de entorno"
+description: "Configura el proceso principal y sus variables sin confundir argumentos con ejecución de shell."
+sidebar:
+  order: 10
+---
+
+Configura el proceso principal y sus variables sin confundir argumentos con ejecución de shell.
+
+## Comando
+
+Conserva el comando predeterminado salvo que la imagen requiera otro. La entrada se divide en argumentos con comillas; expansión, tuberías y redirecciones necesitan una shell explícita:
+
+En la imagen Hello (`ghcr.io/cdelivery-dev/hello:1.0.0`), este comando escribe el valor de `GREETING` en el registro de inicio y arranca el servidor HTTP:
+
+```sh
+sh -c 'printf "%s\n" "$GREETING"; exec httpd -f -v -p 80 -h /www'
+```
+
+Configura `GREETING=Hello` para probar el ejemplo. Esta variable cambia la salida del registro.
+
+La imagen debe contener shell y ejecutable. Mantén el proceso en primer plano: si termina el comando principal, termina el contenedor.
+
+## Entorno
+
+Una variable de entorno puede usar un valor normal, un [secreto de texto](/docs/es/guides/apps/secrets/) o una [salida de dependencia](/docs/es/guides/apps/dependencies/). Introduce el nombre, elige el origen y el valor o campo de salida, confirma y guarda toda la configuración de la aplicación.
+
+Los nombres admiten 1–128 caracteres y no contienen `=`; cada valor normal admite hasta 4096. Usa las variables que realmente entiende el programa. `PORT=8080` no publica ese puerto ni obliga al proceso a escucharlo.
+
+Los valores normales de variables son configuración compartida y no se ocultan automáticamente. Para archivos mayores, considera [XConfig](/docs/es/guides/apps/xconfig/) cuando esté disponible.
+
+## Verificar
+
+Guarda, inspecciona tareas nuevas y registros. Guardar sin cambios no reinicia. Si faltan ejecutables, revisa rutas e imagen; si la expansión aparece literal, invoca una shell.
+
+El proceso debe escuchar en una interfaz accesible dentro del contenedor, no solamente loopback. Configura [red y puertos](/docs/es/guides/networking/connectivity/) por separado.

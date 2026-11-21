@@ -1,0 +1,16 @@
+---
+title: "Neon"
+description: "登記 Neon 連線，並為 SQL 測試分支選擇運算規格。"
+sidebar:
+  order: 1
+---
+
+## 登記資料庫
+
+Admin 開啟**依賴 → 新增依賴 → Neon**，填寫名稱、Neon 提供的 PostgreSQL DSN、API 金鑰與專案 ID。DSN 的運算端點必須屬於該專案。儲存後，各分組的應用程式均可綁定此依賴。
+
+## 測試分支
+
+測試 SQL 時，CDelivery 從 DSN 對應的來源分支建立暫存分支，並建立可讀寫的運算端點。提交變更時可填寫運算單元（CU），留空則採用來源端點的最小 CU。
+
+接下來可以[綁定應用程式並驗證 SQL 變更](/docs/zh-tw/guides/apps/dependencies/postgresql/)。

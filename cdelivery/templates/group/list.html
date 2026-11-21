@@ -1,0 +1,38 @@
+{% extends "dashboard.html" %}
+
+{% block title %}{{ tt!("ui.nav.groups") }} | {{ super() }}{% endblock title %}
+
+{% block main %}
+<header>
+  <h1>{{ tt!("ui.nav.groups") }}</h1>
+</header>
+<div>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">{{ tt!("ui.group.name.label") }}</th>
+          <th scope="col">{{ tt!("ui.group.description.label") }}</th>
+          <th scope="col" aria-label='{{ tt!("ui.common.actions") }}'></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for group in dashboard.groups %}
+        <tr>
+          <th scope="row" translate="no">{{ group.name }}</th>
+          <td>{% if let Some(desc) = group.description %}{{ desc }}{% endif %}</td>
+          <td>
+            <a href="/groups/{{ group.name }}" class="row-action">
+              {% if group.can_write %}{{ tt!("ui.common.edit") }}{% else %}{{ tt!("ui.common.view") }}{% endif %}
+            </a>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="3" class="muted">{{ tt!("ui.group.empty") }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% if dashboard.can_create %}<div class="end"><a class="row-action" href="/groups/.create">{{ tt!("ui.common.create") }}</a></div>{% endif %}
+</div>
+{% endblock main %}

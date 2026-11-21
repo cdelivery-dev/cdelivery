@@ -1,0 +1,188 @@
+---
+import { translate } from '../i18n';
+
+interface Props {
+  kind: 'dependency' | 'database';
+}
+
+const { kind } = Astro.props;
+const database = kind === 'database';
+const t = translate(Astro.locals.docsLocale ?? Astro.currentLocale);
+const captionId = Astro.slots.has('default') ? `release-${kind}-caption` : undefined;
+---
+<figure class="diagram" role="img" aria-label={t(`site.safety.${kind}Diagram`)} aria-describedby={captionId}>
+  <div class:list={['map', kind]} aria-hidden="true">
+    <div class="node source users">
+      <strong>{t('site.safety.users')}</strong>
+      <small>{t('site.safety.traffic')}</small>
+    </div>
+    <div class="wire live entry"></div>
+    <div class="node source health">
+      <strong>XHealth</strong>
+      <small>{t('site.safety.validation')}</small>
+    </div>
+    <div class="wire check entry"></div>
+    <div class="service caller">
+      <div class="node live">
+        <strong>{t(database ? 'site.safety.live' : 'site.safety.appA')}</strong>
+        {!database && <code class="version">v1</code>}
+        <small class="success">✓ {t('site.safety.serving')}</small>
+      </div>
+      <code class="clone">clone</code>
+      <div class="node check">
+        <strong>{t(database ? 'site.safety.preview' : 'site.safety.appA')}</strong>
+        {!database && <code class="version">v1</code>}
+        <small class="failure">× {t('site.safety.failed')}</small>
+      </div>
+    </div>
+    <div class="wire live call"></div>
+    <div class="wire check call"></div>
+    <div class:list={['service', 'target', { stores: database }]}>
+      <div class="node live">
+        <strong>{t(database ? 'site.safety.productionDatabase' : 'site.safety.dependencyB')}</strong>
+        {!database && <code class="version">v1</code>}
+        <small class="success">✓ {t('site.safety.serving')}</small>
+      </div>
+      <div class="gate">
+        <svg viewBox="0 0 32 32">
+          <path d="M16 30V10m-5 5 5-5 5 5M6 3h20" vector-effect="non-scaling-stroke" />
+        </svg>
+        <span>{t(database ? 'site.safety.changeBlocked' : 'site.safety.releaseBlocked')}</span>
+      </div>
+      <div class="node check">
+        <strong>{t(database ? 'site.safety.branch' : 'site.safety.dependencyB')}</strong>
+        {!database && <code class="version candidate">v2</code>}
+        <small>{database ? <code class="sql">ALTER TABLE …</code> : t('site.safety.candidate')}</small>
+      </div>
+      {database && <div class="fork"><span><code class="operation">fork</code></span></div>}
+    </div>
+  </div>
+  {captionId && <figcaption id={captionId}><slot /></figcaption>}
+</figure>
+<style>
+  .diagram {
+    --live: #46745b;
+    --failure: #b24a52;
+    --line: #c7cbd2;
+    --edge: #e3e6eb;
+    container-type: inline-size;
+    min-width: 0;
+    margin: 0;
+    font-size: .875rem;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+    hyphens: manual;
+  }
+  .diagram:lang(de) { hyphens: auto; }
+  :global(.docs-content) .diagram {
+    --color-muted: var(--nb-muted-foreground);
+    --font-mono: var(--nb-font-mono);
+    --weight-body: 400;
+    --edge: var(--nb-border-strong);
+    --line: var(--nb-muted-foreground);
+    --live: var(--nb-success-foreground);
+    --failure: var(--nb-danger-foreground);
+    margin-block: 1.5rem;
+  }
+  figcaption { margin-top: 1rem; color: var(--color-muted); font-size: .8125rem; line-height: 1.5; }
+  .map {
+    display: grid;
+    --link-width: clamp(28px, 7cqi, 64px);
+    padding-block-start: 8px;
+    grid-template-columns: clamp(90px, 19cqi, 144px) var(--link-width) minmax(0, 1fr) var(--link-width) minmax(0, 1fr) 36px;
+    grid-template-rows: auto minmax(44px, auto) auto;
+  }
+  .node strong { font-weight: var(--weight-body); text-wrap: balance; }
+  small { color: var(--color-muted); font-size: .75rem; }
+  code { font: .92em var(--font-mono); hyphens: none; overflow-wrap: normal; }
+  .version { position: absolute; inset: 0 8px auto auto; transform: translateY(-50%); padding: 1px 4px; border-radius: 3px; color: #535353; background: #f4f4f4; font: .6875rem/1.2 var(--font-mono); white-space: nowrap; }
+  .version.candidate { background: #faf1eb; }
+  .users { grid-area: 1 / 1; }
+  .success { color: var(--live); }
+  .health { grid-area: 3 / 1; }
+  .failure { color: var(--failure); }
+  .wire { position: relative; z-index: 1; align-self: center; margin-inline: 2px; border-top: 1px dashed currentColor; color: var(--line); }
+  .wire.live { grid-row: 1; border-top-style: solid; }
+  .wire.check { grid-row: 3; }
+  .wire.entry { grid-column: 2; }
+  .wire.call { grid-column: 4; }
+  .wire::after, .caller .check::before { content: ''; position: absolute; width: 6px; height: 6px; border-top: 1px solid var(--line); border-right: 1px solid var(--line); }
+  .wire::after { right: 0; top: -3.5px; transform: rotate(45deg); }
+  @media (prefers-reduced-motion: no-preference) {
+    .wire.live::before {
+      content: '';
+      position: absolute;
+      inset: -1.5px 0 auto;
+      height: 2px;
+      background: linear-gradient(var(--flow-direction, 90deg), transparent, 70%, var(--live)) no-repeat;
+      background-size: calc(100% / 3) 100%;
+      animation: live-request 1.9s linear infinite;
+    }
+    .wire.live.call::before { animation-delay: -.5s; }
+    @keyframes live-request {
+      from { background-position: -50% -50%; }
+      to { background-position: 150% 150%; }
+    }
+  }
+  .service { grid-row: 1 / -1; display: grid; grid-template-rows: subgrid; min-width: 0; }
+  .caller { grid-column: 3; }
+  .clone { grid-area: 2 / 1; display: flex; flex-direction: column; align-items: center; gap: 2px; margin-block: 2px; color: var(--color-muted); font-size: .75rem; }
+  .clone::before, .clone::after { content: ''; flex: 1; border-left: 1px dashed var(--line); }
+  .caller .check::before { top: -3px; left: 50%; transform: translate(-50%, -100%) rotate(135deg); }
+  .target { grid-column: 5 / -1; }
+  .stores { grid-column: 5; }
+  .node { position: relative; display: grid; align-content: center; gap: 3px; min-width: 0; min-height: 46px; padding: 8px 12px; border: 1px solid var(--edge); border-radius: 8px; text-align: center; }
+  .node.live { grid-area: 1 / 1; }
+  .node.check { grid-area: 3 / 1; border-style: dashed; border-color: var(--line); }
+  .gate { grid-area: 2 / 1; place-self: center; display: grid; justify-items: center; gap: 2px; padding-block: 4px; color: var(--failure); font-size: .75rem; line-height: 1.3; text-align: center; text-wrap: balance; }
+  .gate svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.25; stroke-linecap: round; stroke-linejoin: round; }
+  .stores .node { --rim: 6px; border-radius: 50% / calc(var(--rim) / 2); }
+  .stores .node::before { content: ''; position: absolute; inset: -1px -1px auto; height: var(--rim); border-bottom: inherit; border-radius: 50%; }
+  .fork { grid-area: 1 / 1 / 4 / 2; justify-self: end; display: grid; grid-template-rows: subgrid; width: 18px; transform: translateX(100%); color: var(--line); }
+  .fork::before, .fork::after, .fork span { grid-column: 1; }
+  .fork::before, .fork::after { content: ''; height: 50%; border-right: 1px solid; }
+  .fork::before { grid-row: 1; align-self: end; border-top: 1px solid; border-top-right-radius: 5px; }
+  .fork::after { grid-row: 3; align-self: start; border-bottom: 1px solid; border-bottom-right-radius: 5px; }
+  .fork span { grid-row: 2; display: grid; grid-template: 1fr auto 1fr / minmax(0, 1fr); justify-items: end; row-gap: 2px; }
+  .fork span::before, .fork span::after { content: ''; border-right: 1px solid; }
+  .fork code { transform: translateX(50%); color: var(--color-muted); font-size: .75rem; white-space: nowrap; }
+  .stores .check::after { content: ''; position: absolute; top: 50%; left: 100%; width: 6px; height: 6px; border-top: 1px solid var(--line); border-left: 1px solid var(--line); transform: translate(2px, -50%) rotate(-45deg); }
+  @container (width < 512px) {
+    .map {
+      --paths: minmax(0, 1fr) clamp(84px, 26cqi, 120px) minmax(0, 1fr);
+      grid-template-columns: var(--paths);
+      grid-template-rows: auto 28px auto 28px auto;
+      padding-block-start: 0;
+    }
+    .database { padding-block-end: 40px; }
+    .users { grid-area: 1 / 1; }
+    .health { grid-area: 1 / 3; }
+    .wire { justify-self: center; align-self: stretch; margin: 2px 0; border-top: 0; border-left: 1px dashed currentColor; }
+    .wire.live { --flow-direction: 180deg; grid-column: 1; border-left-style: solid; }
+    .wire.live::before { inset: 0 auto 0 -1.5px; width: 2px; height: auto; background-size: 100% calc(100% / 3); }
+    .wire.entry { grid-row: 2; }
+    .wire.call { grid-row: 4; }
+    .wire.check { grid-column: 3; }
+    .wire::after { inset: auto auto 0 -3.5px; transform: rotate(135deg); }
+    .service { grid-column: 1 / -1; grid-template: auto / var(--paths); }
+    .caller { grid-row: 3; }
+    .clone { grid-area: 1 / 2; flex-direction: row; margin: 0 2px; }
+    .clone::before, .clone::after { border-left: 0; border-top: 1px dashed var(--line); }
+    .caller .check::before { top: 50%; left: -3px; transform: translate(-100%, -50%) rotate(45deg); }
+    .target { grid-row: 5; }
+    .node { padding-inline: 4px; }
+    .node.live { grid-area: 1 / 1; }
+    .node.check { grid-area: 1 / 3; }
+    .gate { grid-area: 1 / 2; display: flex; align-items: center; gap: 3px; max-width: 100%; padding: 0 2px; }
+    .gate svg { flex: none; width: 16px; height: 16px; transform: rotate(-90deg); }
+    .fork { grid-area: 1 / 1 / 2 / 4; place-self: end stretch; grid-template: 1fr / subgrid; width: auto; height: 20px; transform: translateY(100%); }
+    .fork::before, .fork::after, .fork span { grid-row: 1; border: 0; border-bottom: 1px solid; }
+    .fork::before, .fork::after { align-self: stretch; width: 50%; height: auto; }
+    .fork::before { grid-column: 1; justify-self: end; border-left: 1px solid; border-radius: 0 0 0 5px; }
+    .fork::after { grid-column: 3; justify-self: start; border-right: 1px solid; border-radius: 0 0 5px 0; }
+    .fork span { grid-column: 2; position: relative; display: block; }
+    .fork span::before, .fork span::after { content: none; }
+    .fork code { position: absolute; inset: calc(100% + 4px) auto auto 50%; transform: translateX(-50%); }
+    .stores .check::after { top: 100%; left: 50%; transform: translate(-50%, 2px) rotate(45deg); }
+  }
+</style>

@@ -1,0 +1,172 @@
+_version = 2
+
+[dependency.dsnInvalid]
+en = "Enter a PostgreSQL URI with a username, host and database name."
+zh-CN = "请输入包含用户名、主机和数据库名的 PostgreSQL URI。"
+zh-TW = "請輸入包含使用者名稱、主機與資料庫名稱的 PostgreSQL URI。"
+ja = "ユーザー名、ホスト、データベース名を含む PostgreSQL URI を入力してください。"
+pt-BR = "Informe uma URI PostgreSQL com usuário, host e nome do banco de dados."
+es = "Introduce una URI de PostgreSQL con usuario, host y nombre de la base de datos."
+fr = "Saisissez une URI PostgreSQL avec un utilisateur, un hôte et un nom de base de données."
+de = "Geben Sie eine PostgreSQL-URI mit Benutzername, Host und Datenbankname ein."
+
+[dependency.globalHint]
+en = "Cloud databases can be referenced by apps in any group."
+zh-CN = "云数据库可被任意分组的应用引用。"
+zh-TW = "雲端資料庫可由任意分組的應用程式引用。"
+ja = "クラウドデータベースはどのグループのアプリからも参照できます。"
+pt-BR = "Bancos de dados na nuvem podem ser referenciados por aplicações de qualquer grupo."
+es = "Las aplicaciones de cualquier grupo pueden referenciar bases de datos en la nube."
+fr = "Les applications de tous les groupes peuvent référencer les bases de données cloud."
+de = "Apps jeder Gruppe können Cloud-Datenbanken referenzieren."
+
+[dependency.title]
+en = "Dependencies"
+zh-CN = "依赖"
+zh-TW = "依賴"
+ja = "依存関係"
+pt-BR = "Dependências"
+es = "Dependencias"
+fr = "Dépendances"
+de = "Abhängigkeiten"
+
+[dependency.label]
+en = "Dependency"
+zh-CN = "依赖"
+zh-TW = "依賴"
+ja = "依存関係"
+pt-BR = "Dependência"
+es = "Dependencia"
+fr = "Dépendance"
+de = "Abhängigkeit"
+
+[dependency.new]
+en = "New dependency"
+zh-CN = "新建依赖"
+zh-TW = "新增依賴"
+ja = "依存先を追加"
+pt-BR = "Nova dependência"
+es = "Nueva dependencia"
+fr = "Nouvelle dépendance"
+de = "Neue Abhängigkeit"
+
+[dependency.apiKey]
+en = "API key"
+zh-CN = "API 密钥"
+zh-TW = "API 金鑰"
+ja = "API キー"
+pt-BR = "Chave de API"
+es = "Clave de API"
+fr = "Clé API"
+de = "API-Schlüssel"
+
+[dependency.serviceToken]
+en = "Service token"
+zh-CN = "服务令牌"
+zh-TW = "服務權杖"
+ja = "サービストークン"
+pt-BR = "Token de serviço"
+es = "Token de servicio"
+fr = "Jeton de service"
+de = "Service-Token"
+
+[dependency.project]
+en = "Project ID"
+zh-CN = "项目 ID"
+zh-TW = "專案 ID"
+ja = "プロジェクト ID"
+pt-BR = "ID do projeto"
+es = "ID del proyecto"
+fr = "ID du projet"
+de = "Projekt-ID"
+
+[dependency.sourceApp]
+en = "Source app"
+zh-CN = "源应用"
+zh-TW = "來源應用程式"
+ja = "元のアプリ"
+pt-BR = "Aplicação de origem"
+es = "Aplicación de origen"
+fr = "Application source"
+de = "Quell-App"
+
+[dependency.select]
+en = "Select"
+zh-CN = "请选择"
+zh-TW = "請選擇"
+ja = "選択してください"
+pt-BR = "Selecionar"
+es = "Seleccionar"
+fr = "Sélectionner"
+de = "Auswählen"
+
+[dependency.field]
+en = "Output field"
+zh-CN = "输出字段"
+zh-TW = "輸出欄位"
+ja = "出力フィールド"
+pt-BR = "Campo de saída"
+es = "Campo de salida"
+fr = "Champ de sortie"
+de = "Ausgabefeld"
+
+[dependency.empty]
+en = "No dependencies found."
+zh-CN = "没有找到依赖。"
+zh-TW = "找不到依賴。"
+ja = "依存関係がありません。"
+pt-BR = "Nenhuma dependência encontrada."
+es = "No se encontraron dependencias."
+fr = "Aucune dépendance trouvée."
+de = "Keine Abhängigkeiten gefunden."
+
+[dependency.loadFailed]
+en = "Unable to load dependencies."
+zh-CN = "无法加载依赖。"
+zh-TW = "無法載入依賴。"
+ja = "依存関係を読み込めません。"
+pt-BR = "Não foi possível carregar as dependências."
+es = "No se pudieron cargar las dependencias."
+fr = "Impossible de charger les dépendances."
+de = "Abhängigkeiten konnten nicht geladen werden."
+
+[dependency.localHint]
+en = "Choose a PostgreSQL app with ZFS volumes. Only apps in its group can reference this dependency."
+zh-CN = "选择使用 ZFS 卷的 PostgreSQL 应用。此依赖仅限同分组的应用引用。"
+zh-TW = "選擇使用 ZFS 卷的 PostgreSQL 應用程式。此依賴僅限同分組的應用程式引用。"
+ja = "ZFS ボリュームを使用する PostgreSQL アプリを選択してください。同じグループのアプリのみが参照できます。"
+pt-BR = "Escolha uma aplicação PostgreSQL com volumes ZFS. Apenas aplicações do mesmo grupo podem referenciar esta dependência."
+es = "Selecciona una aplicación PostgreSQL con volúmenes ZFS. Solo las aplicaciones de su grupo pueden referenciar esta dependencia."
+fr = "Choisissez une application PostgreSQL avec des volumes ZFS. Seules les applications de son groupe peuvent référencer cette dépendance."
+de = "Wählen Sie eine PostgreSQL-App mit ZFS-Volumes. Nur Apps ihrer Gruppe können diese Abhängigkeit referenzieren."
+
+[dependency.immutable]
+en = "Configuration is fixed after creation. DSNs and credentials are not shown; create a new dependency to replace them."
+zh-CN = "创建后配置不可修改；DSN 与凭证不回显，替换时请新建依赖。"
+zh-TW = "建立後設定不可修改；DSN 與憑證不會顯示，替換時請建立新依賴。"
+ja = "作成後に設定は変更できません。DSN と認証情報は表示されません。置き換える場合は新しい依存先を作成してください。"
+pt-BR = "A configuração é fixa após a criação. DSNs e credenciais não são exibidos; crie uma nova dependência para substituí-los."
+es = "La configuración no se puede cambiar tras crearla. Los DSN y las credenciales no se muestran; crea otra dependencia para reemplazarlos."
+fr = "La configuration est définitive après création. Le DSN et les identifiants ne sont pas affichés ; créez une dépendance pour les remplacer."
+de = "Die Konfiguration ist nach dem Erstellen unveränderlich. DSNs und Zugangsdaten werden nicht angezeigt; erstellen Sie zum Ersetzen eine neue Abhängigkeit."
+
+[dependency.deleteConfirm]
+en = "Delete this unused dependency?"
+zh-CN = "删除此未使用的依赖？"
+zh-TW = "刪除此未使用的依賴？"
+ja = "この未使用の依存先を削除しますか？"
+pt-BR = "Excluir esta dependência não utilizada?"
+es = "¿Eliminar esta dependencia sin uso?"
+fr = "Supprimer cette dépendance inutilisée ?"
+de = "Diese ungenutzte Abhängigkeit löschen?"
+
+[dependency.envHint]
+en = "The selected field supplies the environment variable value."
+zh-CN = "所选字段将作为环境变量值。"
+zh-TW = "所選欄位將作為環境變數值。"
+ja = "選択したフィールドが環境変数の値になります。"
+pt-BR = "O campo selecionado fornece o valor da variável de ambiente."
+es = "El campo seleccionado proporciona el valor de la variable de entorno."
+fr = "Le champ choisi fournit la valeur de la variable d’environnement."
+de = "Das gewählte Feld liefert den Wert der Umgebungsvariablen."
+

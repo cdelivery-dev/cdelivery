@@ -1,0 +1,26 @@
+---
+title: "Intégration Discord"
+description: "Discord reçoit via Gateway et nécessite une connexion sortante, pas un callback public."
+sidebar:
+  order: 48
+---
+
+Discord reçoit via Gateway et nécessite une connexion sortante, pas un callback public.
+
+## Installer
+
+Créez app/bot, récupérez son token et installez-le avec lecture des canaux et envoi ; ajoutez l’envoi dans les fils si utilisé. Admin enregistre le token.
+
+Activez Developer Mode, copiez votre User ID et associez-le au compte. Client secret, Application ID, serveur et canal ne sont pas votre identité. Voir [guide officiel](https://docs.discord.com/developers/quick-start/getting-started).
+
+Messages privés et mentions explicites fonctionnent sans dépendre de l’intent privilégié Message Content pour les messages arbitraires.
+
+## Vérifier
+
+Avec [modèle](/docs/fr/guides/automation/models/), posez une question en lecture en privé ou par mention. Confirmez compte et rôle.
+
+## Diagnostic
+
+Vérifiez installation, token, permissions, restrictions privées, Gateway et association. Être en ligne ne garantit pas l’envoi partout.
+
+Un ID tiers expose vos opérations. Voir [abonnements](/docs/fr/guides/automation/im/notifications/) si les messages fonctionnent mais pas les alertes.

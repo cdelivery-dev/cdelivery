@@ -1,0 +1,34 @@
+---
+title: "Réglages et dépannage des notifications"
+description: "La livraison dépend du canal, de l’abonnement personnel et de l’éligibilité du destinataire."
+sidebar:
+  order: 51
+---
+
+La livraison dépend du canal, de l’abonnement personnel et de l’éligibilité du destinataire.
+
+## Préparer
+
+Admin active le canal ; chaque utilisateur vérifie son adresse ou associe son propre ID. Les nouveaux comptes reçoivent les e-mails par défaut, et les nouvelles associations reçoivent les notifications par défaut. Vous pouvez les désactiver dans votre compte.
+
+Dissocier supprime l’abonnement ; associer à nouveau l’active. Réenregistrer ou remplacer l’ID conserve la préférence, tout comme modifier l’adresse du compte. Configurer ou supprimer un canal de plateforme ne modifie pas les préférences personnelles.
+
+L’[astreinte](/docs/fr/guides/automation/duty/) est facultative. Les alertes ordinaires n’exigent pas de modèle. Désactiver l’astreinte ne coupe pas toutes les alertes ; désabonner ne supprime pas l’identité.
+
+## Rôles et langue
+
+Les abonnés dont le rôle est au moins égal à celui de l’astreinte reçoivent l’analyse IA ; les autres reçoivent l’alerte d’origine. Les comptes rendus d’opérations suivent la même restriction de rôle.
+
+L’astreinte IA attend l’analyse puis envoie une notification par destinataire et canal. En cas d’échec, d’annulation, de réponse inexploitable ou de dépassement du délai de 60 secondes, elle envoie l’alerte d’origine. Lorsqu’elle est désactivée, l’alerte d’origine est envoyée directement.
+
+La réactivation de l’astreinte ne réanalyse pas les événements en attente.
+
+La langue est celle de la configuration de l’astreinte ; les conversations suivent le dialogue.
+
+## Diagnostic
+
+Contrôlez événement réel, secrets/droits du canal, destinataire, abonnement, rôle, restrictions/spam et erreur modèle.
+
+Notez heure, canal, compte et événement sans secrets. Sans notification, tout ne va pas forcément bien. Après association, testez une conversation en lecture ; avatar et nom ne suffisent pas.
+
+Voir les [canaux](/docs/fr/guides/automation/im/).

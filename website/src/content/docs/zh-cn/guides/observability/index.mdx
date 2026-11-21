@@ -1,0 +1,24 @@
+---
+title: "日志、指标与事件"
+description: "选择日志、指标或事件作为排障入口，理解采集状态、时间范围和数据缺失。"
+sidebar:
+  group:
+    label: "日志、指标与事件"
+    icon: "ph:chart-line"
+  order: 31
+---
+
+日志、指标和事件回答不同问题。日志解释程序输出，指标显示随时间变化的资源和请求情况，事件记录平台观察到的操作与运行变化。
+
+## 选择数据入口
+
+| 需要回答的问题 | 页面 |
+| --- | --- |
+| 程序为什么启动失败 | [应用日志](/docs/zh-cn/guides/observability/logs/application/) |
+| 请求是否到达入口、返回了什么 | [访问日志](/docs/zh-cn/guides/observability/logs/access/) |
+| 应用是否受 CPU 或内存影响 | [应用指标](/docs/zh-cn/guides/observability/metrics/application/) |
+| 某台机器是否资源不足 | [服务器指标](/docs/zh-cn/guides/observability/metrics/server/) |
+| 故障前发生过什么变更 | [操作事件](/docs/zh-cn/guides/observability/events/) |
+| 数据为何迟到或没有保存 | [采集与保留设置](/docs/zh-cn/guides/observability/settings/) |
+
+Reader、Operator 和 Admin 均可读取共享观测信息。配置 Insight、存储和采集组件需要 Admin。

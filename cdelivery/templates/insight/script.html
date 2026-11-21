@@ -1,0 +1,114 @@
+<script>
+function insightSpec(destination = "/insight") {
+  const insight = JSON.parse(document.getElementById("insight-current").textContent);
+  const nodes = JSON.parse(document.getElementById("insight-nodes").textContent).nodes;
+  const server = insight.server;
+  const currentStorage = server?.storage ?? "Local";
+  const currentStorageType = currentStorage === "Local" ? "Local" : Object.keys(currentStorage)[0];
+  const currentConfig = currentStorage === "Local" ? {} : currentStorage[currentStorageType];
+  const currentPlacement = server?.placement ?? null;
+  const flushInterval = server?.flush_interval ?? { unit: "Minutes", value: 3 };
+  const unavailable = {{ tt!("ui.insight.placement.missing")|json|safe }};
+  const secretPlaceholder = {{ tt!("ui.insight.storage.secretUnchanged")|json|safe }};
+  const storedPlacementType = currentPlacement?.Label !== undefined ? "Label" : "NodeId";
+  const initialPlacementType = currentStorageType === "Local" ? "NodeId" : storedPlacementType;
+  const stored = initialPlacementType === "NodeId" ? currentPlacement?.NodeId : currentPlacement?.Label;
+  const { nodeOptions, labelOptions } = CDelivery.placementOptions(nodes, initialPlacementType, stored, unavailable);
+  const defaultNode = !{{ initial_setup }} || nodeOptions.length === 1 ? nodeOptions[0]?.id : "";
+  const initialPlacementValue = (initialPlacementType === "NodeId" ? stored ?? defaultNode : stored) ?? "";
+  const currentValues = {
+    endpoint: currentConfig.endpoint ?? "",
+    region: currentConfig.region ?? "",
+    bucketName: currentConfig.bucket_name ?? "",
+    accessKeyId: currentConfig.access_key_id ?? "",
+    containerName: currentConfig.container_name ?? "",
+    accountName: currentConfig.account_name ?? "",
+  };
+  const baseline = {
+    retention: server?.retention_days ?? null,
+    sample: insight.agent?.sample_interval_secs ?? null,
+    flush: server?.flush_interval ? JSON.stringify(server.flush_interval) : null,
+    placement: currentPlacement ? JSON.stringify(currentPlacement) : null,
+  };
+  return {
+    ...CDelivery.preparation(destination),
+    storageType: currentStorageType,
+    placementType: initialPlacementType,
+    placementValue: initialPlacementValue,
+    retentionDays: server?.retention_days ?? 90,
+    sampleIntervalSecs: insight.agent?.sample_interval_secs ?? 5,
+    flushInterval,
+    ...currentValues,
+    secretAccessKey: "",
+    credentials: "",
+    accountKey: "",
+    nodeOptions,
+    labelOptions,
+    secretPlaceholder,
+
+    selectStorageType(type) {
+      this.storageType = type;
+      if (type === "Local" && this.placementType !== "NodeId") {
+        this.placementType = "NodeId";
+        this.placementValue = "";
+      }
+    },
+
+    get secretRequired() {
+      return !server || this.storageType !== currentStorageType;
+    },
+
+    storage() {
+      if (this.storageType === "Local") return "Local";
+      if (this.storageType === "S3" || this.storageType === "S3Compatible") return { [this.storageType]: {
+        ...(this.storageType === "S3Compatible" ? { endpoint: this.endpoint } : {}),
+        region: this.region,
+        bucket_name: this.bucketName,
+        access_key_id: this.accessKeyId,
+        secret_access_key: this.secretAccessKey,
+      } };
+      if (this.storageType === "Gcs") return { Gcs: {
+        bucket_name: this.bucketName,
+        credentials: this.credentials,
+      } };
+      return { Azure: {
+        container_name: this.containerName,
+        account_name: this.accountName,
+        account_key: this.accountKey,
+      } };
+    },
+
+    storageUnchanged() {
+      return Boolean(server) && this.storageType === currentStorageType
+        && !this.secretAccessKey && !this.credentials && !this.accountKey
+        && this.endpoint === currentValues.endpoint && this.region === currentValues.region
+        && this.bucketName === currentValues.bucketName && this.accessKeyId === currentValues.accessKeyId
+        && this.containerName === currentValues.containerName && this.accountName === currentValues.accountName;
+    },
+
+    payload() {
+      const body = {};
+      if (!this.storageUnchanged()) body.storage = this.storage();
+      if (this.retentionDays !== baseline.retention) body.retention_days = this.retentionDays;
+      if (!{{ initial_setup }} && this.sampleIntervalSecs !== baseline.sample) body.sample_interval_secs = this.sampleIntervalSecs;
+      if (!{{ initial_setup }} && JSON.stringify(this.flushInterval) !== baseline.flush) body.flush_interval = this.flushInterval;
+      const placement = { [this.placementType]: this.placementValue };
+      if (JSON.stringify(placement) !== baseline.placement) body.placement = placement;
+      const serverVersion = this.$refs.serverVersion?.value;
+      if (serverVersion) body.server_version = serverVersion;
+      const agentVersion = this.$refs.agentVersion?.value;
+      if (agentVersion) body.agent_version = agentVersion;
+      return body;
+    },
+
+    prepare(event) {
+      if (CDelivery.guard(this, event)) return;
+      const body = this.payload();
+      if (!insight.server || !insight.agent) return this.runPreparation(event, body, "enable");
+      this.$refs.payload.value = JSON.stringify(body);
+      this.submitting = true;
+    },
+  };
+}
+document.addEventListener("alpine:init", () => Alpine.data("insightSpec", insightSpec));
+</script>

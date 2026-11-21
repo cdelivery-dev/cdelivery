@@ -1,0 +1,52 @@
+---
+title: "Dominios y HTTPS"
+description: "Distingue comunicación interna, puertos publicados y rutas HTTP/HTTPS mediante Pingress."
+sidebar:
+  group:
+    label: "Dominios y HTTPS"
+    icon: "ph:globe"
+  order: 20
+---
+
+Distingue comunicación interna, puertos publicados y rutas HTTP/HTTPS mediante Pingress.
+
+## Elegir acceso
+
+| Necesidad | Configuración |
+| --- | --- |
+| Comunicación dentro del grupo | Nombre de aplicación y puerto interno |
+| Acceso TCP/UDP directo | Puerto publicado |
+| Aplicación HTTP con dominio | Ruta de Pingress al puerto interno |
+| HTTPS | Ruta y certificado válido |
+
+Una ruta de dominio no necesita publicar primero el puerto y no apunta al número de puerto público.
+
+## Buscar por tarea
+
+<CardGrid>
+
+<Card title="Conectividad y puertos publicados" href="/docs/es/guides/networking/connectivity/" icon="ph:plugs-connected">
+  Las aplicaciones de un mismo grupo se conectan por nombre y puerto del contenedor.
+</Card>
+
+<Card title="Dominios y rutas" href="/docs/es/guides/networking/routing/" icon="ph:globe">
+  Pingress combina dominio y condiciones de petición para elegir un puerto de aplicación.
+</Card>
+
+<Card title="Certificados automáticos y renovación" href="/docs/es/guides/networking/automatic-certificates/" icon="ph:certificate">
+  ACME emite y renueva certificados cuando DNS y validación pueden alcanzar Pingress.
+</Card>
+
+<Card title="Certificados propios" href="/docs/es/guides/networking/custom-certificates/" icon="ph:key">
+  Carga cadena y clave PEM cuando la emisión se administra fuera de CDelivery.
+</Card>
+
+<Card title="Preguntas frecuentes sobre redes" href="/docs/es/guides/networking/faq/" icon="ph:question">
+  Diagnostica problemas de IPv6, direcciones de clientes, DNS, rutas y certificados.
+</Card>
+
+</CardGrid>
+
+## Resolución de problemas
+
+Verifica DNS, conexión, TLS y respuesta por separado. Un certificado emitido no demuestra que el proceso responda correctamente. El [dominio de administración](/docs/es/administration/platform/access/) se configura aparte.

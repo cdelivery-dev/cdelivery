@@ -1,0 +1,18 @@
+---
+title: "PostgreSQL local"
+description: "Registra una aplicación PostgreSQL existente y ensaya cambios con clones de sus volúmenes ZFS."
+sidebar:
+  order: 3
+---
+
+## Registrar una base de datos
+
+Como Admin, abre **Dependencias → Nueva dependencia → PostgreSQL**. Escribe un nombre, elige la aplicación de origen e introduce su DSN PostgreSQL. La aplicación debe estar fijada a un servidor con gestión de volúmenes habilitada y usar volúmenes ZFS para todos sus montajes. Las aplicaciones de ese grupo pueden usar la dependencia.
+
+## El clon de ensayo
+
+Usan clones de instantáneas nuevas, descartan las escrituras de la vista previa y mantienen producción en los volúmenes originales. Los clones comparten espacio sin cuotas y requieren al menos un 10% libre al prepararse. Consulta [persistencia](/docs/es/guides/apps/persistence/) para los límites de copia y recuperación.
+
+Una actualización de la aplicación de origen también puede activar las comprobaciones de las aplicaciones participantes que referencian directamente alguna de sus dependencias PostgreSQL registradas.
+
+Continúa con la [vinculación de una aplicación y la prueba de un cambio SQL](/docs/es/guides/apps/dependencies/postgresql/).

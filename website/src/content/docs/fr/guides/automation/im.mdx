@@ -1,0 +1,50 @@
+---
+title: "Messages et notifications"
+description: "Admin connecte les canaux ; chaque utilisateur associe son identité et ses abonnements."
+sidebar:
+  order: 44
+---
+
+Admin connecte les canaux ; chaque utilisateur associe son identité et ses abonnements.
+
+## Canaux
+
+<CardGrid>
+
+<Card title="E-mail" href="/docs/fr/guides/automation/im/email/" icon="ph:envelope-simple">
+  Identifiants: SMTP, IMAP facultatif. Identité personnelle: E-mail du compte.
+</Card>
+
+<Card title="Slack" href="/docs/fr/guides/automation/im/slack/" icon="ph:slack-logo">
+  Identifiants: Tokens bot/app. Identité personnelle: Member ID.
+</Card>
+
+<Card title="Telegram" href="/docs/fr/guides/automation/im/telegram/" icon="ph:telegram-logo">
+  Identifiants: Token bot. Identité personnelle: ID numérique.
+</Card>
+
+<Card title="Discord" href="/docs/fr/guides/automation/im/discord/" icon="ph:discord-logo">
+  Identifiants: Token bot. Identité personnelle: User ID.
+</Card>
+
+<Card title="Lark" href="/docs/fr/guides/automation/im/lark/" icon="ph:chat-circle-dots">
+  Identifiants: App ID/Secret. Identité personnelle: open_id.
+</Card>
+
+<Card title="Feishu" href="/docs/fr/guides/automation/im/feishu/" icon="ph:chat-circle-dots">
+  Identifiants: App ID/Secret. Identité personnelle: open_id.
+</Card>
+
+</CardGrid>
+
+Nom affiché, groupe et bot ne remplacent pas l’ID utilisateur.
+
+## Configurer et vérifier
+
+Suivez création, droits, publication et événements du canal. Enregistrez les secrets et votre propre ID. Les nouvelles associations reçoivent les notifications par défaut ; vous pouvez les désactiver. Une conversation nécessite un [modèle](/docs/fr/guides/automation/models/) ; commencez en lecture.
+
+Un ID d’autrui peut lui exposer vos notifications et droits.
+
+## Dépanner
+
+Séparez secrets, réseau, événements, association, abonnement et modèle. Un avatar ne prouve ni livraison ni identité correcte. Voir [notifications](/docs/fr/guides/automation/im/notifications/).

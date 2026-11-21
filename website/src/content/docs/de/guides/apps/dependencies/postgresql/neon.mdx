@@ -1,0 +1,16 @@
+---
+title: "Neon"
+description: "Eine Neon-Verbindung registrieren und die Rechenleistung für den Test-Branch festlegen."
+sidebar:
+  order: 1
+---
+
+## Datenbank registrieren
+
+Öffnen Sie als Admin **Abhängigkeiten → Neue Abhängigkeit → Neon**. Geben Sie einen Namen, den von Neon erzeugten PostgreSQL-DSN, einen API-Schlüssel und die Projekt-ID ein. Der Compute-Endpunkt des DSN muss zum Projekt gehören. Nach dem Speichern ist die Verbindung in allen Gruppen verfügbar.
+
+## Der Test-Branch
+
+Beim SQL-Test erzeugt CDelivery vom Branch des DSN einen temporären Branch mit eigenem Lese-/Schreib-Endpunkt. Geben Sie beim Einreichen der Änderung die Größe in Compute Units (CU) an. Ohne Angabe gilt die minimale CU-Zahl des Quellendpunkts.
+
+Weiter mit [App anbinden und SQL-Änderung testen](/docs/de/guides/apps/dependencies/postgresql/).

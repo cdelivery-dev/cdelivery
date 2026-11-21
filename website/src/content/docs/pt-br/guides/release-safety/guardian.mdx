@@ -1,0 +1,43 @@
+---
+title: "Verificações de publicação"
+description: "Verifique alterações de aplicações e bancos antes da produção e resolva alterações interrompidas."
+sidebar:
+  order: 29
+---
+
+Quem tem o papel de Operator ou Admin pode enviar atualizações de aplicações e alterações no PostgreSQL e intervir caso sejam interrompidas. O CDelivery usa o [XHealth](/docs/pt-br/guides/release-safety/xhealth/) para executar as verificações de publicação em instâncias de prévia.
+
+## Selecionar verificações e enviar
+
+Consulte [dependências entre aplicações](/docs/pt-br/guides/apps/dependencies/app/) e [dependências PostgreSQL](/docs/pt-br/guides/apps/dependencies/postgresql/) para ver a configuração e os exemplos.
+
+Salve a configuração de implantação da aplicação para enviar uma atualização. Alterações de imagem, ambiente, montagens, XConfig, recursos, posicionamento, rede, grupo, credenciais, logs, política de reinício e estratégia de atualização podem iniciar verificações. Alterar apenas a descrição ou o número de réplicas não inicia verificações.
+
+**Se nenhuma aplicação participar, as atualizações vão direto para produção e o SQL é executado diretamente no banco de produção.**
+
+## Ensaio e produção
+
+O CDelivery prepara as instâncias de prévia. Para alterações no banco, executa o SQL no banco de ensaio antes de iniciar as verificações. Quando todas passam, o CDelivery libera os recursos do ensaio e descarta os dados gravados no banco de ensaio. Em seguida, aplica a configuração da aplicação ou executa o mesmo SQL no banco de produção.
+
+Nas instâncias de prévia, as conexões com a aplicação ou o banco que está sendo alterado apontam para a respectiva prévia. As demais dependências mantêm suas conexões originais. Reserve recursos suficientes para executar as aplicações em produção e suas prévias ao mesmo tempo.
+
+## Resolver uma alteração parada
+
+Se uma verificação falhar ou a execução for interrompida, a alteração permanece aberta, com os dados de diagnóstico e os recursos temporários restantes. Uma nova tentativa em produção exige uma ação manual. Abra **Visão geral → Alteração atual** na página da aplicação ou consulte a página da dependência. Confira os [logs](/docs/pt-br/guides/observability/logs/application/) de **Aplicação de prévia** e **Verificação de publicação** antes de escolher uma ação.
+
+As ações disponíveis dependem da etapa em que a alteração foi interrompida.
+
+| Ação | Resultado |
+| --- | --- |
+| Pular verificações e aplicar | Limpa os recursos de ensaio e aplica em produção sem concluir as verificações |
+| Executar novamente | Executa a alteração de novo em produção. No caso de uma alteração no banco, o SQL original é executado novamente. Confira primeiro o que foi aplicado na tentativa anterior. |
+| Confirmar conclusão | Confirma o resultado em produção e conclui a limpeza sem executar SQL nem aplicar novamente a alteração |
+| Cancelar | Limpa os recursos temporários e fecha a alteração; mudanças já feitas em produção permanecem |
+
+Antes da execução em produção, você pode pular as verificações ou cancelar a alteração. Se faltar apenas a limpeza, selecione **Confirmar conclusão**. Para repetir o ensaio, cancele a alteração atual e envie-a novamente.
+
+## Concluir e verificar
+
+Uma alteração aberta reserva todas as aplicações participantes, inclusive consumidoras de outros grupos. Atualizações de configuração, reinícios, rollbacks, exclusões e alterações de XHealth ficam bloqueados, e o escalonamento automático aguarda. Resolva a alteração antes de enviar operações conflitantes ou excluir manualmente seus volumes de prévia.
+
+Cada alvo mantém apenas a alteração mais recente. Após concluir, confira réplicas ativas e uma requisição real. O [rollback da aplicação](/docs/pt-br/guides/release-safety/rollback/) restaura configurações; não desfaz SQL nem restaura o conteúdo do banco.

@@ -1,0 +1,60 @@
+---
+import { getAbsoluteLocaleUrl } from 'astro:i18n';
+import { site, defaultLocale, localeDetails, locales } from '../config';
+import { translate } from '../i18n';
+import { isPublished, unlocalizedPath } from '../routes';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import Favicons from '../components/Favicons.astro';
+import fontUrl from '../assets/fonts/league-spartan-latin-variable.woff2?url';
+import globalCssUrl from '../styles/global.css?url';
+interface Props {
+  title: string;
+  description?: string;
+  languageSwitchPath?: string;
+}
+const { title, description, languageSwitchPath } = Astro.props;
+const locale = locales.find((value) => value === Astro.currentLocale) ?? defaultLocale;
+const t = translate(locale);
+const path = unlocalizedPath(Astro.url.pathname);
+const published = isPublished(Astro.url.pathname);
+const canonical = new URL(Astro.url.pathname, site.url);
+const structuredData = JSON.stringify({ '@context': 'https://schema.org', '@type': 'WebSite', name: site.name, url: new URL('/', site.url).href }).replaceAll('<', '\\u003c');
+const pageTitle = path === '/'
+  ? `${site.name} — ${title}`
+  : `${title} — ${site.name}`;
+---
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <link rel="preload" href={fontUrl} as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="stylesheet" href={globalCssUrl} />
+    <meta name="theme-color" content="#ffffff" />
+    <title>{pageTitle}</title>
+    {description && <meta name="description" content={description} />}
+    {!published && <meta name="robots" content="noindex, follow" />}
+    {published && <>
+      <link rel="canonical" href={canonical} />
+      {locales.map((lang) => <link rel="alternate" hreflang={lang} href={getAbsoluteLocaleUrl(lang, path)} />)}
+      <link rel="alternate" hreflang="x-default" href={getAbsoluteLocaleUrl(defaultLocale, path)} />
+    </>}
+    <Favicons />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={pageTitle} />
+    {description && <meta property="og:description" content={description} />}
+    {published && <meta property="og:url" content={canonical} />}
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content={localeDetails[locale].ogLocale} />
+    <meta name="twitter:card" content="summary" />
+    {published && Astro.url.pathname === '/' && <script type="application/ld+json" set:html={structuredData} />}
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{t('site.skipLink')}</a>
+    <SiteHeader languageSwitchPath={languageSwitchPath} />
+    <main id="main" tabindex="-1"><slot /></main>
+    <SiteFooter />
+  </body>
+</html>

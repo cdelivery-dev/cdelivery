@@ -1,0 +1,28 @@
+---
+title: "App-Abhängigkeiten"
+description: "Prüfen Sie am Beispiel von Bestell- und Benutzerdienst, ob zwei Dienste nach einem Update weiterhin zusammenarbeiten."
+sidebar:
+  order: 1
+---
+
+Aktivieren Sie für jede gewünschte App in [XHealth](/docs/de/guides/release-safety/xhealth/) die Option **An Release-Prüfungen teilnehmen**. Bei einem Update prüft CDelivery die App selbst und die Apps, die sie direkt aufrufen, sofern die Option bei der jeweiligen App aktiv ist. Nimmt keine App teil, geht das Update direkt in Produktion.
+
+## In einer App verwenden
+
+Der Bestelldienst A ruft den Benutzerdienst B auf. Wählen Sie in A für die Umgebungsvariable `USER_SERVICE_HOST` die Quelle **Abhängigkeit**, dann B aus derselben Gruppe und das Feld `host`. Bestätigen und speichern Sie die Konfiguration. Verwenden Sie den vom Image erwarteten Variablennamen.
+
+B erscheint automatisch in der Auswahl. Eine zustandsbehaftete App B muss [ZFS-Vorschauen](/docs/de/guides/apps/persistence/) unterstützen. Die Portfreigabe erfolgt separat.
+
+## Was passiert beim Update von A oder B?
+
+Im Beispiel nehmen beide Dienste teil. Die Prüfung des Bestelldienstes fragt eine Bestellung ab und prüft, ob die Antwort die erwarteten Daten aus dem Benutzerdienst enthält.
+
+**Beim Update des Bestelldienstes (A)** läuft die Abfrage auf einer Vorschauinstanz der neuen Version. Sie ruft den Benutzerdienst in der Produktionsumgebung auf.
+
+**Beim Update des Benutzerdienstes (B)** prüft XHealth die neue Version. Eine Vorschauinstanz des Bestelldienstes führt dieselbe Abfrage aus und ruft dabei die neue Version des Benutzerdienstes auf.
+
+Schlägt eine Prüfung fehl, stoppt das Update. Die bisherigen Versionen beider Dienste verarbeiten weiterhin die Anfragen in der Produktionsumgebung.
+
+<ReleaseDiagram kind="dependency">Die durchgezogene Linie zeigt den laufenden Verkehr zu B v1. Die gestrichelte Linie zeigt die fehlgeschlagene Prüfung von A mit B v2.</ReleaseDiagram>
+
+Bei einer angehaltenen Änderung finden Sie die Logs und die nächsten Schritte unter [Release-Prüfungen](/docs/de/guides/release-safety/guardian/).

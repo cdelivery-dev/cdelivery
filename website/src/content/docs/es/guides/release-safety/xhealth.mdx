@@ -1,0 +1,59 @@
+---
+title: "Configurar XHealth"
+description: "XHealth ejecuta comprobaciones en tareas independientes de los contenedores de negocio."
+sidebar:
+  order: 26
+---
+
+XHealth comprueba la aplicación en un contenedor independiente usando su entorno y sus archivos montados, incluidos los [Secretos](/docs/es/guides/apps/secrets/). Operator y Admin configuran las comprobaciones; Reader puede consultar resultados compartidos.
+
+## Elegir el destino
+
+En la página **XHealth** de la aplicación, elige Hurl o un comando personalizado, el destino y un intervalo mínimo de un minuto. Las comprobaciones periódicas y **Ejecutar ahora** usan el mismo destino:
+
+| Destino | Dirección | Puerto | Protocolo |
+| --- | --- | --- | --- |
+| Dominio | Dominio resuelto mediante DNS | 80 o 443 | HTTP, o HTTPS si está activado para el dominio |
+| Puerto publicado | IP de un servidor | Puerto publicado seleccionado | HTTP para Hurl; elegido por el comando personalizado |
+| Puerto interno | Dirección interna de la aplicación | Puerto del contenedor indicado | HTTP para Hurl; elegido por el comando personalizado |
+
+Se usa HTTPS si alguna ruta del dominio lo activa. Los dominios y puertos publicados deben pertenecer a esta aplicación y corresponder a un único puerto interno, incluso con las comprobaciones de publicación desactivadas. Varias rutas al mismo puerto son válidas. Hurl solo admite mapeos TCP. Para servicios no HTTP, usa un comando personalizado y un destino por puerto.
+
+## Hurl
+
+Para Hello, selecciona el puerto interno `80` y sube:
+
+```hurl
+GET {{TARGET_URL}}/
+HTTP 200
+```
+
+`{{TARGET_URL}}` recibe la URL de destino mediante `HURL_VARIABLE_TARGET_URL`. El archivo debe tener contenido y no superar 1.023.999 bytes; deja la carga vacía para conservar el archivo actual. Consulta la [sintaxis de Hurl](https://hurl.dev/docs/request.html).
+
+Para autenticación, vincula un secreto de texto como `HURL_VARIABLE_API_TOKEN` y usa `{{API_TOKEN}}`.
+
+## Comandos personalizados
+
+La imagen de la aplicación debe incluir las herramientas usadas. El código de salida 0 indica éxito; los demás indican fallo. `localhost` apunta al contenedor de comprobación.
+
+`TARGET_HOST` y `TARGET_PORT` indican el destino. Los dominios también reciben `TARGET_SCHEME` (`http` o `https`). Usa un shell explícito para expandir variables o usar tuberías; los argumentos admiten comillas y escapes de shell.
+
+Con `sh` y `wget` en la imagen:
+
+```sh
+sh -c 'wget -q -O /dev/null "${TARGET_SCHEME:-http}://${TARGET_HOST}:${TARGET_PORT}/"'
+```
+
+Las variables de destino inyectadas por la plataforma sustituyen los valores simples y no admiten enlaces a Secretos ni a salidas de dependencias. Reserva `/xhealth.hurl` para Hurl. Las comprobaciones deben ser de solo lectura y verificar condiciones reales de la aplicación.
+
+## Ejecutar ahora
+
+Con la comprobación activada, selecciona **Ejecutar ahora**, llama a `POST /api/apps/{name}/xhealth/run` sin cuerpo o usa `xhealth_run` con `app`. Se usa la configuración guardada; el siguiente intervalo cuenta desde el inicio de esta ejecución.
+
+La API devuelve `202` con `{"ok":true}`, o `409` si hay una comprobación esperando o ejecutándose. Consulta [estado y registros](/docs/es/guides/release-safety/xhealth/status/) o usa `xhealth_get`. Si se pierde la respuesta, consulta el estado antes de repetir: una solicitud tras finalizar inicia otra ejecución.
+
+## Comprobaciones de publicación
+
+Activa **Participar en comprobaciones de publicación** para validar esta aplicación cuando se actualice ella o sus dependencias directas. Estas comprobaciones acceden al puerto interno del servicio de vista previa. Hurl usa HTTP; los comandos personalizados con destino por dominio reciben `TARGET_SCHEME=http`. Las comprobaciones periódicas en producción continúan de forma independiente.
+
+Consulta las [dependencias entre aplicaciones](/docs/es/guides/apps/dependencies/app/) y las [dependencias PostgreSQL](/docs/es/guides/apps/dependencies/postgresql/) para ver la configuración y los ejemplos.

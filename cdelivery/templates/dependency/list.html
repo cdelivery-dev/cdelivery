@@ -1,0 +1,20 @@
+{% extends "dashboard.html" %}
+{% block title %}{{ tt!("dependency.title") }} | {{ super() }}{% endblock title %}
+{% block main %}
+<header><h1>{{ tt!("dependency.title") }}</h1></header>
+<div>
+  <div class="table-scroll"><table>
+    <thead><tr><th scope="col">{{ tt!("secret.name") }}</th><th scope="col">{{ tt!("secret.type") }}</th><th scope="col">{{ tt!("secret.description") }}</th></tr></thead>
+    <tbody>
+      {% for dependency in dependencies %}
+      <tr>
+        <th scope="row" translate="no"><a href="/dependencies/{{ dependency.name }}">{{ dependency.name }}</a></th>
+        <td translate="no">{% match dependency.provider %}{% when crate::operation::dependency::typ::Provider::Neon %}Neon{% when crate::operation::dependency::typ::Provider::PlanetScale %}PlanetScale{% when crate::operation::dependency::typ::Provider::Local %}PostgreSQL{% endmatch %}</td>
+        <td>{% if let Some(description) = dependency.description %}{{ description }}{% endif %}</td>
+      </tr>
+      {% else %}<tr><td colspan="3" class="muted">{{ tt!("dependency.empty") }}</td></tr>{% endfor %}
+    </tbody>
+  </table></div>
+  {% if dashboard.can_manage_settings %}<div class="end"><a class="row-action" href="/dependencies/.create">{{ tt!("dependency.new") }}</a></div>{% endif %}
+</div>
+{% endblock main %}

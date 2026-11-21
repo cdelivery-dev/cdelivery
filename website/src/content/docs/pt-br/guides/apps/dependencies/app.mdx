@@ -1,0 +1,28 @@
+---
+title: "Dependências entre aplicações"
+description: "Conecte o serviço de pedidos ao de usuários e verifique se os dois continuam compatíveis quando um deles muda."
+sidebar:
+  order: 1
+---
+
+No [XHealth](/docs/pt-br/guides/release-safety/xhealth/), ative **Participar das verificações de publicação** em cada aplicação que deseja testar. Em uma atualização, o CDelivery executa as verificações habilitadas na aplicação que está sendo atualizada e nas que a chamam diretamente. Se nenhuma participar, a atualização vai direto para produção.
+
+## Referenciar na aplicação
+
+O serviço de pedidos A chama o serviço de usuários B. Nas variáveis de ambiente de A, escolha **Dependência** como origem de `USER_SERVICE_HOST`, selecione B no mesmo grupo e o campo `host`. Confirme e salve A. Use o nome de variável esperado pela imagem.
+
+B aparece diretamente no seletor. Se tiver estado, precisa oferecer suporte a [prévias com ZFS](/docs/pt-br/guides/apps/persistence/). A publicação de portas é configurada separadamente.
+
+## O que é verificado quando A ou B muda?
+
+Neste exemplo, os dois serviços participam das verificações. O teste do serviço de pedidos consulta um pedido e verifica se a resposta inclui os dados obtidos do serviço de usuários.
+
+**Na atualização do serviço de pedidos (A),** a consulta é executada em uma instância de prévia da nova versão. Essa instância chama o serviço de usuários em produção.
+
+**Na atualização do serviço de usuários (B),** o XHealth verifica a nova versão. Uma instância de prévia do serviço de pedidos faz a mesma consulta, agora usando a nova versão do serviço de usuários.
+
+Se alguma verificação falhar, a publicação é bloqueada. As versões atuais dos dois serviços continuam atendendo às requisições de produção.
+
+<ReleaseDiagram kind="dependency">A linha contínua mostra as requisições de produção para B v1. A tracejada mostra a verificação de A que falhou com B v2.</ReleaseDiagram>
+
+Se a alteração for bloqueada, consulte os logs e as opções de recuperação em [verificações de publicação](/docs/pt-br/guides/release-safety/guardian/).

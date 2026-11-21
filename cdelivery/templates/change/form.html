@@ -1,0 +1,24 @@
+<form class="stack" method="post" action="/dependencies/{{ dependency.name }}/changes" x-data="changeForm" @submit="submit($event)">
+  <input x-ref="payload" type="hidden" name="payload" />
+  <div class="field"><label for="change-sql">SQL</label><textarea id="change-sql" class="text" rows="10" x-model="sql" maxlength="262144" spellcheck="false" required></textarea><small>{{ tt!("change.sqlHint") }}</small></div>
+  {% match dependency.provider %}
+  {% when crate::operation::dependency::typ::Provider::PlanetScale %}
+  <div class="field"><label for="change-planetscale-size">{{ tt!("change.size") }}</label><select id="change-planetscale-size" class="text" x-model="size"><option value="">{{ tt!("change.sourceSize") }}</option>{% for size in sizes %}<option value="{{ size.name }}">{{ size.name }}{% if let Some(memory) = size.memory_bytes %} ({{ crate::ui::bytes_text(**memory) }}){% endif %}</option>{% endfor %}</select><small>{{ tt!("change.planetscaleSizeHint") }}</small>{% if let Some(error) = sizes_error %}<small role="status">{{ error }}</small>{% endif %}</div>
+  {% when crate::operation::dependency::typ::Provider::Neon %}
+  <div class="field"><label for="change-neon-size">{{ tt!("change.neonSize") }}</label><input id="change-neon-size" class="text" type="number" min="0.25" step="0.25" x-model="size" /><small>{{ tt!("change.neonSizeHint") }}</small></div>
+  {% when crate::operation::dependency::typ::Provider::Local %}
+  {% endmatch %}
+  <div class="actions"><button class="button secondary" type="button" @click="$el.closest('dialog').close()">{{ tt!("ui.common.cancel") }}</button><button class="button" type="submit" :disabled="submitting">{{ tt!("change.submit") }}</button></div>
+</form>
+<script>
+document.addEventListener("alpine:init", () => {
+  Alpine.data("changeForm", () => ({
+    size: "", sql: "", submitting: false,
+    submit(event) {
+      if (this.submitting) { event.preventDefault(); return; }
+      this.$refs.payload.value = JSON.stringify({ sql: this.sql, size: this.size ? String(this.size) : null });
+      this.submitting = true;
+    },
+  }));
+});
+</script>

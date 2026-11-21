@@ -1,0 +1,36 @@
+---
+title: "PostgreSQL database dependencies"
+description: "Connect apps to a database and test SQL changes against their business flows before applying them in production."
+sidebar:
+  order: 2
+---
+
+For each app with a direct binding to this database, you can enable **Participate in release checks** in [XHealth](/docs/guides/release-safety/xhealth/). An order service, for example, can check that an order lookup still returns the expected data after a database change.
+
+## Register a database
+
+- [Neon](/docs/guides/apps/dependencies/postgresql/neon/) — Register a Neon connection and choose the compute size for its temporary branch.
+- [PlanetScale](/docs/guides/apps/dependencies/postgresql/planetscale/) — Register a PlanetScale PostgreSQL connection, choose a branch size and see which data the rehearsal includes.
+- [Local PostgreSQL](/docs/guides/apps/dependencies/postgresql/local/) — Use an existing PostgreSQL app and a clone of its ZFS volumes to rehearse changes.
+
+## Bind an application
+
+An Admin registers an existing production database using the guide for its provider. An Operator or Admin can then bind the app’s `DATABASE_URL` to the dependency’s `dsn` and save the app. For images that expect separate values, select `host`, `port`, `database`, `username` or `password` for the corresponding variables.
+
+## Test a SQL change
+
+Open the PostgreSQL dependency, select **New change**, and enter the SQL. For a cloud database, you can also choose the size of the rehearsal branch. CDelivery runs the SQL as entered, without wrapping it in a transaction.
+
+**If no apps participate, submitting the change runs the SQL directly on the production database.**
+
+When apps participate, CDelivery runs the SQL on a rehearsal database, connects a preview of each participating app to it, and runs each app’s business checks. A failed check stops the change there. Live apps keep using the original production database. Once all checks pass, CDelivery cleans up the rehearsal resources and runs the same SQL on the production database.
+
+<ReleaseDiagram kind="database">The diagram shows a cloud database branch. Local PostgreSQL uses a ZFS snapshot clone for the same check.</ReleaseDiagram>
+
+If a check stops the change, see [release checks](/docs/guides/release-safety/guardian/) for logs and recovery actions.
+
+## Replace or remove
+
+Database dependency configuration is immutable, and stored credentials and DSNs cannot be viewed or downloaded through the platform. To change a connection or credential, create a new dependency and update the applications' selections.
+
+An Admin can delete an unused dependency. Current application references, still-available rollback configurations, and unfinished changes can prevent deletion. Deleting the dependency removes its registration and credentials, not the database. A local source application cannot be deleted or moved to another group while its database dependency exists.

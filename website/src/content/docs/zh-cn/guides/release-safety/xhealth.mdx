@@ -1,0 +1,59 @@
+---
+title: "配置健康检查"
+description: "使用 Hurl 或自定义命令检查应用响应，配置目标、执行间隔和发布验证。"
+sidebar:
+  order: 26
+---
+
+XHealth 在独立容器中检查应用，使用应用的环境变量和文件挂载，包括[机密数据](/docs/zh-cn/guides/apps/secrets/)。Operator 和 Admin 可配置检查，Reader 可查看共享结果。
+
+## 选择目标
+
+在应用的 **XHealth** 页面选择 Hurl 或自定义命令、检查目标及间隔；间隔至少为 1 分钟。定时检查和**立即执行**使用相同的目标：
+
+| 目标 | 地址 | 端口 | 协议 |
+| --- | --- | --- | --- |
+| 域名 | 通过 DNS 解析域名 | 80 或 443 | HTTP；域名启用 HTTPS 时使用 HTTPS |
+| 对外发布端口 | 服务器 IP | 所选发布端口 | Hurl 使用 HTTP；自定义命令自行选择 |
+| 容器内端口 | 应用内部地址 | 指定容器端口 | Hurl 使用 HTTP；自定义命令自行选择 |
+
+同一域名任一路由启用 HTTPS，即使用 HTTPS。域名和发布端口必须属于本应用，并对应唯一的内部端口，关闭发布检查也不例外；多条路由指向同一端口有效。Hurl 仅支持 TCP 端口映射。非 HTTP 服务请选择自定义命令和端口目标。
+
+## Hurl
+
+以 Hello 为例，选择容器内端口 `80`，上传以下文件：
+
+```hurl
+GET {{TARGET_URL}}/
+HTTP 200
+```
+
+`{{TARGET_URL}}` 通过 `HURL_VARIABLE_TARGET_URL` 获取目标地址。文件须非空且不超过 1,023,999 字节；更新时留空可保留当前文件。格式见 [Hurl 文档](https://hurl.dev/docs/request.html)。
+
+需要认证时，可将文本机密数据绑定为 `HURL_VARIABLE_API_TOKEN`，在文件中使用 `{{API_TOKEN}}`。
+
+## 自定义命令
+
+应用镜像必须包含所用工具。退出码 0 表示通过，非 0 表示失败。`localhost` 指向检查容器自身。
+
+`TARGET_HOST` 和 `TARGET_PORT` 指向检查目标；域名目标另提供 `TARGET_SCHEME`（`http` 或 `https`）。变量展开和管道需显式使用 shell；命令参数支持 shell 风格的引号和转义。
+
+镜像包含 `sh` 和 `wget` 时，可使用：
+
+```sh
+sh -c 'wget -q -O /dev/null "${TARGET_SCHEME:-http}://${TARGET_HOST}:${TARGET_PORT}/"'
+```
+
+平台注入的目标变量会覆盖同名普通值，不能绑定机密数据或依赖输出。`/xhealth.hurl` 留给 Hurl 使用。检查应只读，并验证实际业务条件。
+
+## 立即执行
+
+启用检查后，可点击**立即执行**，调用无请求体的 `POST /api/apps/{name}/xhealth/run`，或使用工具 `xhealth_run` 并传入 `app`。执行采用已保存的配置，下次间隔从本轮开始时起算。
+
+API 接受后返回 `202` 和 `{"ok":true}`；已有检查等待或运行时返回 `409`。结果见[状态与日志](/docs/zh-cn/guides/release-safety/xhealth/status/)，也可调用 `xhealth_get`。响应丢失时先查询状态：本轮完成后再次请求会启动新一轮。
+
+## 发布检查
+
+开启**参与发布检查**后，本应用或其直接依赖更新时，会检查本应用的预览服务内部端口。Hurl 使用 HTTP；域名自定义检查收到 `TARGET_SCHEME=http`。线上定时检查独立运行。
+
+配置和示例见 [APP 依赖](/docs/zh-cn/guides/apps/dependencies/app/)和 [PostgreSQL 数据库依赖](/docs/zh-cn/guides/apps/dependencies/postgresql/)。

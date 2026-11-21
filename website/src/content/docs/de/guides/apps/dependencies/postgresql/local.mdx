@@ -1,0 +1,18 @@
+---
+title: "Lokales PostgreSQL"
+description: "Eine vorhandene PostgreSQL-App registrieren und Änderungen mit Klonen ihrer ZFS-Volumes testen."
+sidebar:
+  order: 3
+---
+
+## Datenbank registrieren
+
+Öffnen Sie als Admin **Abhängigkeiten → Neue Abhängigkeit → PostgreSQL**. Geben Sie einen Namen ein, wählen Sie die Quell-App und tragen Sie deren PostgreSQL-DSN ein. Die App muss auf einen Server mit aktiver Volume-Verwaltung festgelegt sein und für alle Mounts ZFS-Volumes verwenden. Apps derselben Gruppe können diese Verbindung nutzen.
+
+## Der Testklon
+
+Sie verwenden Klone neuer Snapshots, verwerfen Vorschau-Schreibvorgänge und belassen die Produktion auf den ursprünglichen Volumes. Klone teilen den Speicher ohne Quota und benötigen bei der Vorbereitung mindestens 10 % freien Platz. Grenzen von Backup und Wiederherstellung beschreibt [Persistenz](/docs/de/guides/apps/persistence/).
+
+Ein Update der Quell-App kann auch Prüfungen bei Apps auslösen, die direkt an eine ihrer registrierten PostgreSQL-Abhängigkeiten gebunden sind und an Release-Prüfungen teilnehmen.
+
+Weiter mit [App anbinden und SQL-Änderung testen](/docs/de/guides/apps/dependencies/postgresql/).

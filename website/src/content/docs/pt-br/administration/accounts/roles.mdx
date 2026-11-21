@@ -1,0 +1,33 @@
+---
+title: "Perfis e permissões"
+description: "Reader, Operator e Admin concedem capacidades crescentes em toda a plataforma."
+sidebar:
+  order: 57
+---
+
+Reader, Operator e Admin concedem capacidades crescentes em toda a plataforma.
+
+## Matriz
+
+| Capacidade | Reader | Operator | Admin |
+| --- | --- | --- | --- |
+| Consultar nomes, tipos e descrições de [Segredos](/docs/pt-br/guides/apps/secrets/) | Sim | Sim | Sim |
+| Criar, excluir e vincular segredos | Não | Sim | Sim |
+| Ler informações compartilhadas | Sim | Sim | Sim |
+| Gerenciar própria conta/chaves | Sim | Sim | Sim |
+| Aplicações, XHealth, XJob e alterações | Não | Sim | Sim |
+| Servidores, grupos, volumes, configurações | Não | Não | Sim |
+| Usuários e credenciais de entrada | Não | Não | Sim |
+| Descoberta sensível de modelos | Não | Não | Sim |
+
+Só segredos reconhecidos são ocultados. Logs, arquivos e ambiente arbitrários podem ser compartilhados; Reader também precisa ser confiável.
+
+## Permissão efetiva
+
+Sessão usa perfil atual. Chave usa o menor entre perfil atual e teto da chave. Rebaixar conta limita chaves; promovê-la não aumenta seus tetos.
+
+Console, REST, MCP e ferramentas de IA seguem as mesmas regras. As mensagens usam as permissões da conta vinculada. O plantão de IA usa um perfil próprio, Operator por padrão, sem acesso a operações pessoais.
+
+## Verificar
+
+Reader observa, Operator opera aplicações, Admin administra. Teste com a conta real. Admin não pode excluir/rebaixar a si mesmo. Senha invalida sessões, não chaves. Veja [usuários](/docs/pt-br/administration/accounts/users/) e [acesso à API](/docs/pt-br/guides/automation/api-mcp/).

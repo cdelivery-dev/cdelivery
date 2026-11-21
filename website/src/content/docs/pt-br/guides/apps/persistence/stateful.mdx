@@ -1,0 +1,41 @@
+---
+title: "Aplicações com estado"
+description: "O modo com volume local executa uma réplica em servidor fixo e é escolhido ao criar."
+sidebar:
+  order: 15
+---
+
+O modo com volume local executa uma réplica em servidor fixo e é escolhido ao criar.
+
+## Criar
+
+<Steps>
+
+1. Escolha o servidor de armazenamento e confira o espaço livre.
+2. Crie ou identifique [seu volume](/docs/pt-br/administration/nodes/volumes/).
+3. Selecione a imagem ou o modelo de banco.
+4. Revise as variáveis de ambiente e as credenciais.
+5. Monte o volume no diretório de dados correto.
+6. Inicie a aplicação e teste uma gravação.
+
+</Steps>
+
+Esse modo não usa posicionamento dinâmico, escala automática, uploads XConfig comuns. As verificações de publicação exigem volumes ZFS. O modelo PostgreSQL 18 monta `/var/lib/postgresql` e mantém o `PGDATA` padrão da imagem. MariaDB 12 monta `/var/lib/mysql`. Ao alterar a imagem ou as variáveis de ambiente, confira o diretório de dados e as regras de inicialização.
+
+Aplicativos com volumes locais também podem montar segredos de arquivo de [Segredos](/docs/pt-br/guides/apps/secrets/), somente para leitura, para fornecer credenciais.
+
+Senhas geradas são configuração da aplicação; não suponha que todo ambiente seja oculto.
+
+## Atualizar
+
+<Aside type="caution">
+Uma réplica pode ficar indisponível na substituição. Revise [estratégia](/docs/pt-br/guides/release-safety/update-strategy/) e instruções do banco. Não use versões incompatíveis no mesmo diretório.
+</Aside>
+
+Antes de alterar o formato dos dados, faça um backup consistente e teste a restauração. [Reversão](/docs/pt-br/guides/release-safety/rollback/) recupera configuração, não dados.
+
+## Falha e migração
+
+Selecionar outra máquina com volume de mesmo nome não recupera conteúdo. Migre ou restaure pelos procedimentos de armazenamento e verifique dados.
+
+Excluir a aplicação mantém volume. Registre servidor e nome antes de limpar.

@@ -1,0 +1,35 @@
+---
+import InformationLayout from '../layouts/InformationLayout.astro';
+import { site } from '../config';
+import { translate } from '../i18n';
+
+const t = translate(Astro.currentLocale);
+---
+<InformationLayout title={t('site.footer.terms')} description={t('site.terms.description')} updated="2026-10-29">
+  <section>
+    <h2>{t('site.terms.useTitle')}</h2>
+    <p>{t('site.terms.useBody')}</p>
+  </section>
+  <section>
+    <h2>{t('site.terms.licenseTitle')}</h2>
+    <p>{t('site.terms.licenseBody')}</p>
+    <ul>
+      <li><a href="/LICENSE.txt">{t('site.information.license')}</a></li>
+      <li><a href="/NOTICE.txt">{t('site.information.notices')}</a></li>
+      <li><a href="/THIRD_PARTY_LICENSES.txt">{t('site.information.thirdParty')}</a></li>
+    </ul>
+  </section>
+  <section>
+    <h2>{t('site.terms.thirdPartyTitle')}</h2>
+    <p>{t('site.terms.thirdPartyBody')}</p>
+  </section>
+  <section>
+    <h2>{t('site.terms.availabilityTitle')}</h2>
+    <p>{t('site.terms.availabilityBody')}</p>
+  </section>
+  <section>
+    <h2>{t('site.terms.questionsTitle')}</h2>
+    <p>{t('site.terms.questionsBody')}</p>
+    <p><a href={`mailto:${site.email}`}>{site.email}</a></p>
+  </section>
+</InformationLayout>

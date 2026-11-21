@@ -1,0 +1,40 @@
+---
+title: "États et dépannage de XHealth"
+description: "Distinguez attente, exécution, succès, échec et fin sans résultat exploitable."
+sidebar:
+  order: 27
+---
+
+## États
+
+| État | Signification |
+| --- | --- |
+| Pending | En attente d’exécution |
+| Running | Contrôle en cours |
+| Passed | Contrôle réussi |
+| Failed | Contrôle échoué ; consulter l’erreur et les journaux |
+| Settled | Terminé sans résultat exploitable de succès ou d’échec |
+
+Seul Passed confirme le succès. Vérifiez l’heure de fin : un ancien résultat ne décrit pas l’état actuel.
+
+## Diagnostiquer un échec
+
+Ouvrez les [journaux récents de l’application](/docs/fr/guides/observability/logs/application/) et sélectionnez XHealth. Pour une tâche en attente, vérifiez les ressources du serveur et le téléchargement de l’image. Pour une exécution prolongée, vérifiez les délais et commandes bloquées. Pour un échec, vérifiez les outils, variables et assertions Hurl.
+
+Pour une erreur de connexion, suivez la cible choisie :
+
+| Cible | Vérifier |
+| --- | --- |
+| Domaine | DNS depuis le conteneur de contrôle, routes du proxy, HTTP/HTTPS et confiance du certificat |
+| Port publié | Accès à l’IP du serveur, mappage du port publié et pare-feu |
+| Port interne | Adresse interne de l’application, réseau du groupe, port d’écoute et démarrage |
+
+Une cible absente ou ambiguë exige une configuration correspondante dans l’application et un seul port interne. Les résultats décrivent l’accès depuis le conteneur de contrôle ; les clients externes peuvent emprunter un autre chemin réseau.
+
+## Après modification
+
+Relancez et confirmez un nouveau résultat Passed. Vérifiez le fonctionnement métier, pas seulement l’existence du processus.
+
+En cas d’échec de publication, examinez le service de prévisualisation et ses journaux de contrôle séparément du XHealth en production. Configurez les alertes dans les [notifications](/docs/fr/guides/automation/im/notifications/).
+
+Voir la [configuration XHealth](/docs/fr/guides/release-safety/xhealth/) pour les règles des cibles et commandes.

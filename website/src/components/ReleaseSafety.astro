@@ -1,0 +1,31 @@
+---
+import { translate } from '../i18n';
+import ReleaseDiagram from './ReleaseDiagram.astro';
+
+const t = translate(Astro.currentLocale);
+---
+<section class="release-safety home-section container" id="release-safety" aria-labelledby="safety-title">
+  <header class="section-copy">
+    <h2 class="section-title" id="safety-title">{t('site.safety.title')}</h2>
+    <p>{t('site.safety.operationsBody')}</p>
+    <p>{t('site.safety.releasesBody')}</p>
+  </header>
+  {(['dependency', 'database'] as const).map((kind) => (
+    <section class="scenario" aria-labelledby={`safety-${kind}`}>
+      <div class="section-copy">
+        <h3 id={`safety-${kind}`}>{t(`site.safety.${kind}Title`)}</h3>
+        <p>{t(`site.safety.${kind}Body`)}</p>
+      </div>
+      <ReleaseDiagram kind={kind} />
+    </section>
+  ))}
+</section>
+<style>
+  .release-safety { display: grid; gap: clamp(40px, 4vw, 52px); }
+  .scenario { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); align-items: start; gap: clamp(32px, 4vw, 48px); }
+  h3 { font-size: 1.25rem; line-height: 1.4; }
+  @media (width < 960px) {
+    .scenario { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+    .release-safety { gap: 36px; }
+  }
+</style>

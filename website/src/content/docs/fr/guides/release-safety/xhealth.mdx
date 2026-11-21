@@ -1,0 +1,59 @@
+---
+title: "Configurer XHealth"
+description: "XHealth exécute les contrôles dans des tâches distinctes des conteneurs métier."
+sidebar:
+  order: 26
+---
+
+XHealth vérifie l’application dans un conteneur distinct, avec son environnement et ses fichiers montés, y compris les [Secrets](/docs/fr/guides/apps/secrets/). Operator et Admin configurent les contrôles ; Reader peut consulter les résultats partagés.
+
+## Choisir la cible
+
+Sur la page **XHealth** de l’application, choisissez Hurl ou une commande personnalisée, la cible et un intervalle d’au moins une minute. Les contrôles périodiques et **Exécuter maintenant** utilisent la même cible :
+
+| Cible | Adresse | Port | Protocole |
+| --- | --- | --- | --- |
+| Domaine | Domaine résolu par DNS | 80 ou 443 | HTTP, ou HTTPS si activé pour le domaine |
+| Port publié | IP d’un serveur | Port publié sélectionné | HTTP pour Hurl ; choisi par la commande personnalisée |
+| Port interne | Adresse interne de l’application | Port de conteneur indiqué | HTTP pour Hurl ; choisi par la commande personnalisée |
+
+HTTPS s’applique dès qu’une route du domaine l’active. Les domaines et ports publiés doivent appartenir à cette application et correspondre à un seul port interne, même sans contrôles avant publication. Plusieurs routes vers le même port sont valides. Hurl accepte uniquement les mappages TCP. Pour un service non HTTP, utilisez une commande personnalisée et une cible par port.
+
+## Hurl
+
+Pour Hello, sélectionnez le port interne `80` et importez :
+
+```hurl
+GET {{TARGET_URL}}/
+HTTP 200
+```
+
+`{{TARGET_URL}}` reçoit l’URL cible via `HURL_VARIABLE_TARGET_URL`. Le fichier doit être non vide et ne pas dépasser 1 023 999 octets ; laissez l’import vide pour conserver le fichier actuel. Voir la [syntaxe Hurl](https://hurl.dev/docs/request.html).
+
+Pour l’authentification, associez un secret texte à `HURL_VARIABLE_API_TOKEN` et utilisez `{{API_TOKEN}}`.
+
+## Commandes personnalisées
+
+L’image de l’application doit contenir les outils utilisés. Le code de sortie 0 indique un succès, les autres un échec. `localhost` désigne le conteneur de contrôle.
+
+`TARGET_HOST` et `TARGET_PORT` indiquent la cible. Les domaines reçoivent aussi `TARGET_SCHEME` (`http` ou `https`). Utilisez un shell explicite pour développer les variables ou utiliser des tubes ; les arguments acceptent les guillemets et échappements de type shell.
+
+Avec `sh` et `wget` dans l’image :
+
+```sh
+sh -c 'wget -q -O /dev/null "${TARGET_SCHEME:-http}://${TARGET_HOST}:${TARGET_PORT}/"'
+```
+
+Les variables cibles injectées par la plateforme remplacent les valeurs simples et ne peuvent pas être liées à des Secrets ou à des sorties de dépendances. Réservez `/xhealth.hurl` à Hurl. Les contrôles doivent rester en lecture seule et vérifier des conditions métier utiles.
+
+## Exécuter maintenant
+
+Pour un contrôle activé, sélectionnez **Exécuter maintenant**, appelez `POST /api/apps/{name}/xhealth/run` sans corps ou utilisez `xhealth_run` avec `app`. La configuration enregistrée s’applique ; le prochain intervalle part du début de cette exécution.
+
+L’API renvoie `202` avec `{"ok":true}`, ou `409` si un contrôle attend ou s’exécute. Consultez [l’état et les journaux](/docs/fr/guides/release-safety/xhealth/status/) ou utilisez `xhealth_get`. Si la réponse est perdue, vérifiez l’état avant de réessayer : une demande après la fin lance une nouvelle exécution.
+
+## Contrôles avant publication
+
+Activez **Participer aux vérifications de publication** pour valider cette application lors de sa mise à jour ou de celle de ses dépendances directes. Ces contrôles accèdent au port interne du service de prévisualisation. Hurl utilise HTTP ; les commandes personnalisées ciblant un domaine reçoivent `TARGET_SCHEME=http`. Les contrôles périodiques en production continuent indépendamment.
+
+Pour la configuration et les exemples, consultez les [dépendances entre applications](/docs/fr/guides/apps/dependencies/app/) et les [dépendances PostgreSQL](/docs/fr/guides/apps/dependencies/postgresql/).

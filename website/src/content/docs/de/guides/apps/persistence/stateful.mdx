@@ -1,0 +1,39 @@
+---
+title: "Zustandsbehaftete Anwendungen"
+description: "Lokale Daten bedeuten ein Replikat auf einem festen, bei Erstellung gewählten Server."
+sidebar:
+  order: 15
+---
+
+Lokale Daten bedeuten ein Replikat auf einem festen, bei Erstellung gewählten Server.
+
+## Erstellen
+
+<Steps>
+
+1. Wähle den Speicherserver und prüfe den freien Platz.
+2. Erstelle oder wähle [dessen Volume](/docs/de/administration/nodes/volumes/).
+3. Wähle Image oder Datenbankvorlage.
+4. Prüfe Umgebungsvariablen und Zugangsdaten.
+5. Binde das Volume am tatsächlichen Datenverzeichnis ein.
+6. Starte die Anwendung und prüfe eine Testschreiboperation.
+
+</Steps>
+
+Keine dynamische Platzierung, automatische Skalierung, gewöhnliche XConfig-Uploads in diesem Modus. Release-Prüfungen erfordern ZFS-Volumes. Die PostgreSQL-18-Vorlage bindet `/var/lib/postgresql` ein und verwendet den `PGDATA`-Standard des Images. MariaDB 12 bindet `/var/lib/mysql` ein. Nach Änderungen am Image oder an den Umgebungsvariablen das Datenverzeichnis und die Initialisierungsregeln prüfen.
+
+Auch Anwendungen mit lokalen Volumes können Datei-Secrets aus [Secrets](/docs/de/guides/apps/secrets/) schreibgeschützt einbinden, um Zugangsdaten bereitzustellen.
+
+Generierte Passwörter sind Anwendungskonfiguration; nicht alle Umgebungswerte werden verborgen.
+
+## Aktualisieren
+
+<Aside type="caution">
+Ein Replikat kann beim Wechsel ausfallen. [Strategie](/docs/de/guides/release-safety/update-strategy/) und Anbieterhinweise beachten. Keine inkompatiblen Datenbankversionen auf dieselben Dateien anwenden.
+</Aside>
+
+Erstelle vor einer Änderung des Datenformats eine konsistente Sicherung und teste die Wiederherstellung. [Rollback](/docs/de/guides/release-safety/rollback/) stellt keine Daten zurück.
+
+## Ausfall
+
+Anderer Server mit gleichnamigem Volume ist kein Restore. Daten migrieren/wiederherstellen und prüfen. Löschen erhält das Volume; Server und Name vor Bereinigung notieren.

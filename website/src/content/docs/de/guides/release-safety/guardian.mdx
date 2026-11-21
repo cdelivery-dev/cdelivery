@@ -1,0 +1,43 @@
+---
+title: "Release-Prüfungen"
+description: "App- und Datenbankänderungen vor der Produktion prüfen und unterbrochene Änderungen abschließen."
+sidebar:
+  order: 29
+---
+
+Wer die Rolle Operator oder Admin hat, kann App-Updates und PostgreSQL-Änderungen einreichen und angehaltene Änderungen bearbeiten. CDelivery führt die Release-Prüfungen mit [XHealth](/docs/de/guides/release-safety/xhealth/) auf Vorschauinstanzen aus.
+
+## Prüfungen auswählen und Änderung einreichen
+
+Anleitungen und Beispiele finden Sie unter [App-Abhängigkeiten](/docs/de/guides/apps/dependencies/app/) und [PostgreSQL-Abhängigkeiten](/docs/de/guides/apps/dependencies/postgresql/).
+
+Speichern Sie die Bereitstellungskonfiguration der App, um ein Update einzureichen. Änderungen an Image, Umgebung, Mounts, XConfig, Ressourcen, Platzierung, Netzwerk, Gruppe, Zugangsdaten, Logs, Neustartregeln und Updatestrategie können Prüfungen auslösen. Reine Änderungen an Beschreibung oder Replikazahl lösen sie nicht aus.
+
+**Nimmt keine App teil, gehen App-Updates direkt in Produktion. SQL-Anweisungen werden dann direkt auf der Produktionsdatenbank ausgeführt.**
+
+## Test und Produktion
+
+CDelivery bereitet die Vorschauinstanzen vor und führt bei Datenbankänderungen die SQL-Anweisungen zunächst auf der Testdatenbank aus. Dann starten die Prüfungen. Sind alle erfolgreich, entfernt CDelivery die Testressourcen samt den in die Testdatenbank geschriebenen Daten. Anschließend wird die App-Konfiguration übernommen oder dasselbe SQL auf der Produktionsdatenbank ausgeführt.
+
+In den Vorschauinstanzen verweisen Bindungen an die zu ändernde App oder Datenbank auf deren Vorschau. Für andere Abhängigkeiten bleiben die Verbindungen bestehen. Planen Sie genügend Kapazität für den gleichzeitigen Betrieb von Apps und Vorschauinstanzen ein.
+
+## Angehaltene Änderung bearbeiten
+
+Schlägt eine Prüfung fehl oder wird die Ausführung unterbrochen, bleibt die Änderung offen. Diagnoseinformationen und verbleibende temporäre Ressourcen stehen weiter zur Verfügung. Ein erneuter Versuch in der Produktionsumgebung muss manuell gestartet werden. Öffnen Sie **Übersicht → Aktuelle Änderung** auf der App-Seite oder die Seite der betroffenen Abhängigkeit. Prüfen Sie dort die [Logs](/docs/de/guides/observability/logs/application/) **Vorschau-App** und **Release-Prüfung**.
+
+Welche Aktionen zur Verfügung stehen, hängt davon ab, in welcher Phase die Änderung angehalten wurde.
+
+| Aktion | Ergebnis |
+| --- | --- |
+| Prüfungen überspringen und anwenden | Testressourcen bereinigen und ohne abgeschlossene Prüfungen in Produktion anwenden |
+| Erneut ausführen | Führt die Änderung erneut in der Produktionsumgebung aus. Bei Datenbankänderungen werden die ursprünglichen SQL-Anweisungen wiederholt. Prüfen Sie zuerst, was beim letzten Versuch angewendet wurde. |
+| Abschluss bestätigen | Produktionsergebnis bestätigen und Bereinigung abschließen, ohne SQL oder die Änderung erneut auszuführen |
+| Abbrechen | Temporäre Ressourcen bereinigen und Änderung schließen; bereits ausgeführte Produktionsänderungen bleiben bestehen |
+
+Vor der Ausführung in der Produktionsumgebung können Sie die Prüfungen überspringen oder die Änderung abbrechen. Steht nur noch die Bereinigung aus, wählen Sie **Abschluss bestätigen**. Für einen neuen Test brechen Sie die aktuelle Änderung ab und reichen sie erneut ein.
+
+## Abschließen und prüfen
+
+Eine offene Änderung reserviert alle beteiligten Apps, auch Verbraucher anderer Gruppen. Konfigurationsupdates, Neustarts, Rollbacks, Löschungen und XHealth-Änderungen werden blockiert; automatische Skalierung wartet. Bearbeiten Sie die offene Änderung, bevor Sie widersprechende Vorgänge einreichen oder ihre Vorschau-Volumes manuell löschen.
+
+Jedes Ziel behält nur die neueste Änderung. Prüfen Sie nach dem Abschluss laufende Replikas und eine echte Geschäftsanfrage. Ein [App-Rollback](/docs/de/guides/release-safety/rollback/) stellt die Konfiguration wieder her; SQL und Datenbankinhalte werden nicht zurückgesetzt.

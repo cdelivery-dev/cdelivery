@@ -1,0 +1,54 @@
+---
+title: "Messages and notifications overview"
+description: "Connect platform channels, bind your identity, and distinguish notifications from AI conversations."
+sidebar:
+  order: 44
+---
+
+An Admin connects messaging services at platform level. Each user then binds their own identity and chooses notification subscriptions in their account.
+
+## Choose a channel
+
+<CardGrid>
+
+<Card title="Email" href="/docs/guides/automation/im/email/" icon="ph:envelope-simple">
+  Platform credentials: SMTP; optional IMAP for conversations. Personal identity: Account email.
+</Card>
+
+<Card title="Slack" href="/docs/guides/automation/im/slack/" icon="ph:slack-logo">
+  Platform credentials: Bot and app tokens. Personal identity: Member ID.
+</Card>
+
+<Card title="Telegram" href="/docs/guides/automation/im/telegram/" icon="ph:telegram-logo">
+  Platform credentials: Bot token. Personal identity: Numeric user ID.
+</Card>
+
+<Card title="Discord" href="/docs/guides/automation/im/discord/" icon="ph:discord-logo">
+  Platform credentials: Bot token. Personal identity: User ID.
+</Card>
+
+<Card title="Lark" href="/docs/guides/automation/im/lark/" icon="ph:chat-circle-dots">
+  Platform credentials: App ID and App Secret. Personal identity: App-scoped open_id.
+</Card>
+
+<Card title="Feishu" href="/docs/guides/automation/im/feishu/" icon="ph:chat-circle-dots">
+  Platform credentials: App ID and App Secret. Personal identity: App-scoped open_id.
+</Card>
+
+</CardGrid>
+
+Display names, group IDs, and bot IDs are not interchangeable with personal user IDs.
+
+## Connect and verify
+
+Follow the channel's creation, permission, installation, and event-reception steps. Save platform credentials, enter your own identity in your account, and review your notification preferences. New bindings receive notifications by default.
+
+For AI conversations, also configure a [model](/docs/guides/automation/models/). Start with a read-only question and confirm the account and deployment. Ordinary notifications do not require AI.
+
+Entering another person's ID can expose your notifications and account permissions to that identity. Verify your own immutable ID before saving.
+
+## Troubleshoot by layer
+
+Check the platform app and credentials, network connection, event permissions, personal binding, subscription, and model separately. A working avatar lookup does not prove message delivery or correct account binding.
+
+Use [notification troubleshooting](/docs/guides/automation/im/notifications/) for role filtering, language, and delivery failures.

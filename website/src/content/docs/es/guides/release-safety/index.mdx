@@ -1,0 +1,33 @@
+---
+title: "Comprobaciones de estado y lanzamientos"
+description: "Comprueba la salud de la aplicación, elige una estrategia de actualización, valida candidatos y recupera lanzamientos fallidos."
+sidebar:
+  group:
+    label: "Comprobaciones de estado y lanzamientos"
+    icon: "ph:shield-check"
+  order: 26
+---
+
+Usa XHealth para verificar la aplicación, estrategias de actualización para controlar las réplicas, comprobaciones de publicación para validar cambios de aplicaciones y bases de datos, y la reversión para recuperar una configuración anterior de la aplicación.
+
+## Elige una tarea
+
+<CardGrid>
+
+<Card title="Configurar XHealth" href="/docs/es/guides/release-safety/xhealth/" icon="ph:heartbeat">
+  XHealth ejecuta comprobaciones en tareas independientes de los contenedores de negocio.
+</Card>
+
+<Card title="Estrategias de actualización" href="/docs/es/guides/release-safety/update-strategy/" icon="ph:arrows-clockwise">
+  Controla sustitución de réplicas, orden, observación y respuesta a fallos.
+</Card>
+
+<Card title="Comprobaciones de publicación" href="/docs/es/guides/release-safety/guardian/" icon="ph:shield-check">
+  Comprueba las vistas previas antes de aplicar cambios de aplicaciones o bases de datos y resuelve los fallos explícitamente.
+</Card>
+
+<Card title="Reversión y fallos de despliegue" href="/docs/es/guides/release-safety/rollback/" icon="ph:arrow-u-up-left">
+  La reversión recupera configuración previa, no datos ni versiones de la plataforma.
+</Card>
+
+</CardGrid>

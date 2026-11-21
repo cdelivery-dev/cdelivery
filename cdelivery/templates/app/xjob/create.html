@@ -1,0 +1,24 @@
+{% extends "dashboard.html" %}
+
+{% import "app/tabs.html" as tab %}
+{% import "app/xjob/form.html" as form %}
+
+{% block title %}{{ tt!("ui.xjob.createTitle") }} - {{ self.name }} | {{ super() }}{% endblock title %}
+
+{% block main %}
+<header>
+  <h1>{{ tt!("ui.xjob.createTitle") }}</h1>
+  <p>{{ name }}</p>
+  {{ tab::tabs(name, "xjob", true) }}
+</header>
+
+<form x-ref="form" class="mt-2" method="post" action="/apps/{{ name }}/xjobs" autocomplete="off" x-data="xjobForm" @submit="prepare($event)">
+  <input x-ref="payload" type="hidden" name="payload" />
+  {{ form::fields(true) }}
+  <div class="actions"><input class="button" type="submit" value='{{ tt!("ui.common.create") }}' :disabled="submitting" /></div>
+</form>
+
+{% let initial = self.form %}
+<script id="xjob-form-init" type="application/json">{{ initial|json|safe }}</script>
+{{ form::script(true) }}
+{% endblock main %}

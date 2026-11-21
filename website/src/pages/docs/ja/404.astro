@@ -1,0 +1,10 @@
+---
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+import { translate } from '../../../i18n';
+import { docsPath } from '../../../routes';
+const locale = 'ja';
+const t = translate(locale);
+---
+<DocsLayout title={t('site.notFound.heading')} locale={locale} noindex>
+  <p><a href={docsPath(locale)}>{t('docs.backDocs')}</a></p>
+</DocsLayout>

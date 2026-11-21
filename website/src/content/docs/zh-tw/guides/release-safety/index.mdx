@@ -1,0 +1,33 @@
+---
+title: "健康檢查與發布"
+description: "設定健康檢查和更新策略，驗證候選版本，並在發布失敗後恢復應用程式。"
+sidebar:
+  group:
+    label: "健康檢查與發布"
+    icon: "ph:shield-check"
+  order: 26
+---
+
+用 XHealth 驗證業務回應，用更新策略控制副本替換，用發布檢查驗證應用程式或資料庫變更；回復用於恢復上一份應用程式設定。
+
+## 按任務查找
+
+<CardGrid>
+
+<Card title="設定健康檢查" href="/docs/zh-tw/guides/release-safety/xhealth/" icon="ph:heartbeat">
+  使用 Hurl 或自訂指令檢查應用程式回應，設定目標、執行間隔和發布檢查。
+</Card>
+
+<Card title="更新策略" href="/docs/zh-tw/guides/release-safety/update-strategy/" icon="ph:arrows-clockwise">
+  設定副本更新順序、並行度、觀察窗口和失敗動作，並評估容量與業務影響。
+</Card>
+
+<Card title="發布檢查" href="/docs/zh-tw/guides/release-safety/guardian/" icon="ph:shield-check">
+  上線前檢查預覽環境，明確處理應用程式或資料庫變更的失敗。
+</Card>
+
+<Card title="回復與失敗處理" href="/docs/zh-tw/guides/release-safety/rollback/" icon="ph:arrow-u-up-left">
+  區分取消變更和恢復上一份設定，驗證回復後的副本及業務狀態。
+</Card>
+
+</CardGrid>

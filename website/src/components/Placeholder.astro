@@ -1,0 +1,15 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+
+interface Props { title: string }
+const { title } = Astro.props;
+---
+<SiteLayout title={title}>
+  <section class="placeholder container">
+    <h1>{title}</h1>
+  </section>
+</SiteLayout>
+<style>
+  .placeholder { display: grid; align-content: center; min-height: inherit; padding-block: 48px; text-align: center; }
+  h1 { font-size: clamp(1.75rem, 5vw, 3rem); }
+</style>

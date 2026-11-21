@@ -1,0 +1,16 @@
+---
+title: "PlanetScale"
+description: "Register a PlanetScale PostgreSQL connection, choose a branch size and see which data the rehearsal includes."
+sidebar:
+  order: 2
+---
+
+## Register a database
+
+As an Admin, open **Dependencies → New dependency → PlanetScale**. Enter a name, the provider-generated PostgreSQL DSN and a service token. Keep the branch routing suffix in the DSN username. Once saved, the dependency is available to all groups.
+
+## The rehearsal branch
+
+CDelivery restores a temporary branch to a point about five minutes before preparation. Choose test data that already existed then. The branch uses a single node with network storage. By default it follows the source size, or uses PS-5 for a Metal source.
+
+Continue with [binding an app and testing a SQL change](/docs/guides/apps/dependencies/postgresql/).

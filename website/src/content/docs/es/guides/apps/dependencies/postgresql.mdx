@@ -1,0 +1,36 @@
+---
+title: "Dependencias PostgreSQL"
+description: "Conecta las aplicaciones a la base de datos y prueba los cambios SQL con sus flujos de negocio antes de aplicarlos en producción."
+sidebar:
+  order: 2
+---
+
+En cada aplicación vinculada directamente a esta base de datos, puedes activar **Participar en comprobaciones de publicación** en [XHealth](/docs/es/guides/release-safety/xhealth/). Por ejemplo, el servicio de pedidos puede comprobar si la consulta de un pedido sigue devolviendo los datos esperados después del cambio.
+
+## Registrar una base de datos
+
+- [Neon](/docs/es/guides/apps/dependencies/postgresql/neon/) — Registra una conexión Neon y elige la capacidad de cómputo de la rama de ensayo.
+- [PlanetScale](/docs/es/guides/apps/dependencies/postgresql/planetscale/) — Registra una conexión PostgreSQL de PlanetScale y comprueba el tamaño y el punto de restauración de la rama de ensayo.
+- [PostgreSQL local](/docs/es/guides/apps/dependencies/postgresql/local/) — Registra una aplicación PostgreSQL existente y ensaya cambios con clones de sus volúmenes ZFS.
+
+## Referenciar desde una aplicación
+
+Un Admin registra la base de producción existente siguiendo la guía del proveedor. Después, un Operator o Admin puede vincular la variable `DATABASE_URL` de la aplicación al campo `dsn` y guardar la configuración. Si la imagen necesita parámetros separados, elige `host`, `port`, `database`, `username` o `password` para la variable correspondiente.
+
+## Probar un cambio SQL
+
+Abre la dependencia PostgreSQL, selecciona **Nuevo cambio** e introduce las instrucciones SQL. Para las bases de datos en la nube también puedes elegir el tamaño de la rama de ensayo. CDelivery ejecuta las instrucciones tal como las introduces, sin envolverlas en una transacción.
+
+**Si no participa ninguna aplicación, al enviar el cambio se ejecutan las instrucciones SQL directamente en la base de datos de producción.**
+
+Cuando hay aplicaciones participantes, CDelivery ejecuta primero las instrucciones SQL en la base de ensayo. Después conecta a esa base una instancia de prueba de cada aplicación participante y ejecuta sus comprobaciones de negocio. Si alguna falla, el cambio se detiene en esa etapa y las aplicaciones en producción siguen usando su base de datos habitual. Cuando todas pasan, CDelivery libera los recursos del ensayo y ejecuta las mismas instrucciones SQL en la base de datos de producción.
+
+<ReleaseDiagram kind="database">El diagrama muestra una rama temporal en la nube. PostgreSQL local utiliza un clon de una instantánea ZFS para la misma comprobación.</ReleaseDiagram>
+
+Si el cambio se detiene, consulta los registros y las opciones de recuperación en [comprobaciones de publicación](/docs/es/guides/release-safety/guardian/).
+
+## Sustituir o eliminar
+
+La configuración de una dependencia de base de datos es inmutable. Las credenciales y los DSN guardados no se pueden ver ni descargar mediante la plataforma. Para cambiar una conexión o credencial, crea otra dependencia y actualiza las selecciones de las aplicaciones.
+
+Un Admin puede eliminar una dependencia sin uso. Las referencias actuales, las configuraciones de reversión aún disponibles y los cambios sin terminar pueden impedir la eliminación. Eliminar la dependencia borra su registro y credenciales, no la base de datos. No se puede eliminar la aplicación de origen local ni moverla a otro grupo mientras exista su dependencia de base de datos.

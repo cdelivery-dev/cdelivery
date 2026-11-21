@@ -1,0 +1,32 @@
+---
+title: "Excluir uma aplicação"
+description: "Operator ou Admin pode remover a aplicação e suas verificações e tarefas associadas."
+sidebar:
+  order: 19
+---
+
+Operator ou Admin pode remover a aplicação e suas verificações e tarefas associadas.
+
+## Procedimento
+
+<Aside type="caution">
+Excluir a aplicação interrompe o serviço e remove as verificações XHealth e tarefas XJob associadas. Volumes da aplicação, grupos e registros DNS externos são preservados.
+</Aside>
+
+Uma [alteração](/docs/pt-br/guides/release-safety/guardian/) inacabada impede a exclusão. Conclua ou cancele a alteração e remova referências de outras aplicações e dependências de banco de dados que usam esta aplicação como origem.
+
+Registre imagem, configuração e armazenamento se houver necessidade de recuperação. Redirecione clientes, confira XHealth, XJob e alterações inacabadas e confirme exclusão. Verifique ausência da aplicação e saída das tarefas.
+
+Contêineres terminam de forma assíncrona; referências de rede podem permanecer temporariamente.
+
+## O que permanece
+
+Volumes da aplicação, grupos e DNS externo não são apagados. Limpeza de dados exige decisão separada em [volumes](/docs/pt-br/administration/nodes/volumes/), após conferir referências e backup.
+
+Aplicação ausente não significa volume vazio.
+
+## Recuperação e diagnóstico
+
+Recriar o nome gera outra identidade, não desfaz a exclusão. Reconstrua configuração e confirme volume original antes de iniciar serviço com estado.
+
+Se grupo continuar ocupado, aguarde tarefas e inspecione referências. Para implantação malsucedida, considere [reversão](/docs/pt-br/guides/release-safety/rollback/) antes de excluir.

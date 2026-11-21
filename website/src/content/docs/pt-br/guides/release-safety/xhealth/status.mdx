@@ -1,0 +1,40 @@
+---
+title: "Estados e diagnóstico do XHealth"
+description: "Diferencie espera, execução, resultado e encerramento sem resultado utilizável."
+sidebar:
+  order: 27
+---
+
+## Estados
+
+| Estado | Significado |
+| --- | --- |
+| Pending | Aguardando execução |
+| Running | Verificação em andamento |
+| Passed | Verificação aprovada |
+| Failed | Verificação falhou; consulte o erro e os logs |
+| Settled | Encerrada sem resultado utilizável de sucesso ou falha |
+
+Somente Passed confirma sucesso. Confira a hora de conclusão; um resultado antigo não descreve o estado atual.
+
+## Diagnosticar falhas
+
+Abra os [logs recentes da aplicação](/docs/pt-br/guides/observability/logs/application/) e selecione XHealth. Para tarefas pendentes, confira recursos do servidor e download da imagem. Para execução prolongada, confira timeouts e comandos bloqueados. Em falhas, confira ferramentas, variáveis e asserções do Hurl.
+
+Para erros de conexão, siga o destino escolhido:
+
+| Destino | Verificar |
+| --- | --- |
+| Domínio | DNS no contêiner de verificação, rotas do proxy, HTTP/HTTPS e confiança no certificado |
+| Porta publicada | Acesso ao IP do servidor, mapeamento da porta publicada e firewall |
+| Porta interna | Endereço interno da aplicação, rede do grupo, porta de escuta e inicialização |
+
+Destinos ausentes ou ambíguos exigem configuração correspondente na aplicação e uma única porta interna. Os resultados refletem o acesso a partir do contêiner de verificação; clientes externos podem usar outro caminho de rede.
+
+## Após alterações
+
+Execute novamente e confirme um novo resultado Passed. Valide o funcionamento da aplicação, não apenas a existência do processo.
+
+Em falhas de publicação, examine o serviço de prévia e seus logs de verificação separadamente do XHealth em produção. Configure alertas em [notificações](/docs/pt-br/guides/automation/im/notifications/).
+
+Veja as regras de destino e comando na [configuração do XHealth](/docs/pt-br/guides/release-safety/xhealth/).

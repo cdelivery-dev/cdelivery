@@ -1,0 +1,28 @@
+---
+title: "App dependencies"
+description: "Bind the order service to the user service and check that they still work together when either app changes."
+sidebar:
+  order: 1
+---
+
+Each app can opt in to **Participate in release checks** in [XHealth](/docs/guides/release-safety/xhealth/). When you update an app, CDelivery runs the checks enabled for that app and its direct callers. If none have opted in, the update goes straight to production.
+
+## Bind an application
+
+Suppose the order service (A) calls the user service (B). In A’s environment variables, set the source of `USER_SERVICE_HOST` to **Dependency**, select B in the same group and choose `host`. Confirm the selection and save A. Use the variable name your image expects.
+
+B appears in the picker automatically. A stateful B must support [ZFS previews](/docs/guides/apps/persistence/). Port publishing is configured separately.
+
+## What happens when either app changes?
+
+Both services in this example have opted in. The order service’s check looks up an order and verifies that the response includes the expected details from the user service.
+
+**When you update the order service (A),** the check runs against a preview of the new version. That preview calls the user service in production.
+
+**When you update the user service (B),** XHealth checks the new version. A preview of the order service runs the same order lookup against the new user service.
+
+A failed check blocks the release. The current versions of both services keep handling live requests.
+
+<ReleaseDiagram kind="dependency">The solid line follows live traffic to B v1. The dashed line shows A’s failed check against B v2.</ReleaseDiagram>
+
+If a check stops the change, see [release checks](/docs/guides/release-safety/guardian/) for logs and recovery actions.

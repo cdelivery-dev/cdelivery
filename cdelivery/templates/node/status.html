@@ -1,0 +1,27 @@
+{%- macro state(node) -%}
+  <span class="dot{% match node.state %}{% when crate::operation::node::typ::NodeState::Ready %} ready{% when crate::operation::node::typ::NodeState::Unknown %} unknown{% else %}{% endmatch %}"></span>
+  <span>
+    {% match node.state %}
+    {% when crate::operation::node::typ::NodeState::Ready %}{{ tt!("ui.node.state.ready") }}
+    {% when crate::operation::node::typ::NodeState::Down %}{{ tt!("ui.node.state.down") }}
+    {% when crate::operation::node::typ::NodeState::Disconnected %}{{ tt!("ui.node.state.disconnected") }}
+    {% when crate::operation::node::typ::NodeState::Unknown %}{{ tt!("ui.node.state.unknown") }}
+    {% endmatch %}</span>
+{%- endmacro -%}
+
+{%- macro availability(node) -%}
+    {% match node.availability %}
+    {% when crate::operation::node::typ::NodeAvailability::Active %}{{ tt!("ui.node.availability.active") }}
+    {% when crate::operation::node::typ::NodeAvailability::Pause %}{{ tt!("ui.node.availability.pause") }}
+    {% when crate::operation::node::typ::NodeAvailability::Drain %}{{ tt!("ui.node.availability.drain") }}
+    {% endmatch %}
+{%- endmacro -%}
+
+{%- macro reachability(node) -%}
+  {% if let Some(reachability) = node.reachability %}
+    {% match reachability %}
+    {% when crate::operation::node::typ::NodeReachability::Reachable %}{{ tt!("ui.node.reachable") }}
+    {% when crate::operation::node::typ::NodeReachability::Unreachable %}{{ tt!("ui.node.unreachable") }}
+    {% when crate::operation::node::typ::NodeReachability::Unknown %}{{ tt!("ui.node.state.unknown") }}
+    {% endmatch %}{% else %}—{% endif %}
+{%- endmacro -%}

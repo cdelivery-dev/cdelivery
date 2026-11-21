@@ -1,0 +1,66 @@
+<div class="change-record stack">
+  <div class="change-payload">
+    {% if !current_app.is_empty() %}
+    {% match change.target %}
+    {% when crate::operation::change::typ::Target::App { name: target, .. } %}
+    {% if target != current_app %}<p>{{ tt!("change.target") }} <a href="/apps/{{ target }}#current-change" translate="no">{{ target }}</a></p><small>{{ tt!("change.shared") }}</small>{% endif %}
+    {% when crate::operation::change::typ::Target::PostgreSQL { dependency, .. } %}
+    <p>{{ tt!("change.target") }} <a href="/dependencies/{{ dependency.name }}" translate="no">{{ dependency.name }}</a></p><small>{{ tt!("change.shared") }}</small>
+    {% endmatch %}
+    {% endif %}
+    {% match change.target %}
+    {% when crate::operation::change::typ::Target::PostgreSQL { sql, .. } %}
+    {% if current_app.is_empty() %}
+    <pre class="change-content" translate="no">{{ sql }}</pre>
+    {% else %}
+    <details><summary>{{ tt!("change.payload") }}</summary><pre class="change-content" translate="no">{{ sql }}</pre></details>
+    {% endif %}
+    {% when crate::operation::change::typ::Target::App { changes, .. } %}
+    <details><summary>{{ tt!("change.payload") }}</summary><pre class="change-content" translate="no">{{ changes|json }}</pre></details>
+    {% endmatch %}
+    <small>{{ tt!("change.submitted") }} <relative-time datetime="{{ change.created_at }}">{{ change.created_at }}</relative-time></small>
+  </div>
+  {% if change.active() && (change.busy || !matches!(change.stage, crate::operation::change::typ::Stage::Check) || !change.checks_failed()) %}
+  <p>{{ status::value(change) }}</p>
+  {% endif %}
+  {% if let Some(error) = change.error %}
+  <details class="change-diagnostics" open>
+    <summary>{{ tt!("change.diagnostics") }}</summary>
+    <pre class="diagnostic" translate="no">{{ error }}</pre>
+  </details>
+  {% endif %}
+  {% if change.has_checks() %}
+  {% let has_logs = change.active() && matches!(change.stage, crate::operation::change::typ::Stage::Check) %}
+  <ul class="stack change-consumers">
+    {% for app in change.apps %}{% if app.check %}
+    <li>
+      {% if show_check_names %}<h3><a href="/apps/{{ app.name }}" translate="no">{{ app.name }}</a></h3>{% endif %}
+      {% let failed = matches!(app.result, Some(crate::operation::change::typ::CheckResult::Failed { .. })) %}
+      {% if failed || has_logs %}
+      <details class="change-diagnostics"{% if failed %} open{% endif %}>
+        <summary{% if failed %} class="abnormal"{% endif %}>{{ status::check(change, app) }}</summary>
+        {% if let Some(crate::operation::change::typ::CheckResult::Failed { error }) = app.result %}<pre class="diagnostic" translate="no">{{ error }}</pre>{% endif %}
+        {% if has_logs %}<small class="block mt-1"><a href="/apps/{{ app.name }}/logs?source=guardian_check">{{ tt!("ui.diagnostic.logs") }}</a></small>{% endif %}
+      </details>
+      {% else %}<p class="muted">{{ status::check(change, app) }}</p>{% endif %}
+    </li>
+    {% endif %}{% endfor %}
+  </ul>
+  {% else %}<p class="muted">{{ tt!("change.noChecks") }}</p>{% endif %}
+</div>
+{% if can_edit && !change.actions.is_empty() %}
+  <div x-data="{ submitting: false }">
+    {% if matches!(change.stage, crate::operation::change::typ::Stage::Apply) %}<p class="mt-2">{{ tt!("change.productionUnknown") }}</p>{% endif %}
+    <div class="actions end">
+      {% for action in change.actions.iter().rev() %}{% match action %}
+      {% when crate::operation::change::typ::Action::Apply %}
+      <form method="post" action="/changes/{{ change.id }}/apply" data-confirm='{% if matches!(change.stage, crate::operation::change::typ::Stage::Apply) %}{{ tt!("change.reapplyConfirm") }}{% else %}{{ tt!("change.applyConfirm") }}{% endif %}' @submit="if (submitting || !confirm($el.dataset.confirm)) { $event.preventDefault(); return; } submitting = true"><input type="hidden" name="payload" value="{}" /><button class="button danger" :disabled="submitting">{% if matches!(change.stage, crate::operation::change::typ::Stage::Apply) %}{{ tt!("change.reapplyAction") }}{% else %}{{ tt!("change.applyAction") }}{% endif %}</button></form>
+      {% when crate::operation::change::typ::Action::Complete %}
+      <form method="post" action="/changes/{{ change.id }}/complete" data-confirm='{{ tt!("change.completeConfirm") }}' @submit="if (submitting || !confirm($el.dataset.confirm)) { $event.preventDefault(); return; } submitting = true"><input type="hidden" name="payload" value="{}" /><button class="button" :disabled="submitting">{{ tt!("change.completeAction") }}</button></form>
+      {% when crate::operation::change::typ::Action::Close %}
+      <form method="post" action="/changes/{{ change.id }}/close" data-confirm='{{ tt!("change.closeConfirm") }}' @submit="if (submitting || !confirm($el.dataset.confirm)) { $event.preventDefault(); return; } submitting = true"><input type="hidden" name="payload" value="{}" /><button class="button secondary" :disabled="submitting">{{ tt!("ui.common.cancel") }}</button></form>
+      {% endmatch %}{% endfor %}
+    </div>
+  </div>
+{% endif %}
+{% if change.busy %}<script>setTimeout(() => location.reload(), 5000);</script>{% endif %}

@@ -1,0 +1,2 @@
+#define TINI_VERSION "@TINI_RELEASE@"
+#define TINI_GIT " - cdelivery (upstream 369448a)"

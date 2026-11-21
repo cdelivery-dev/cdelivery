@@ -1,0 +1,36 @@
+---
+title: "Dépendances PostgreSQL"
+description: "Reliez les applications à une base et testez vos modifications SQL sur leurs parcours métier avant la mise en production."
+sidebar:
+  order: 2
+---
+
+Pour chaque application directement liée à cette base, vous pouvez activer **Participer aux vérifications de publication** dans [XHealth](/docs/fr/guides/release-safety/xhealth/). Le service de commandes peut par exemple vérifier qu’une consultation de commande renvoie toujours les données attendues après la modification de la base.
+
+## Enregistrer une base
+
+- [Neon](/docs/fr/guides/apps/dependencies/postgresql/neon/) — Enregistrez une connexion Neon et choisissez la capacité de calcul de la branche de test.
+- [PlanetScale](/docs/fr/guides/apps/dependencies/postgresql/planetscale/) — Enregistrez une connexion PostgreSQL PlanetScale et identifiez la taille et le point de restauration de la branche de test.
+- [PostgreSQL local](/docs/fr/guides/apps/dependencies/postgresql/local/) — Enregistrez une application PostgreSQL existante et testez les changements avec des clones de ses volumes ZFS.
+
+## Référencer depuis une application
+
+Un Admin enregistre la base de production existante en suivant le guide du fournisseur. Un Operator ou un Admin peut ensuite lier la variable `DATABASE_URL` de l’application au champ `dsn` et enregistrer la configuration. Si l’image attend des paramètres séparés, sélectionnez `host`, `port`, `database`, `username` ou `password` pour les variables correspondantes.
+
+## Tester une modification SQL
+
+Ouvrez la dépendance PostgreSQL, choisissez **Nouveau changement** et saisissez les instructions SQL. Pour une base cloud, vous pouvez aussi choisir la taille de la branche de test. CDelivery exécute les instructions telles quelles, sans les englober dans une transaction.
+
+**Si aucune application ne participe, les instructions SQL sont exécutées directement sur la base de production dès que vous soumettez le changement.**
+
+Si des applications participent, CDelivery exécute d’abord les instructions SQL sur la base de test. Il y connecte ensuite une instance de prévisualisation de chaque application participante et lance ses vérifications métier. Si une vérification échoue, le changement s’arrête à cette étape. Les applications en production continuent d’utiliser leur base habituelle. Une fois toutes les vérifications réussies, CDelivery libère les ressources de test et exécute les mêmes instructions SQL sur la base de production.
+
+<ReleaseDiagram kind="database">Le schéma illustre une branche temporaire dans le cloud. PostgreSQL local utilise un clone d’instantané ZFS pour cette même vérification.</ReleaseDiagram>
+
+Si la modification est bloquée, consultez les journaux et les actions disponibles dans les [vérifications de publication](/docs/fr/guides/release-safety/guardian/).
+
+## Remplacer ou supprimer
+
+La configuration d’une dépendance de base est immuable. Les identifiants et DSN enregistrés ne peuvent pas être consultés ou téléchargés via la plateforme. Pour modifier une connexion ou un identifiant, créez une nouvelle dépendance et changez les sélections des applications.
+
+Un Admin peut supprimer une dépendance inutilisée. Les références actuelles, les configurations de rollback encore disponibles et les changements inachevés peuvent empêcher sa suppression. Supprimer la dépendance retire son enregistrement et ses identifiants, pas la base. L’application source locale ne peut être supprimée ou déplacée dans un autre groupe tant que sa dépendance de base existe.

@@ -1,0 +1,38 @@
+---
+title: "Konfiguration einbinden und aktualisieren"
+description: "Ordne Inhalte einem Pfad zu und prüfe ihre Nutzung durch neue Aufgaben."
+sidebar:
+  order: 13
+---
+
+Ordne Inhalte einem Pfad zu und prüfe ihre Nutzung durch neue Aufgaben.
+
+Die folgenden Beispiele verwenden gewöhnliche XConfig-Uploads. Zum Ersetzen eines Datei-Secrets erstellst du unter [Secrets](/docs/de/guides/apps/secrets/) ein neues, wählst es im bestehenden Eintrag aus und speicherst die Anwendungskonfiguration.
+
+## Ablauf
+
+Gültige Datei hochladen, absoluten Dateipfad wählen, speichern, Aufgaben/Logs und betroffene Funktion prüfen. Je nach Einstellungen durchläuft die Änderung [Release-Prüfungen](/docs/de/guides/release-safety/guardian/).
+
+Bestehende Zielpfade sind nicht direkt editierbar: alten Mount entfernen und neuen hinzufügen. Vorher tatsächlichen Lesepfad der Anwendung prüfen.
+
+## Diagnose
+
+Speichere für das Hello-Beispiel (`ghcr.io/cdelivery-dev/hello:1.0.0`) diesen Inhalt als `index.html` und lade ihn mit XConfig nach `/www/index.html` hoch:
+
+```html
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>CDelivery Hello</title></head>
+<body><h1>Hello from XConfig</h1></body>
+</html>
+```
+
+Behalte den Standardbefehl und die Zuordnung TCP 80 → 8080 bei. Rufe nach dem Update `/` auf: Anstelle der Anfrageinformationen erscheint `Hello from XConfig`. Nach Entfernen des Mounts liefern neue Container wieder die Standardantwort.
+
+Vor Entfernen sicherstellen, dass die Anwendung ohne Datei startet. Fehler in Syntax, Pfaden und Startlogs untersuchen.
+
+## Aufbewahrung
+
+Nutzungsanzeige bezieht sich auf die Anwendung, nicht einen globalen Katalog. Verwaiste Inhalte können bereinigt werden und sind keine Sicherungshistorie.
+
+Quelldateien selbst verwalten. Grenzen und Sichtbarkeit stehen bei [XConfig](/docs/de/guides/apps/xconfig/).

@@ -1,0 +1,16 @@
+---
+title: "Neon"
+description: "登记 Neon 连接，为 SQL 演练创建临时分支并选择计算规格。"
+sidebar:
+  order: 1
+---
+
+## 登记数据库
+
+Admin 打开**依赖 → 新建依赖 → Neon**，填写名称、Neon 提供的 PostgreSQL DSN、API 密钥和项目 ID。DSN 中的计算端点必须属于该项目。保存后，各分组的 APP 均可绑定此依赖。
+
+## 演练分支
+
+演练 SQL 时，CDelivery 从 DSN 对应的源分支 fork 一个临时分支，为它创建可读写的计算端点。提交变更时可以填写计算单元（CU），留空则采用源端点的最小 CU。
+
+接下来可以[绑定 APP 并验证 SQL 变更](/docs/zh-cn/guides/apps/dependencies/postgresql/)。

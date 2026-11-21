@@ -1,0 +1,59 @@
+---
+title: "XHealth konfigurieren"
+description: "XHealth prüft Anwendungen in separaten Aufgaben statt im Anwendungscontainer."
+sidebar:
+  order: 26
+---
+
+XHealth prüft die App in einem separaten Container mit ihren Umgebungsvariablen und Dateieinbindungen, einschließlich [Secrets](/docs/de/guides/apps/secrets/). Operator und Admin konfigurieren Prüfungen; Reader können gemeinsame Ergebnisse einsehen.
+
+## Ziel wählen
+
+Wähle auf der **XHealth**-Seite der App Hurl oder einen eigenen Befehl, das Ziel und ein Intervall von mindestens einer Minute. Regelmäßige Prüfungen und **Jetzt ausführen** verwenden dasselbe Ziel:
+
+| Ziel | Adresse | Port | Protokoll |
+| --- | --- | --- | --- |
+| Domain | Über DNS aufgelöste Domain | 80 oder 443 | HTTP, bei aktiviertem HTTPS für die Domain HTTPS |
+| Veröffentlichter Port | Server-IP | Gewählter veröffentlichter Port | HTTP für Hurl; beim eigenen Befehl frei wählbar |
+| Interner Port | Interne Adresse der App | Angegebener Container-Port | HTTP für Hurl; beim eigenen Befehl frei wählbar |
+
+HTTPS gilt, sobald eine Route der Domain es aktiviert. Domains und veröffentlichte Ports müssen zu dieser App gehören und genau einem internen Port zugeordnet sein, auch bei deaktivierten Release-Prüfungen. Mehrere Routen zum selben Port sind gültig. Hurl akzeptiert nur TCP-Portzuordnungen. Für Dienste ohne HTTP verwende einen eigenen Befehl mit einem Portziel.
+
+## Hurl
+
+Wähle für Hello den internen Port `80` und lade diese Datei hoch:
+
+```hurl
+GET {{TARGET_URL}}/
+HTTP 200
+```
+
+`{{TARGET_URL}}` erhält die Ziel-URL über `HURL_VARIABLE_TARGET_URL`. Die Datei muss Inhalt haben und darf höchstens 1.023.999 Bytes groß sein. Ohne neuen Upload bleibt die aktuelle Datei erhalten. Siehe [Hurl-Syntax](https://hurl.dev/docs/request.html).
+
+Für die Authentifizierung ein Text-Secret als `HURL_VARIABLE_API_TOKEN` binden und `{{API_TOKEN}}` verwenden.
+
+## Eigene Befehle
+
+Das App-Image muss die verwendeten Werkzeuge enthalten. Exitcode 0 bedeutet Erfolg, andere Codes bedeuten Fehler. `localhost` verweist auf den Prüfcontainer.
+
+`TARGET_HOST` und `TARGET_PORT` geben das Ziel an. Domainziele erhalten zusätzlich `TARGET_SCHEME` (`http` oder `https`). Für Variablenauflösung und Pipes eine Shell ausdrücklich aufrufen. Argumente unterstützen Anführungszeichen und Escape-Sequenzen wie in einer Shell.
+
+Mit `sh` und `wget` im Image:
+
+```sh
+sh -c 'wget -q -O /dev/null "${TARGET_SCHEME:-http}://${TARGET_HOST}:${TARGET_PORT}/"'
+```
+
+Von der Plattform gesetzte Zielvariablen überschreiben einfache Werte und dürfen nicht an Secrets oder Ausgaben von Abhängigkeiten gebunden werden. Halte `/xhealth.hurl` für Hurl frei. Prüfungen sollten nur lesen und aussagekräftige Anwendungsbedingungen prüfen.
+
+## Jetzt ausführen
+
+Bei aktivierter Prüfung **Jetzt ausführen** wählen, `POST /api/apps/{name}/xhealth/run` ohne Body aufrufen oder `xhealth_run` mit `app` verwenden. Es gilt die gespeicherte Konfiguration; das nächste Intervall zählt ab Beginn dieses Laufs.
+
+Die API liefert `202` mit `{"ok":true}` oder `409`, wenn eine Prüfung wartet oder läuft. Ergebnisse stehen unter [Status und Logs](/docs/de/guides/release-safety/xhealth/status/) oder über `xhealth_get` bereit. Bei verlorener Antwort zuerst den Status prüfen: Ein Aufruf nach Abschluss startet einen neuen Lauf.
+
+## Release-Prüfungen
+
+Aktiviere **An Release-Prüfungen teilnehmen**, um diese App bei eigenen Updates oder Updates direkter Abhängigkeiten zu prüfen. Diese Prüfungen greifen auf den internen Port des Vorschaudienstes zu. Hurl verwendet HTTP; eigene Befehle mit Domainziel erhalten `TARGET_SCHEME=http`. Regelmäßige Prüfungen der laufenden App werden unabhängig fortgesetzt.
+
+Anleitungen und Beispiele finden Sie unter [App-Abhängigkeiten](/docs/de/guides/apps/dependencies/app/) und [PostgreSQL-Abhängigkeiten](/docs/de/guides/apps/dependencies/postgresql/).

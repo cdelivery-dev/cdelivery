@@ -1,0 +1,50 @@
+---
+title: "Nachrichten und Benachrichtigungen"
+description: "Admin verbindet Kanäle; jeder Nutzer ordnet seine Identität und Abonnements selbst zu."
+sidebar:
+  order: 44
+---
+
+Admin verbindet Kanäle; jeder Nutzer ordnet seine Identität und Abonnements selbst zu.
+
+## Kanäle
+
+<CardGrid>
+
+<Card title="E-Mail" href="/docs/de/guides/automation/im/email/" icon="ph:envelope-simple">
+  Zugang: SMTP, optional IMAP. Persönliche Identität: Konto-E-Mail.
+</Card>
+
+<Card title="Slack" href="/docs/de/guides/automation/im/slack/" icon="ph:slack-logo">
+  Zugang: Bot-/App-Token. Persönliche Identität: Member ID.
+</Card>
+
+<Card title="Telegram" href="/docs/de/guides/automation/im/telegram/" icon="ph:telegram-logo">
+  Zugang: Bot-Token. Persönliche Identität: Numerische User-ID.
+</Card>
+
+<Card title="Discord" href="/docs/de/guides/automation/im/discord/" icon="ph:discord-logo">
+  Zugang: Bot-Token. Persönliche Identität: User ID.
+</Card>
+
+<Card title="Lark" href="/docs/de/guides/automation/im/lark/" icon="ph:chat-circle-dots">
+  Zugang: App ID/Secret. Persönliche Identität: open_id.
+</Card>
+
+<Card title="Feishu" href="/docs/de/guides/automation/im/feishu/" icon="ph:chat-circle-dots">
+  Zugang: App ID/Secret. Persönliche Identität: open_id.
+</Card>
+
+</CardGrid>
+
+Anzeigename, Gruppen- und Bot-ID ersetzen keine Nutzer-ID.
+
+## Konfigurieren
+
+Erstellung, Rechte, Veröffentlichung und Ereignisse einrichten. Zugang speichern und eigene ID zuordnen. Neue Verknüpfungen erhalten standardmäßig Benachrichtigungen; du kannst sie ausschalten. Gespräche benötigen [Modell](/docs/de/guides/automation/models/); mit lesender Frage beginnen.
+
+Fremde ID kann dieser Person deine Nachrichten und Rechte zugänglich machen.
+
+## Diagnose
+
+Zugang, Netzwerk, Ereignisse, Identität, Abonnement und Modell trennen. Avatar beweist weder Zustellung noch korrekte Zuordnung. Siehe [Benachrichtigungen](/docs/de/guides/automation/im/notifications/).

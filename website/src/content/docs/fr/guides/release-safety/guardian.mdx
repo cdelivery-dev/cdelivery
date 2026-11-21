@@ -1,0 +1,43 @@
+---
+title: "Vérifications de publication"
+description: "Vérifier les changements d’applications et de bases avant la production, puis résoudre les changements interrompus."
+sidebar:
+  order: 29
+---
+
+Les rôles Operator et Admin permettent de soumettre des mises à jour d’applications et des modifications de bases PostgreSQL, puis d’intervenir en cas d’arrêt. CDelivery exécute les vérifications de publication sur des instances de prévisualisation avec [XHealth](/docs/fr/guides/release-safety/xhealth/).
+
+## Sélectionner les vérifications et soumettre
+
+Pour la configuration et les exemples, consultez les [dépendances entre applications](/docs/fr/guides/apps/dependencies/app/) et les [dépendances PostgreSQL](/docs/fr/guides/apps/dependencies/postgresql/).
+
+Enregistrez la configuration de déploiement de l’application pour soumettre une mise à jour. Les changements d’image, d’environnement, de montages, de XConfig, de ressources, de placement, de réseau, de groupe, d’identifiants, de journaux, de politique de redémarrage et de stratégie de mise à jour peuvent déclencher des vérifications. Modifier seulement la description ou le nombre de répliques ne les déclenche pas.
+
+**Si aucune application ne participe, les mises à jour passent directement en production et les instructions SQL s’exécutent sur la base de production.**
+
+## Test et production
+
+CDelivery prépare les instances de prévisualisation. Pour une modification de base de données, il exécute les instructions SQL sur la base de test avant de lancer les vérifications. Une fois toutes les vérifications réussies, CDelivery supprime les ressources de test, y compris les données écrites dans la base de test. Il applique ensuite la configuration de l’application ou exécute les mêmes instructions SQL sur la base de production.
+
+Dans les instances de prévisualisation, seules les connexions à l’application ou à la base en cours de modification sont redirigées vers sa prévisualisation. Les autres dépendances gardent leurs connexions habituelles. Prévoyez assez de ressources pour faire fonctionner simultanément les applications en production et leurs instances de prévisualisation.
+
+## Résoudre un changement arrêté
+
+Si une vérification échoue ou si l’exécution est interrompue, le changement reste ouvert avec ses informations de diagnostic et les ressources temporaires restantes. Une nouvelle tentative en production nécessite une intervention manuelle. Vous trouverez les détails sous **Vue d’ensemble → Changement en cours** sur la page de l’application ou sur la page de la dépendance concernée. Consultez les [journaux](/docs/fr/guides/observability/logs/application/) **Application de prévisualisation** et **Vérification de publication** avant de choisir une action.
+
+Les actions disponibles dépendent de l’étape à laquelle le changement s’est arrêté.
+
+| Action | Résultat |
+| --- | --- |
+| Ignorer les vérifications et appliquer | Nettoie les ressources de test et applique en production sans terminer les vérifications |
+| Exécuter à nouveau | Relance le changement en production. Pour une base de données, les instructions SQL d’origine sont exécutées à nouveau. Vérifiez d’abord ce qui a déjà été appliqué. |
+| Confirmer la fin | Confirme le résultat en production et termine le nettoyage sans exécuter de SQL ni appliquer à nouveau le changement |
+| Annuler | Nettoie les ressources temporaires et ferme le changement ; les modifications déjà faites en production restent |
+
+Avant l’exécution en production, vous pouvez ignorer les vérifications ou annuler le changement. S’il ne reste que le nettoyage, choisissez **Confirmer la fin**. Pour refaire un test, annulez le changement en cours et soumettez-le à nouveau.
+
+## Terminer et vérifier
+
+Un changement ouvert réserve toutes les applications participantes, y compris les consommatrices d’autres groupes. Leurs mises à jour de configuration, redémarrages, rollbacks, suppressions et modifications de XHealth sont bloqués, et la mise à l’échelle automatique attend. Résolvez le changement avant toute opération conflictuelle ou suppression manuelle de ses volumes de prévisualisation.
+
+Chaque cible ne conserve que son dernier changement. Après la fin, vérifiez les répliques actives et une requête métier réelle. Le [rollback d’application](/docs/fr/guides/release-safety/rollback/) restaure la configuration ; il n’annule pas le SQL et ne restaure pas le contenu de la base.

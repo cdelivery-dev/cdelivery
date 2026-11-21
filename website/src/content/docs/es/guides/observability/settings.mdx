@@ -1,0 +1,54 @@
+---
+title: "Recogida y retención"
+description: "Admin configura Insight, recolectores, almacenamiento y duración del historial."
+sidebar:
+  order: 37
+---
+
+Admin configura Insight, recolectores, almacenamiento y duración del historial.
+
+## Activar la recogida
+
+<Steps>
+
+1. Elige las versiones del servicio y de los recolectores.
+2. Elige el tipo de almacenamiento e indica ubicación y credenciales.
+3. Configura la ubicación del servicio.
+4. Define retención, muestreo e intervalo de vaciado.
+5. Guarda y comprueba que el servicio y los recolectores se ejecutan.
+6. Abre las métricas del servidor y de la aplicación y verifica datos nuevos.
+
+</Steps>
+
+## Almacenamiento y ubicación
+
+Elige Local, S3, S3-compatible con endpoint, GCS con JSON de cuenta de servicio o Azure. Prepara ubicación y credenciales antes de habilitar.
+
+Después, tipo e identidad de almacenamiento no se cambian como una edición ordinaria; se permiten credenciales y región cuando corresponda. Local exige servidor fijo. Una migración necesita planificación propia.
+
+## Intervalos y retención
+
+| Ajuste | Predeterminado | Rango |
+| --- | --- | --- |
+| Retención | 90 días | 1–3650 días |
+| Muestreo | 5 segundos | 1–60 segundos |
+| Vaciado | 3 minutos | Según configuración |
+| Filesystem | 5 minutos | Cadencia propia |
+
+Servidor fijo puede consultar datos en buffer. La ubicación distribuida por etiqueta puede requerir vaciado y sincronización. Más frecuencia y retención consumen más almacenamiento.
+
+<Aside type="caution">
+Reducir la retención puede eliminar el historial. Ampliarla después no restaura los datos eliminados.
+</Aside>
+
+## Verificar y resolver problemas
+
+Selecciona recurso, fuente y periodo correctos; las consultas históricas admiten hasta 31 días. Usa un intervalo estrecho alrededor del incidente.
+
+Vacío puede significar falta de actividad, recogida desactivada, retraso o retención vencida. Un error de consulta significa que no terminó correctamente. No interpretes ausencia como cero.
+
+Genera actividad nueva y confirma registros, métricas y eventos recientes por servidor. No se importan automáticamente registros anteriores.
+
+Para huecos, revisa componentes, red, credenciales, periodo y retención. El [controlador de registros](/docs/es/guides/observability/logs/application/) se configura por separado.
+
+Correlaciona petición, proceso, métricas y evento antes de modificar configuración.

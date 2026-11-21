@@ -1,0 +1,16 @@
+---
+title: "PlanetScale"
+description: "Registra una conexión PostgreSQL de PlanetScale y comprueba el tamaño y el punto de restauración de la rama de ensayo."
+sidebar:
+  order: 2
+---
+
+## Registrar una base de datos
+
+Como Admin, abre **Dependencias → Nueva dependencia → PlanetScale**. Introduce un nombre, el DSN PostgreSQL generado por el proveedor y un token de servicio. Conserva el sufijo de enrutamiento de la rama en el nombre de usuario del DSN. Todos los grupos pueden usar la dependencia.
+
+## La rama de ensayo
+
+CDelivery restaura una rama temporal al estado de unos cinco minutos antes de la preparación. Usa datos de prueba que ya existieran en ese momento. La rama usa un solo nodo con almacenamiento de red. Por defecto adopta el tamaño de origen, o PS-5 si el origen es Metal.
+
+Continúa con la [vinculación de una aplicación y la prueba de un cambio SQL](/docs/es/guides/apps/dependencies/postgresql/).

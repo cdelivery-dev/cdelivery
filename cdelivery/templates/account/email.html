@@ -1,0 +1,37 @@
+{% extends "account.html" %}
+
+{% import "account/nav.html" as nav %}
+
+{% block title %}{{ tt!("ui.channel.email.title") }} - {{ tt!("ui.account.nav.account") }} | {{ super() }}{% endblock title %}
+
+{% block account_navigation %}{{ nav::nav("email") }}{% endblock account_navigation %}
+
+{% block main %}
+<header>
+  <h1>{{ tt!("ui.channel.email.title") }}</h1>
+</header>
+
+{% if configured %}
+<dl>
+  <dt>{{ tt!("ui.form.user.email.label") }}</dt>
+  <dd>{{ email }}</dd>
+</dl>
+<form
+  method="post"
+  action="/account/email/notifications"
+  x-data="{ submitting: false }"
+  @submit="if (submitting) { $event.preventDefault(); return } $refs.payload.value = JSON.stringify({ enabled: $refs.enabled.checked }); submitting = true"
+>
+  <input x-ref="payload" type="hidden" name="payload" />
+  <label class="choice">
+    <input x-ref="enabled" type="checkbox" aria-labelledby="account-email-notifications-label"{% if enabled %} checked{% endif %} />
+    <span id="account-email-notifications-label">{{ tt!("ui.account.email.notifications") }}</span>
+  </label>
+  <div class="actions">
+    <input class="button" type="submit" value='{{ tt!("ui.common.save") }}' :disabled="submitting" />
+  </div>
+</form>
+{% else %}
+<p>{{ tt!("ui.account.channel.unavailable") }}</p>
+{% endif %}
+{% endblock main %}

@@ -1,0 +1,19 @@
+[package]
+name = "cdelivery-wire"
+version = "0.1.0"
+edition = "2024"
+publish = false
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+
+[dependencies]
+cipher = { workspace = true }
+macros = { workspace = true }
+percent-encoding = { workspace = true }
+serde = { workspace = true }
+thiserror = { workspace = true }
+url = { workspace = true }
+
+[lints]
+workspace = true

@@ -1,0 +1,61 @@
+{% extends "dashboard.html" %}
+{% block title %}{{ tt!("dependency.new") }} | {{ super() }}{% endblock title %}
+{% block main %}
+{% let provider = self.provider %}
+<header>
+  <h1>{{ tt!("dependency.new") }}</h1>
+  <nav class="tab-list" aria-label='{{ tt!("secret.type") }}'>
+    <a translate="no" href="/dependencies/.create/neon"{% if matches!(provider, crate::operation::dependency::typ::Provider::Neon) %} aria-current="page"{% endif %}>Neon</a>
+    <a translate="no" href="/dependencies/.create/planetscale"{% if matches!(provider, crate::operation::dependency::typ::Provider::PlanetScale) %} aria-current="page"{% endif %}>PlanetScale</a>
+    <a translate="no" href="/dependencies/.create/postgresql"{% if matches!(provider, crate::operation::dependency::typ::Provider::Local) %} aria-current="page"{% endif %}>PostgreSQL</a>
+  </nav>
+</header>
+<form class="stack" method="post" action="/dependencies" autocomplete="off" x-data="dependencyForm" @submit="if (submitting) { $event.preventDefault(); return; } $refs.payload.value = JSON.stringify({ name: $refs.name.value, description: $refs.description.value || null, provider: {{ provider|json }}, dsn: $refs.dsn.value, api_token: $refs.token?.value, project_id: $refs.project?.value, app: $refs.source?.value }); submitting = true">
+  <input x-ref="payload" type="hidden" name="payload" />
+  <div class="fields">
+  <div class="field"><label for="dependency-name">{{ tt!("secret.name") }}</label><input id="dependency-name" class="text" x-ref="name" pattern="(?!cdelivery(?:-|$))[a-z0-9]([a-z0-9\-]{0,{{ crate::concept::name::MAX - 2 }}}[a-z0-9])?" title='{{ tt!("validation.name") }}' @change="CDelivery.trimInput($el)" spellcheck="false" required /></div>
+  <div class="field"><label for="dependency-description">{{ tt!("secret.description") }}</label><input id="dependency-description" class="text" x-ref="description" maxlength="256" @change="CDelivery.trimInput($el)" /></div>
+  {% if matches!(provider, crate::operation::dependency::typ::Provider::Local) %}
+  <div class="field">
+    <label for="dependency-source">{{ tt!("dependency.sourceApp") }}</label>
+    <select id="dependency-source" class="text" x-ref="source" required>
+      <option value="">{{ tt!("dependency.select") }}</option>
+      {% for group in dashboard.groups %}<optgroup label="{{ group.name }}">{% for app in apps %}{% if app.group == group.name %}<option value="{{ app.name }}">{{ app.name }}</option>{% endif %}{% endfor %}</optgroup>{% endfor %}
+    </select>
+    <small>{{ tt!("dependency.localHint") }}</small>
+  </div>
+  {% endif %}
+  <div class="field"><label for="dependency-dsn">DSN</label><textarea id="dependency-dsn" class="text" x-ref="dsn" maxlength="16384" rows="3" spellcheck="false" required placeholder="postgresql://user:password@host:5432/database" data-invalid='{{ tt!("dependency.dsnInvalid") }}' @change="CDelivery.trimInput($el)" @input="validateDsn()"></textarea>{% if !matches!(provider, crate::operation::dependency::typ::Provider::Local) %}<small>{{ tt!("dependency.globalHint") }}</small>{% endif %}</div>
+  {% if !matches!(provider, crate::operation::dependency::typ::Provider::Local) %}
+  <div class="field"><label for="dependency-token">{% if matches!(provider, crate::operation::dependency::typ::Provider::Neon) %}{{ tt!("dependency.apiKey") }}{% else %}{{ tt!("dependency.serviceToken") }}{% endif %}</label><input id="dependency-token" class="text" type="password" autocomplete="new-password" x-ref="token" maxlength="16384" @change="CDelivery.trimInput($el)" required /></div>
+  {% endif %}
+  {% if matches!(provider, crate::operation::dependency::typ::Provider::Neon) %}
+  <div class="field"><label for="dependency-project">{{ tt!("dependency.project") }}</label><input id="dependency-project" class="text" x-ref="project" maxlength="255" @change="CDelivery.trimInput($el)" required /></div>
+  {% endif %}
+  </div>
+  <p class="muted">{{ tt!("dependency.immutable") }}</p>
+  <div class="actions"><button class="button" type="submit" :disabled="submitting">{{ tt!("ui.common.create") }}</button></div>
+</form>
+<script>
+document.addEventListener("alpine:init", () => {
+  Alpine.data("dependencyForm", () => ({
+    submitting: false,
+    validateDsn() {
+      const input = this.$refs.dsn;
+      const value = input.value.trim();
+      let valid = !value;
+      if (value) {
+        try {
+          const uri = new URL(value);
+          valid = ["postgres:", "postgresql:"].includes(uri.protocol)
+            && uri.username && uri.hostname && uri.pathname.length > 1;
+        } catch {
+          valid = false;
+        }
+      }
+      input.setCustomValidity(valid ? "" : input.dataset.invalid);
+    },
+  }));
+});
+</script>
+{% endblock main %}

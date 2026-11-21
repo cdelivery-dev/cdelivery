@@ -1,0 +1,48 @@
+---
+title: "Mount and update configuration files"
+description: "Replace XConfig content, change mount paths, and verify that new tasks consume the intended file."
+sidebar:
+  order: 13
+---
+
+A configuration mount associates uploaded content with one absolute file path inside the container. Check both the path and the consuming application's configuration.
+
+The examples below use ordinary XConfig uploads. To replace a File secret, create a new one in [Secrets](/docs/guides/apps/secrets/), select it in the existing mount entry and save the application configuration.
+
+## Mount and replace
+
+<Steps>
+
+1. Open the application's configuration file settings.
+2. Upload a nonempty file within the size limit.
+3. Select the absolute target file path.
+4. Save and inspect the resulting application tasks.
+5. Check logs and exercise behavior affected by the configuration.
+
+</Steps>
+
+Replacing uploaded content creates a new configuration version for the application. Depending on release settings, the change may pass through [release checks](/docs/guides/release-safety/guardian/) before promotion.
+
+The existing target path is not editable in place in the console. To change it, remove the old mount and add the new one. Ensure the image will read the new path before submitting.
+
+## Example and verification
+
+For the Hello example (`ghcr.io/cdelivery-dev/hello:1.0.0`), save this as `index.html` and upload it with XConfig to `/www/index.html`:
+
+```html
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>CDelivery Hello</title></head>
+<body><h1>Hello from XConfig</h1></body>
+</html>
+```
+
+Keep the default startup command and the TCP 80 → 8080 mapping. After the update, open `/` and expect `Hello from XConfig` instead of the request information. Removing this mount restores the default response in new containers.
+
+Verify the expected replica count, startup logs, and an endpoint whose behavior depends on the file. Reopening or downloading the file verifies stored content, not runtime consumption.
+
+## Removal and limits
+
+The file's in-use indication concerns its application; it is not a platform-wide configuration library. Old orphaned content can be collected, so do not use it as a backup history.
+
+Before removing a mount, determine whether the application can start without it. Store source configuration in your own controlled location and back up business data separately. See [XConfig](/docs/guides/apps/xconfig/) for size and visibility rules.

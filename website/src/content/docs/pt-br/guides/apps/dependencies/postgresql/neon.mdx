@@ -1,0 +1,16 @@
+---
+title: "Neon"
+description: "Cadastre uma conexão Neon e escolha a capacidade de processamento da branch de ensaio."
+sidebar:
+  order: 1
+---
+
+## Cadastrar um banco
+
+Como Admin, abra **Dependências → Nova dependência → Neon**. Informe um nome, o DSN PostgreSQL gerado pelo Neon, uma chave de API e o ID do projeto. O endpoint de computação do DSN deve pertencer a esse projeto. Depois de salvar, todos os grupos podem usar a dependência.
+
+## A branch de ensaio
+
+No ensaio de SQL, o CDelivery cria uma branch temporária a partir da branch indicada pelo DSN e provisiona um endpoint de leitura e gravação. Ao enviar a alteração, informe o tamanho em unidades de computação (CU) ou deixe o campo vazio para usar o mínimo do endpoint de origem.
+
+Continue com a [vinculação da aplicação e o teste de uma alteração SQL](/docs/pt-br/guides/apps/dependencies/postgresql/).

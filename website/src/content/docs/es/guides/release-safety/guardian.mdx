@@ -1,0 +1,43 @@
+---
+title: "Comprobaciones de publicación"
+description: "Comprueba cambios de aplicaciones y bases de datos antes de producción y resuelve cambios interrumpidos."
+sidebar:
+  order: 29
+---
+
+Los usuarios con rol de Operator o Admin pueden enviar actualizaciones de aplicaciones y cambios en PostgreSQL, e intervenir si se detienen. CDelivery usa [XHealth](/docs/es/guides/release-safety/xhealth/) para ejecutar las comprobaciones de publicación en instancias de prueba.
+
+## Seleccionar comprobaciones y enviar
+
+Consulta las [dependencias entre aplicaciones](/docs/es/guides/apps/dependencies/app/) y las [dependencias PostgreSQL](/docs/es/guides/apps/dependencies/postgresql/) para ver la configuración y los ejemplos.
+
+Guarda la configuración de despliegue de la aplicación para enviar una actualización. Los cambios de imagen, entorno, montajes, XConfig, recursos, ubicación, red, grupo, credenciales, registros, política de reinicio y estrategia de actualización pueden iniciar comprobaciones. Cambiar solo la descripción o el número de réplicas no las inicia.
+
+**Si no participa ninguna aplicación, las actualizaciones pasan directamente a producción y las instrucciones SQL se ejecutan en la base de datos de producción.**
+
+## Ensayo y producción
+
+CDelivery prepara las instancias de prueba. Si el cambio es de base de datos, ejecuta las instrucciones SQL en la base de ensayo antes de iniciar las comprobaciones. Cuando todas pasan, elimina los recursos de ensayo, incluidos los datos escritos en la base de ensayo. A continuación, aplica la configuración de la aplicación o ejecuta las mismas instrucciones SQL en la base de datos de producción.
+
+En las instancias de prueba solo se redirigen las conexiones a la aplicación o a la base de datos que se está modificando. Las demás dependencias conservan sus conexiones originales. Reserva recursos suficientes para ejecutar al mismo tiempo las aplicaciones en producción y sus instancias de prueba.
+
+## Resolver un cambio detenido
+
+Si falla una comprobación o se interrumpe la ejecución, el cambio queda abierto con los datos de diagnóstico y los recursos temporales restantes. Para volver a ejecutar un cambio en producción hace falta una acción manual. Abre **Resumen → Cambio actual** en la página de la aplicación o consulta la página de la dependencia. Revisa los [registros](/docs/es/guides/observability/logs/application/) de **Aplicación de vista previa** y **Comprobación de publicación** antes de elegir una acción.
+
+Las acciones disponibles dependen de la etapa en la que se detuvo el cambio.
+
+| Acción | Resultado |
+| --- | --- |
+| Omitir comprobaciones y aplicar | Limpia los recursos de ensayo y aplica en producción sin completar las comprobaciones |
+| Ejecutar de nuevo | Vuelve a ejecutar el cambio en producción. Si es un cambio de base de datos, se ejecutan de nuevo las instrucciones SQL originales. Comprueba primero qué se aplicó en el intento anterior. |
+| Confirmar finalización | Confirma el resultado en producción y termina la limpieza sin ejecutar SQL ni aplicar de nuevo el cambio |
+| Cancelar | Limpia los recursos temporales y cierra el cambio; las modificaciones ya hechas en producción permanecen |
+
+Antes de la ejecución en producción, puedes omitir las comprobaciones o cancelar el cambio. Si solo queda la limpieza, selecciona **Confirmar finalización**. Para repetir el ensayo, cancela el cambio actual y vuelve a enviarlo.
+
+## Completar y verificar
+
+Un cambio abierto reserva todas las aplicaciones participantes, incluidas consumidoras de otros grupos. Bloquea sus actualizaciones de configuración, reinicios, reversiones, eliminaciones y cambios de XHealth; el escalado automático espera. Resuelve el cambio antes de enviar operaciones incompatibles o eliminar manualmente sus volúmenes de vista previa.
+
+Cada objetivo conserva solo su cambio más reciente. Al terminar, comprueba las réplicas activas y una petición real. La [reversión de aplicaciones](/docs/es/guides/release-safety/rollback/) restaura la configuración; no deshace SQL ni restaura el contenido de la base de datos.

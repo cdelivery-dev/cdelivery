@@ -1,0 +1,16 @@
+---
+title: "PlanetScale"
+description: "登記 PlanetScale PostgreSQL 連線，瞭解測試分支的資料復原時間點與規格。"
+sidebar:
+  order: 2
+---
+
+## 登記資料庫
+
+Admin 開啟**依賴 → 新增依賴 → PlanetScale**，填寫名稱、提供者產生的 PostgreSQL DSN 和服務權杖。請保留 DSN 使用者名稱中的分支路由後綴。儲存後，所有分組都能引用。
+
+## 測試分支
+
+CDelivery 將暫存分支復原至準備測試前約五分鐘的時間點。檢查所需的資料應在此之前就已存在。分支採用單節點網路儲存，規格預設沿用來源分支；Metal 來源則預設為 PS-5。
+
+接下來可以[綁定應用程式並驗證 SQL 變更](/docs/zh-tw/guides/apps/dependencies/postgresql/)。

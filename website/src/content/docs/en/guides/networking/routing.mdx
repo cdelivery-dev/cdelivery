@@ -1,0 +1,44 @@
+---
+title: "Domains and routing"
+description: "Route HTTP requests by domain, path prefix, headers, and cookies to an application port."
+sidebar:
+  order: 22
+---
+
+Pingress routes requests to the application's container port. Enable it on reachable servers before configuring application domains.
+
+## Configure in order
+
+First make the application listen on the intended container interface and port. Verify its replicas and logs. For a domain, enable Pingress, point DNS to its reachable entry servers, and allow ports 80/443. Then configure the route and certificate.
+
+An Operator can manage application routes; an Admin configures platform components. A platform management domain has its own [settings](/docs/administration/platform/access/).
+
+## Add a route
+
+<Steps>
+
+1. Point the domain's A/AAAA records to the entry servers.
+2. Confirm inbound ports 80/443 and the application's listening port.
+3. Add a domain route in application settings.
+4. Enter a hostname such as `app.example.com` and its target container port. HTTPS is selected by default; clear it to use HTTP.
+5. Save and test a matching request.
+
+</Steps>
+
+Use a hostname, not a URL, IP address, wildcard, port, or path. Domain input is normalized to lowercase and requires multiple labels.
+
+## Match conditions
+
+A route may additionally match a path prefix, request header, or cookie. Conditions on the same route are combined: the request must satisfy them all. A header or cookie can test presence or a specific value.
+
+The prefix `/api` matches `/api` and `/api/users`, but not `/apix`. Matching does not remove or rewrite that prefix before forwarding.
+
+More specific conditions and longer prefixes affect priority. Avoid ambiguous overlapping routes; do not rely on the order shown in the form as a precedence control.
+
+## Verify and troubleshoot
+
+Test both a matching request and a request expected not to match. Inspect [access logs](/docs/guides/observability/logs/access/) for the domain, target, status, and timing.
+
+A gateway error can mean the backend is unavailable even when DNS and TLS succeed. An unexpected application can indicate overlapping conditions or an incorrect target port.
+
+HTTPS needs an [automatic](/docs/guides/networking/automatic-certificates/) or [custom](/docs/guides/networking/custom-certificates/) certificate. Platform console domains are configured [separately](/docs/administration/platform/access/).

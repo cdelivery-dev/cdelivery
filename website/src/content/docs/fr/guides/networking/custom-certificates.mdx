@@ -1,0 +1,26 @@
+---
+title: "Certificats personnalisés"
+description: "Chargez une chaîne PEM et sa clé correspondante lorsque l’émission est gérée ailleurs."
+sidebar:
+  order: 24
+---
+
+Chargez une chaîne PEM et sa clé correspondante lorsque l’émission est gérée ailleurs.
+
+## Installer
+
+Admin fournit un certificat couvrant le domaine, actuellement valide, avec sa chaîne et la bonne clé. Sélectionnez le domaine, chargez, enregistrez et activez HTTPS sur la route.
+
+Depuis un client, examinez nom, émetteur, chaîne et expiration pour chaque adresse, IPv6 comprise. Ne partagez pas la clé dans les diagnostics.
+
+Une sauvegarde réussie ne garantit pas que DNS atteint la bonne entrée.
+
+## Renouveler
+
+Ces certificats ne participent pas au renouvellement ACME. Suivez la date d’expiration, remplacez avant échéance et vérifiez le certificat effectivement servi.
+
+## Diagnostiquer
+
+Séparez erreurs d’adresse et TLS. Vérifiez couverture du nom, dates, chaîne et paire clé/certificat. Un proxy peut présenter un autre certificat.
+
+Pour automatiser, lisez [ACME](/docs/fr/guides/networking/automatic-certificates/) et ses exigences.

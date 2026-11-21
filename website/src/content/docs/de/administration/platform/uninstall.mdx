@@ -1,0 +1,30 @@
+---
+title: "Deinstallation und Bereinigung"
+description: "Entfernen löscht Verwaltungsressourcen, Anwendungsdefinitionen, Konten und Zugangsdaten; Volumes und Beschreibungen bleiben."
+sidebar:
+  order: 64
+---
+
+<Aside type="danger">
+Entfernen löscht Verwaltungsressourcen, Anwendungsdefinitionen, Konten und Zugangsdaten; Volumes und Beschreibungen bleiben.
+</Aside>
+
+## Deinstallieren
+
+Ein interaktives Terminal auf dem Verwaltungsserver mit Docker CLI, jq und lokalem Unix-Socket nutzen. Einstellungen, Images und Volumezuordnung notieren, sichern, Ressourcenerstellung stoppen.
+
+```sh
+curl -fsSL https://cdelivery.dev/uninstall.sh | sh
+```
+
+Den angezeigten Docker-Endpunkt und die Ressourcen prüfen, dann `y` oder `Y` eingeben und mit Enter bestätigen. Enter ohne Eingabe, ein beliebiger anderer Text oder Strg+C bricht ab. Sind keine Ressourcen mehr zu entfernen, beendet sich das Skript ohne Rückfrage.
+
+Zuerst wird das Hauptprogramm gestoppt, dann werden die verwalteten Ressourcen entfernt. Vor der Abschlussmeldung wartet das Skript bis zu 120 Sekunden, bis die verwalteten Netzwerke aus der lokalen Docker-Netzwerkliste verschwunden sind. Bei Zeitüberschreitung listet es die verbleibenden Netzwerke auf und beendet sich mit einem Fehler. Docker, Volumes, externes DNS, Objektspeicher und Providerkonten bleiben.
+
+## Prüfen
+
+Entfernte Ressourcen und erhaltene Volumes kontrollieren. Containerende asynchron; Offlinegeräte nach Wiederverbindung prüfen.
+
+Fehler beheben und denselben Befehl erneut ausführen, um die Vorschau zu prüfen und erneut zu bestätigen. Währenddessen weder installieren noch gleiche Ressourcen neu erstellen.
+
+Datenlöschung ist separate Entscheidung. Neue Installation erzeugt neue Verwaltungsdaten; Geschäftswiederherstellung braucht Aufzeichnungen und Speichersicherung.

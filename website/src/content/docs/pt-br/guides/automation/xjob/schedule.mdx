@@ -1,0 +1,14 @@
+---
+title: "Intervalos e timeout do XJob"
+description: "Configure a espera após cada execução e um timeout independente."
+sidebar:
+  order: 39
+---
+
+Ambos são obrigatórios, de 1 a 1440 minutos cada. A API aceita inteiros em `Minutes` (1–1440) ou `Hours` (1–24), por exemplo `{"unit":"Minutes","value":30}`. O timeout pode superar o intervalo.
+
+A primeira execução espera o intervalo desde a criação da configuração; as seguintes, desde o término da execução, com sucesso ou falha. Uma execução ativa não tem próximo horário. A execução manual ignora a espera, mas é recusada enquanto houver uma execução ativa.
+
+O timeout começa na criação da tarefa de execução, incluindo preparação e download da imagem. O controlador verifica a cada 30 segundos e solicita a parada após o limite. Inicialização, verificações, parada e indisponibilidade do controlador podem atrasá-la: não é um prazo rígido. Alterar o timeout afeta a execução atual sem mudar seu início; ampliá-lo não cancela uma parada já solicitada.
+
+A configuração fica no serviço e o estado vem da observação das tarefas. Sem o registro atual, o controlador aguarda a janela existente de 90 segundos quando necessário e aproxima o próximo horário pela atualização do serviço mais o intervalo. Isso não garante um intervalo completo após o término real. Não há acúmulo de execuções durante indisponibilidade. Confira os efeitos antes de repetir uma solicitação manual de resultado incerto.

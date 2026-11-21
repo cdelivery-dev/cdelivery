@@ -1,0 +1,23 @@
+{% macro value(change) %}
+<b>{% if change.busy %}{{ tt!("change.processing") }}
+{% else %}{% match change.stage %}
+{% when crate::operation::change::typ::Stage::Apply %}{{ tt!("change.applyPending") }}
+{% when crate::operation::change::typ::Stage::Finish %}{{ tt!("change.finishPending") }}
+{% when crate::operation::change::typ::Stage::Prepare %}{% if change.error.is_some() %}{{ tt!("change.prepareFailed") }}{% else %}{{ tt!("change.pending") }}{% endif %}
+{% when crate::operation::change::typ::Stage::Check %}{% if change.error.is_some() || change.checks_failed() %}{{ tt!("change.checkFailed") }}{% else %}{{ tt!("change.pending") }}{% endif %}
+{% when crate::operation::change::typ::Stage::Clean %}{% if change.error.is_some() %}{{ tt!("change.cleanPending") }}{% else %}{{ tt!("change.pending") }}{% endif %}
+{% endmatch %}{% endif %}</b>
+{% endmacro %}
+
+{% macro check(change, app) %}
+{% match app.result %}
+{% when Some(crate::operation::change::typ::CheckResult::Failed { .. }) %}{{ tt!("change.checkNotPassed") }}
+{% when Some(crate::operation::change::typ::CheckResult::Passed) %}{{ tt!("change.checkPassed") }}
+{% when None %}
+{% if change.active() && change.busy %}{% match change.stage %}
+{% when crate::operation::change::typ::Stage::Prepare %}{{ tt!("change.awaitingCheck") }}
+{% when crate::operation::change::typ::Stage::Check %}{{ tt!("change.awaitingResult") }}
+{% when _ %}{{ tt!("change.noResult") }}
+{% endmatch %}{% else %}{{ tt!("change.noResult") }}{% endif %}
+{% endmatch %}
+{% endmacro %}

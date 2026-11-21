@@ -1,0 +1,48 @@
+---
+title: "Notification settings and troubleshooting"
+description: "Check platform channels, personal subscriptions, recipient roles, language, and delivery."
+sidebar:
+  order: 51
+---
+
+Notification delivery depends on the platform channel, personal receiving preferences, and recipient eligibility.
+
+## Configure the chain
+
+<Steps>
+
+1. An Admin enables the email or messaging channel.
+2. Each user verifies their account email or binds their own immutable message-platform ID.
+3. Email notifications are enabled for new accounts, and messaging notifications are enabled for new bindings. Each user can turn them off.
+4. Configure the model and [AI on-call](/docs/guides/automation/duty/) only if AI analysis is needed.
+5. Correlate a real operational event with its resulting notification and recipients.
+
+</Steps>
+
+Unbinding removes the channel subscription; rebinding enables it again. Repeating a binding or replacing its ID preserves the notification preference. Changing the account email also preserves its preference. Configuring or clearing a platform channel does not change personal preferences. Disabling notifications does not delete a binding, and stopping on-call does not disable ordinary operational alerts.
+
+## Roles and language
+
+Subscribed users receive AI analysis only when their role is at least the on-call role; other subscribers receive the original alert. Operation receipts follow the same role restriction.
+
+AI on-call waits for analysis, then sends one notification per recipient and channel. If analysis fails, is cancelled, returns no usable text, or exceeds its 60-second budget, the original alert is sent. Disabling on-call sends original alerts directly.
+
+Re-enabling on-call does not reanalyze pending events.
+
+AI on-call notifications use the configured notification language. User conversations follow the conversation language.
+
+## Troubleshoot in order
+
+| Stage | Check |
+| --- | --- |
+| Event | Actual application state, check result, and operation events |
+| Channel | Credentials, publication, sending permissions, outbound network |
+| Recipient | Correct email or immutable user ID |
+| Subscription | Personal email and channel switches |
+| Role | User role compared with on-call role |
+| Delivery service | Spam folders, direct-message restrictions, rate limits |
+| AI | Model settings and analysis errors |
+
+Record time, channel, account, and related event when investigating. Remove tokens and passwords from diagnostics. After changing a binding, use a read-only conversation to verify the account; an avatar or display name alone is insufficient.
+
+Channel-specific setup is in [messaging](/docs/guides/automation/im/).
