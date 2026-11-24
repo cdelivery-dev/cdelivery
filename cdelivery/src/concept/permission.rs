@@ -5,6 +5,7 @@ pub(crate) enum Requirement {
     Shared,
     Own,
     Operator,
+    UserOperator,
     Admin,
 }
 
@@ -28,6 +29,9 @@ impl Access {
             Requirement::Shared => true,
             Requirement::Own => self.actor.user_id().is_some(),
             Requirement::Operator => self.role >= super::user::Role::Operator,
+            Requirement::UserOperator => {
+                self.actor.user_id().is_some() && self.role >= super::user::Role::Operator
+            }
             Requirement::Admin => self.role >= super::user::Role::Admin,
         }
     }

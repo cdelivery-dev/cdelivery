@@ -199,6 +199,8 @@ pub(crate) async fn postgres(context: &Context) -> Result<()> {
                 .is_some_and(|error| error.contains("release")),
         "missing executor release must fail before SQL execution",
     )?;
+    crate::changes::expect_event(context, string(&failed, "id")?, "ChangeFailed", "release")
+        .await?;
     let absent = format!(
         "cdelivery-postgres-{}",
         string(&failed, "id")?.replace('-', "")

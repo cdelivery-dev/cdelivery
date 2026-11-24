@@ -148,7 +148,7 @@ async fn model(
             tokio::time::sleep(Duration::from_secs(12)).await;
         }
         match mode.as_str() {
-            "tool-error" => call = Some(("app_status", json!({"name":"cdelivery-insight"}))),
+            "tool-error" => call = Some(("change_apply", json!({"id":uuid::Uuid::nil()}))),
             "receipt" => call = Some(("app_restart", json!({"name":"missing-duty-app"}))),
             "receipt-cancel" if !tool_result => {
                 call = Some(("app_restart", json!({"name":events[0]["subject"]})));

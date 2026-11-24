@@ -114,6 +114,7 @@ pub(crate) async fn notifications(context: &Context, scenarios: &[&str]) -> Resu
             )
             .await?;
         let name = support::name("duty");
+        let since = jiff::Timestamp::now().to_string();
         let calls = fixture.snapshot().await["calls"]
             .as_array()
             .map_or(0, Vec::len);
@@ -238,6 +239,15 @@ pub(crate) async fn notifications(context: &Context, scenarios: &[&str]) -> Resu
                 rounds == 1,
                 "a failed tool must immediately end alert analysis",
             )?;
+            if scenario == "tool-error" {
+                let logs = context.docker(&["service", "logs", "--since", &since, "cdelivery"])?;
+                ensure(
+                    logs.lines().any(|line| {
+                        line.contains("duty analysis failed") && line.contains("Forbidden")
+                    }),
+                    "duty must receive Forbidden for change_apply",
+                )?;
+            }
         }
         if matches!(
             scenario,

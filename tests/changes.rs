@@ -322,6 +322,25 @@ pub(crate) async fn decisions(context: &Context) -> Result<()> {
     Ok(())
 }
 
+pub(crate) async fn expect_event(
+    context: &Context,
+    id: &str,
+    kind: &str,
+    detail: &str,
+) -> Result<()> {
+    let path = format!("/api/events?subject={id}&kind={kind}");
+    eventually(kind, || async {
+        let events = context.api("GET", &path, None).await?;
+        let records = &events["records"];
+        ensure(
+            records.as_array().is_some_and(|rows| rows.len() == 1)
+                && support::string(&records[0], "detail")?.contains(detail),
+            &format!("expected one {kind} for {id} containing {detail}"),
+        )
+    })
+    .await
+}
+
 #[expect(clippy::too_many_lines)]
 pub(crate) async fn direct_consumers(context: &Context) -> Result<()> {
     let source = support::name("source");
@@ -399,6 +418,7 @@ pub(crate) async fn direct_consumers(context: &Context) -> Result<()> {
         change["stage"] == "Check",
         "consumer rejection must be a check failure",
     )?;
+    expect_event(context, id, "ChangeFailed", &format!("{source}: {direct}:")).await?;
     let services = context.docker(&[
         "service",
         "ls",
@@ -491,6 +511,7 @@ pub(crate) async fn direct_consumers(context: &Context) -> Result<()> {
         )
     })
     .await?;
+    expect_event(context, id, "ChangeRecovered", "Change resolved.").await?;
     ensure(
         context.api("GET", &source_path, None).await?["container_options"]
             == live["container_options"],

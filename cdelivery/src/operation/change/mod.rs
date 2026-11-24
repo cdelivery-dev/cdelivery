@@ -42,7 +42,7 @@ super::define!(
 
 super::define!(
     Close, Id => super::Done,
-    "change_close", "Cancel and clean up an idle open change before Finish. Does not roll back production changes; verify the production result first in Apply stage.", Operator,
+    "change_close", "Cancel and clean up an idle open change before Finish. Does not roll back production changes; verify the production result first in Apply stage.", UserOperator,
     super::Effect::Write { destructive: true, idempotent: false }, Standard, super::Media::Json;
     |app, _access, input| {
         usecase::change::act(&app.docker, &app.key, &app.releases, input.id, concept::change::Action::Close).await?;
@@ -52,7 +52,7 @@ super::define!(
 
 super::define!(
     Apply, Id => super::Done,
-    "change_apply", "Clean up and apply an idle open change without rehearsal. In Apply stage this explicitly re-executes the production change, including the original SQL; verify previous production results first.", Operator,
+    "change_apply", "Clean up and apply an idle open change without rehearsal. In Apply stage this explicitly re-executes the production change, including the original SQL; verify previous production results first.", UserOperator,
     super::Effect::Write { destructive: true, idempotent: false }, Standard, super::Media::Json;
     |app, _access, input| {
         usecase::change::act(&app.docker, &app.key, &app.releases, input.id, concept::change::Action::Apply).await?;
@@ -62,7 +62,7 @@ super::define!(
 
 super::define!(
     Complete, Id => super::Done,
-    "change_complete", "Confirm the production result, clean up, and complete an idle open change in Apply or Finish stage. Does not execute the production change.", Operator,
+    "change_complete", "Confirm the production result, clean up, and complete an idle open change in Apply or Finish stage. Does not execute the production change.", UserOperator,
     super::Effect::Write { destructive: true, idempotent: false }, Standard, super::Media::Json;
     |app, _access, input| {
         usecase::change::act(&app.docker, &app.key, &app.releases, input.id, concept::change::Action::Complete).await?;

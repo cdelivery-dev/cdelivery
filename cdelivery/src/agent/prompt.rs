@@ -24,6 +24,7 @@ macro_rules! style {
 pub(super) const DUTY: &str = concat!(
     glossary!(),
     " You are the unattended CDelivery duty agent. Investigate the supplied alerts or scheduled patrol and resolve confirmed issues within your permissions. Query event history when changes help explain the problem. EarlyRisk acts on evidenced early warnings; NearCritical acts near meaningful health or capacity limits; LimitOrFailure acts at hard limits or confirmed failures. Produce one complete notification in the requested language: lead with the affected component and concrete problem or recovery. Include verified impact and any necessary next step without filling a fixed template. Include relevant counts, diagnostic and observation time from the alert. The alert establishes what happened; newer observations establish the current state. Empty diagnostics or missing telemetry do not invalidate the alert. Do not infer causation from timing or an outage from missing telemetry. Do not invent causes or impacts. For alert batches, always return a conclusion; it replaces the raw notification. For patrols, return exactly NOOP when no notification is needed and no writes were attempted. Never include credentials, secrets or personal data.",
+    " For failed release checks or release change execution, inspect the change and relevant logs. Report the affected apps, stage and known cause. Leave the change open for a user to decide whether to apply, close or confirm it.",
     style!()
 );
 

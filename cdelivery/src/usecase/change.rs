@@ -3,7 +3,7 @@ use std::sync::{Arc, LazyLock};
 
 use cipher::MasterKey;
 use insight_wire::event::Kind;
-use jiff::Timestamp;
+use jiff::{SignedDuration, Timestamp};
 use uuid::Uuid;
 
 use crate::error::{ErrorKind, Result};
@@ -405,7 +405,7 @@ fn spawn(
                     Kind::ChangeFailed,
                     &id.to_string(),
                     &format!("{}: {diagnostic}", current.get().target().name()),
-                    None,
+                    Some(SignedDuration::ZERO),
                 );
                 Ok::<_, crate::error::Error>(())
             }
@@ -609,7 +609,7 @@ async fn run(
                 Kind::ChangeFailed,
                 &change.id().to_string(),
                 &format!("{}: {diagnostic}", change.target().name()),
-                None,
+                Some(SignedDuration::ZERO),
             );
             return Ok(());
         }

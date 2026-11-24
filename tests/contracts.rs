@@ -33,7 +33,9 @@ pub(crate) async fn permissions(context: &Context) -> Result<()> {
         ("app_create", "Operator"),
         ("secret_create", "Operator"),
         ("secret_delete", "Operator"),
-        ("change_apply", "Operator"),
+        ("change_apply", "UserOperator"),
+        ("change_close", "UserOperator"),
+        ("change_complete", "UserOperator"),
         ("change_create", "Operator"),
         ("dependency_create", "Admin"),
         ("dependency_planetscale_sizes", "Shared"),
@@ -73,7 +75,7 @@ pub(crate) async fn permissions(context: &Context) -> Result<()> {
             let name = string(&entry["tool"], "name")?;
             let allowed = match string(entry, "requirement")? {
                 "Shared" | "Own" => true,
-                "Operator" => role != "Reader",
+                "Operator" | "UserOperator" => role != "Reader",
                 "Admin" => role == "Admin",
                 value => {
                     return Err(
