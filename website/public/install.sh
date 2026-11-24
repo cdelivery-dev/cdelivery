@@ -52,6 +52,15 @@ root() {
     fi
 }
 
+menu_rows() {
+    max_width=$(printf '%s\n' "$1" | LC_ALL=C.UTF-8 wc -L 2>/dev/null) || max_width=0
+    if [ "$max_width" -gt 0 ] && [ "$max_width" -le "$2" ]; then
+        printf '%s\n' "$1" | wc -l
+    else
+        printf '%s\n' "$1" | LC_ALL=C.UTF-8 fold -w "$2" | wc -l
+    fi
+}
+
 choose() (
     { exec 3<>/dev/tty; } 2>/dev/null || exit 1
     title=$1 selected=$2 options=$3
@@ -61,10 +70,11 @@ choose() (
     trap 'exit 129' HUP
     trap 'exit 143' TERM
 
-    keys=no highlight= reset=
+    keys=no highlight= reset= frame=
     if [ -n "${TERM:-}" ] && [ "$TERM" != dumb ] && command -v dd >/dev/null 2>&1 &&
+        command -v fold >/dev/null 2>&1 &&
         settings=$(stty -g <&3 2>/dev/null); then
-        trap 'stty "$settings" <&3; printf "%s\n" "$reset" >&3' 0
+        trap 'stty "$settings" <&3; if [ -n "$frame" ]; then printf "\r\033[J%s\033[?25h\n" "$frame" >&3; fi' 0
         if stty -icanon -echo min 1 time 0 <&3 2>/dev/null; then
             keys=yes
         else
@@ -72,32 +82,43 @@ choose() (
         fi
     fi
 
-    if [ "$keys" = no ]; then
-        printf '%s\n' "$options" | awk '{ printf "  %d) %s\n", NR, $0 }' >&3
-        while :; do
-            printf '1-%s [Enter = %s]: ' "$count" "$selected" >&3
-            IFS= read -r answer <&3 || exit 1
-            answer=${answer:-$selected}
-            case "$answer" in *[!0-9]*) continue ;; esac
-            if [ "$answer" -ge 1 ] && [ "$answer" -le "$count" ]; then
-                printf '%s\n' "$answer" | awk '{ print $1 + 0 }'
-                exit 0
-            fi 2>/dev/null
-        done
-    fi
-
-    if [ -z "${NO_COLOR:-}" ]; then
+    if [ "$keys" = yes ] && [ -z "${NO_COLOR:-}" ]; then
         highlight=$(printf '\033[1;36m')
         reset=$(printf '\033[0m')
     fi
-    printf '%s\n' "${4:-Use Up/Down to choose, Enter to confirm, Ctrl+C to cancel.}" >&3
+    numbered=$(printf '%s\n' "$options" | awk '{ printf "> %d) %s\n", NR, $0 }')
+    geometry=
+    confirmed=no
     escape=$(printf '\033')
     carriage=$(printf '\r')
     eof=$(printf '\004')
-    while :; do
-        printf '%s\n' "$options" | awk -v selected="$selected" -v highlight="$highlight" -v reset="$reset" '{
-            printf "\r\033[2K%s%s %d) %s%s\n", (NR == selected ? highlight : ""), (NR == selected ? ">" : " "), NR, $0, reset
-        }' >&3
+    while [ "$keys" = yes ]; do
+        size=$(stty size <&3) || break
+        if [ "$geometry" != "$size" ]; then
+            height=${size% *} columns=${size##* }
+            [ "$columns" -gt 0 ] && [ "$height" -gt 0 ] || break
+            layout=$numbered
+            rows=$(menu_rows "$layout" "$columns")
+            if [ "$rows" -gt "$count" ]; then
+                layout=$(printf '%s\n' "$options" | awk '{ sub(/  +/, "\n    "); print "> " $0 }')
+                rows=$(menu_rows "$layout" "$columns")
+            fi
+            [ "$rows" -le "$height" ] || break
+            if [ -z "$geometry" ]; then
+                printf '%s\n' "${4:-↑↓ to select, Enter to confirm, Ctrl+C to cancel}" >&3
+            fi
+            printf '\r\033[J' >&3
+            if [ "$rows" -gt 1 ]; then
+                awk -v rows="$rows" 'BEGIN { for (i = 1; i < rows; i++) printf "\n"; printf "\033[%dA", rows - 1 }' >&3
+            fi
+            geometry=$size
+        fi
+        frame=$(printf '%s\n' "$layout" | awk -v selected="$selected" -v highlight="$highlight" -v reset="$reset" '
+            /^>/ { item++; if (item != selected) sub(/^>/, " ") }
+            { if (item == selected) print highlight $0 reset; else print }
+        ')
+        [ "$confirmed" = no ] || break
+        printf '\033[?25l\r\0337%s\0338' "$frame" >&3
         sequence=
         while :; do
             key=$(dd bs=1 count=1 <&3 2>/dev/null && printf '.') || exit 1
@@ -105,7 +126,7 @@ choose() (
             case "$key" in
                 ''|"$eof") exit 1 ;;
                 '
-'|"$carriage") printf '%s\n' "$selected"; exit 0 ;;
+'|"$carriage") confirmed=yes; break ;;
                 "$escape") sequence=$escape; continue ;;
             esac
             sequence=$sequence$key
@@ -116,7 +137,27 @@ choose() (
             esac
             sequence=
         done
-        printf '\033[%sA' "$count" >&3
+    done
+
+    if [ "$confirmed" = yes ]; then
+        printf '%s\n' "$selected"
+        exit 0
+    fi
+    if [ "$keys" = yes ]; then
+        stty "$settings" <&3 || exit 1
+        printf '\r\033[J\033[?25h' >&3
+        frame=
+    fi
+    printf '%s\n' "$numbered" | sed 's/^>/ /' >&3
+    while :; do
+        printf '1-%s [Enter = %s]: ' "$count" "$selected" >&3
+        IFS= read -r answer <&3 || exit 1
+        answer=${answer:-$selected}
+        case "$answer" in *[!0-9]*) continue ;; esac
+        if [ "$answer" -ge 1 ] && [ "$answer" -le "$count" ]; then
+            printf '%s\n' "$answer" | awk '{ print $1 + 0 }'
+            exit 0
+        fi 2>/dev/null
     done
 )
 
