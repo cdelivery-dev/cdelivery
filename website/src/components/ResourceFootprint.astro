@@ -28,8 +28,8 @@ const codeStrokes = [
 });
 const metrics = [
   { name: 'CDelivery', purpose: t('site.footprint.platformRole'), memory: 50 },
-  { name: 'Pingress', purpose: t('site.footprint.gatewayRole'), memory: 30 },
-  { name: t('site.footprint.observabilityName'), purpose: t('site.footprint.observabilityRole'), memory: 120 },
+  { name: 'Pingress', purpose: t('site.footprint.gatewayRole'), memory: 10 },
+  { name: 'Insight', purpose: t('site.footprint.observabilityRole'), memory: 100 },
 ] as const;
 const maxMemory = Math.max(...metrics.map(({ memory }) => memory));
 ---

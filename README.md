@@ -63,7 +63,7 @@ Running containers, reverse proxying, single-node HTTPS, and basic restarts are 
 | **Rehearse database changes on real data** | Not included; teams back up and run changes directly on production | Orchestrates containers only; DB branching needs extra tools and scripts | Forks the production DB to a temporary branch (CDelivery-deployed, Neon, and PlanetScale) and validates dependent apps first |
 | **Observability cost & upkeep** | Live container logs only; long-term search needs extra tools or SaaS | Self-hosted HA Prometheus/Loki is heavy; SaaS like Datadog brings high bills | Built-in Insight, no SDK, queryable in 3s, free multi-instance HA, ~1% of Datadog cost |
 | **Multi-node HA & upgrades** | Built mainly for single nodes; distributed HA often needs paid add-ons | Combining components like Traefik and Argo makes upgrades risky | Scales from 1 to 5,000 servers; free multi-instance HA, rolling upgrades, multi-node HTTPS sync |
-| **Dependencies & footprint** | Often bundles a DB or cache; config, jobs, and logs pile up components | Control plane, etcd, and add-ons take gigabytes of RAM and steady ops | Requires only Docker; built-in XConfig, Secrets, and XJob; ~200 MiB starting memory |
+| **Dependencies & footprint** | Often bundles a DB or cache; config, jobs, and logs pile up components | Control plane, etcd, and add-ons take gigabytes of RAM and steady ops | Requires only Docker; built-in XConfig, Secrets, and XJob; ~160 MiB starting memory |
 | **AI on-call with full context** | Lacks long-term history and active on-call; troubleshooting is manual copy-paste | Siloed tools leave AI with data but no actions (or actions without context) | Unifies metrics, logs, access, and events; proactive on-call, role-scoped actions, MCP/API |
 | **Ownership & cost** | Self-hosted, no per-seat fees | Open source; main cost is ops staffing | Apache License 2.0, free for commercial use, 100% of data stays on your servers |
 
@@ -86,8 +86,8 @@ Memory usage under low load:
 | Component | Role | Memory |
 | --- | --- | ---: |
 | CDelivery | Core service | 50 MiB |
-| Pingress | Reverse proxy gateway | 30 MiB |
-| Observability | Data collection and storage | 120 MiB |
+| Pingress | Reverse proxy gateway | 10 MiB |
+| Insight | Data collection and storage | 100 MiB |
 
 ### Benchmarks
 

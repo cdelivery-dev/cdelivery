@@ -5,6 +5,7 @@ const STORAGE_KEY = "sidebar-state";
 interface SidebarState {
   hash: string;
   open: boolean[];
+  aiOpen?: boolean;
   scroll: number;
 }
 
@@ -121,6 +122,7 @@ function initPersistence(root: HTMLElement): (() => void) | null {
   const scrollHost: HTMLElement =
     root.closest<HTMLElement>("[data-nb-sidebar-tree]") ?? root.closest("aside") ?? root;
   const hash = root.dataset.nbSidebarHash ?? "";
+  const aiResources = scrollHost.querySelector<HTMLDetailsElement>("[data-ai-resources]");
 
   function savedScroll(): number | null {
     try {
@@ -135,6 +137,7 @@ function initPersistence(root: HTMLElement): (() => void) | null {
     return {
       hash,
       open: groupsOf(root).map((group) => group.open),
+      aiOpen: aiResources?.open,
       scroll: scrollHost.clientHeight > 0 ? scrollHost.scrollTop : (savedScroll() ?? 0),
     };
   }
@@ -175,6 +178,7 @@ function initPersistence(root: HTMLElement): (() => void) | null {
     save();
   };
   root.addEventListener("toggle", handleToggle, true);
+  aiResources?.addEventListener("toggle", save);
 
   function handleVisibility() {
     if (document.visibilityState === "hidden") save();
@@ -192,6 +196,7 @@ function initPersistence(root: HTMLElement): (() => void) | null {
   return () => {
     resize?.disconnect();
     root.removeEventListener("toggle", handleToggle, true);
+    aiResources?.removeEventListener("toggle", save);
     document.removeEventListener("visibilitychange", handleVisibility);
     window.removeEventListener("pagehide", save);
     scrollHost.removeEventListener("scroll", handleScroll);

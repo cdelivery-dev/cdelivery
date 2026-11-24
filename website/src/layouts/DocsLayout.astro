@@ -58,6 +58,8 @@ const showToc = headings.length > 0;
               const content = sidebar?.querySelector('[data-nb-sidebar]');
               if (!content) return;
               const raw = JSON.parse(sessionStorage.getItem('sidebar-state') || 'null');
+              const aiResources = sidebar.querySelector('[data-ai-resources]');
+              if (aiResources && typeof raw?.aiOpen === 'boolean') aiResources.open = raw.aiOpen;
               const state = raw && content.dataset.nbSidebarHash === raw.hash ? raw : null;
               if (state) {
                 content.querySelectorAll('details').forEach((group, index) => {

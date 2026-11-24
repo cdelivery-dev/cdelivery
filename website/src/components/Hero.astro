@@ -32,7 +32,7 @@ const t = translate(locale);
       <div class="install-panel ai-panel" data-copy-panel>
         <div class="install-row">
           <p class="install-text" data-copy-text tabindex="0" aria-label={t('site.hero.installAi')}>{t('site.hero.aiPrompt', { guide: site.installGuide(locale) })}</p>
-          <button class="copy-button" data-copy data-success={t('site.hero.copied')} data-failure={t('site.hero.promptManual')} aria-label={t('site.hero.copyPrompt')} title={t('site.hero.copyPrompt')} type="button" hidden>
+          <button class="copy-button" data-copy data-success={t('site.hero.copied')} data-failure={t('site.hero.promptManual')} aria-label={t('site.copyPrompt')} title={t('site.copyPrompt')} type="button" hidden>
             <span class="copy-icon"><Icon name="copy" size={18} /></span>
             <span class="copied-icon"><Icon name="check" size={18} /></span>
           </button>
